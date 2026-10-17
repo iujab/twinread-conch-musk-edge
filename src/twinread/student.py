@@ -762,6 +762,7 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
            "aug": aug, "severity_max": float(severity_max), "seed": int(seed), "lr": lr, "lr_backbone": lr_backbone,
            "weight_decay": weight_decay, "T": T, "weights": {**DEFAULT_WEIGHTS, **(weights or {})},
            "pretrained": bool(pretrained), "rel_impl": rel_impl, "eval_aug": eval_aug,
+           "aug_impl": aug_impl_used(aug), "eval_aug_impl": aug_impl_used(eval_aug),
            "targets_sha256": _sha256(tpath), "probes_sha256": _sha256(ppath), "n_train": n_train,
            "n_val": len(xs["val"]), "dimA": int(dimA), "dimB": int(dimB), "n_classes": int(n_classes),
            "eval_protocol": {"aug_block": AUG_BLOCK, "eval_seed": EVAL_SEED, "severities": list(EVAL_SEVERITIES),

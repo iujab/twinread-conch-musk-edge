@@ -491,3 +491,16 @@ def test_changed_eval_protocol_invalidates_checkpoint(tmp_path, monkeypatch):
     monkeypatch.setattr(student, "AUG_BLOCK", 32)
     r = student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="none", out_dir=out, **kw)
     assert r["resumed_from_epoch"] == 0
+
+
+def test_resolved_aug_impl_invalidates_checkpoint(tmp_path, monkeypatch):
+    """A checkpoint trained with the torch fallback is not resumed once the real K2 kernel is importable."""
+    data, tgt = make_fixture(tmp_path)
+    out = tmp_path / "out"
+    kw = dict(targets_dir=tgt, data_dir=data, pretrained=False, device="cpu")
+    monkeypatch.setattr(student, "_K2_STATE", {"fns": None, "warned": True})  # K2 unavailable -> torch
+    student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="k2", out_dir=out, budget_s=0.0, **kw)
+    fake_k2 = (lambda x, p, seed, impl="cuda": x, lambda B, severity, seed, device="cuda": None)
+    monkeypatch.setattr(student, "_K2_STATE", {"fns": fake_k2})  # K2 now "merged"
+    r = student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="k2", out_dir=out, **kw)
+    assert r["resumed_from_epoch"] == 0 and r["aug_used"] == "k2"
