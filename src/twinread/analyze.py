@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from sklearn.model_selection import GroupKFold, StratifiedKFold
+from sklearn.model_selection import GroupKFold, StratifiedGroupKFold, StratifiedKFold
 
 from twinread import blindspots, fusion, probes, review, stats
 from twinread.embed import PAIRS
@@ -117,21 +117,29 @@ def _labels(data_dir: Path, dataset: str, split: str) -> np.ndarray:
     return np.load(data_dir / f"{dataset}_{'train_' if dataset == 'crc' else ''}y.npy")[_split_idx(data_dir, dataset, split)]
 
 
-def _train_folds(data_dir: Path, dataset: str, y_tr: np.ndarray, k: int = K_FOLDS) -> np.ndarray:
-    """Fold id per train row. crc: grouped by 100-row parquet group; cam: stratified by hospital x label."""
+def _train_folds(data_dir: Path, dataset: str, y_tr: np.ndarray, k: int = K_FOLDS):
+    """(fold id per train row, scheme string actually used).
+
+    crc: GroupKFold by 100-row parquet group (stratified by class if the group file is absent).
+    cam: StratifiedGroupKFold by slide, stratified by label (hospital x label if slide ids are absent).
+    """
     n = len(y_tr)
     idx = _split_idx(data_dir, dataset, "train")
+    folds = np.zeros(n, int)
     if dataset == "crc" and (data_dir / "crc_train_g.npy").exists():
         g = np.load(data_dir / "crc_train_g.npy")[idx]
-        folds = np.zeros(n, int)
-        for i, (_, te) in enumerate(GroupKFold(k).split(np.zeros(n), y_tr, g)):
-            folds[te] = i
-        return folds
-    strata = (np.load(data_dir / "cam_h.npy")[idx] * 2 + y_tr) if dataset == "cam" else y_tr
-    folds = np.zeros(n, int)
-    for i, (_, te) in enumerate(StratifiedKFold(k, shuffle=True, random_state=0).split(np.zeros(n), strata)):
+        splits, scheme = GroupKFold(k).split(np.zeros(n), y_tr, g), f"crc: GroupKFold(K={k}) by parquet group"
+    elif dataset == "cam" and (data_dir / "cam_slide.npy").exists():
+        g = np.load(data_dir / "cam_slide.npy")[idx]
+        splits = StratifiedGroupKFold(k, shuffle=True, random_state=0).split(np.zeros(n), y_tr, g)
+        scheme = f"cam: StratifiedGroupKFold(K={k}) by slide, stratified by label"
+    else:
+        strata = (np.load(data_dir / "cam_h.npy")[idx] * 2 + y_tr) if dataset == "cam" else y_tr
+        splits = StratifiedKFold(k, shuffle=True, random_state=0).split(np.zeros(n), strata)
+        scheme = f"{dataset}: StratifiedKFold(K={k}) by " + ("hospital x label" if dataset == "cam" else "label") + " (no group ids)"
+    for i, (_, te) in enumerate(splits):
         folds[te] = i
-    return folds
+    return folds, scheme
 
 
 def _test_groups(data_dir: Path, dataset: str):
@@ -179,8 +187,9 @@ def _bank(data_dir, dataset, reader, banks, prompts_dir):
 def _scores(y, probs, n_boot, groups=None):
     pred = probs.argmax(1)
     f = lambda a, b: stats.balanced_accuracy(a, b)
+    ci = stats.bootstrap_ci_info(f, y, pred, n=n_boot, groups=groups)
     return {"bal_acc": stats.balanced_accuracy(y, pred),
-            "bal_acc_ci": stats.bootstrap_ci(f, y, pred, n=n_boot, groups=groups),
+            "bal_acc_ci": [ci["lo"], ci["hi"]], "bal_acc_ci_info": ci,
             "macro_f1": stats.macro_f1(y, pred), "accuracy": float((pred == y).mean())}
 
 
@@ -204,7 +213,8 @@ def _test_metrics(ctx: dict) -> dict:
     dfn = lambda yv, f_, b_: stats.balanced_accuracy(yv, f_) - stats.balanced_accuracy(yv, b_)
     out["fusion"] = {"candidates": cand, "primary": ctx["primary"], "best_single_reader": best,
                      "delta_bal_acc_vs_best_single": dfn(yy, pf, pbest),
-                     "delta_ci": stats.bootstrap_ci(dfn, yy, pf, pbest, n=nb, groups=gr), "ci_mode": mode,
+                     "delta_ci_info": (dci := stats.bootstrap_ci_info(dfn, yy, pf, pbest, n=nb, groups=gr)),
+                     "delta_ci": [dci["lo"], dci["hi"]], "ci_mode": mode,
                      "mcnemar_note": "tile-level exact test; anti-conservative when tiles cluster by slide",
                      "mcnemar_fused_vs_A": stats.mcnemar_exact(corr["F"], corr["A"]),
                      "mcnemar_fused_vs_B": stats.mcnemar_exact(corr["F"], corr["B"]),
@@ -216,8 +226,9 @@ def _test_metrics(ctx: dict) -> dict:
         rc = review.risk_coverage(sig[k], corr["F"])
         caught = review.errors_caught(sig[k], corr["F"])
         fn10 = lambda s, c: review.errors_caught(s, c, (0.10,))[0.10]["errors_caught"]
+        cci = stats.bootstrap_ci_info(fn10, sig[k], corr["F"], n=nb, groups=gr)
         rv["scores"][k] = {"aurc": rc["aurc"], "caught": {str(b): v for b, v in caught.items()},
-                           "caught_10_ci": stats.bootstrap_ci(fn10, sig[k], corr["F"], n=nb, groups=gr)}
+                           "caught_10_ci": [cci["lo"], cci["hi"]], "caught_10_ci_info": cci}
     for k, r in (("base_A", "A"), ("base_B", "B")):
         rv["scores"][k + "_own_error"] = {"aurc": review.risk_coverage(sig[k], corr[r])["aurc"],
                                           "caught": {str(b): v for b, v in review.errors_caught(sig[k], corr[r]).items()}}
@@ -304,7 +315,10 @@ def run_pair_analysis(pair: str, dataset: str, results_dir: Path, partner: str |
     thr = {b: review.threshold_for_budget(s4(sv), b) for b in review.BUDGETS}
 
     # ---- everything that needs no test label, BEFORE freezing (a crash after the prereg must not strand the run) --
-    folds = np.asarray(train_folds) if train_folds is not None else _train_folds(data_dir, dataset, y["train"])
+    if train_folds is not None:
+        folds, fold_scheme = np.asarray(train_folds), "provided by caller"
+    else:
+        folds, fold_scheme = _train_folds(data_dir, dataset, y["train"])
     Cs = {"A": pr["A"].C, "B": pr["B"].C, "concat_lr": cl.info["C"]}
     oof = _oof_train(zp("A", "train"), zp("B", "train"), y["train"], folds, primary, Cs,
                      zp("A", "val"), zp("B", "val"), y["val"], epochs)
@@ -318,7 +332,7 @@ def run_pair_analysis(pair: str, dataset: str, results_dir: Path, partner: str |
         "readers": names, "classes": list(classes), "val_balanced_accuracy": val_scores, "primary_fusion": primary,
         "val_probe_balanced_accuracy": val_reader, "best_single_reader": best_single,
         "probe_C": {r: pr[r].C for r in "AB"}, "aligned_probe_C": {r: pal[r].C for r in "AB"},
-        "oof_folds": {"k": K_FOLDS, "scheme": "crc: GroupKFold by parquet group; cam: stratified hospital x label"},
+        "oof_folds": {"k": K_FOLDS, "scheme": fold_scheme},
         "ci_mode": CI_SLIDE if groups is not None else CI_TILE,
         "s4_val_thresholds": {str(b): t for b, t in thr.items()}})
 

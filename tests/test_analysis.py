@@ -248,20 +248,48 @@ def test_train_folds_crc_grouped_and_cam_stratified(tmp_path):
     np.save(tmp_path / "crc_train_g.npy", g)
     from twinread.data import split_val
     tr, _ = split_val(y, 0.1, 0, groups=g)
-    f = analyze._train_folds(tmp_path, "crc", y[tr])
+    f, scheme = analyze._train_folds(tmp_path, "crc", y[tr])
     gt = g[tr]
+    assert "GroupKFold" in scheme
     assert set(f) == set(range(5)) and all(len(set(gt[f == k]) & set(gt[f != k])) == 0 for k in range(5))
     rng = np.random.default_rng(0)
     h = rng.integers(0, 5, 1000)
     yc = rng.integers(0, 2, 1000)
+    slide = h * 10 + rng.integers(0, 10, 1000)  # 10 slides per hospital
     np.save(tmp_path / "cam_h.npy", h)
     np.save(tmp_path / "cam_y.npy", yc)
     idx = np.flatnonzero(np.isin(h, (0, 3, 4)))
-    f = analyze._train_folds(tmp_path, "cam", yc[idx])
+    # without slide ids: honest fallback, scheme string says so
+    f, scheme = analyze._train_folds(tmp_path, "cam", yc[idx])
+    assert "no group ids" in scheme and "GroupKFold" not in scheme.replace("StratifiedKFold", "")
     strata = h[idx] * 2 + yc[idx]
-    for s in np.unique(strata):
-        c = np.bincount(f[strata == s], minlength=5)
+    for s_ in np.unique(strata):
+        c = np.bincount(f[strata == s_], minlength=5)
         assert c.max() - c.min() <= 1
+    # with slide ids: no slide in both a fold's train and held-out part
+    np.save(tmp_path / "cam_slide.npy", slide)
+    f, scheme = analyze._train_folds(tmp_path, "cam", yc[idx])
+    st = slide[idx]
+    assert "StratifiedGroupKFold" in scheme and set(f) == set(range(5))
+    assert all(len(set(st[f == k]) & set(st[f != k])) == 0 for k in range(5))
+
+
+def test_bootstrap_degenerate_resamples_nan_aware():
+    # 10 slides, errors only in slide 0: ~35% of cluster resamples contain no error at all
+    g = np.repeat(np.arange(10), 50)
+    correct = np.ones(500, bool)
+    correct[:20] = False
+    score = np.where(correct, 0.1, 0.9)
+    fn = lambda s, c: review.errors_caught(s, c, (0.10,))[0.10]["errors_caught"]
+    r = stats.bootstrap_ci_info(fn, score, correct, n=400, groups=g)
+    assert np.isfinite(r["lo"]) and np.isfinite(r["hi"])
+    assert 0.2 < r["n_degenerate"] / 400 < 0.5 and r["unstable"] is True
+    # expected degenerate count: P(slide 0 never drawn) = 0.9**10
+    assert abs(r["n_degenerate"] / 400 - 0.9 ** 10) < 0.08
+    ok = stats.bootstrap_ci_info(fn, score, correct, n=200)  # tile-level: never degenerate here
+    assert ok["n_degenerate"] == 0 and ok["unstable"] is False
+    with pytest.raises(AssertionError):
+        stats.bootstrap_ci_info(fn, score, correct, n=10, groups=g[:-1])
 
 
 def _run(tmp_path, **kw):
@@ -273,6 +301,8 @@ def _run(tmp_path, **kw):
 def test_prereg_records_oof_and_val_chosen_best_single(tmp_path):
     res = _run(tmp_path)
     pre = json.loads((tmp_path / "res/CM/cam/preregistration.json").read_text())
+    assert pre["oof_folds"]["scheme"] == "provided by caller" and "ci_info" not in pre
+    assert res["review"]["scores"]["s4"]["caught_10_ci_info"]["n_degenerate"] >= 0
     assert "OOF (K=5)" in pre["train_targets"] and pre["ci_mode"] == analyze.CI_TILE
     v = pre["val_probe_balanced_accuracy"]
     assert pre["best_single_reader"] == ("A" if v["A"] >= v["B"] else "B")
