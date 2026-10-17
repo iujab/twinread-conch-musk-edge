@@ -1,0 +1,337 @@
+{
+ "host": {
+  "machine": "x86_64",
+  "system": "Linux",
+  "release": "7.0.0-38-generic",
+  "python": "3.12.14",
+  "onnxruntime": "1.31.0",
+  "cpu_count": 16
+ },
+ "simulated": true,
+ "rows": [
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 15.29,
+   "p90_ms": 15.66,
+   "rss_mb": 121.3,
+   "size_mb": 23.93
+  },
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 11.51,
+   "p90_ms": 11.9,
+   "rss_mb": 128.3,
+   "size_mb": 23.93
+  },
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 6.18,
+   "p90_ms": 7.14,
+   "rss_mb": 129.8,
+   "size_mb": 23.93
+  },
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 16.29,
+   "p90_ms": 16.93,
+   "rss_mb": 98.6,
+   "size_mb": 6.85
+  },
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 8.39,
+   "p90_ms": 9.94,
+   "rss_mb": 98.6,
+   "size_mb": 6.85
+  },
+  {
+   "backbone": "efficientnet_b0",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 6.96,
+   "p90_ms": 8.48,
+   "rss_mb": 98.6,
+   "size_mb": 6.85
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 1.35,
+   "p90_ms": 1.43,
+   "rss_mb": 98.7,
+   "size_mb": 10.33
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 1.08,
+   "p90_ms": 1.13,
+   "rss_mb": 98.7,
+   "size_mb": 10.33
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 0.78,
+   "p90_ms": 0.81,
+   "rss_mb": 98.7,
+   "size_mb": 10.33
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 2.34,
+   "p90_ms": 2.92,
+   "rss_mb": 98.8,
+   "size_mb": 2.81
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 1.72,
+   "p90_ms": 2.16,
+   "rss_mb": 98.8,
+   "size_mb": 2.81
+  },
+  {
+   "backbone": "lcnet_050",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 1.5,
+   "p90_ms": 1.82,
+   "rss_mb": 98.8,
+   "size_mb": 2.81
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 3.57,
+   "p90_ms": 3.89,
+   "rss_mb": 114.2,
+   "size_mb": 17.87
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 2.26,
+   "p90_ms": 2.34,
+   "rss_mb": 118.9,
+   "size_mb": 17.87
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 1.88,
+   "p90_ms": 2.49,
+   "rss_mb": 118.9,
+   "size_mb": 17.87
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 2.54,
+   "p90_ms": 2.95,
+   "rss_mb": 118.9,
+   "size_mb": 4.8
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 1.76,
+   "p90_ms": 1.86,
+   "rss_mb": 118.9,
+   "size_mb": 4.8
+  },
+  {
+   "backbone": "mobilenetv4_conv_small",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 1.38,
+   "p90_ms": 1.68,
+   "rss_mb": 118.9,
+   "size_mb": 4.8
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 24.56,
+   "p90_ms": 24.85,
+   "rss_mb": 118.9,
+   "size_mb": 23.47
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 20.16,
+   "p90_ms": 20.44,
+   "rss_mb": 118.9,
+   "size_mb": 23.47
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 10.48,
+   "p90_ms": 10.77,
+   "rss_mb": 118.9,
+   "size_mb": 23.47
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 24.45,
+   "p90_ms": 24.77,
+   "rss_mb": 118.9,
+   "size_mb": 7.23
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 13.91,
+   "p90_ms": 15.26,
+   "rss_mb": 118.9,
+   "size_mb": 7.23
+  },
+  {
+   "backbone": "mobileone_s0",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 11.24,
+   "p90_ms": 18.82,
+   "rss_mb": 118.9,
+   "size_mb": 7.23
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 4.96,
+   "p90_ms": 5.12,
+   "rss_mb": 118.9,
+   "size_mb": 11.53
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 2.55,
+   "p90_ms": 2.74,
+   "rss_mb": 118.9,
+   "size_mb": 11.53
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 1.97,
+   "p90_ms": 5.0,
+   "rss_mb": 118.9,
+   "size_mb": 11.53
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 6.75,
+   "p90_ms": 6.82,
+   "rss_mb": 118.9,
+   "size_mb": 3.16
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 4.28,
+   "p90_ms": 4.34,
+   "rss_mb": 118.9,
+   "size_mb": 3.16
+  },
+  {
+   "backbone": "regnetx_002",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 3.22,
+   "p90_ms": 3.42,
+   "rss_mb": 118.9,
+   "size_mb": 3.16
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "fp32",
+   "threads": 1,
+   "p50_ms": 30.94,
+   "p90_ms": 36.09,
+   "rss_mb": 209.0,
+   "size_mb": 47.87
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "fp32",
+   "threads": 2,
+   "p50_ms": 18.27,
+   "p90_ms": 18.89,
+   "rss_mb": 209.0,
+   "size_mb": 47.87
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "fp32",
+   "threads": 4,
+   "p50_ms": 11.2,
+   "p90_ms": 14.93,
+   "rss_mb": 209.0,
+   "size_mb": 47.87
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "int8",
+   "threads": 1,
+   "p50_ms": 16.27,
+   "p90_ms": 17.75,
+   "rss_mb": 112.5,
+   "size_mb": 12.12
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "int8",
+   "threads": 2,
+   "p50_ms": 16.39,
+   "p90_ms": 16.65,
+   "rss_mb": 112.5,
+   "size_mb": 12.12
+  },
+  {
+   "backbone": "resnet18",
+   "precision": "int8",
+   "threads": 4,
+   "p50_ms": 6.85,
+   "p90_ms": 10.55,
+   "rss_mb": 112.5,
+   "size_mb": 12.12
+  }
+ ]
+}
