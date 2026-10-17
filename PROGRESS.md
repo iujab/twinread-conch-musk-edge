@@ -28,7 +28,7 @@
   is crash-resumable only if the plan is byte-identical and no results exist; text-bank cache is keyed by reader/spec/prompt hash.
 - 2026-10-17: Task 10 student (`twinread.student`, `scripts/train_student.py`). **Plan amendment R26:** the device student's
   `DEFAULT_WEIGHTS["rel"]` is 0.0 (the plan had 0.5). The choice rests on VAL evidence, comparing `results/student/open_crc`
-  (rel 0) with `results/student/open_crc_rel05` (rel 0.5) on val clean tiles:
+  (rel 0; renamed `open_crc_torchaug` in Task 8b) with `results/student/open_crc_rel05` (rel 0.5) on val clean tiles:
 
   | metric | rel 0 | rel 0.5 |
   |---|---|---|
@@ -93,3 +93,54 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
   blocks, `camera_ops.explain_differences`). Added an optional `profile` field (colour-profile matrix) to
   CameraAugParams. sm_80/sm_90/sm_120 compile-checked only. Numbers:
   `results/kernels/{k2_bench,k2_parity,k2_figure,k2_sanitizer,builds}.json`; figure `figures/k2_severity_grid.png`.
+
+## Task 8b: integration on lane-a (numbers copied from the JSON files named in each bullet)
+- **Pair-level K1 (R12/R23).** `embed_dataset(impl="k1")` embeds both readers of a pair from one `dual_preprocess` launch
+  per encode batch (both readers resident; lone reader = spec passed twice; pair OOM at load -> one at a time, warned).
+  k1 sidecars record `impl`, `k1_backend` and `k1_group`; the cache key already contained impl (tested: a reference cache
+  is never reused for k1). End to end, CONCH + MUSK aligned on 512 CRC test tiles, batch 16, through the library
+  (`results/kernels/k1_embed_e2e.json`): reference 20.11 tiles/s, k1 22.38 tiles/s (x1.113); a 4-worker DataLoader that
+  overlaps the PIL transforms with the GPU reaches 22.18 tiles/s (k1 x1.009 over it). **Where the time goes:** the model
+  forward is 89.4% of the reference run (both models alone 22.48 tiles/s; CONCH fp32 48.76, MUSK fp16 41.58); PIL
+  preprocessing is 9.5% of it (210.59 tiles/s for both readers), K1 preprocessing 0.05% of the k1 run (42,631 tiles/s incl.
+  H2D, x202). So K1 removes the preprocessing cost, but the end-to-end ceiling with free preprocessing is x1.118: running
+  both readers is cheap in preprocessing, not in forward passes. k1 vs reference cosine on the 512 tiles: min 0.999997
+  (CONCH), 0.99999994 (MUSK). Shared GPU, estimate.
+- **NCSA kit.** J2 embeds -> new `ncsa/analyze_cpu.sbatch` (bfqi-delta-cpu, cpu, 16 CPUs, 01:00:00; or locally) writes
+  `results/CM/crc/{student_targets,probes_aligned}.npz` -> J3 trains with `--targets-dir` and its precheck asserts both
+  files. `embed_loop.sh` caps `--budget` at 300 s per call for the CM pair (MUSK ms_aug probe chunks). Nothing in `ncsa/`
+  passes loss weights (R26 default rel 0). Untested on Delta.
+- **CM student, LOCAL-SUBSET DEV NUMBERS** (`results/student/cm_crc/metrics.json`; mobilenetv4_conv_small, 15 epochs, real K2
+  for training and eval augmentation, `aug_used` = `eval_aug_used` = k2; targets `results/cm_local/CM/crc`; best epoch 13 on
+  mean val bal acc over severities). Balanced accuracy, clean / K2 severity 0.5 / 1.0: val 0.9823 / 0.9830 / 0.9708; test
+  (CRC-VAL-HE-7K) 0.9415 / 0.9311 / 0.9135. Cosine to the teacher embeddings, hA / hB: val clean 0.919 / 0.9644 (centred
+  0.8493 / 0.834), test clean 0.8831 / 0.9505 (centred 0.7767 / 0.7552). Teachers on the same test tiles
+  (`results/cm_local/CM/crc/readers.json`, `fusion.json`; frozen features + linear probes): CONCH 0.9413, MUSK 0.9480, fused
+  (average) 0.9555. The student is fine-tuned end to end with labels (CE + KD), so it is not a like-for-like comparison and
+  matching or beating frozen-feature probes would be expected, not evidence of being "better than the foundation models".
+  Here it does not beat them: on clean test tiles it ties CONCH (0.9415 vs 0.9413) and is below MUSK (0.9480) and the
+  fused reader (0.9555); at severity 1.0 (simulated camera filming a screen) it reaches 0.9135.
+- **CM device flag** (torch AMP, val-chosen thresholds js 0.0008197, review 0.4126; `metrics.json`): flags 0.1001 of val and
+  0.1432 / 0.157 / 0.2288 of test at clean / 0.5 / 1.0 (teacher flag 0.2506 of test); test clean agreement with the teacher
+  flag 0.8118, kappa 0.4156, teacher recall 0.4102; it catches 0.7953 of the student's own test errors, accuracy on cleared
+  tiles 0.9901.
+- **CM int8 bundle** (`results/student/cm_crc/int8_drift.json`; ORT static QDQ, percentile99.99 picked on val drift; MinMax
+  and Entropy collapsed, val label agreement 0.4406). Val: cos hA / hB mean 0.9933 / 0.9969 (min 0.8104 / 0.8900), label
+  agreement 0.9887. Test: cos mean 0.9875 / 0.9953 (min 0.6133 / 0.8796), label agreement 0.9607. Balanced accuracy
+  fp32 ONNX -> int8: val 0.9823 -> 0.9774, **test 0.9415 -> 0.9219**. Thresholds recalibrated on int8 val outputs:
+  js 0.0008197 -> 0.0417, review 0.4126 -> 0.4298; int8 flag rate with the torch thresholds val 0.1317 / test 0.1765, with
+  the recalibrated ones val 0.1001 / test 0.121. Size: model.onnx 6,012,392 bytes, bundle 6,139,199 bytes. `bundles/cm/` is
+  `distributable: false` (CONCH/MUSK CC-BY-NC-ND) and git-ignored; checkpoints are not committed.
+- **OPEN student retrained with the real K2** (`results/student/open_crc/`; the torch-fallback run is kept as
+  `open_crc_torchaug`). Same recipe, best epoch 15. Bal acc clean / 0.5 / 1.0: val 0.985 / 0.9846 / 0.9677, test 0.9359 /
+  0.9300 / 0.9014. The torch-aug run had test clean 0.9487 (val 0.9884), so the K2 run is lower on clean test (one seed
+  each, not tested for significance; the torch-aug run's severity rows used the torch camera simulation, so they are not
+  comparable). int8 (`int8_drift.json`,
+  percentile99.99): test bal acc 0.9362 -> 0.9085 (torch-aug run: 0.9486 -> 0.9257), recalibrated js 0.0142, review 0.4089
+  (committed `bundles/open/config.json` + `SHA256SUMS`), bundle 5,917,722 bytes.
+- **K2 vs torch augmentation** (`results/student/{open_crc,cm_crc}/throughput.json`, batch 128, severity 0.5, CUDA events,
+  shared GPU): augmentation path K2 25,046 / 25,038 vs torch 2,350 / 2,355 images/s (OPEN / CM); full training step K2
+  3,902 / 3,880 vs torch 1,555 / 1,559 vs no augmentation 4,488 / 4,507 images/s.
+- **Concern for the device:** int8 costs test bal acc for every student so far (fp32 ONNX -> int8: CM 0.9415 -> 0.9219,
+  OPEN 0.9362 -> 0.9085, OPEN torch-aug 0.9486 -> 0.9257) much more than val (CM 0.9823 -> 0.9774, OPEN 0.985 -> 0.9769);
+  calibration uses 512 clean train tiles and test is a different patient set. Not addressed here.
