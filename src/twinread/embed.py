@@ -96,22 +96,25 @@ def _encode_group(readers: list, kind: str, xb: np.ndarray, impl: str, bs: int, 
     dual = _k1_dual() if impl == "k1" else None
     if dual is not None and len(readers) > 2:
         raise ValueError("impl='k1' preprocesses at most two readers per launch")
+    specs = [r.spec for r in readers] * (2 if len(readers) == 1 else 1)
     outs = [[] for _ in readers]
     i = 0
     while i < len(xb):
+        xt = ins = None
+        oom = False
         try:
             if dual is None:
                 res = [fn(_prep_reference(r, xb[i:i + bs])) for r, fn in zip(readers, fns)]
             else:
-                specs = [r.spec for r in readers] * (2 if len(readers) == 1 else 1)
                 xt = torch.from_numpy(np.ascontiguousarray(xb[i:i + bs])).to(device)
-                ins = dual(xt, specs[0], specs[1], impl="cuda")
-                del xt
+                ins = dual(xt, specs[0], specs[1], impl="cuda")  # one launch: both readers' inputs
                 res = [fn(t.float()) for fn, t in zip(fns, ins)]
-                del ins
         except torch.cuda.OutOfMemoryError:
             if bs == 1:
                 raise
+            oom = True
+        xt = ins = None  # drop the batch tensors before emptying the cache (after the except block has released them)
+        if oom:
             torch.cuda.empty_cache()
             bs = max(1, bs // 2)
             warnings.warn(f"CUDA OOM; halving batch to {bs}")
@@ -228,18 +231,22 @@ def reader_groups(names: list, impl: str) -> list:
 
 
 def _load_group(group: list, device: str) -> list | None:
-    """Load every reader of ``group`` (resident together); None (all closed) on CUDA OOM while loading."""
+    """Load every reader of ``group`` (resident together). On any load error the readers already loaded are closed;
+    CUDA OOM then returns None (caller falls back to one reader at a time), anything else is re-raised."""
     loaded = []
     try:
         for n in group:
             loaded.append(load_reader(n, device))
         return loaded
     except torch.cuda.OutOfMemoryError:
-        for r in loaded:
-            r.close()
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-        return None
+        pass
+    finally:
+        if len(loaded) < len(group):  # failed part-way: release what was loaded
+            for r in loaded:
+                r.close()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    return None
 
 
 def embed_dataset(pair: str | None, dataset: str, kinds=("aligned", "probe"), impl: str = "reference",
@@ -298,7 +305,8 @@ def main(argv=None) -> int:
     ap.add_argument("--pair", choices=list(PAIRS))
     ap.add_argument("--readers", nargs="+")
     ap.add_argument("--dataset", choices=["crc", "cam"], required=True)
-    ap.add_argument("--impl", choices=["reference", "k1"], default="reference")
+    ap.add_argument("--impl", choices=["reference", "k1"], default="reference",
+                    help="k1: readers embedded in pairs, one dual_preprocess launch per batch feeds both")
     ap.add_argument("--kinds", nargs="+", default=["aligned", "probe"])
     ap.add_argument("--splits", nargs="+", default=["train", "val", "test"])
     ap.add_argument("--budget", type=float, default=DEFAULT_BUDGET_S)

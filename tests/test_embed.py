@@ -346,3 +346,44 @@ def test_k1_pair_matches_reference_conch_musk(tmp_path):
             cos = (a * b).sum(1) / np.linalg.norm(a, axis=1) / np.linalg.norm(b, axis=1)
             assert a.shape == b.shape and a.shape[0] == 16
             assert cos.min() >= 0.999, f"{r} {k}: min cosine {cos.min():.6f}"
+
+
+def test_k1_pair_oom_in_encode_halves_batch(tmp_path):
+    rA, cA = make_official(8, 8, "ra")
+    rB, cB = make_official(7, 6, "rb")
+    state = {"fail": 1}
+    enc_b = rB.encode_aligned
+
+    def flaky(b):
+        if state["fail"]:
+            state["fail"] -= 1
+            raise torch.cuda.OutOfMemoryError("fake OOM")
+        return enc_b(b)
+    rB = dataclasses.replace(rB, encode_aligned=flaky)
+    import warnings
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        eA, eB = embed.embed_arrays([rA, rB], tiles(8, hw=12), "aligned", [tmp_path / "a.npy", tmp_path / "b.npy"],
+                                    batch=8, impl="k1", device="cpu")
+    assert any("halving batch to 4" in str(x.message) for x in w)
+    assert eA.shape == eB.shape == (8, 6)
+    ref = embed.embed_arrays([make_official(8, 8, "ra")[0], make_official(7, 6, "rb")[0]], tiles(8, hw=12), "aligned",
+                             [tmp_path / "ra.npy", tmp_path / "rb.npy"], batch=8)
+    assert np.allclose(eA, ref[0], atol=2e-2) and np.allclose(eB, ref[1], atol=2e-2)
+
+
+def test_embed_dataset_load_error_closes_loaded_readers(tmp_path, monkeypatch):
+    _fake_dataset(monkeypatch)
+    log = []
+
+    def load(name, device="cuda"):
+        if name == "musk":
+            raise FileNotFoundError("weights missing")
+        log.append(("load", name))
+        r = make_official(8, 8, name)[0]
+        return dataclasses.replace(r, _close=lambda n=name: log.append(("close", n)))
+    monkeypatch.setattr(embed, "load_reader", load)
+    with pytest.raises(FileNotFoundError):
+        embed.embed_dataset("CM", "crc", kinds=("aligned",), impl="k1", splits=("val",), data_dir=tmp_path,
+                            device="cpu")
+    assert log == [("load", "conch"), ("close", "conch")]
