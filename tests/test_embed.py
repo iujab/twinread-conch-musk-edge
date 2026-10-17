@@ -316,11 +316,12 @@ def test_embed_dataset_k1_pair_oom_on_load_falls_back_to_solo(tmp_path, monkeypa
 
 # ------------------------------------------------------------------------------------------- GPU: real CONCH + MUSK
 @pytest.mark.gpu
-def test_k1_pair_matches_reference_conch_musk(tmp_path):
+def test_k1_pair_matches_reference_conch_musk(tmp_path, require_weights):
     """CONCH+MUSK on 16 real CRC tiles through embed_dataset: k1 (one dual launch per batch) vs reference, per reader
     and kind, cosine >= 0.999 (K1 is bit-exact to official(img).half(), so ~1.0 is expected)."""
     from pathlib import Path
     from twinread import kernels
+    require_weights("conch", "musk")
     if kernels.load_ext() is None:
         pytest.skip("twinread CUDA extension unavailable")
     x = np.load(Path(__file__).parent / "fixtures" / "crc16.npy")

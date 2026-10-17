@@ -31,7 +31,8 @@ def _tiles_pil():
 
 @pytest.mark.gpu
 @pytest.mark.parametrize("name", READER_NAMES)
-def test_spec_table_matches_loaded_transform(name):
+def test_spec_table_matches_loaded_transform(name, require_weights):
+    require_weights(name)
     spec = spec_of(name)
     r = load_reader(name)
     try:
@@ -54,7 +55,8 @@ def test_spec_table_matches_loaded_transform(name):
 
 @pytest.mark.gpu
 @pytest.mark.parametrize("name", READER_NAMES)
-def test_reader_dims(name):
+def test_reader_dims(name, require_weights):
+    require_weights(name)
     r = load_reader(name)
     try:
         batch = torch.stack([r.preprocess_pil(im) for im in _tiles_pil()])
@@ -72,7 +74,10 @@ def test_reader_dims(name):
 
 @pytest.mark.gpu
 @pytest.mark.parametrize("name", ["conch", "musk"])
-def test_matches_organizer_adapter(name):
+def test_matches_organizer_adapter(name, require_weights):
+    require_weights(name)
+    if not (BENCH / "ashby-hackathon-2026" / "models.py").exists():
+        pytest.skip("organizer adapter ashby-hackathon-2026/models.py not present next to the project")
     import transformers
     from twinread.compat import XLMRSpTokenizer, patch_conch
     patch_conch()
@@ -102,7 +107,8 @@ def test_matches_organizer_adapter(name):
 
 
 @pytest.mark.gpu
-def test_close_frees_gpu_memory():
+def test_close_frees_gpu_memory(require_weights):
+    require_weights("quiltnet_b16")
     before = torch.cuda.memory_allocated()
     r = load_reader("quiltnet_b16")
     assert torch.cuda.memory_allocated() > before
@@ -112,7 +118,8 @@ def test_close_frees_gpu_memory():
 
 @pytest.mark.gpu
 @pytest.mark.parametrize("name", READER_NAMES)
-def test_spec_numerically_matches_official_transform(name):
+def test_spec_numerically_matches_official_transform(name, require_weights):
+    require_weights(name)
     """Pin spec_of to each model's loaded transform on a non-square image (300x500)."""
     from PIL import Image
     from twinread.readers import _compose

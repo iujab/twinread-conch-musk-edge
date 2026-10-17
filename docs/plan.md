@@ -59,7 +59,7 @@
 - **Tests:**
   - `$B/.venv/bin/python -m pytest $P/tests -q` passes in < 2 min with `CUDA_VISIBLE_DEVICES=""`, offline.
   - GPU tests carry `@pytest.mark.gpu` and skip when CUDA or the extension is unavailable.
-  - The GPU suite runs under the lock: `flock $B/.gpu.lock $B/.venv/bin/python -m pytest $P/tests -q -m gpu`.
+  - The GPU suite runs under the lock and only when asked for: `flock $B/.gpu.lock env TWINREAD_GPU_TESTS=1 PATH=/usr/local/cuda/bin:$PATH $B/.venv/bin/python -m pytest $P/tests -q -m gpu` (without `TWINREAD_GPU_TESTS=1` gpu tests skip; reader tests skip when the weights are not cached).
 - **Targets from the spec:**
   - K1 embedding cosine vs the reference transform ≥ **0.999** per reader;
   - student latency ≤ **250 ms** per 224-px tile at 4 threads on the UNO Q;

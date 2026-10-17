@@ -156,9 +156,10 @@ def test_k1_batch_tails(ext, n):
 
 
 @pytest.mark.gpu
-def test_k1_embedding_cosine(ext):
+def test_k1_embedding_cosine(ext, require_weights):
     """CONCH (fp32) and MUSK (fp16) aligned embeddings from K1 vs the reader's official transform: min cos >= 0.999
     on 32 real-tissue inputs (16 CRC tiles + 16 non-square 400x448 mosaics)."""
+    require_weights("conch", "musk")
     from twinread.kernels import dual_preprocess
     from twinread.readers import load_reader
     tiles = _crc16()
