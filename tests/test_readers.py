@@ -100,3 +100,12 @@ def test_matches_organizer_adapter(name):
     cos = lambda x, y: (x * y).sum(1) / np.linalg.norm(x, axis=1) / np.linalg.norm(y, axis=1)
     assert cos(mine, ref).min() >= 0.9999
     assert cos(mine_t, ref_t).min() >= 0.9999
+
+
+@pytest.mark.gpu
+def test_close_frees_gpu_memory():
+    before = torch.cuda.memory_allocated()
+    r = load_reader("quiltnet_b16")
+    assert torch.cuda.memory_allocated() > before
+    r.close()
+    assert torch.cuda.memory_allocated() <= before + 1e6

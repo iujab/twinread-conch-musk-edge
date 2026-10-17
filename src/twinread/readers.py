@@ -58,6 +58,14 @@ class Reader:
     def close(self) -> None:
         """Drop model references and free GPU memory."""
         self._close()
+        # the encode_* closures capture the model; blank those cells so the weights are really released
+        for fn in (self.encode_aligned, self.encode_probe, self.encode_texts):
+            for cell in getattr(getattr(fn, "__wrapped__", fn), "__closure__", None) or ():
+                try:
+                    if isinstance(cell.cell_contents, torch.nn.Module):
+                        cell.cell_contents = None
+                except ValueError:
+                    pass
         import gc
         gc.collect()
         if torch.cuda.is_available():
