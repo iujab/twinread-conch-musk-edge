@@ -1,0 +1,144 @@
+{
+  "gpu": {
+    "env": {
+      "date": "2026-10-17T04:56:33",
+      "torch": "2.14.1+cu130",
+      "torch_cuda_runtime": "13.0",
+      "torchvision": "0.29.1+cu130",
+      "pillow": "12.3.0",
+      "numpy": "2.5.4",
+      "python": "3.12.14",
+      "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+      "cpu_count": 16,
+      "torch_threads": 4,
+      "loadavg_1m": 1.5361328125,
+      "git": "3314cb8",
+      "gpu": "NVIDIA GeForce RTX 5060",
+      "capability": "12.0",
+      "driver": "595.99.02",
+      "nvcc": "Build cuda_13.1.r13.1/compiler.37061995_0",
+      "triton": "3.8.0"
+    },
+    "inputs": "1aurent/NCT-CRC-HE CRC_VAL_HE_7K, 256 tiles class-balanced (seed 1)",
+    "batch": 256,
+    "hw": [
+      224,
+      224
+    ],
+    "severity_1.0": {
+      "blur_radius_max": 5,
+      "c_torch_gpu": {
+        "ms": 233.36971282958984,
+        "images_per_s": 1096.9718259324216,
+        "peak_extra_MB": 470.35986328125
+      },
+      "c2_torch_gpu_randn_noise": {
+        "ms": 105.74339294433594,
+        "images_per_s": 2420.9550390988516,
+        "peak_extra_MB": 413.5048828125
+      },
+      "d_cuda_k2": {
+        "ms": 5.527343988418579,
+        "images_per_s": 46315.19234851237,
+        "peak_extra_MB": 184.7841796875,
+        "kernels_ms": {
+          "void at::native::CatArrayBatchedCopy<at::native::OpaqueType<": 0.0038,
+          "void at::native::elementwise_kernel<128, 2, at::native::gpu_": 0.0015,
+          "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<": 0.0017,
+          "Memcpy DtoH ": 0.0006,
+          "k2_fused": 3.2721,
+          "k2_jpeg": 2.1738
+        }
+      },
+      "speedup_cuda_vs_torch": 42.22094975788886,
+      "speedup_cuda_vs_torch_randn": 19.13095931172361
+    },
+    "severity_0.5": {
+      "blur_radius_max": 3,
+      "c_torch_gpu": {
+        "ms": 231.75892639160156,
+        "images_per_s": 1104.5960731084785,
+        "peak_extra_MB": 438.35986328125
+      },
+      "c2_torch_gpu_randn_noise": {
+        "ms": 104.2730712890625,
+        "images_per_s": 2455.0921617176205,
+        "peak_extra_MB": 413.5048828125
+      },
+      "d_cuda_k2": {
+        "ms": 4.980943918228149,
+        "images_per_s": 51395.880821534294,
+        "peak_extra_MB": 184.7841796875
+      },
+      "speedup_cuda_vs_torch": 46.52911781308395,
+      "speedup_cuda_vs_torch_randn": 20.934399784640643
+    },
+    "severity_0.0": {
+      "blur_radius_max": 0,
+      "c_torch_gpu": {
+        "ms": 6.094799995422363,
+        "images_per_s": 42003.01899853557,
+        "peak_extra_MB": 229.72607421875
+      },
+      "c2_torch_gpu_randn_noise": {
+        "ms": 6.030992031097412,
+        "images_per_s": 42447.41141755707,
+        "peak_extra_MB": 229.69189453125
+      },
+      "d_cuda_k2": {
+        "ms": 1.66593599319458,
+        "images_per_s": 153667.36840176993,
+        "peak_extra_MB": 184.7841796875
+      },
+      "speedup_cuda_vs_torch": 3.658483891529976,
+      "speedup_cuda_vs_torch_randn": 3.6201823213702524
+    },
+    "sample_camera_params_ms_median": 0.26568998873699456,
+    "bytes_note": "k2_fused reads uint8 and writes float32; k2_jpeg reads float32 and writes uint8: 385 MB of DRAM traffic per batch at minimum"
+  },
+  "cpu": {
+    "env": {
+      "date": "2026-10-17T04:48:42",
+      "torch": "2.14.1+cu130",
+      "torch_cuda_runtime": "13.0",
+      "torchvision": "0.29.1+cu130",
+      "pillow": "12.3.0",
+      "numpy": "2.5.4",
+      "python": "3.12.14",
+      "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+      "cpu_count": 16,
+      "torch_threads": 4,
+      "loadavg_1m": 4.349609375,
+      "git": "3314cb8"
+    },
+    "inputs": "1aurent/NCT-CRC-HE CRC_VAL_HE_7K, 256 tiles class-balanced (seed 1)",
+    "severity": 1.0,
+    "batch": 256,
+    "a_numpy_single_process": {
+      "images_per_s": 44.06348954464955,
+      "all_runs": [
+        44.06348954464955,
+        43.82789918571371,
+        43.99414946879525
+      ],
+      "kept": "best of runs",
+      "blas_threads": 1
+    },
+    "b_numpy_pool_4proc": {
+      "images_per_s": 166.23897188747665,
+      "all_runs": [
+        166.23897188747665,
+        162.49204595868017,
+        165.2159869418115
+      ],
+      "kept": "best of runs",
+      "blas_threads_per_worker": 1,
+      "chunksize": 8
+    },
+    "loadavg_1m_per_run": [
+      3.98779296875,
+      4.0830078125,
+      3.916015625
+    ]
+  }
+}

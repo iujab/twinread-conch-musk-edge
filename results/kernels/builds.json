@@ -1,0 +1,87 @@
+{
+  "toolchain": {
+    "nvcc": "Build cuda_13.1.r13.1/compiler.37061995_0",
+    "date": "2026-10-17T04:59:46",
+    "flags": "extra_cuda_cflags=['-O3'] (no --use_fast_math), extra_cflags=['-O3']",
+    "git": "3314cb8",
+    "sources": "bindings.cpp, k1_dual_preprocess.cu, k2_camera_aug.cu",
+    "executed": false
+  },
+  "builds": {
+    "8.0": {
+      "arch": "8.0",
+      "command": "TORCH_CUDA_ARCH_LIST=\"8.0\" python -c \"from twinread.kernels import load_ext; m = load_ext('8.0'); assert m is not None and hasattr(m, 'camera_aug')\"",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 40.2,
+      "clean_build": true,
+      "executed": false,
+      "git": "3314cb8",
+      "note": "compile-only: built and SASS/symbols listed; no kernel from this binary was launched",
+      "so": "build/ext_80/twinread_ext_80.so",
+      "stderr_tail": [],
+      "embedded_sass": [
+        "sm_80"
+      ],
+      "kernels": [
+        "k1_hpass_dual",
+        "k1_vpass_vec4",
+        "k1_hpass",
+        "k1_vpass",
+        "k2_fused",
+        "k2_jpeg",
+        "k2_philox"
+      ]
+    },
+    "9.0": {
+      "arch": "9.0",
+      "command": "TORCH_CUDA_ARCH_LIST=\"9.0\" python -c \"from twinread.kernels import load_ext; m = load_ext('9.0'); assert m is not None and hasattr(m, 'camera_aug')\"",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 39.9,
+      "clean_build": true,
+      "executed": false,
+      "git": "3314cb8",
+      "note": "compile-only: built and SASS/symbols listed; no kernel from this binary was launched",
+      "so": "build/ext_90/twinread_ext_90.so",
+      "stderr_tail": [],
+      "embedded_sass": [
+        "sm_90"
+      ],
+      "kernels": [
+        "k1_hpass_dual",
+        "k1_vpass_vec4",
+        "k1_hpass",
+        "k1_vpass",
+        "k2_fused",
+        "k2_jpeg",
+        "k2_philox"
+      ]
+    },
+    "12.0": {
+      "arch": "12.0",
+      "command": "TORCH_CUDA_ARCH_LIST=\"12.0\" python -c \"from twinread.kernels import load_ext; m = load_ext('12.0'); assert m is not None and hasattr(m, 'camera_aug')\"",
+      "ok": true,
+      "returncode": 0,
+      "seconds": 50.8,
+      "clean_build": true,
+      "executed": false,
+      "git": "3314cb8",
+      "note": "compile-only: built and SASS/symbols listed; no kernel from this binary was launched",
+      "so": "build/ext_120/twinread_ext_120.so",
+      "stderr_tail": [],
+      "embedded_sass": [
+        "sm_120"
+      ],
+      "kernels": [
+        "k1_hpass_dual",
+        "k1_vpass_vec4",
+        "k1_hpass",
+        "k1_vpass",
+        "k2_fused",
+        "k2_jpeg",
+        "k2_philox"
+      ]
+    }
+  }
+}

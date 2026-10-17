@@ -1,0 +1,382 @@
+{
+  "env": {
+    "date": "2026-10-17T01:52:08",
+    "torch": "2.14.1+cu130",
+    "torch_cuda_runtime": "13.0",
+    "torchvision": "0.29.1+cu130",
+    "pillow": "12.3.0",
+    "numpy": "2.5.4",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "cpu_count": 16,
+    "torch_threads": 4,
+    "loadavg_1m": 8.1591796875,
+    "git": "cb44004",
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "capability": "12.0",
+    "driver": "595.99.02",
+    "nvcc": "Build cuda_13.1.r13.1/compiler.37061995_0",
+    "triton": "3.8.0"
+  },
+  "result": {
+    "unit": "levels = |out - official| * 255 * std (one uint8 level / std = 1.0)",
+    "sets": {
+      "crc_tiles256": {
+        "n": 256,
+        "hw": [
+          224,
+          224
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011006616055965424
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00874537043273449
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011006616055965424
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00874537043273449
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011006616055965424
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00874537043273449
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.09189989417791367,
+            "max_levels": 38.477413177490234,
+            "mean_levels": 0.3017404079437256
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.09118939936161041,
+            "max_levels": 38.5986328125,
+            "mean_levels": 0.29435813426971436
+          }
+        }
+      },
+      "crc_mosaic_frames480x640_first32": {
+        "n": 32,
+        "hw": [
+          480,
+          640
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011335990391671658
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008661617524921894
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011335990391671658
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008661617524921894
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.011335990391671658
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008661617524921894
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.11176466196775436,
+            "max_levels": 26.044639587402344,
+            "mean_levels": 0.2917506992816925
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.09623322635889053,
+            "max_levels": 20.419921875,
+            "mean_levels": 0.2884288728237152
+          }
+        }
+      },
+      "random_480x640": {
+        "n": 4,
+        "hw": [
+          480,
+          640
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008396015502512455
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.0070014093071222305
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008396015502512455
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.0070014093071222305
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008396015502512455
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.0070014093071222305
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.032001521438360214,
+            "max_levels": 37.949893951416016,
+            "mean_levels": 0.393489807844162
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.027213767170906067,
+            "max_levels": 29.1357421875,
+            "mean_levels": 0.3365762531757355
+          }
+        }
+      },
+      "random_640x480": {
+        "n": 4,
+        "hw": [
+          640,
+          480
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008399110287427902
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.007004145998507738
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008399110287427902
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.007004145998507738
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.008399110287427902
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.007004145998507738
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.03200318291783333,
+            "max_levels": 42.25149917602539,
+            "mean_levels": 0.3943990468978882
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.026772959157824516,
+            "max_levels": 29.1357421875,
+            "mean_levels": 0.33768635988235474
+          }
+        }
+      },
+      "random_720x1280": {
+        "n": 4,
+        "hw": [
+          720,
+          1280
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.005732423160225153
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00459577701985836
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.005732423160225153
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00459577701985836
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.005732423160225153
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.00459577701985836
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.02300153486430645,
+            "max_levels": 11.399604797363281,
+            "mean_levels": 0.29711928963661194
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.01812235452234745,
+            "max_levels": 8.33910846710205,
+            "mean_levels": 0.28798815608024597
+          }
+        }
+      },
+      "random_225x301": {
+        "n": 4,
+        "hw": [
+          225,
+          301
+        ],
+        "cuda": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.00896725244820118
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008458481170237064
+          }
+        },
+        "triton": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.00896725244820118
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008458481170237064
+          }
+        },
+        "torch": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.06233728304505348,
+            "mean_levels": 0.00896725244820118
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 1.0,
+            "max_levels": 0.031006336212158203,
+            "mean_levels": 0.008458481170237064
+          }
+        },
+        "interpolate": {
+          "conch": {
+            "frac_bit_exact_vs_official_half": 0.033640336245298386,
+            "max_levels": 45.019168853759766,
+            "mean_levels": 0.4191471040248871
+          },
+          "musk": {
+            "frac_bit_exact_vs_official_half": 0.03211522847414017,
+            "max_levels": 42.0849609375,
+            "mean_levels": 0.41998931765556335
+          }
+        }
+      }
+    },
+    "embedding_cosine_crc_tiles256": {
+      "conch": {
+        "n": 256,
+        "dtype": "fp32",
+        "cuda_k1_vs_official": {
+          "min": 0.999998927116394,
+          "mean": 1.0
+        },
+        "interpolate_vs_official": {
+          "min": 0.9994648694992065,
+          "mean": 0.9999587535858154
+        }
+      },
+      "musk": {
+        "n": 256,
+        "dtype": "fp16",
+        "cuda_k1_vs_official": {
+          "min": 1.0,
+          "mean": 1.0
+        },
+        "interpolate_vs_official": {
+          "min": 0.9996129870414734,
+          "mean": 0.9999231100082397
+        }
+      }
+    }
+  }
+}

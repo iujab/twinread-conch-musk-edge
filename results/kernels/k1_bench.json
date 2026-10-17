@@ -1,0 +1,325 @@
+{
+  "cpu": {
+    "tiles224": {
+      "pil_single_process": {
+        "n": 256,
+        "seconds_median3": 1.1592781130166259,
+        "tiles_per_s": 220.82707947780307,
+        "torch_threads": 4,
+        "loadavg_1m": 8.0791015625,
+        "all_tiles_per_s": [
+          216.92140424826906,
+          220.82707947780307,
+          149.39076034881046
+        ],
+        "loadavg_1m_per_run": [
+          5.6650390625,
+          8.0791015625,
+          8.18212890625
+        ],
+        "kept": "best of runs"
+      },
+      "dataloader_4w": {
+        "n": 2048,
+        "batch_size": 64,
+        "seconds": 5.78609682698152,
+        "tiles_per_s": 353.9519059635918,
+        "loadavg_1m": 5.56884765625,
+        "all_tiles_per_s": [
+          353.9519059635918,
+          348.49995547969314,
+          292.0777867354922
+        ],
+        "loadavg_1m_per_run": [
+          5.56884765625,
+          7.9267578125,
+          7.92529296875
+        ],
+        "kept": "best of runs"
+      },
+      "dataloader_8w": {
+        "n": 2048,
+        "batch_size": 64,
+        "seconds": 3.803708469000412,
+        "tiles_per_s": 538.4219155308188,
+        "loadavg_1m": 6.01025390625,
+        "all_tiles_per_s": [
+          538.4219155308188,
+          504.5778575123613,
+          466.3100673656783
+        ],
+        "loadavg_1m_per_run": [
+          6.01025390625,
+          8.33349609375,
+          8.138671875
+        ],
+        "kept": "best of runs"
+      }
+    },
+    "frames480x640": {
+      "pil_single_process": {
+        "n": 256,
+        "seconds_median3": 2.434982612991007,
+        "tiles_per_s": 105.13422093209232,
+        "torch_threads": 4,
+        "loadavg_1m": 8.56396484375,
+        "all_tiles_per_s": [
+          99.6585763352751,
+          105.13422093209232,
+          99.82909656416474
+        ],
+        "loadavg_1m_per_run": [
+          6.25,
+          8.56396484375,
+          9.0888671875
+        ],
+        "kept": "best of runs"
+      },
+      "dataloader_4w": {
+        "n": 512,
+        "batch_size": 32,
+        "seconds": 1.92071231699083,
+        "tiles_per_s": 266.5677704416181,
+        "loadavg_1m": 8.1982421875,
+        "all_tiles_per_s": [
+          263.9970444027043,
+          266.5677704416181,
+          235.73090643347035
+        ],
+        "loadavg_1m_per_run": [
+          7.91162109375,
+          8.1982421875,
+          9.8828125
+        ],
+        "kept": "best of runs"
+      },
+      "dataloader_8w": {
+        "n": 512,
+        "batch_size": 32,
+        "seconds": 1.2598464769835118,
+        "tiles_per_s": 406.3987234586685,
+        "loadavg_1m": 8.1982421875,
+        "all_tiles_per_s": [
+          402.5781728860229,
+          406.3987234586685,
+          352.7986181030368
+        ],
+        "loadavg_1m_per_run": [
+          8.0791015625,
+          8.1982421875,
+          11.4140625
+        ],
+        "kept": "best of runs"
+      }
+    }
+  },
+  "env_cpu": {
+    "date": "2026-10-17T01:55:31",
+    "torch": "2.14.1+cu130",
+    "torch_cuda_runtime": "13.0",
+    "torchvision": "0.29.1+cu130",
+    "pillow": "12.3.0",
+    "numpy": "2.5.4",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "cpu_count": 16,
+    "torch_threads": 4,
+    "loadavg_1m": 11.4140625,
+    "git": "cb44004"
+  },
+  "inputs": {
+    "tiles224": {
+      "source": "1aurent/NCT-CRC-HE CRC_VAL_HE_7K, 256 tiles class-balanced (seed 1), HF cache",
+      "shape": [
+        256,
+        224,
+        224,
+        3
+      ]
+    },
+    "frames480x640": {
+      "source": "3x3 mosaics of the tiles above cropped to 480x640 (real tissue, no camera)",
+      "shape": [
+        256,
+        480,
+        640,
+        3
+      ]
+    }
+  },
+  "config": {
+    "batch": 256,
+    "readers": {
+      "A": "conch 448/448 bicubic",
+      "B": "musk 384/384 bicubic"
+    },
+    "tiles_per_s": "raw inputs per second turned into BOTH readers' normalized tensors",
+    "gpu_timing": "CUDA events, warmup 3, median of 10; input already on the GPU unless *_incl_h2d",
+    "cpu_timing": "time.perf_counter; PIL single process: median of 3 passes over 256 inputs; DataLoader: second epoch (persistent workers) over 2048 tiles (bs 64) or 512 frames (bs 32); whole CPU part repeated --cpu-repeats times on a shared 16-core machine, best rate kept",
+    "eff_GBps": "(uint8 input bytes + fp16 output bytes) / time"
+  },
+  "summary": {
+    "tiles224": {
+      "cuda_k1_tiles_per_s": 90130.68978182162,
+      "speedup_vs_pil_single_process": 408.1505311529572,
+      "speedup_vs_dataloader_8w": 167.3978847851386,
+      "speedup_vs_triton": 1.0983720070035121,
+      "speedup_vs_torch_exact": 67.24193397632224,
+      "incl_h2d_speedup_vs_dataloader_8w": 85.72719017479754,
+      "cuda_k1_ms_vs_two_pass_floor": 1.2810726942835715
+    },
+    "frames480x640": {
+      "cuda_k1_tiles_per_s": 53372.65156059591,
+      "speedup_vs_pil_single_process": 507.66202562218115,
+      "speedup_vs_dataloader_8w": 131.33075592946346,
+      "speedup_vs_triton": 1.1282411799126626,
+      "speedup_vs_torch_exact": 74.25499810416909,
+      "incl_h2d_speedup_vs_dataloader_8w": 29.535323372422145,
+      "cuda_k1_ms_vs_two_pass_floor": 1.3434923077601324
+    }
+  },
+  "gpu": {
+    "memcpy_d2d": {
+      "bytes": 268435456,
+      "ms": 1.3847839832305908,
+      "GBps_read_plus_write": 387.69289542728745
+    },
+    "tiles224": {
+      "bytes": {
+        "input_uint8": 38535168,
+        "outputs_fp16": 534773760,
+        "intermediates_uint8": 143130624
+      },
+      "two_pass_dram_floor_ms": 2.2171419340884313,
+      "note_floor": "(input + 2*intermediate + outputs) / memcpy rate; the CUDA hpass reads the input once",
+      "torch_exact": {
+        "ms": 190.98860931396484,
+        "tiles_per_s": 1340.3940733405905,
+        "eff_GBps": 3.0017964425173727,
+        "eff_frac_of_memcpy": 0.0077427171813633745
+      },
+      "torch_interpolate": {
+        "ms": 53.66596794128418,
+        "tiles_per_s": 4770.24844273915,
+        "eff_GBps": 10.682914144533013,
+        "eff_frac_of_memcpy": 0.027555093917207504,
+        "accuracy_first16": {
+          "conch": {
+            "max_levels": 20.918500900268555,
+            "mean_levels": 0.28363803029060364,
+            "frac_bit_exact_vs_official_half": 0.15264476835727692
+          },
+          "musk": {
+            "max_levels": 19.29931640625,
+            "mean_levels": 0.2758481502532959,
+            "frac_bit_exact_vs_official_half": 0.15361502766609192
+          }
+        }
+      },
+      "triton": {
+        "ms": 3.1197279691696167,
+        "tiles_per_s": 82058.43667457324,
+        "eff_GBps": 183.7688842314667,
+        "eff_frac_of_memcpy": 0.4740063240749608,
+        "kernels_ms": {
+          "_hpass": 1.1034,
+          "_vpass": 2.317
+        }
+      },
+      "cuda_k1": {
+        "ms": 2.8403199911117554,
+        "tiles_per_s": 90130.68978182162,
+        "eff_GBps": 201.84659819811216,
+        "eff_frac_of_memcpy": 0.5206352775065719,
+        "kernels_ms": {
+          "k1_hpass_dual": 1.0213,
+          "k1_vpass_vec4": 1.9957
+        }
+      },
+      "cuda_k1_incl_h2d": {
+        "ms": 5.546239852905273,
+        "tiles_per_s": 46157.39794698928,
+        "eff_GBps": 103.36893881350713,
+        "eff_frac_of_memcpy": 0.2666258268663429
+      }
+    },
+    "frames480x640": {
+      "bytes": {
+        "input_uint8": 235929600,
+        "outputs_fp16": 534773760,
+        "intermediates_uint8": 306708480
+      },
+      "two_pass_dram_floor_ms": 3.5701462067663665,
+      "note_floor": "(input + 2*intermediate + outputs) / memcpy rate; the CUDA hpass reads the input once",
+      "torch_exact": {
+        "ms": 356.1614227294922,
+        "tiles_per_s": 718.7752060234618,
+        "eff_GBps": 2.163915884245993,
+        "eff_frac_of_memcpy": 0.005581520605016709
+      },
+      "torch_interpolate": {
+        "ms": 80.44200134277344,
+        "tiles_per_s": 3182.4170921500563,
+        "eff_GBps": 9.580857600943276,
+        "eff_frac_of_memcpy": 0.024712492062522677,
+        "accuracy_first16": {
+          "conch": {
+            "max_levels": 18.720901489257812,
+            "mean_levels": 0.28772222995758057,
+            "frac_bit_exact_vs_official_half": 0.12782442569732666
+          },
+          "musk": {
+            "max_levels": 17.30712890625,
+            "mean_levels": 0.2843005359172821,
+            "frac_bit_exact_vs_official_half": 0.1131337508559227
+          }
+        }
+      },
+      "triton": {
+        "ms": 5.4115681648254395,
+        "tiles_per_s": 47306.0658579467,
+        "eff_GBps": 142.41774962930003,
+        "eff_frac_of_memcpy": 0.3673468131840212,
+        "kernels_ms": {
+          "_hpass": 2.8765,
+          "_vpass": 2.6275
+        }
+      },
+      "cuda_k1": {
+        "ms": 4.796463966369629,
+        "tiles_per_s": 53372.65156059591,
+        "eff_GBps": 160.68156988226758,
+        "eff_frac_of_memcpy": 0.41445580194389636,
+        "kernels_ms": {
+          "k1_hpass_dual": 2.4077,
+          "k1_vpass_vec4": 2.2591
+        }
+      },
+      "cuda_k1_incl_h2d": {
+        "ms": 21.327792167663574,
+        "tiles_per_s": 12003.117715491335,
+        "eff_GBps": 36.1361060695496,
+        "eff_frac_of_memcpy": 0.09320806879817325
+      }
+    }
+  },
+  "env": {
+    "date": "2026-10-17T01:52:05",
+    "torch": "2.14.1+cu130",
+    "torch_cuda_runtime": "13.0",
+    "torchvision": "0.29.1+cu130",
+    "pillow": "12.3.0",
+    "numpy": "2.5.4",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "cpu_count": 16,
+    "torch_threads": 4,
+    "loadavg_1m": 8.6083984375,
+    "git": "cb44004",
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "capability": "12.0",
+    "driver": "595.99.02",
+    "nvcc": "Build cuda_13.1.r13.1/compiler.37061995_0",
+    "triton": "3.8.0"
+  }
+}

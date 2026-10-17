@@ -79,3 +79,17 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
 - **The review-flag gain is fused-model confidence, not disagreement.** s4 (the disagreement combiner) adds nothing over s3, the fused model's own uncertainty. crc: s3 and s4 both catch 0.803 of fused errors at 10% (AURC 0.00235 vs 0.00234); pure disagreement is weaker (s1 0.590, s2 0.728). On the test set s3 and s4 are almost the same ranking (Spearman 0.9999, top-10% overlap 99.7%; results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json). cam: s3 catches 0.811 vs s4 0.755, and s4 AURC (0.0066) is worse than s3 (0.0027) and than both single-reader baselines (0.0051 / 0.0056).
 - **On cam the twin system does not beat CONCH alone.** Accuracy on cleared tiles at 10%: 0.9904 for the twin system (s4) vs 0.9911 for CONCH flagged by its own confidence (base_A_own_error; caught 0.745). Own-error baselines (each reader flagged by its own confidence against its own errors, review.json), caught at 10% crc / cam: CONCH 0.660 / 0.745, MUSK 0.741 / 0.661. The earlier base_A / base_B figures (0.544 / 0.699 crc, 0.604 / 0.491 cam) are the readers' confidence scored against the FUSED model's errors, so they are not like-for-like with the own-error ones. Against the own-error baselines on crc, s3/s4 (0.803) still lead (MUSK own 0.741), but the lead comes from the fused model's uncertainty.
 - **The crc fusion gain (+0.0074) is fragile.** Per-class recall, fused minus MUSK: MUS -13.2 pts, STR +13.1, TUM +3.6, ADI +1.0; the gain is a MUS/STR trade. Validation chose `average` by 1-2 tiles (val correct tiles 2641 vs 2640 gated_mlp vs 2639 concat_lr, of 2658). Test delta vs MUSK by candidate: average +0.0074, concat_lr +0.0071, gated_mlp -0.0040 (the 0.0003-behind-on-val candidate). CI stays tile-level and anti-conservative (no slide ids).
+- 2026-10-17: Task 6 K1 fused dual preprocess (`twinread.kernels`, `k1_triton`, `csrc/`). CUDA, Triton and torch paths
+  share one host plan that mirrors Pillow `precompute_coeffs`/`normalize_coeffs_8bpc`; all three are bit-exact to
+  `official(img).half()` for CONCH and MUSK (256 CRC tiles, mosaic frames, random 480x640/640x480/720x1280/225x301).
+  CUDA hpass reads each input row once for both readers. Numbers: `results/kernels/{k1_bench,k1_parity,builds}.json`.
+  Fixture: tests/fixtures/crc16.npy (CRC_VAL_HE_7K, all 9 classes, tools/make_crc_fixture.py).
+- 2026-10-17: Task 7 K2 camera-of-screen augmentation (SIMULATION; `twinread.kernels.camera_aug` /
+  `sample_camera_params`, `ref/camera_ops.py` numpy references, `k2_torch.py`, `csrc/k2_camera_aug.cu` in the K1
+  module, K1-only rebuild if K2 fails to compile). 224 px, batch 256, severity 1, RTX 5060: CUDA 46,315 img/s
+  (k2_fused 3.27 ms + k2_jpeg 2.17 ms) vs numpy 44 (1 proc) / 166 (4 procs), torch GPU 1,097 (same Philox stream) /
+  2,421 (torch.randn noise). Every op <= 1 level vs numpy; composition mean <= 0.0008 levels; max up to 11 levels
+  only in 8x8 blocks where a JPEG coefficient is within float32 error of a rounding boundary (<= 1 level in all other
+  blocks, `camera_ops.explain_differences`). Added an optional `profile` field (colour-profile matrix) to
+  CameraAugParams. sm_80/sm_90/sm_120 compile-checked only. Numbers:
+  `results/kernels/{k2_bench,k2_parity,k2_figure,k2_sanitizer,builds}.json`; figure `figures/k2_severity_grid.png`.
