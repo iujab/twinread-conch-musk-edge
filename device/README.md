@@ -29,3 +29,23 @@ A bundle that fails checksum verification is refused.
 ## Not measured
 UNO Q latency (target 250 ms/tile at 4 threads) is not measured; the 20-65 ms in the simulation is an x86 host with a tiny test model.
 `figures/ui_device_sim.png` is a simulation with a random test bundle, so its numbers are meaningless.
+
+
+## Building the bundle
+
+The OPEN bundle's `config.json` and `SHA256SUMS` are committed; `model.onnx`, `probes.npz` and `prompt_bank.npz` are git-ignored
+and rebuilt (byte-identical on the build machine: ONNX export, int8 quantisation and the npz writer are deterministic, so the
+committed `SHA256SUMS` verifies after a rebuild). Prerequisites:
+
+- `data/crc_train_{x,y,g}.npy`, `data/crc_test_{x,y}.npy` and the cached text banks `data/emb/crc/bank_pathgenclip.npy`,
+  `bank_quiltnet_b16.npy`;
+- the student `results/student/open_crc/best.pt` and `thresholds.json`;
+- `student_targets.npz` and `probes_aligned.npz` (git-ignored; from `twinread.analyze`, e.g. `results/open/OPEN/crc/`).
+
+```
+OMP_NUM_THREADS=4 PYTHONPATH=src .venv/bin/python scripts/make_bundle.py --pair OPEN --dataset crc \
+    --targets results/open/OPEN/crc          # writes bundles/open/ and results/student/open_crc/int8_drift.json (~3 min, CPU)
+```
+
+Then `python -c "import sys; sys.path.insert(0,'device'); import twinread_runtime as r; print(r.verify_bundle_dir('bundles/open'))"`.
+Thresholds are recalibrated on the int8 model's val outputs, so a changed checkpoint changes `config.json` too.

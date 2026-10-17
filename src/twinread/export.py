@@ -103,6 +103,19 @@ def _sha(p: Path) -> str:
     return h.hexdigest()
 
 
+def save_npz_deterministic(path: Path, **arrays) -> None:
+    """np.savez with fixed zip timestamps, so identical arrays give a byte-identical file (stable SHA256SUMS).
+    Loadable with np.load."""
+    import zipfile
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_STORED) as z:
+        for name, a in arrays.items():
+            zi = zipfile.ZipInfo(name + ".npy", date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_STORED
+            zi.external_attr = 0o644 << 16
+            with z.open(zi, "w", force_zip64=True) as f:
+                np.lib.format.write_array(f, np.ascontiguousarray(a), allow_pickle=False)
+
+
 def build_bundle(pair: str, onnx_int8: Path, banks: dict, probes: dict, classes: list, thresholds: dict,
                  out_dir: Path) -> Path:
     out_dir = Path(out_dir)
@@ -115,8 +128,8 @@ def build_bundle(pair: str, onnx_int8: Path, banks: dict, probes: dict, classes:
         if p.is_file():
             p.unlink()
     shutil.copyfile(onnx_int8, out_dir / "model.onnx")
-    np.savez(out_dir / "prompt_bank.npz", bankA=np.asarray(banks["A"], np.float32), bankB=np.asarray(banks["B"], np.float32))
-    np.savez(out_dir / "probes.npz", **{k: (np.asarray(probes[k]) if k.endswith("classes")
+    save_npz_deterministic(out_dir / "prompt_bank.npz", bankA=np.asarray(banks["A"], np.float32), bankB=np.asarray(banks["B"], np.float32))
+    save_npz_deterministic(out_dir / "probes.npz", **{k: (np.asarray(probes[k]) if k.endswith("classes")
                                             else np.asarray(probes[k], np.float32)) for k in need})
     pair = pair.upper()
     cfg = {"pair": pair, "classes": list(classes), "thresholds": {"js": float(thresholds["js"]),

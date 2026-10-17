@@ -112,3 +112,13 @@ def test_real_open_bundle_runs_on_device_runtime():
     res = m.infer(np.ascontiguousarray(x[idx]))
     acc = np.mean([r.label == cfg["classes"][y[i]] for r, i in zip(res, idx)])
     assert acc > 0.8 and all(np.isfinite(r.review_score) for r in res)
+
+
+def test_bundle_rebuild_is_byte_identical(tmp_path):
+    import time
+    a = _bundle(tmp_path / "a")
+    time.sleep(2.1)  # zip timestamps have 2 s resolution
+    b = _bundle(tmp_path / "b")
+    assert (a / "SHA256SUMS").read_text() == (b / "SHA256SUMS").read_text()
+    z = np.load(a / "probes.npz", allow_pickle=False)
+    assert z["A_coef"].shape == (C, DA) and z["A_classes"].dtype.kind == "i"

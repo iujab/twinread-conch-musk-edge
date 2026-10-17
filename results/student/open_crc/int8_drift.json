@@ -15,7 +15,7 @@
       "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
       "n": 2658,
       "drift_score": 0.014003962278366089,
-      "quantize_s": 4.6
+      "quantize_s": 4.5
     },
     "entropy": {
       "cos_hA_mean": 0.981825590133667,
@@ -27,7 +27,7 @@
       "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
       "n": 2658,
       "drift_score": 0.014003962278366089,
-      "quantize_s": 34.2
+      "quantize_s": 40.4
     },
     "percentile99.99": {
       "cos_hA_mean": 0.9924882054328918,
@@ -39,7 +39,7 @@
       "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
       "n": 2658,
       "drift_score": 0.006401777267456055,
-      "quantize_s": 40.6
+      "quantize_s": 29.0
     },
     "percentile99.9": {
       "cos_hA_mean": 0.9943844676017761,
@@ -51,7 +51,7 @@
       "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
       "n": 2658,
       "drift_score": 0.0054587721824646,
-      "quantize_s": 42.5
+      "quantize_s": 18.5
     }
   },
   "val_drift": {
@@ -64,7 +64,7 @@
     "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
     "n": 2658,
     "drift_score": 0.0054587721824646,
-    "quantize_s": 42.5
+    "quantize_s": 18.5
   },
   "test_drift": {
     "cos_hA_mean": 0.9930973052978516,
