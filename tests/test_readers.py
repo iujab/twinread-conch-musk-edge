@@ -40,9 +40,8 @@ def test_spec_table_matches_loaded_transform(name):
         cc = [t for t in ts if isinstance(t, T.CenterCrop)]
         nm = [t for t in ts if isinstance(t, T.Normalize)]
         assert rs and cc and nm
-        size = rs[0].size
-        size = size[0] if isinstance(size, (list, tuple)) else size
-        assert size == spec.size
+        assert isinstance(rs[0].size, int), "Resize must be shortest-edge (int), not a squash"
+        assert rs[0].size == spec.size
         csz = cc[0].size
         csz = csz[0] if isinstance(csz, (list, tuple)) else csz
         assert csz == spec.crop
@@ -109,3 +108,29 @@ def test_close_frees_gpu_memory():
     assert torch.cuda.memory_allocated() > before
     r.close()
     assert torch.cuda.memory_allocated() <= before + 1e6
+
+
+@pytest.mark.gpu
+@pytest.mark.parametrize("name", READER_NAMES)
+def test_spec_numerically_matches_official_transform(name):
+    """Pin spec_of to each model's loaded transform on a non-square image (300x500)."""
+    from PIL import Image
+    from twinread.readers import _compose
+    rng = np.random.default_rng(0)
+    im = Image.fromarray(rng.integers(0, 256, (300, 500, 3), dtype=np.uint8))
+    r = load_reader(name)
+    try:
+        official = r.preprocess_pil(im)
+        mine = _compose(spec_of(name))(im)
+        assert official.shape == mine.shape == (3, spec_of(name).crop, spec_of(name).crop)
+        assert (official - mine).abs().max().item() < 1e-2
+        if name == "pathgenclip":
+            from transformers import CLIPProcessor
+            ref = CLIPProcessor.from_pretrained("jamessyx/pathgenclip-vit-large-patch14-hf")(
+                images=im, return_tensors="pt")["pixel_values"][0]
+            assert ref.shape == official.shape
+            # HF resizes in uint8 (rounding) while torchvision resizes float: a few quantisation levels at most
+            d = (ref - official).abs()
+            assert d.max().item() < 0.05 and d.mean().item() < 2e-3
+    finally:
+        r.close()
