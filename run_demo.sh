@@ -22,7 +22,7 @@
 # The device app is built for the Arduino UNO Q; today it runs as an x86 replay (see device/README.md).
 set -euo pipefail
 P="$(cd "$(dirname "$0")" && pwd)"
-B="$(cd "$P/.." && pwd)"
+B="${BENCH:-$(cd "$P/.." && pwd)}"   # bench root (venv + shared GPU lock); set BENCH when running a clone elsewhere
 PY="${PY:-$B/.venv/bin/python}"
 LOCK="flock $B/.gpu.lock"
 export PYTHONPATH="$P/src" OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
