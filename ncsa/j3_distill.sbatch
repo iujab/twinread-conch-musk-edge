@@ -7,7 +7,9 @@
 #SBATCH --mem=60G
 #SBATCH --time=01:30:00
 #SBATCH --output=logs/j3_distill_%j.out
-# J3: distill the CM student on the cached CRC embeddings. Purpose: student checkpoint + metrics.
+# J3: distill the CM student. Purpose: student checkpoint + metrics. Inputs: the CRC tiles in data/ and the analysis
+# outputs $TARGETS/{student_targets.npz,probes_aligned.npz} (ncsa/analyze_cpu.sbatch after J2, or run locally and
+# copied up to ~/twinread/results/CM/crc; private home only). Targets come only from $TARGETS, not from data/emb.
 # No --reservation. Never resubmits itself. Submit only with the user's explicit OK.
 # Record: results/ncsa/<job>_${SLURM_JOB_ID}.json is written by ncsa/job_record.py.
 set -uo pipefail
@@ -24,14 +26,16 @@ cd "$TWINREAD_HOME"
 mkdir -p logs results/ncsa
 T0=$(date +%s)
 BACKBONE=${BACKBONE:-mobilenetv3_large_100}   # confirm with the user; override via --export=ALL,BACKBONE=...
+TARGETS=${TARGETS:-results/CM/crc}             # run_pair_analysis output dir (the CPU analysis job)
 die() { echo "J3 PRECHECK FAILED: $*" >&2; python ncsa/job_record.py j3_distill "$T0" 2 "precheck: $*"; exit 2; }
 
-# 1. J2 outputs must exist (CONCH and MUSK embeddings, train split).
-for r in conch musk; do
-  ls data/emb/crc/${r}_*_train.npy >/dev/null 2>&1 || die "missing data/emb/crc/${r}_*_train.npy; J2 did not finish"
+# 1. Analysis outputs must exist: J2 embeds -> analyze_cpu.sbatch (CPU) -> J3.
+[ -f "$TARGETS/student_targets.npz" ] || die "missing $TARGETS/student_targets.npz; run the CPU analysis job after J2 (README step 6b)"
+[ -f "$TARGETS/probes_aligned.npz" ] || die "missing $TARGETS/probes_aligned.npz; run the CPU analysis job after J2 (README step 6b)"
+[ -f "$TARGETS/preregistration.json" ] || echo "note: no $TARGETS/preregistration.json; test metrics will be skipped"
+for f in crc_train_x.npy crc_train_y.npy crc_test_x.npy crc_test_y.npy; do
+  [ -f "data/$f" ] || die "missing data/$f (the student trains on the tiles)"
 done
-ls data/emb/crc/*.parts >/dev/null 2>&1 && die "unfinished data/emb/crc/*.parts; J2 is incomplete"
-[ -d data/student_targets ] || echo "note: data/student_targets absent; train_student.py derives targets from data/emb"
 
 # 2. Augmentation kernels: k2 only if J1 built the extension, else the torch path.
 AUG=k2
@@ -44,7 +48,7 @@ import sys, timm
 timm.create_model(sys.argv[1], pretrained=True)
 PY
 
-python scripts/train_student.py --pair CM --dataset crc --backbone "$BACKBONE" --epochs 15 --aug "$AUG"
+python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone "$BACKBONE" --epochs 15 --aug "$AUG"
 rc=$?
-python ncsa/job_record.py j3_distill "$T0" "$rc" "backbone=$BACKBONE aug=$AUG"
+python ncsa/job_record.py j3_distill "$T0" "$rc" "backbone=$BACKBONE aug=$AUG targets=$TARGETS"
 exit $rc

@@ -84,7 +84,8 @@ def test_login_scripts_content():
     assert "/projects/bfqi/shared/datasets/NCT-CRC-HE-100K/data-samples" in st and "crc_from_folder" in st
 
 
-@pytest.mark.parametrize("p", [*SBATCH, NCSA / "setup_login.sh", NCSA / "stage_data.sh", NCSA / "stage_crc.sbatch", NCSA / "embed_loop.sh"], ids=lambda p: p.name)
+@pytest.mark.parametrize("p", [*SBATCH, NCSA / "setup_login.sh", NCSA / "stage_data.sh", NCSA / "stage_crc.sbatch",
+                               NCSA / "embed_loop.sh", NCSA / "analyze_cpu.sbatch"], ids=lambda p: p.name)
 def test_bash_syntax(p):
     r = subprocess.run(["bash", "-n", str(p)], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
@@ -98,7 +99,7 @@ def test_compat_noop_on_transformers_v4(monkeypatch):
     assert compat.patch_conch() is None and not called
 
 
-@pytest.mark.parametrize("p", [*SBATCH, NCSA / "stage_crc.sbatch"], ids=lambda p: p.name)
+@pytest.mark.parametrize("p", [*SBATCH, NCSA / "stage_crc.sbatch", NCSA / "analyze_cpu.sbatch"], ids=lambda p: p.name)
 def test_hf_home_pinned(p):
     assert re.search(r"^export HF_HOME=\$\{HF_HOME:-\$HOME/\.cache/huggingface\}", p.read_text(), re.M)
     assert 'os.environ.setdefault("HF_HOME"' in (NCSA / "download_weights.py").read_text()
@@ -126,13 +127,100 @@ def test_download_weights_has_meta_and_backbones():
 
 def test_j3_prechecks():
     j3 = (NCSA / "j3_distill.sbatch").read_text()
-    assert "die()" in j3 and "j1_build_status.txt" in j3 and "AUG=torch" in j3 and "data/emb/crc/" in j3
+    assert "die()" in j3 and "j1_build_status.txt" in j3 and "AUG=torch" in j3
     assert "pretrained=True" in j3
+    # Task 8b: the student trains on the analysis outputs, not on data/emb (it never derives targets itself)
+    assert "derives targets from data/emb" not in j3 and "data/student_targets" not in j3
+    assert "TARGETS=${TARGETS:-results/CM/crc}" in j3
+    for f in ("student_targets.npz", "probes_aligned.npz"):
+        assert re.search(rf'\[ -f "\$TARGETS/{f}" \] \|\| die', j3), f
+    assert '--targets-dir "$TARGETS"' in j3 and "analyze_cpu.sbatch" in j3
+
+
+def test_train_student_flag_exists():
+    """The flag J3/J4 pass is the trainer's real flag."""
+    import sys
+    sys.path.insert(0, str(NCSA.parent / "scripts"))
+    import train_student
+    a = train_student.parse_args(["--pair", "CM", "--dataset", "crc", "--targets-dir", "results/CM/crc"])
+    assert str(a.targets_dir) == "results/CM/crc"
+
+
+def test_j4_distill_uses_analysis_targets():
+    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    assert '--targets-dir "$TARGETS"' in j4 and "student_targets.npz" in j4 and "probes_aligned.npz" in j4
+
+
+def test_analyze_cpu_job():
+    p = NCSA / "analyze_cpu.sbatch"
+    t = p.read_text()
+    d = _directives(p)
+    assert d["account"] == "bfqi-delta-cpu" and d["partition"] == "cpu"
+    assert int(d["cpus-per-task"]) <= 16 and _secs(d["time"]) <= 3600
+    assert "gpus" not in t.split("set -uo")[0] and "reservation" not in t.replace("No --reservation", "")
+    body = "\n".join(l for l in t.splitlines() if not l.lstrip().startswith("#"))
+    assert not re.search(r"\bsbatch\b|--requeue|scontrol\s+requeue", body)
+    for s in ("HF_HUB_OFFLINE=1", "TRANSFORMERS_OFFLINE=1"):
+        assert re.search(rf"^export {re.escape(s)}", t, re.M), s
+    assert "run_pair_analysis(\"CM\", \"crc\"" in t and 'results_dir=Path("results")' in t
+    assert "data/emb/crc/" in t and "die()" in t and "*.parts" in t
+    assert "student_targets.npz" in t and "probes_aligned.npz" in t
+    assert "results/ncsa/" in t and "SLURM_JOB_ID" in t and "job_record.py analyze_cpu" in t
+
+
+def test_runbook_order_j2_analysis_j3():
+    t = (NCSA / "README.md").read_text()
+    i2, ia, i3 = t.index("sbatch ncsa/j2_embed.sbatch"), t.index("sbatch ncsa/analyze_cpu.sbatch"), \
+        t.index("sbatch ncsa/j3_distill.sbatch")
+    assert i2 < ia < i3
+    assert "--targets-dir" in t and "student_targets.npz" in t and "probes_aligned.npz" in t
+    assert "derives targets from data/emb" not in t
+
+
+def test_no_old_student_loss_weights():
+    """R26: the student default is rel=0; nothing in ncsa/ may pass loss weights (the old default had rel 0.5)."""
+    for p in NCSA.iterdir():
+        if p.is_file():
+            t = p.read_text()
+            assert "--loss-weights" not in t and '"rel"' not in t and "rel=0.5" not in t, p.name
 
 
 def test_embed_loop_guards():
     loop = (NCSA / "embed_loop.sh").read_text()
     assert "--budget" in loop and "margin=300" in loop and "stalls" in loop and "-lt 300" in loop
+
+
+def _run_loop(tmp_path, pair, rcs):
+    """Source embed_loop.sh with a fake ``python`` that logs its args, adds a cache part and exits with rcs[i]."""
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    (tmp_path / "data" / "emb").mkdir(parents=True)
+    fake = bin_ / "python"
+    fake.write_text("#!/bin/bash\n"
+                    'n=$(wc -l < calls.txt 2>/dev/null || echo 0); echo "$@" >> calls.txt\n'
+                    'touch data/emb/part_$n.npy\n'
+                    f'rcs=({" ".join(map(str, rcs))}); exit ${{rcs[$n]}}\n')
+    fake.chmod(0o755)
+    cmd = f'source {NCSA / "embed_loop.sh"}; T0=$(date +%s); WALL=5400; run_embed {pair} crc k1; echo rc=$?'
+    r = subprocess.run(["bash", "-c", cmd], cwd=tmp_path, capture_output=True, text=True,
+                       env={"PATH": f"{bin_}:/usr/bin:/bin"})
+    calls = [l.split() for l in (tmp_path / "calls.txt").read_text().splitlines()]
+    return r, calls
+
+
+def test_embed_loop_caps_musk_budget(tmp_path):
+    """MUSK probe (ms_aug) chunks are slow: every CM call gets --budget <= 300 (exit 3 -> rerun with fresh budget)."""
+    r, calls = _run_loop(tmp_path, "CM", [3, 3, 0])
+    assert "rc=0" in r.stdout and len(calls) == 3
+    for c in calls:
+        assert c[:4] == ["-m", "twinread.embed", "--pair", "CM"] and "--impl" in c and c[c.index("--impl") + 1] == "k1"
+        assert 0 < int(c[c.index("--budget") + 1]) <= 300
+
+
+def test_embed_loop_open_budget_uncapped(tmp_path):
+    r, calls = _run_loop(tmp_path, "OPEN", [0])
+    assert "rc=0" in r.stdout and len(calls) == 1
+    assert int(calls[0][calls[0].index("--budget") + 1]) > 300  # remaining walltime minus the 300 s margin
 
 
 def test_j4_allowlist_rejects_unknown(tmp_path):

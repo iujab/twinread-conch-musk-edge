@@ -38,9 +38,13 @@ and records it in `results/ncsa/j1_toolkit_<jobid>.txt`.
    and, if readable, tells you to submit `sbatch ncsa/stage_crc.sbatch` (CPU partition, `--time=01:00:00`, `crc_from_folder` for train; needs its own OK). CRC-VAL-HE-7K is not on Delta; the script prints the HF (`fetch_crc`) or
    rsync-from-laptop command for the user to approve.
 5. `cd ~/twinread && sbatch ncsa/j1_check.sbatch` (`--time=00:30:00`, purpose: env + CUDA probe + sm_80 kernel build). Read the result.
-6. `sbatch ncsa/j2_embed.sbatch` (`--time=01:30:00`, CM embeddings of 100k + 7k; uses `--impl k1`, falls back to `reference` if J1 recorded a failed build; loops on exit 3 inside the job with `--budget` = remaining walltime minus 300 s, and stops when budget < 300 s or two exit-3 runs add no cache parts).
-7. `sbatch ncsa/j3_distill.sbatch` (`--time=01:30:00`, `train_student.py --pair CM --dataset crc --backbone $BACKBONE --epochs 15 --aug k2`; set `BACKBONE` via `sbatch --export=ALL,BACKBONE=...`).
-8. `ncsa/j4_spare.sbatch` (`--time=01:30:00`) only if budget remains: `sbatch --export=ALL,ACTION=<embed_open|distill_seed2|kernel_build>`; any other ACTION is rejected. J3 refuses to start if J2 outputs are missing or the backbone is not cached, and uses `--aug torch` if J1 recorded a failed build.
+6. `sbatch ncsa/j2_embed.sbatch` (`--time=01:30:00`, CM embeddings of 100k + 7k; uses `--impl k1`, which embeds CONCH and MUSK together from one `dual_preprocess` launch per batch, and falls back to `reference` if J1 recorded a failed build; loops on exit 3 inside the job with `--budget` = remaining walltime minus 300 s, capped at 300 s per call for the CM pair because MUSK probe (ms_aug) chunks are slow, and stops when budget < 300 s or two exit-3 runs add no cache parts).
+6b. Analysis, CPU only (J3 needs its outputs): `sbatch ncsa/analyze_cpu.sbatch` (account `bfqi-delta-cpu`, partition `cpu`, 16 CPUs, `--time=01:00:00`, purpose: `run_pair_analysis("CM", "crc")` on the J2 embeddings). It writes `results/CM/crc/` including `student_targets.npz` and `probes_aligned.npz` (and the preregistration, written once). It refuses to start if any `data/emb/crc/<reader>_<kind>_<split>.npy` is missing or a `*.parts` dir is left.
+    Alternative without a Delta CPU job: copy `data/emb/crc/` back to the laptop, run the same call locally
+    (`PYTHONPATH=src python -c 'from pathlib import Path; from twinread.analyze import run_pair_analysis; run_pair_analysis("CM", "crc", results_dir=Path("results"))'`),
+    then copy `results/CM/crc/*.npz` + `preregistration.json` up to `~/twinread/results/CM/crc/` (your private home only, never `/projects`). Each copy needs its own OK.
+7. `sbatch ncsa/j3_distill.sbatch` (`--time=01:30:00`, `train_student.py --pair CM --dataset crc --targets-dir results/CM/crc --backbone $BACKBONE --epochs 15 --aug k2`; set `BACKBONE` via `sbatch --export=ALL,BACKBONE=...`, `TARGETS` likewise if the analysis outputs live elsewhere). The trainer reads `student_targets.npz` and `probes_aligned.npz` from `--targets-dir`; the embeddings in `data/emb` are not read by J3. Loss weights are the trainer's default (R26: rel = 0); nothing in `ncsa/` overrides them.
+8. `ncsa/j4_spare.sbatch` (`--time=01:30:00`) only if budget remains: `sbatch --export=ALL,ACTION=<embed_open|distill_seed2|kernel_build>`; any other ACTION is rejected. J3 refuses to start if `student_targets.npz` / `probes_aligned.npz` (or the training tiles) are missing or the backbone is not cached, and uses `--aug torch` if J1 recorded a failed build.
 9. Copy `results/ncsa/*.json` back (run on the laptop): `rsync -av <user>@login.delta.ncsa.illinois.edu:~/twinread/results/ ./results/`.
 
 Every job writes `results/ncsa/<job>_<SLURM_JOB_ID>.json` (elapsed time, GPU, torch/CUDA/transformers versions, exit code).
@@ -48,5 +52,6 @@ Every job writes `results/ncsa/<job>_<SLURM_JOB_ID>.json` (elapsed time, GPU, to
 ## Local verification
 
 `CUDA_VISIBLE_DEVICES="" .venv/bin/python -m pytest tests/test_ncsa_scripts.py -q` (static: headers, no resubmit, offline env,
-approval protocol text, `bash -n`). The scripts themselves are untested on Delta; expect first-run fixes (module names,
+approval protocol text, `bash -n`, J2 -> analysis -> J3 order; plus `embed_loop.sh` run against a fake `python` to check the
+300 s MUSK cap). The scripts themselves are untested on Delta; expect first-run fixes (module names,
 `twinread.embed --pair OPEN` spelling for J4, the `BACKBONE` default).

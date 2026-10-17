@@ -38,8 +38,14 @@ case "$ACTION" in
     run_embed OPEN crc "$IMPL"; rc=$? ;;
   distill_seed2)
     AUG=k2; [ "$IMPL" = k1 ] || AUG=torch
-    python scripts/train_student.py --pair CM --dataset crc --backbone mobilenetv3_large_100 --epochs 15 --aug "$AUG" --seed 2
-    rc=$? ;;
+    TARGETS=${TARGETS:-results/CM/crc}   # analysis outputs, as in J3
+    if [ -f "$TARGETS/student_targets.npz" ] && [ -f "$TARGETS/probes_aligned.npz" ]; then
+      python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone mobilenetv3_large_100 \
+        --epochs 15 --aug "$AUG" --seed 2
+      rc=$?
+    else
+      echo "missing $TARGETS/student_targets.npz or probes_aligned.npz; run the CPU analysis job first (README 6b)" >&2; rc=2
+    fi ;;
   kernel_build)
     python -c 'import twinread.kernels as k; k.load_ext("8.0"); print("extension build OK")'
     rc=$? ;;
