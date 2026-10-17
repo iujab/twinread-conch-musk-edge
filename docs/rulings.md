@@ -1,4 +1,4 @@
-# Build rulings (SDD ledger, 2026-10-16/17)
+# Build rulings R1-R39 (SDD ledger, 2026-10-16/17)
 
 Decisions made during the subagent-driven build when the plan was silent or a review conflicted with it.
 Format: decision — why — cost if wrong.
@@ -42,3 +42,4 @@ Format: decision — why — cost if wrong.
 - R36: TF32 for CONCH on Delta stays off — it changes embeddings and the cache key does not record it, so Delta and local caches would silently differ — cost if wrong: J2 CONCH embedding is somewhat slower on A100 (within the 30 h budget).
 - R37: drop J4 ACTION=embed_open instead of extending analyze_cpu to the OPEN pair — the OPEN pair is a local control and the A100 budget is better spent on CM — cost if wrong: no full-data OPEN control numbers (local-subset OPEN numbers remain).
 - R38: fix 8b OOM at the source (load_split(sample=) reads 512 calibration rows from the memory map; identical rows verified on local data) and raise 8b --mem to 32G for val+test float32 (~13 GB) — cost if wrong: 8b fails fast on CPU only, no A100 hours.
+- R39: keep the SDD workspace (not deleted after the final review) until user-gated Tasks 15 and 17 finish — it is their recovery map; rulings are also committed in docs/rulings.md — cost if wrong: a git-ignored scratch dir lingers.
