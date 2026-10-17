@@ -1,0 +1,169 @@
+{
+  "what": "CONCH + MUSK aligned embeddings of the same tiles; one 'tile' = both readers' embeddings",
+  "inputs": {
+    "source": "data/crc_test_x.npy (CRC-VAL-HE-7K, test split)",
+    "n": 512,
+    "selection": "np.random.default_rng(0).choice(7180, n, replace=False), sorted",
+    "class_counts": [
+      103,
+      54,
+      31,
+      48,
+      70,
+      40,
+      47,
+      32,
+      87
+    ],
+    "shape": [
+      512,
+      224,
+      224,
+      3
+    ]
+  },
+  "config": {
+    "batch": 16,
+    "repeats": 3,
+    "kind": "aligned",
+    "readers": {
+      "conch": "fp32, 448/448 bicubic",
+      "musk": "fp16, 384/384 bicubic"
+    },
+    "e2e": "twinread.embed.embed_arrays([conch, musk], x, 'aligned', ...) wall time incl. fp16 .npy writes; both readers resident; model load excluded; fresh output paths (no cache hits)",
+    "timing": "time.perf_counter around torch.cuda.synchronize(); median of repeats, all runs kept",
+    "dataloader_baseline": "4 workers, pin_memory, persistent workers (second pass timed)"
+  },
+  "model_load_seconds": {
+    "conch": 3.96,
+    "musk": 5.39
+  },
+  "gpu_mem": {
+    "free_at_start_bytes": 5342822400,
+    "allocated_after_both_models_bytes": 2936430592
+  },
+  "results": {
+    "e2e_reference": {
+      "seconds_median": 25.46487371000694,
+      "seconds_all": [
+        25.3538,
+        25.4745,
+        25.4649
+      ],
+      "tiles_per_s": 20.10612759484447
+    },
+    "e2e_k1": {
+      "seconds_median": 22.875676608993672,
+      "seconds_all": [
+        22.8262,
+        22.8757,
+        22.8851
+      ],
+      "tiles_per_s": 22.381851638814695
+    },
+    "k1_vs_reference_cosine_aligned": {
+      "conch": {
+        "min": 0.9999973177909851,
+        "mean": 0.9999998807907104
+      },
+      "musk": {
+        "min": 0.9999999403953552,
+        "mean": 1.0
+      }
+    },
+    "preprocess_reference_cpu": {
+      "seconds_median": 2.431247344997246,
+      "seconds_all": [
+        2.4312,
+        2.4404,
+        2.4216
+      ],
+      "tiles_per_s": 210.59148961274445
+    },
+    "preprocess_k1_gpu": {
+      "seconds_median": 0.012010072998236865,
+      "seconds_all": [
+        0.0122,
+        0.012,
+        0.012
+      ],
+      "tiles_per_s": 42630.881600400266
+    },
+    "forward_only_both": {
+      "seconds_median": 22.77112012100406,
+      "seconds_all": [
+        22.7192,
+        22.7755,
+        22.7711
+      ],
+      "tiles_per_s": 22.484620751165053
+    },
+    "forward_only_conch": {
+      "seconds_median": 10.500539990985999,
+      "seconds_all": [
+        10.4982,
+        10.5005,
+        10.5061
+      ],
+      "tiles_per_s": 48.759397177622986
+    },
+    "forward_only_musk": {
+      "seconds_median": 12.313912815006915,
+      "seconds_all": [
+        12.3139,
+        12.3119,
+        12.3146
+      ],
+      "tiles_per_s": 41.57898530644359
+    },
+    "reference_dataloader_4w": {
+      "seconds_median": 23.08191701301257,
+      "seconds_all": [
+        23.0561,
+        23.0819,
+        23.1379
+      ],
+      "tiles_per_s": 22.18186642432502
+    }
+  },
+  "summary": {
+    "e2e_tiles_per_s": {
+      "reference": 20.10612759484447,
+      "k1": 22.381851638814695
+    },
+    "e2e_speedup_k1_vs_reference": 1.1131855964424378,
+    "e2e_speedup_k1_vs_dataloader_4w": 1.009015707274766,
+    "forward_only_tiles_per_s": 22.484620751165053,
+    "share_of_reference_e2e": {
+      "preprocess_cpu": 0.09547454947879194,
+      "model_forward": 0.8942168879500739
+    },
+    "share_of_k1_e2e": {
+      "preprocess_k1": 0.000525014984409906,
+      "model_forward": 0.9954293597616035
+    },
+    "preprocess_speedup_k1_vs_pil": 202.43401895676774,
+    "max_e2e_speedup_if_preprocessing_were_free": 1.1182969293863663,
+    "k1_backend": "cuda"
+  },
+  "note": "Shared GPU/CPU (other agents); estimate. K1 removes the CPU preprocessing from the serial path; the model forward (CONCH fp32 ViT-B/16 at 448 px + MUSK fp16 ViT-L at 384 px) dominates, which bounds the end-to-end gain (see max_e2e_speedup_if_preprocessing_were_free). Research prototype.",
+  "env": {
+    "date": "2026-10-17T05:38:42",
+    "torch": "2.14.1+cu130",
+    "torch_cuda_runtime": "13.0",
+    "torchvision": "0.29.1+cu130",
+    "pillow": "12.3.0",
+    "numpy": "2.5.4",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "cpu_count": 16,
+    "torch_threads": 4,
+    "loadavg_1m": 1.72705078125,
+    "git": "d4a600a",
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "capability": "12.0",
+    "driver": "595.99.02",
+    "nvcc": "Build cuda_13.1.r13.1/compiler.37061995_0",
+    "triton": "3.8.0"
+  }
+}
