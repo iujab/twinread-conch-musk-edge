@@ -41,7 +41,11 @@ IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 INPUT_SIZE = 224
 REL_TEMPERATURE = 0.07
-DEFAULT_WEIGHTS = {"cos": 1.0, "rel": 0.5, "kd": 1.0, "ce": 0.5, "rev": 0.5}
+# Ruling R26 (plan amendment, val evidence in PROGRESS.md): rel = 0.0 for the device student. Row-wise InfoNCE at
+# tau 0.07 shrinks the component all teacher embeddings share (they sit in a narrow cone), which distorts the device
+# probes and the JS clause. InfoNCE stays available via the weights (CLI --loss-weights) and BigBatch.
+DEFAULT_WEIGHTS = {"cos": 1.0, "rel": 0.0, "kd": 1.0, "ce": 0.5, "rev": 0.5}
+MAX_OOM_RETRIES = 3  # consecutive training OOM exits (code 3) without a completed epoch before giving up
 AUGS = ("k2", "torch", "none")
 EVAL_SEVERITIES = (0.0, 0.5, 1.0)
 EVAL_SEED = 20261017
@@ -193,8 +197,9 @@ def distill_loss(out: dict, tA: torch.Tensor, tB: torch.Tensor, fused_logits: to
     tA, tB = F.normalize(tA.float(), dim=-1), F.normalize(tB.float(), dim=-1)
     cos_A = (1 - (hA * tA).sum(-1)).mean()
     cos_B = (1 - (hB * tB).sum(-1)).mean()
-    rel_A = info_nce(hA, tA, REL_TEMPERATURE, rel_impl)
-    rel_B = info_nce(hB, tB, REL_TEMPERATURE, rel_impl)
+    with torch.set_grad_enabled(torch.is_grad_enabled() and w["rel"] != 0):  # weight 0: logged, no backward
+        rel_A = info_nce(hA, tA, REL_TEMPERATURE, rel_impl)
+        rel_B = info_nce(hB, tB, REL_TEMPERATURE, rel_impl)
     logits = out["logits"].float()
     kd = T * T * F.kl_div(F.log_softmax(logits / T, -1), F.log_softmax(fused_logits.float() / T, -1),
                           reduction="batchmean", log_target=True)
@@ -346,9 +351,9 @@ def torch_camera_aug(x: torch.Tensor, severity: float, seed: int, as_float: bool
 _K2_STATE: dict = {}
 
 
-def _k2_fallback(reason: str) -> None:
+def _k2_fallback(reason: str, stage: str = "import") -> None:
     st = _K2_STATE
-    st["fns"], st["reason"] = None, reason
+    st["fns"], st["reason"], st["stage"] = None, reason, stage
     if not st.get("warned"):
         st["warned"] = True
         warnings.warn(f"K2 camera augmentation unavailable: {reason}; falling back to the plain-torch "
@@ -365,6 +370,21 @@ def _k2():
         except Exception as e:
             _k2_fallback(f"twinread.kernels.camera_aug not importable ({e!r})")
     return st["fns"]
+
+
+def k2_fallback_info() -> dict | None:
+    """{"stage": "import"|"runtime", "reason"} if K2 fell back to the torch augmentation in this process, else None."""
+    st = _K2_STATE
+    if "fns" in st and st["fns"] is None:
+        return {"stage": st.get("stage", "import"), "reason": st.get("reason")}
+    return None
+
+
+def _resolved_aug(requested: str, impl_at_start: str, fallback: dict | None) -> str:
+    """What actually ran: 'k2', 'torch' (K2 never importable) or 'k2+torch (runtime fallback)'."""
+    if requested != "k2" or impl_at_start != "k2":
+        return impl_at_start
+    return "k2+torch (runtime fallback)" if fallback and fallback.get("stage") == "runtime" else "k2"
 
 
 def aug_impl_used(aug: str) -> str:
@@ -389,8 +409,10 @@ def augment(x: torch.Tensor, aug: str, severity: float, seed: int) -> torch.Tens
             try:
                 p = sample(int(x.shape[0]), float(severity), seed, device=x.device)
                 return camera_aug(x, p, seed, impl="cuda" if x.is_cuda else "torch")
+            except torch.OutOfMemoryError:
+                raise  # transient on a shared GPU: predict halves its batch, training exits 3 and resumes
             except Exception as e:
-                _k2_fallback(f"K2 call failed ({e!r})")
+                _k2_fallback(f"K2 call failed ({e!r})", stage="runtime")
     return torch_camera_aug(x, severity, seed)
 
 
@@ -532,8 +554,26 @@ def _clean(o):
     return o
 
 
-def split_metrics(o: dict, tg: dict, probes: dict | None, classes: np.ndarray, thr: dict | None = None) -> dict:
-    """Metrics of student outputs ``o`` (numpy hA/hB/logits/review_logit) against split targets ``tg``."""
+def _centred_cos(h, t, mu) -> float:
+    a, b = np.asarray(h, np.float64) - mu, np.asarray(t, np.float64) - mu
+    a /= np.maximum(np.linalg.norm(a, axis=1, keepdims=True), 1e-12)
+    b /= np.maximum(np.linalg.norm(b, axis=1, keepdims=True), 1e-12)
+    return float((a * b).sum(1).mean())
+
+
+def _kl(p, q) -> float:
+    p, q = np.clip(p, 1e-12, 1), np.clip(q, 1e-12, 1)
+    return float((p * (np.log(p) - np.log(q))).sum(1).mean())
+
+
+def split_metrics(o: dict, tg: dict, probes: dict | None, classes: np.ndarray, thr: dict | None = None,
+                  mu: dict | None = None) -> dict:
+    """Metrics of student outputs ``o`` (numpy hA/hB/logits/review_logit) against split targets ``tg``.
+
+    ``mu`` = {"A","B"}: mean of the L2-normalised TRAIN teacher embeddings; gives ``cos_{A,B}_centred`` = cos(h-mu,
+    t-mu), which, unlike raw cosine, does not reward predicting the shared cone direction. ``probe_kl_{A,B}`` =
+    mean KL(probe(teacher) || probe(student)) with the aligned probes the device uses.
+    """
     y = tg["y"]
     pred = classes[np.argmax(o["logits"], 1)]
     tA = tg["tA"] / np.linalg.norm(tg["tA"], axis=1, keepdims=True)
@@ -543,8 +583,13 @@ def split_metrics(o: dict, tg: dict, probes: dict | None, classes: np.ndarray, t
          "agree_with_fused_teacher": float((np.argmax(o["logits"], 1) == np.argmax(tg["fused_logits"], 1)).mean()),
          "cos_A": float((o["hA"] * tA).sum(1).mean()), "cos_B": float((o["hB"] * tB).sum(1).mean()),
          "review_auroc": _auroc(tg["review"], o["review_logit"])}
+    if mu is not None:
+        m["cos_A_centred"] = _centred_cos(o["hA"], tA, mu["A"])
+        m["cos_B_centred"] = _centred_cos(o["hB"], tB, mu["B"])
     if probes is not None:
         pA, pB = probe_probs(o["hA"], probes, "A"), probe_probs(o["hB"], probes, "B")
+        m["probe_kl_A"] = _kl(probe_probs(tg["tA"], probes, "A"), pA)
+        m["probe_kl_B"] = _kl(probe_probs(tg["tB"], probes, "B"), pB)
         m["probe_A_bal_acc"] = stats.balanced_accuracy(y, classes[pA.argmax(1)])
         m["probe_B_bal_acc"] = stats.balanced_accuracy(y, classes[pB.argmax(1)])
         if thr is not None:
@@ -683,12 +728,13 @@ def _stage(x: np.ndarray, dev: torch.device) -> torch.Tensor:
     return t
 
 
-def _eval_val(model, xv, tv, probes, classes, dev, eval_aug) -> dict:
+def _eval_val(model, xv, tv, probes, classes, dev, eval_aug, mu=None) -> dict:
     res = {}
     for sev in EVAL_SEVERITIES:
         o = predict(model, xv, sev, eval_aug, dev)
-        res[_sev_name(sev)] = {k: v for k, v in split_metrics(o, tv, probes, classes).items()
-                               if k in ("bal_acc", "cos_A", "cos_B", "review_auroc", "probe_A_bal_acc",
+        res[_sev_name(sev)] = {k: v for k, v in split_metrics(o, tv, probes, classes, mu=mu).items()
+                               if k in ("bal_acc", "cos_A", "cos_B", "cos_A_centred", "cos_B_centred",
+                                        "probe_kl_A", "probe_kl_B", "review_auroc", "probe_A_bal_acc",
                                         "probe_B_bal_acc")}
     return res
 
@@ -801,9 +847,11 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
             (out_dir / f).unlink(missing_ok=True)
     resumed_from = st["epoch"]
 
-    eval_impl = aug_impl_used(eval_aug)
-    aug_used = aug_impl_used(aug)
+    eval_impl0, aug_impl0 = cfg["eval_aug_impl"], cfg["aug_impl"]  # resolved at start (in the hash)
     rel_used = rel_impl_used(rel_impl, dev)
+    mu = {r: F.normalize(torch.from_numpy(tgs["train"][f"t{r}"]), dim=1).mean(0).numpy().astype(np.float64)
+          for r in "AB"}
+    oom_file = out_dir / "oom_retries.json"
     x_train = _stage(xs["train"], dev)
     tt = {k: torch.from_numpy(v).to(dev) for k, v in tgs["train"].items()}
     tt["tA"], tt["tB"] = F.normalize(tt["tA"], dim=1), F.normalize(tt["tB"], dim=1)
@@ -816,36 +864,55 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
         perm = rng.permutation(n_train)
         sevs = rng.uniform(0, severity_max, steps)
         sums = defaultdict(float)
-        for i in range(steps):
-            idx = torch.from_numpy(perm[i * bs:(i + 1) * bs])
-            xb = x_train[idx.to(x_train.device)].to(dev, non_blocking=True)
-            if aug != "none":
-                s_seed = _mix(seed, ep, i)
-                xb = random_dihedral(augment(xb, aug, float(sevs[i]), s_seed), s_seed)
-            z = to_input(xb)
+        try:
+            for i in range(steps):
+                idx = torch.from_numpy(perm[i * bs:(i + 1) * bs])
+                xb = x_train[idx.to(x_train.device)].to(dev, non_blocking=True)
+                if aug != "none":
+                    s_seed = _mix(seed, ep, i)
+                    xb = random_dihedral(augment(xb, aug, float(sevs[i]), s_seed), s_seed)
+                z = to_input(xb)
+                if amp:
+                    z = z.contiguous(memory_format=torch.channels_last)
+                idd = idx.to(dev)
+                with torch.autocast(dev.type, dtype=torch.float16, enabled=amp):
+                    out = model(z)
+                loss, parts = distill_loss(out, tt["tA"][idd], tt["tB"][idd], tt["fused_logits"][idd], tt["y"][idd],
+                                           tt["review"][idd], T=T, w=weights, rel_impl=rel_impl)
+                opt.zero_grad(set_to_none=True)
+                scaler.scale(loss).backward()
+                scaler.unscale_(opt)
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+                scaler.step(opt)
+                scaler.update()
+                sched.step()
+                for k, v in parts.items():
+                    sums[k] += v
+        except torch.OutOfMemoryError:
+            xb = z = out = loss = None
             if amp:
-                z = z.contiguous(memory_format=torch.channels_last)
-            idd = idx.to(dev)
-            with torch.autocast(dev.type, dtype=torch.float16, enabled=amp):
-                out = model(z)
-            loss, parts = distill_loss(out, tt["tA"][idd], tt["tB"][idd], tt["fused_logits"][idd], tt["y"][idd],
-                                       tt["review"][idd], T=T, w=weights, rel_impl=rel_impl)
-            opt.zero_grad(set_to_none=True)
-            scaler.scale(loss).backward()
-            scaler.unscale_(opt)
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
-            scaler.step(opt)
-            scaler.update()
-            sched.step()
-            for k, v in parts.items():
-                sums[k] += v
+                torch.cuda.empty_cache()
+            prev = json.loads(oom_file.read_text()) if oom_file.exists() else {}
+            n_oom = (prev.get("count", 0) if prev.get("config_hash") == chash else 0) + 1
+            if n_oom > MAX_OOM_RETRIES:
+                oom_file.unlink(missing_ok=True)
+                raise
+            oom_file.write_text(json.dumps({"count": n_oom, "epoch": ep + 1, "config_hash": chash}))
+            log(f"CUDA OOM in epoch {ep + 1} (shared GPU; try {n_oom}/{MAX_OOM_RETRIES}); "
+                f"rerun to resume from epoch {st['epoch']} (exit {EXIT_RERUN})")
+            return {"done": False, "stopped": "cuda_oom", "epochs_completed": st["epoch"],
+                    "resumed_from_epoch": resumed_from, "out_dir": str(out_dir)}
         sync()
         secs = time.time() - t_ep
         st["train_secs"] += secs
         st["train_imgs"] += steps * bs
-        val = _eval_val(model, xs["val"], tgs["val"], PR, classes, dev, eval_aug)
+        oom_file.unlink(missing_ok=True)
+        val = _eval_val(model, xs["val"], tgs["val"], PR, classes, dev, eval_aug, mu)
         score = float(np.mean([val[_sev_name(s)]["bal_acc"] for s in EVAL_SEVERITIES]))
         st["epoch"] = ep + 1
+        fb = k2_fallback_info()
+        if fb and fb["stage"] == "runtime":
+            st["k2_fallback"] = st.get("k2_fallback") or {**fb, "epoch": ep + 1}
         st["history"].append({"epoch": ep + 1, "train_loss": {k: v / steps for k, v in sums.items()},
                               "val": val, "select_score": score, "train_seconds": round(secs, 2),
                               "epoch_seconds": round(time.time() - t_ep, 2),
@@ -876,17 +943,18 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
     thr = {"js": float(thr_info["js"]), "review": float(thr_info["review"])}
     _atomic_json(thr, out_dir / "thresholds.json")
     metrics = {"pair": pair.upper(), "dataset": dataset, "backbone": backbone, "epochs": epochs, "batch": batch,
-               "seed": seed, "severity_max": severity_max, "aug_requested": aug, "aug_used": aug_used,
-               "eval_aug_used": eval_impl, "eval_severities": list(EVAL_SEVERITIES), "eval_seed": EVAL_SEED,
+               "seed": seed, "severity_max": severity_max, "aug_requested": aug, "eval_aug_requested": eval_aug,
+               "eval_severities": list(EVAL_SEVERITIES), "eval_seed": EVAL_SEED,
                "rel_loss_impl": rel_used, "loss_weights": cfg["weights"], "T": T, "lr": lr, "lr_backbone": lr_backbone,
                "weight_decay": weight_decay, "device": str(dev), "amp_fp16": amp, "targets_dir": str(targets_dir),
                "targets_sha256": cfg["targets_sha256"], "config_hash": chash,
                "n": {"train": n_train, "val": len(xs["val"]), "test": int(len(tgs["test"]["y"]))},
                "best_epoch": st["best"]["epoch"],
                "selection_rule": "best epoch = highest mean val balanced accuracy over severities "
-                                 f"{list(EVAL_SEVERITIES)} (eval augmentation {eval_impl}, fixed seed)",
+                                 f"{list(EVAL_SEVERITIES)} (eval augmentation {eval_aug}, fixed seed)",
                "device_flag_definition": DEVICE_FLAG_DEFINITION, "thresholds": thr_info, "note": SAFETY}
-    metrics["val"] = {_sev_name(s): split_metrics(o, tgs["val"], PR, classes, thr) for s, o in outs["val"].items()}
+    metrics["val"] = {_sev_name(s): split_metrics(o, tgs["val"], PR, classes, thr, mu)
+                      for s, o in outs["val"].items()}
     _atomic_json({"config_hash": chash, "best_epoch": st["best"]["epoch"], "thresholds": thr,
                   "selection_rule": metrics["selection_rule"], "val_clean": metrics["val"]["clean"],
                   "created_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")},
@@ -895,15 +963,22 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
         xt, yt = load_split(data_dir, dataset, "test")
         _check_aligned("test", yt, tgs["test"])
         outs["test"] = {s: predict(model, xt, s, eval_aug, dev) for s in EVAL_SEVERITIES}
-        metrics["test"] = {_sev_name(s): split_metrics(o, tgs["test"], PR, classes, thr)
+        metrics["test"] = {_sev_name(s): split_metrics(o, tgs["test"], PR, classes, thr, mu)
                            for s, o in outs["test"].items()}
     else:
         metrics["test_skipped"] = f"no preregistration.json in {targets_dir}; test metrics not computed"
+    aug_ips = _aug_throughput(x_train, aug, dev, bs) if aug != "none" else None
+    # what actually ran, decided AFTER every augmentation call (a K2 runtime failure switches to torch mid-run)
+    fb = k2_fallback_info()
+    if fb and fb["stage"] == "runtime" and not st.get("k2_fallback"):
+        st["k2_fallback"] = {**fb, "epoch": "final evaluation"}
+    fb_all = st.get("k2_fallback") or (fb if "k2" in (aug, eval_aug) else None)
+    aug_used, eval_used = _resolved_aug(aug, aug_impl0, fb_all), _resolved_aug(eval_aug, eval_impl0, fb_all)
+    metrics.update(aug_used=aug_used, eval_aug_used=eval_used, k2_fallback=fb_all)
     metrics["throughput"] = {
         "train_images_per_s": st["train_imgs"] / max(st["train_secs"], 1e-9),
         "train_note": f"training step incl. aug={aug_used}, host->device copy, fwd+bwd, AMP={amp}; batch {bs}",
-        "aug_images_per_s": _aug_throughput(x_train, aug, dev, bs) if aug != "none" else None,
-        "device_name": torch.cuda.get_device_name(dev) if amp else "cpu"}
+        "aug_images_per_s": aug_ips, "device_name": torch.cuda.get_device_name(dev) if amp else "cpu"}
     metrics["history"] = st["history"]
     np.savez_compressed(out_dir / "outputs.npz", **{
         f"{sp}_{k}": v for sp in outs for k, v in {
@@ -913,7 +988,7 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
             "review_logit": outs[sp][0.0]["review_logit"].astype(np.float32)}.items()})
     _atomic_json(metrics, out_dir / "metrics.json")
     log(f"done: best epoch {st['best']['epoch']}; val clean bal_acc {metrics['val']['clean']['bal_acc']:.4f}; "
-        f"thresholds {thr}")
+        f"thresholds {thr}; aug_used {aug_used}; eval_aug_used {eval_used}")
     return {**metrics, "done": True, "epochs_completed": st["epoch"], "resumed_from_epoch": resumed_from,
             "out_dir": str(out_dir)}
 

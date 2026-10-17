@@ -130,7 +130,8 @@ def test_distill_loss_default_weights_and_formula():
     out = {"hA": hA, "hB": hB, "logits": logits, "review_logit": rl}
     T = 2.0
     total, parts = student.distill_loss(out, tA, tB, fused, y, rev_y, T=T)
-    assert student.DEFAULT_WEIGHTS == {"cos": 1.0, "rel": 0.5, "kd": 1.0, "ce": 0.5, "rev": 0.5}
+    # Ruling R26: rel default 0.0 for the device student (InfoNCE shrinks the shared teacher-cone component)
+    assert student.DEFAULT_WEIGHTS == {"cos": 1.0, "rel": 0.0, "kd": 1.0, "ce": 0.5, "rev": 0.5}
     p_t = torch.softmax(fused / T, 1)
     kd = T * T * (p_t * (p_t.log() - torch.log_softmax(logits / T, 1))).sum(1).mean()
     assert abs(parts["kd"] - float(kd)) < 1e-5
@@ -320,7 +321,8 @@ def test_train_student_one_step_cpu(tmp_path):
     for s in ("val", "test"):
         for sev in ("clean", "sev0.5", "sev1.0"):
             blk = met[s][sev]
-            for k in ("bal_acc", "cos_A", "cos_B", "review_auroc", "device_flag"):
+            for k in ("bal_acc", "cos_A", "cos_B", "cos_A_centred", "cos_B_centred", "probe_kl_A", "probe_kl_B",
+                      "review_auroc", "device_flag"):
                 assert k in blk, (s, sev, k)
     assert "argmax" in met["device_flag_definition"]
     assert met["throughput"]["train_images_per_s"] > 0
@@ -504,3 +506,89 @@ def test_resolved_aug_impl_invalidates_checkpoint(tmp_path, monkeypatch):
     monkeypatch.setattr(student, "_K2_STATE", {"fns": fake_k2})  # K2 now "merged"
     r = student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="k2", out_dir=out, **kw)
     assert r["resumed_from_epoch"] == 0 and r["aug_used"] == "k2"
+
+
+def test_split_metrics_centred_cos_and_probe_kl_perfect_student():
+    rng = np.random.default_rng(6)
+    n, k = 40, 3
+    y = np.arange(n) % k
+    tA = rng.normal(size=(n, 6)) + 4.0  # narrow cone: a large shared component
+    tA[:, 0] += 2 * y
+    tA /= np.linalg.norm(tA, axis=1, keepdims=True)
+    tB = tA[:, ::-1].copy()
+    arrs = {}
+    for r, t in (("A", tA), ("B", tB)):
+        arrs.update(probes_mod.fit_probe(t, y, t, y).to_arrays(r))
+    tg = {"tA": tA, "tB": tB, "fused_logits": np.log(np.eye(k)[y] * 0.9 + 0.05), "review": (np.arange(n) % 2),
+          "y": y}
+    mu = {"A": tA.mean(0), "B": tB.mean(0)}
+    o = {"hA": tA.copy(), "hB": tB.copy(), "logits": np.eye(k)[y], "review_logit": rng.normal(size=n)}
+    m = student.split_metrics(o, tg, arrs, np.arange(k), mu=mu)
+    assert m["cos_A"] == pytest.approx(1.0, abs=1e-6) and m["cos_A_centred"] == pytest.approx(1.0, abs=1e-6)
+    assert m["probe_kl_A"] == pytest.approx(0.0, abs=1e-6) and m["probe_kl_B"] == pytest.approx(0.0, abs=1e-6)
+    o2 = dict(o, hA=np.tile(mu["A"] / np.linalg.norm(mu["A"]), (n, 1)))  # constant mean direction
+    m2 = student.split_metrics(o2, tg, arrs, np.arange(k), mu=mu)
+    assert m2["cos_A"] > 0.9 and m2["cos_A_centred"] < 0.2  # raw cosine flatters a constant; centred does not
+    assert m2["probe_kl_A"] > 0.05
+
+
+def test_k2_oom_is_not_swallowed(monkeypatch):
+    def oom_aug(x, p, seed, impl="cuda"):
+        raise torch.OutOfMemoryError("simulated")
+    fns = (oom_aug, lambda B, severity, seed, device="cuda": None)
+    monkeypatch.setattr(student, "_K2_STATE", {"fns": fns})
+    with pytest.raises(torch.OutOfMemoryError):
+        student.augment(_tiles(2), "k2", 0.5, 1)
+    assert student._K2_STATE["fns"] is fns  # a transient OOM must not disable K2
+
+
+def test_k2_runtime_failure_is_reported(tmp_path, monkeypatch):
+    data, tgt = make_fixture(tmp_path)
+    out = tmp_path / "out"
+
+    def bad_aug(x, p, seed, impl="cuda"):
+        raise RuntimeError("simulated K2 launch failure")
+    monkeypatch.setattr(student, "_K2_STATE", {"fns": (bad_aug, lambda B, severity, seed, device="cuda": None)})
+    with pytest.warns(UserWarning, match="K2"):
+        r = student.train_student("OPEN", "cam", "lcnet_050", epochs=1, batch=4, aug="k2", out_dir=out,
+                                  targets_dir=tgt, data_dir=data, pretrained=False, device="cpu")
+    met = json.loads((out / "metrics.json").read_text())
+    assert met["aug_used"] == "k2+torch (runtime fallback)" == r["aug_used"]
+    assert met["eval_aug_used"] == "k2+torch (runtime fallback)"
+    assert met["k2_fallback"]["stage"] == "runtime" and "simulated K2 launch failure" in met["k2_fallback"]["reason"]
+
+
+def test_k2_import_fallback_is_reported(tmp_path, monkeypatch):
+    data, tgt = make_fixture(tmp_path)
+    monkeypatch.setitem(sys.modules, "twinread.kernels", None)
+    monkeypatch.setattr(student, "_K2_STATE", {})
+    with pytest.warns(UserWarning, match="K2"):
+        student.train_student("OPEN", "cam", "lcnet_050", epochs=1, batch=4, aug="k2", out_dir=tmp_path / "o",
+                              targets_dir=tgt, data_dir=data, pretrained=False, device="cpu")
+    met = json.loads((tmp_path / "o" / "metrics.json").read_text())
+    assert met["aug_used"] == "torch" and met["k2_fallback"]["stage"] == "import"
+
+
+def test_training_oom_exits_for_rerun_then_gives_up(tmp_path, monkeypatch):
+    data, tgt = make_fixture(tmp_path)
+    kw = dict(targets_dir=tgt, data_dir=data, pretrained=False, device="cpu", aug="torch", epochs=1, batch=4)
+    real = student.torch_camera_aug
+    calls = {"n": 0}
+
+    def flaky(x, severity, seed, as_float=False):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise torch.OutOfMemoryError("simulated")
+        return real(x, severity, seed, as_float)
+    monkeypatch.setattr(student, "torch_camera_aug", flaky)
+    r1 = student.train_student("OPEN", "cam", "lcnet_050", out_dir=tmp_path / "a", **kw)
+    assert r1["done"] is False and r1["stopped"] == "cuda_oom"
+    assert student.train_student("OPEN", "cam", "lcnet_050", out_dir=tmp_path / "a", **kw)["done"] is True
+
+    def always(x, severity, seed, as_float=False):
+        raise torch.OutOfMemoryError("simulated")
+    monkeypatch.setattr(student, "torch_camera_aug", always)
+    for _ in range(student.MAX_OOM_RETRIES):
+        assert student.train_student("OPEN", "cam", "lcnet_050", out_dir=tmp_path / "b", **kw)["done"] is False
+    with pytest.raises(torch.OutOfMemoryError):
+        student.train_student("OPEN", "cam", "lcnet_050", out_dir=tmp_path / "b", **kw)
