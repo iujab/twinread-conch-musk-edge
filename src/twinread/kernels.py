@@ -15,7 +15,15 @@ only the input rows they touch), and ToTensor + Normalize become a 256-entry fp1
 torchvision's own float32 ops, so a correct kernel is bit-exact to ``official(img).half()``.
 
 Three implementations share one plan: the CUDA C++ extension (``csrc/``, two launches covering both readers),
-Triton (``k1_triton.py``) and plain torch ops (CPU or GPU). Research prototype, not a diagnostic device.
+Triton (``k1_triton.py``) and plain torch ops (CPU or GPU).
+
+K2 (``camera_aug``, ``sample_camera_params``): a SIMULATED camera-of-screen capture for student training (warp, HED
+jitter, display gamma + colour profile, moire, glare, defocus, white balance, sensor noise, JPEG-like 8x8 DCT
+quantization). Every op is defined in ``twinread/ref/camera_ops.py`` (float64 numpy reference); the CUDA path is
+``csrc/k2_camera_aug.cu`` (2 launches) and the fallback ``k2_torch.py``. K1 and K2 share one extension module; if
+the K2 translation unit fails to build, ``load_ext`` rebuilds K1 alone so K1 stays usable.
+
+Research prototype, not a diagnostic device.
 """
 from __future__ import annotations
 
@@ -29,15 +37,18 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+import numpy as np
 import torch
 
 from twinread.readers import PreprocessSpec
+from twinread.ref import camera_ops as _co
 
 log = logging.getLogger(__name__)
 
 PROJECT = Path(__file__).resolve().parents[2]
 CSRC = Path(__file__).resolve().parent / "csrc"
-SOURCES = [CSRC / "bindings.cpp", CSRC / "k1_dual_preprocess.cu"]
+SOURCES_K1 = [CSRC / "bindings.cpp", CSRC / "k1_dual_preprocess.cu"]
+SOURCES = SOURCES_K1 + [CSRC / "k2_camera_aug.cu"]
 PRECISION_BITS = 32 - 8 - 2  # Pillow Resample.c
 _HALF = 1 << (PRECISION_BITS - 1)
 
@@ -229,9 +240,18 @@ def default_arch() -> str:
     return "12.0"
 
 
-def load_ext(arch_list: str | None = None, verbose: bool = False) -> types.ModuleType | None:
-    """JIT-build (cached) the K1 CUDA extension into ``$P/build/ext_<arch>``; None + logged reason on failure.
+def _build(name: str, sources: list[Path], bdir: Path, defines: list[str], verbose: bool) -> types.ModuleType:
+    from torch.utils.cpp_extension import load
+    bdir.mkdir(parents=True, exist_ok=True)
+    return load(name=name, sources=[str(s) for s in sources], build_directory=str(bdir),
+                extra_cflags=["-O3", *defines], extra_cuda_cflags=["-O3", *defines], verbose=verbose)
 
+
+def load_ext(arch_list: str | None = None, verbose: bool = False) -> types.ModuleType | None:
+    """JIT-build (cached) the K1+K2 CUDA extension into ``$P/build/ext_<arch>``; None + logged reason on failure.
+
+    If the combined build fails, K1 alone is built (``-DTWINREAD_NO_K2``, ``build/ext_<arch>_k1``) so a K2 problem
+    leaves K1 usable; the K2 error stays in ``EXT_ERRORS[<arch tag>]`` and ``load_k2_ext`` returns None.
     ``arch_list`` defaults to ``default_arch()``. Delta: "8.0" (A100), "8.6" (A40), "9.0" (GH200 on DeltaAI).
     """
     arch = arch_list or default_arch()
@@ -241,19 +261,22 @@ def load_ext(arch_list: str | None = None, verbose: bool = False) -> types.Modul
     saved = {k: os.environ.get(k) for k in ("TORCH_CUDA_ARCH_LIST", "CUDA_HOME", "PATH", "MAX_JOBS")}
     mod = None
     try:
-        from torch.utils.cpp_extension import load
         cuda_home = os.environ.get("CUDA_HOME") or "/usr/local/cuda"
         os.environ["CUDA_HOME"] = cuda_home
         os.environ["PATH"] = os.path.join(cuda_home, "bin") + os.pathsep + os.environ.get("PATH", "")
         os.environ["TORCH_CUDA_ARCH_LIST"] = arch
         os.environ.setdefault("MAX_JOBS", "4")
-        bdir = PROJECT / "build" / f"ext_{tag}"
-        bdir.mkdir(parents=True, exist_ok=True)
-        mod = load(name=f"twinread_ext_{tag}", sources=[str(s) for s in SOURCES], build_directory=str(bdir),
-                   extra_cflags=["-O3"], extra_cuda_cflags=["-O3"], verbose=verbose)
+        try:
+            mod = _build(f"twinread_ext_{tag}", SOURCES, PROJECT / "build" / f"ext_{tag}", [], verbose)
+        except Exception as e:  # noqa: BLE001 - K1+K2 failed: keep K1 usable
+            EXT_ERRORS[tag] = f"{type(e).__name__}: {e}"
+            log.warning("twinread K1+K2 extension (arch %s) failed to build: %s; building K1 alone", arch,
+                        EXT_ERRORS[tag])
+            mod = _build(f"twinread_ext_{tag}_k1", SOURCES_K1, PROJECT / "build" / f"ext_{tag}_k1",
+                         ["-DTWINREAD_NO_K2"], verbose)
     except Exception as e:  # noqa: BLE001 - any build/import failure means "use a fallback"
-        EXT_ERRORS[tag] = f"{type(e).__name__}: {e}"
-        log.warning("twinread CUDA extension (arch %s) unavailable: %s", arch, EXT_ERRORS[tag])
+        EXT_ERRORS[f"{tag}_k1"] = f"{type(e).__name__}: {e}"
+        log.warning("twinread CUDA extension (arch %s) unavailable: %s", arch, EXT_ERRORS[f"{tag}_k1"])
         mod = None
     finally:
         for k, v in saved.items():
@@ -263,6 +286,12 @@ def load_ext(arch_list: str | None = None, verbose: bool = False) -> types.Modul
                 os.environ[k] = v
     _EXT[tag] = mod
     return mod
+
+
+def load_k2_ext(arch_list: str | None = None, verbose: bool = False) -> types.ModuleType | None:
+    """The extension module if it carries K2 (``camera_aug``), else None (reason in ``EXT_ERRORS``)."""
+    mod = load_ext(arch_list, verbose)
+    return mod if mod is not None and hasattr(mod, "camera_aug") else None
 
 
 # ------------------------------------------------------------------------------------------- dispatcher
@@ -331,3 +360,149 @@ def dual_preprocess(x: torch.Tensor, specA: PreprocessSpec, specB: PreprocessSpe
         from twinread.k1_triton import dual_preprocess_triton
         return dual_preprocess_triton(x, pa, pb)
     return _torch_one(x, pa), _torch_one(x, pb)
+
+
+# =========================================================================================== K2 camera-of-screen
+_K2_COL = {}
+_c = 0
+for _name, _w in _co.FIELDS:
+    _K2_COL[_name] = (_c, _c + _w)
+    _c += _w
+assert _c == _co.NPARAM == 35
+
+
+@dataclass
+class CameraAugParams:
+    """Per-image K2 parameters (a SIMULATED camera filming a screen). Each field is a float32 tensor [B] or [B, k]
+    on the same device as the images; formulas in ``twinread/ref/camera_ops.py``.
+
+    gamma [B] display gamma (1 = off); wb_gain [B,3] white-balance gains (1 = off); moire_amp [B] (0 = off),
+    moire_period [B] px, moire_angle [B] rad; glare_amp [B] in [0,1] (0 = off), glare_angle [B] rad;
+    warp [B,8] homography delta from identity in normalized coords (0 = off); blur_sigma [B] px, <= 4 (0 = off);
+    noise_std [B] in [0,1] units (0 = off); jpeg_quality [B] IJG quality 10..95 (0 = JPEG off);
+    hed_alpha [B,3] (1 = off), hed_beta [B,3] (0 = off); profile [B,9] display colour-profile matrix, row-major
+    (identity = off; None means identity). ``profile`` is an addition to the brief's field list: it carries the
+    "colour profile" half of the display op, and its default keeps the brief's 13-field construction valid."""
+    gamma: torch.Tensor
+    wb_gain: torch.Tensor
+    moire_amp: torch.Tensor
+    moire_period: torch.Tensor
+    moire_angle: torch.Tensor
+    glare_amp: torch.Tensor
+    glare_angle: torch.Tensor
+    warp: torch.Tensor
+    blur_sigma: torch.Tensor
+    noise_std: torch.Tensor
+    jpeg_quality: torch.Tensor
+    hed_alpha: torch.Tensor
+    hed_beta: torch.Tensor
+    profile: torch.Tensor | None = None
+
+    def __len__(self) -> int:
+        return int(self.gamma.shape[0])
+
+    def packed(self, B: int, device: str | torch.device) -> torch.Tensor:
+        """float32 [B, 35] in the kernel's column order (``camera_ops.FIELDS``); validates every field's shape."""
+        cols = []
+        for name, w in _co.FIELDS:
+            t = getattr(self, name)
+            if t is None:
+                t = torch.eye(3, dtype=torch.float32).reshape(1, 9).expand(B, 9)
+            t = torch.as_tensor(t)
+            ok = ((B, w),) + (((B,),) if w == 1 else ())
+            if tuple(t.shape) not in ok:
+                raise ValueError(f"CameraAugParams.{name}: expected shape {ok[-1]} for a batch of {B}, "
+                                 f"got {tuple(t.shape)}")
+            cols.append(t.to(device=device, dtype=torch.float32).reshape(B, w))
+        return torch.cat(cols, 1).contiguous()
+
+    @classmethod
+    def from_arrays(cls, arrs: dict, device: str | torch.device = "cuda") -> "CameraAugParams":
+        """From numpy arrays keyed by field ([B] or [B, k]); one host-to-device copy."""
+        B = int(np.asarray(arrs["gamma"]).shape[0])
+        P = np.concatenate([np.asarray(arrs[n], dtype=np.float32).reshape(B, w) for n, w in _co.FIELDS], 1)
+        T = torch.from_numpy(np.ascontiguousarray(P)).to(device)
+        return cls(**{n: (T[:, a] if b - a == 1 else T[:, a:b]) for n, (a, b) in _K2_COL.items()})
+
+    @classmethod
+    def from_dicts(cls, dicts: list[dict], device: str | torch.device = "cuda") -> "CameraAugParams":
+        """From per-image dicts in the ``camera_ops`` format (extra keys such as seed/index are ignored)."""
+        arrs = {n: np.asarray([d[n] for d in dicts], dtype=np.float32).reshape(len(dicts), w)
+                for n, w in _co.FIELDS}
+        return cls.from_arrays(arrs, device)
+
+    @classmethod
+    def identity(cls, B: int, device: str | torch.device = "cuda") -> "CameraAugParams":
+        return cls.from_arrays(_co.params_from_uniforms(np.zeros((B, _co.N_UNIFORM)), 0.0), device)
+
+    def to_dicts(self) -> list[dict]:
+        """Per-image dicts in the ``camera_ops`` format (without seed/index)."""
+        P = self.packed(len(self), "cpu").numpy()
+        return [{n: (float(row[a]) if b - a == 1 else [float(v) for v in row[a:b]]) for n, (a, b) in _K2_COL.items()}
+                for row in P]
+
+
+def sample_camera_params(B: int, severity: float, seed: int, device: str | torch.device = "cuda") -> CameraAugParams:
+    """Per-image params for a batch of B (severity 0 = identity params; ranges in ``camera_ops.params_from_uniforms``).
+
+    Drawn on the host from numpy's PCG64 seeded by ``seed``, so the values do not depend on the device, and image i
+    depends only on (seed, i): ``camera_ops.sample_params(severity, seed)`` is image 0."""
+    if B < 0:
+        raise ValueError(f"B must be >= 0, got {B}")
+    arrs = _co.params_from_uniforms(_co.sample_uniforms(int(B), seed), float(severity))
+    return CameraAugParams.from_arrays(arrs, device)
+
+
+@functools.lru_cache(maxsize=1)
+def _k2_consts() -> tuple[float, ...]:
+    return tuple(float(v) for v in np.concatenate([_co.HED_FROM_RGB.ravel(), _co.RGB_FROM_HED.ravel(),
+                                                   _co.dct_matrix().ravel()]))
+
+
+def resolve_k2_impl(impl: str, x: torch.Tensor) -> str:
+    """cuda -> torch, warning once per reason."""
+    if impl not in ("cuda", "torch"):
+        raise ValueError(f"unknown impl {impl!r}")
+    if impl == "cuda":
+        if x.is_cuda and load_k2_ext() is not None:
+            return "cuda"
+        why = "input is not on CUDA" if not x.is_cuda else "K2 CUDA extension unavailable"
+        _warn_once(f"k2:cuda->torch:{why}", f"K2 {why}; falling back to torch")
+    return "torch"
+
+
+def _camera_aug_impl(x: torch.Tensor, params: CameraAugParams, seed: int, impl: str = "cuda",
+                     return_float: bool = False) -> tuple[torch.Tensor, torch.Tensor | None]:
+    """(uint8 output, float32 pre-JPEG image in [0,1] if ``return_float`` else None)."""
+    _check_input(x)
+    if not isinstance(params, CameraAugParams):
+        raise TypeError(f"params must be CameraAugParams, got {type(params).__name__}")
+    if impl not in ("cuda", "torch"):
+        raise ValueError(f"unknown impl {impl!r}")
+    B = x.shape[0]
+    P = params.packed(B, x.device)
+    if B == 0:
+        return torch.empty_like(x), (torch.empty(x.shape, dtype=torch.float32, device=x.device) if return_float
+                                     else None)
+    impl = resolve_k2_impl(impl, x)
+    seed = int(seed)
+    if impl == "cuda":
+        ext = load_k2_ext()
+        smax = float(torch.nan_to_num(P[:, _K2_COL["blur_sigma"][0]], nan=0.0).max())  # one host sync per call
+        s64 = seed & 0xFFFFFFFFFFFFFFFF
+        s64 = s64 - (1 << 64) if s64 >= (1 << 63) else s64
+        out, inter = ext.camera_aug(x.contiguous(), P, s64, _co.blur_radius(smax), list(_k2_consts()))
+        return out, (inter if return_float else None)
+    from twinread.k2_torch import camera_aug_torch
+    return camera_aug_torch(x, P, seed, return_float)
+
+
+def camera_aug(x: torch.Tensor, params: CameraAugParams, seed: int,
+               impl: Literal["cuda", "torch"] = "cuda") -> torch.Tensor:
+    """K2: simulated camera-of-screen capture. x uint8 [B,H,W,3] -> uint8 [B,H,W,3].
+
+    Op order (fixed): warp (bilinear) -> HED jitter -> display gamma + colour profile -> moire -> glare -> defocus
+    (separable Gaussian, radius ceil(3 sigma)) -> white balance -> sensor noise (Philox keyed by ``seed`` and the
+    image's index in the batch) -> JPEG-like 8x8 DCT quantization (4:4:4, chroma not subsampled). ``impl="cuda"``
+    falls back to torch (one warning) when x is not on CUDA or the extension is unavailable."""
+    return _camera_aug_impl(x, params, seed, impl)[0]

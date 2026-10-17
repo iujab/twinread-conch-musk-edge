@@ -1,9 +1,13 @@
-"""Compile-check the K1 extension for other GPU architectures and record the result in results/kernels/builds.json.
+"""Compile-check the K1+K2 extension for other GPU architectures and record the result in
+results/kernels/builds.json.
 
-For each arch this runs, in a fresh process (exactly the plan's Step 7 command):
-  TORCH_CUDA_ARCH_LIST=<arch> python -c "from twinread.kernels import load_ext; assert load_ext('<arch>')"
-then lists the SASS targets embedded in the built .so with cuobjdump. Compile only: an sm_80-only binary is not
-launched on the local sm_120 GPU. Delta: 8.0 = A100, 8.6 = A40, 9.0 = GH200 (DeltaAI).
+For each arch this runs, in a fresh process:
+  TORCH_CUDA_ARCH_LIST=<arch> python -c "from twinread.kernels import load_ext; m = load_ext('<arch>'); \
+      assert m is not None and hasattr(m, 'camera_aug')"
+(the second condition fails if only the K1 fallback module built), then lists the SASS targets and kernel symbols
+embedded in the built .so with cuobjdump. COMPILE ONLY: no record here was executed (``"executed": false``); an
+sm_80/sm_90 binary cannot run on the local sm_120 GPU, and sm_120 execution is covered by the test suite, not by
+this script. Delta: 8.0 = A100, 8.6 = A40, 9.0 = GH200 (DeltaAI).
   python bench/build_check.py --clean --arch 8.0 --arch 9.0 --arch 12.0
 """
 from __future__ import annotations
@@ -24,6 +28,11 @@ sys.path.insert(0, str(P / "src"))
 OUT = P / "results" / "kernels" / "builds.json"
 
 
+def git_rev() -> str:
+    return subprocess.run(["git", "-C", str(P), "describe", "--always", "--dirty", "--exclude", "*"],
+                          capture_output=True, text=True).stdout.strip()
+
+
 def check(arch: str, clean: bool) -> dict:
     from twinread.kernels import _arch_tag
     tag = _arch_tag(arch)
@@ -33,14 +42,16 @@ def check(arch: str, clean: bool) -> dict:
                PATH="/usr/local/cuda/bin:" + os.environ.get("PATH", ""))
     if clean:
         env["CCACHE_DISABLE"] = "1"  # /usr/bin/ccache wraps gcc/nvcc on this machine
-    cmd = [sys.executable, "-c", f"from twinread.kernels import load_ext; assert load_ext('{arch}')"]
+    cmd = [sys.executable, "-c", f"from twinread.kernels import load_ext; m = load_ext('{arch}'); "
+           "assert m is not None and hasattr(m, 'camera_aug')"]
     t = time.time()
     pr = subprocess.run(cmd, cwd=str(P), env=env, capture_output=True, text=True, timeout=900)
     secs = time.time() - t
     so = P / "build" / f"ext_{tag}" / f"twinread_ext_{tag}.so"
     rec = {"arch": arch, "command": f"TORCH_CUDA_ARCH_LIST=\"{arch}\" python -c \"{cmd[2]}\"",
            "ok": pr.returncode == 0 and so.exists(), "returncode": pr.returncode, "seconds": round(secs, 1),
-           "clean_build": clean,
+           "clean_build": clean, "executed": False, "git": git_rev(),
+           "note": "compile-only: built and SASS/symbols listed; no kernel from this binary was launched",
            "so": str(so.relative_to(P)) if so.exists() else None,
            "stderr_tail": pr.stderr.strip().splitlines()[-5:] if pr.returncode else []}
     if so.exists():
@@ -48,8 +59,8 @@ def check(arch: str, clean: bool) -> dict:
         rec["embedded_sass"] = sorted(set(re.findall(r"sm_\d+", lst.stdout)))
         sym = subprocess.run(["/usr/local/cuda/bin/cuobjdump", "--dump-elf-symbols", str(so)], capture_output=True,
                              text=True).stdout
-        rec["kernels"] = [k for k in ("k1_hpass_dual", "k1_vpass_vec4", "k1_hpass", "k1_vpass")
-                          if re.search(rf"\d{k}E", sym)]  # mangled: <len><name>E
+        rec["kernels"] = [k for k in ("k1_hpass_dual", "k1_vpass_vec4", "k1_hpass", "k1_vpass", "k2_fused", "k2_jpeg",
+                                      "k2_philox") if re.search(rf"\d{k}E", sym)]  # mangled: <len><name>E
     return rec
 
 
@@ -62,7 +73,9 @@ def main():
     d = json.loads(OUT.read_text()) if OUT.exists() else {}
     nvcc = subprocess.run(["/usr/local/cuda/bin/nvcc", "--version"], capture_output=True, text=True).stdout
     d["toolchain"] = {"nvcc": nvcc.strip().splitlines()[-1], "date": dt.datetime.now().isoformat(timespec="seconds"),
-                      "flags": "extra_cuda_cflags=['-O3'] (no --use_fast_math), extra_cflags=['-O3']"}
+                      "flags": "extra_cuda_cflags=['-O3'] (no --use_fast_math), extra_cflags=['-O3']",
+                      "git": git_rev(), "sources": "bindings.cpp, k1_dual_preprocess.cu, k2_camera_aug.cu",
+                      "executed": False}
     d.setdefault("builds", {})
     for arch in archs:
         rec = check(arch, a.clean)
