@@ -144,3 +144,35 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
 - **Concern for the device:** int8 costs test bal acc for every student so far (fp32 ONNX -> int8: CM 0.9415 -> 0.9219,
   OPEN 0.9362 -> 0.9085, OPEN torch-aug 0.9486 -> 0.9257) much more than val (CM 0.9823 -> 0.9774, OPEN 0.985 -> 0.9769);
   calibration uses 512 clean train tiles and test is a different patient set. Not addressed here.
+
+### Task 8b fix round 1 (R31; honesty additions, numbers copied from the JSON named in each bullet)
+- **The deployed int8 CM student is below every teacher.** Its test bal acc is 0.9219 (`results/student/cm_crc/int8_drift.json`,
+  int8). Every CM teacher scores higher on the same test tiles (`results/cm_local/CM/crc/readers.json`, `fusion.json`): the
+  aligned-feature probes (CONCH 0.9355, MUSK 0.9310), the primary probes (CONCH 0.9413, MUSK 0.9480) and the fused reader
+  (0.9555). Its value is keeping most of their accuracy at a small fraction of the size, offline, not beating them
+  (`results/student/model_sizes.json`): 5,654,634 parameters (int8 ONNX 6,012,392 bytes) against 395,380,992 in the two
+  teachers' vision towers (CONCH 90,392,832; MUSK 304,988,160), a ratio of 0.0143; the int8 file is 0.0028 of the
+  teachers' checkpoint bytes (2,152,729,423). CONCH's count is its released checkpoint (200,522,497 parameters); the CoCa
+  text decoder the library builds (194,710,272) has no released weights and is not counted.
+- **Like-for-like comparison: aligned features.** The student distils the teachers' text-aligned embeddings, and the
+  device classifies hA/hB with the aligned-feature probes, so those probes are its like-for-like reference. Test, clean:
+
+  | | reader A | reader B | class head / fused |
+  |---|---|---|---|
+  | CM teachers, primary probes (frozen features; `readers.json` probe) | CONCH 0.9413 | MUSK 0.9480 | fused 0.9555 |
+  | CM teachers, aligned-feature probes (`readers.json` aligned_probe) | CONCH 0.9355 | MUSK 0.9310 | – |
+  | CM student fp32 (torch AMP), hA/hB through those same aligned probes (`metrics.json` probe_A/B_bal_acc) | 0.9419 | 0.9401 | class head 0.9415 |
+  | CM student int8 (`int8_drift.json`) | – | – | class head 0.9219 |
+  | OPEN teachers, primary probes (`results/open/OPEN/crc/readers.json`, `fusion.json`) | PathGen-CLIP 0.9435 | QuiltNet-B-16 0.9141 | fused 0.9443 |
+  | OPEN teachers, aligned-feature probes | 0.943 | 0.9172 | – |
+  | OPEN student fp32, hA/hB through the aligned probes (`open_crc/metrics.json`) | 0.9218 | 0.9062 | class head 0.9359 |
+  | OPEN student int8 (`open_crc/int8_drift.json`) | – | – | class head 0.9085 |
+
+  The fp32 CM student's hA/hB score slightly above the teachers' own aligned features through the same probes. Its trunk
+  is fine-tuned with labels (CE + KD), so this is expected and is not evidence of better features. After int8 the
+  deployed class head is below all of them.
+- **K1 context** (`results/kernels/k1_embed_e2e.json`, `context`). The organizers' observed bottleneck was a per-image
+  hosted server: CPU preprocessing in the uvicorn request handler, CONCH on one A40. Our x1.11 end-to-end figure comes
+  from a different regime: a batched, GPU-forward-bound pipeline on an RTX 5060 with CONCH in fp32, where preprocessing
+  is 9.5% of the reference run. The preprocessing speedup itself is x202. On faster GPUs or in per-image serving the
+  preprocessing share is different, and neither regime was measured here.
