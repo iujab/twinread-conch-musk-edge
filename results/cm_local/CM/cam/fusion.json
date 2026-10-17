@@ -1,0 +1,88 @@
+{
+  "candidates": {
+    "average": {
+      "bal_acc": 0.976,
+      "bal_acc_ci": [
+        0.9449775474491734,
+        0.9852284659777109
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9449775474491734,
+        "hi": 0.9852284659777109,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.9759999573332575,
+      "accuracy": 0.976
+    },
+    "concat_lr": {
+      "bal_acc": 0.97,
+      "bal_acc_ci": [
+        0.9354676772942384,
+        0.9815066428423799
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9354676772942384,
+        "hi": 0.9815066428423799,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.9699999866666608,
+      "accuracy": 0.97
+    },
+    "gated_mlp": {
+      "bal_acc": 0.9646666666666667,
+      "bal_acc_ci": [
+        0.9077408786603287,
+        0.9797908752861307
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9077408786603287,
+        "hi": 0.9797908752861307,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.9646583574538192,
+      "accuracy": 0.9646666666666667
+    }
+  },
+  "primary": "gated_mlp",
+  "best_single_reader": "A",
+  "delta_bal_acc_vs_best_single": -0.0040000000000000036,
+  "delta_ci_info": {
+    "lo": -0.036985370611419016,
+    "hi": 0.007568145643986828,
+    "n": 1000,
+    "n_degenerate": 0,
+    "unstable": false
+  },
+  "delta_ci": [
+    -0.036985370611419016,
+    0.007568145643986828
+  ],
+  "ci_mode": "cluster bootstrap by slide",
+  "mcnemar_note": "tile-level exact test; anti-conservative when tiles cluster by slide",
+  "mcnemar_fused_vs_A": {
+    "b": 19,
+    "c": 25,
+    "p": 0.4513808323961257
+  },
+  "mcnemar_fused_vs_B": {
+    "b": 32,
+    "c": 23,
+    "p": 0.2806097176983541
+  },
+  "mcnemar_fused_vs_best_single": {
+    "b": 19,
+    "c": 25,
+    "p": 0.4513808323961257
+  },
+  "val_balanced_accuracy": {
+    "average": 0.9413333333333334,
+    "concat_lr": 0.9239999999999999,
+    "gated_mlp": 0.944
+  }
+}
