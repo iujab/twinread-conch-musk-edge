@@ -5,7 +5,7 @@ import zlib
 import numpy as np
 import pytest
 
-from twinread import analyze, blindspots, fusion, prompts, review, stats
+from twinread import analyze, blindspots, fusion, probes, prompts, review, stats
 
 
 def test_js_divergence_identical_is_zero():
@@ -140,7 +140,7 @@ def test_preregistration_refuses_overwrite(tmp_path):
 def _make_fixture(tmp_path, d=12):
     rng = np.random.default_rng(0)
     emb = tmp_path / "data" / "emb" / "cam"
-    emb.mkdir(parents=True)
+    emb.mkdir(parents=True, exist_ok=True)
     labels = {}
     sizes = {"train": 400, "val": 150, "test": 200}
     for s, n in sizes.items():
@@ -170,7 +170,7 @@ def test_run_pair_analysis_test_evaluated_once(tmp_path, monkeypatch):
 
     monkeypatch.setattr(analyze, "_test_metrics", counting)
     res = analyze.run_pair_analysis("CM", "cam", tmp_path / "res", data_dir=data_dir, labels=labels, banks=banks,
-                                    epochs=3, n_boot=30)
+                                    epochs=3, n_boot=30, train_folds=np.arange(400) % 5)
     assert calls == [True]
     out = tmp_path / "res" / "CM" / "cam"
     for f in ("readers.json", "fusion.json", "review.json", "blindspots.csv", "preregistration.json",
@@ -186,5 +186,168 @@ def test_run_pair_analysis_test_evaluated_once(tmp_path, monkeypatch):
     assert {"A_coef", "A_intercept", "A_mean", "A_scale", "B_coef"} <= set(pa.files)
     assert res["fusion"]["candidates"][res["primary"]]["bal_acc"] > 0.6
     with pytest.raises(FileExistsError):  # rerun must not clobber the pre-registration
-        analyze.run_pair_analysis("CM", "cam", tmp_path / "res", data_dir=data_dir, labels=labels, banks=banks, epochs=1)
+        analyze.run_pair_analysis("CM", "cam", tmp_path / "res", data_dir=data_dir, labels=labels, banks=banks, epochs=1,
+                                   train_folds=np.arange(400) % 5)
     assert calls == [True]
+
+
+# ---------------------------------------------------------------- fix round 1 (R15-R20)
+def _softmax_np(p, z):
+    w, b = p.softmax_params()
+    a = ((np.asarray(z, np.float64) - p.mean) / p.scale) @ w.T + b
+    a -= a.max(1, keepdims=True)
+    e = np.exp(a)
+    return e / e.sum(1, keepdims=True)
+
+
+@pytest.mark.parametrize("k", [2, 9])
+def test_probe_softmax_form_matches_sklearn(k):
+    rng = np.random.default_rng(0)
+    z, y = _blobs(600, rng, d=10, k=k, sep=2.0)
+    zv, yv = _blobs(200, rng, d=10, k=k, sep=2.0)
+    p = probes.fit_probe(z, y, zv, yv)
+    arrs = p.to_arrays("A")
+    assert arrs["A_coef"].shape == (k, 10) and arrs["A_intercept"].shape == (k,)
+    assert arrs["A_classes"].tolist() == list(range(k))
+    assert np.allclose(_softmax_np(p, zv), p.predict_proba(zv), atol=1e-9)
+    # float32 stored arrays (what the device sees) agree too
+    a = ((zv - arrs["A_mean"]) / arrs["A_scale"]) @ arrs["A_coef"].T + arrs["A_intercept"]
+    e = np.exp(a - a.max(1, keepdims=True))
+    assert np.allclose(e / e.sum(1, keepdims=True), p.predict_proba(zv), atol=1e-4)
+
+
+def test_bootstrap_cluster_wider_than_tile_level():
+    rng = np.random.default_rng(0)
+    g = np.repeat(np.arange(10), 100)
+    y = np.zeros(1000, int)
+    pred = (rng.uniform(size=10)[g] < 0.5).astype(int)  # whole slides right or wrong together
+    f = lambda a, b: float((a == b).mean())
+    lo, hi = stats.bootstrap_ci(f, y, pred, n=300)
+    clo, chi = stats.bootstrap_ci(f, y, pred, n=300, groups=g)
+    assert (chi - clo) > 3 * (hi - lo)
+
+
+def test_oof_predictions_are_out_of_fold():
+    rng = np.random.default_rng(0)
+    n, d = 300, 250
+    zA, zB = rng.normal(size=(n, d)), rng.normal(size=(n, d))
+    y = rng.integers(0, 2, n)  # pure noise: in-sample fit is near perfect, OOF must be near chance
+    folds = np.arange(n) % 5
+    C = {"A": 1.0, "B": 1.0, "concat_lr": 1.0}
+    C = {k: 100.0 for k in C}
+    pA, pB, pF = analyze._oof_train(zA, zB, y, folds, "concat_lr", C, zA[:50], zB[:50], y[:50], 2)
+    insample = probes.fit_probe(zA, y, zA, y, Cs=(100.0,)).predict_proba(zA).argmax(1)
+    assert (insample == y).mean() > 0.95 and (pA.argmax(1) == y).mean() < 0.65
+    assert np.allclose(pF.sum(1), 1)
+
+
+def test_train_folds_crc_grouped_and_cam_stratified(tmp_path):
+    y = np.repeat(np.arange(3), 200)
+    g = np.arange(600) // 10
+    np.save(tmp_path / "crc_train_y.npy", y)
+    np.save(tmp_path / "crc_train_g.npy", g)
+    from twinread.data import split_val
+    tr, _ = split_val(y, 0.1, 0, groups=g)
+    f = analyze._train_folds(tmp_path, "crc", y[tr])
+    gt = g[tr]
+    assert set(f) == set(range(5)) and all(len(set(gt[f == k]) & set(gt[f != k])) == 0 for k in range(5))
+    rng = np.random.default_rng(0)
+    h = rng.integers(0, 5, 1000)
+    yc = rng.integers(0, 2, 1000)
+    np.save(tmp_path / "cam_h.npy", h)
+    np.save(tmp_path / "cam_y.npy", yc)
+    idx = np.flatnonzero(np.isin(h, (0, 3, 4)))
+    f = analyze._train_folds(tmp_path, "cam", yc[idx])
+    strata = h[idx] * 2 + yc[idx]
+    for s in np.unique(strata):
+        c = np.bincount(f[strata == s], minlength=5)
+        assert c.max() - c.min() <= 1
+
+
+def _run(tmp_path, **kw):
+    data_dir, labels, banks = _make_fixture(tmp_path)
+    return analyze.run_pair_analysis("CM", "cam", tmp_path / "res", data_dir=data_dir, labels=labels, banks=banks,
+                                     epochs=2, n_boot=20, train_folds=np.arange(400) % 5, **kw)
+
+
+def test_prereg_records_oof_and_val_chosen_best_single(tmp_path):
+    res = _run(tmp_path)
+    pre = json.loads((tmp_path / "res/CM/cam/preregistration.json").read_text())
+    assert "OOF (K=5)" in pre["train_targets"] and pre["ci_mode"] == analyze.CI_TILE
+    v = pre["val_probe_balanced_accuracy"]
+    assert pre["best_single_reader"] == ("A" if v["A"] >= v["B"] else "B")
+    assert res["fusion"]["best_single_reader"] == pre["best_single_reader"]
+    assert res["fusion"]["ci_mode"] == analyze.CI_TILE
+    assert not list((tmp_path / "res/CM/cam").glob("*.tmp"))
+
+
+def test_crash_after_prereg_is_resumable_and_changed_plan_refused(tmp_path, monkeypatch):
+    import shutil
+    pdir = tmp_path / "prompts"
+    shutil.copytree(analyze.PROMPTS_DIR, pdir)
+    real = analyze._test_metrics
+    monkeypatch.setattr(analyze, "_test_metrics", lambda ctx: (_ for _ in ()).throw(RuntimeError("boom")))
+    with pytest.raises(RuntimeError):
+        _run(tmp_path, prompts_dir=pdir)
+    pre = tmp_path / "res/CM/cam/preregistration.json"
+    frozen = pre.read_bytes()
+    monkeypatch.setattr(analyze, "_test_metrics", real)
+    _run(tmp_path, prompts_dir=pdir)  # identical plan: resumes without rewriting the prereg
+    assert pre.read_bytes() == frozen
+    assert (tmp_path / "res/CM/cam/review.json").exists()
+    # a crash followed by a changed plan (prompts edited) must refuse
+    shutil.rmtree(tmp_path / "res/CM/cam")
+    monkeypatch.setattr(analyze, "_test_metrics", lambda ctx: (_ for _ in ()).throw(RuntimeError("boom")))
+    with pytest.raises(RuntimeError):
+        _run(tmp_path, prompts_dir=pdir)
+    monkeypatch.setattr(analyze, "_test_metrics", real)
+    t = json.loads((pdir / "templates.json").read_text())
+    t["templates"].append("a new template {}")
+    (pdir / "templates.json").write_text(json.dumps(t))
+    with pytest.raises(FileExistsError):
+        _run(tmp_path, prompts_dir=pdir)
+
+
+def test_crash_before_prereg_leaves_no_prereg(tmp_path, monkeypatch):
+    def boom(*a, **k):
+        raise RuntimeError("no reader")
+
+    monkeypatch.setattr(analyze, "load_reader", boom)
+    data_dir, labels, _ = _make_fixture(tmp_path)
+    with pytest.raises(RuntimeError):
+        analyze.run_pair_analysis("CM", "cam", tmp_path / "res", data_dir=data_dir, labels=labels, banks=None,
+                                  epochs=1, n_boot=10, train_folds=np.arange(400) % 5)
+    assert not (tmp_path / "res/CM/cam/preregistration.json").exists()
+
+
+def test_bank_cache_is_keyed(tmp_path, monkeypatch):
+    import shutil
+    calls = []
+
+    class Fake:
+        def encode_texts(self, texts):
+            r = np.random.default_rng(len(texts)).normal(size=(len(texts), 8)).astype(np.float32)
+            return r / np.linalg.norm(r, axis=1, keepdims=True)
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(analyze, "load_reader", lambda n, d: calls.append(n) or Fake())
+    (tmp_path / "emb" / "cam").mkdir(parents=True)
+    pdir = tmp_path / "prompts"
+    shutil.copytree(analyze.PROMPTS_DIR, pdir)
+    get = lambda: analyze._bank(tmp_path, "cam", "conch", None, pdir)
+    b1 = get()
+    assert np.allclose(get(), b1) and len(calls) == 1  # cache hit
+    t = json.loads((pdir / "templates.json").read_text())
+    t["templates"].append("another {}")
+    (pdir / "templates.json").write_text(json.dumps(t))
+    get()
+    assert len(calls) == 2  # prompts changed -> recomputed
+    import dataclasses
+    spec = analyze.spec_of("conch")
+    monkeypatch.setattr(analyze, "spec_of", lambda n: dataclasses.replace(spec, size=spec.size + 1))
+    get()
+    assert len(calls) == 3  # preprocessing spec changed -> recomputed
+    side = json.loads((tmp_path / "emb/cam/bank_conch.json").read_text())
+    assert side["reader"] == "conch" and "prompts_sha256" in side

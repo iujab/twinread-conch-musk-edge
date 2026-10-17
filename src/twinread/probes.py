@@ -14,9 +14,22 @@ class Probe:
     def predict_proba(self, z) -> np.ndarray:
         return self.lr.predict_proba((np.asarray(z, np.float64) - self.mean) / self.scale)
 
+    def softmax_params(self):
+        """(coef [C,d], intercept [C]) such that softmax(((z-mean)/scale) @ coef.T + intercept) == predict_proba.
+
+        A binary logistic regression has one coef row; it is expanded to the equivalent 2-row softmax form
+        (zeros for class 0, w for class 1), so a numpy-only device can use one code path for any class count.
+        """
+        w, b = self.lr.coef_.astype(np.float64), self.lr.intercept_.astype(np.float64)
+        if w.shape[0] == 1:
+            w, b = np.vstack([np.zeros_like(w), w]), np.concatenate([[0.0], b])
+        return w, b
+
     def to_arrays(self, prefix: str) -> dict:
-        return {f"{prefix}_coef": self.lr.coef_.astype(np.float32), f"{prefix}_intercept": self.lr.intercept_.astype(np.float32),
-                f"{prefix}_mean": self.mean.astype(np.float32), f"{prefix}_scale": self.scale.astype(np.float32)}
+        w, b = self.softmax_params()
+        return {f"{prefix}_coef": w.astype(np.float32), f"{prefix}_intercept": b.astype(np.float32),
+                f"{prefix}_mean": self.mean.astype(np.float32), f"{prefix}_scale": self.scale.astype(np.float32),
+                f"{prefix}_classes": np.asarray(self.classes_).astype(np.int64)}
 
 
 def standardizer(z):

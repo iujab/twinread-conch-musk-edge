@@ -18,8 +18,8 @@ def fuse_average(pA, pB) -> np.ndarray:
 
 
 class Fused:
-    def __init__(self, name, fn):
-        self.name, self._fn = name, fn
+    def __init__(self, name, fn, info=None):
+        self.name, self._fn, self.info = name, fn, info or {}
 
     def predict_proba(self, zA, zB) -> np.ndarray:
         return self._fn(zA, zB)
@@ -37,7 +37,7 @@ def fit_concat_lr(zA_tr, zB_tr, y_tr, zA_val, zB_val, y_val, Cs=(0.01, 0.1, 1.0)
         if best is None or s > best[0]:
             best = (s, lr)
     lr = best[1]
-    return Fused("concat_lr", lambda a, b: lr.predict_proba(f(np.hstack([a, b]))))
+    return Fused("concat_lr", lambda a, b: lr.predict_proba(f(np.hstack([a, b]))), {"C": lr.C})
 
 
 class _Net(nn.Module):
@@ -54,6 +54,7 @@ class _Net(nn.Module):
 
 
 def fit_gated_mlp(zA_tr, zB_tr, y_tr, zA_val, zB_val, y_val, seed=0, epochs=30) -> Fused:
+    torch.set_num_threads(4)
     torch.manual_seed(seed)
     mA, sA = standardizer(zA_tr)
     mB, sB = standardizer(zB_tr)

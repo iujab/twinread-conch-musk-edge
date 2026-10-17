@@ -21,3 +21,8 @@
   crc_train_y.npy; crc_train_x/y sha256 unchanged; 6 re-read tiles matched). `split_val(..., groups=)` makes val from whole
   groups, so crc train/val = 17,349 / 2,658, group-disjoint. Limitation: tiles within one 100-row group may come from the same
   slide, so val is group-disjoint but not guaranteed slide-disjoint; test is the separate CRC-VAL-HE-7K patient set.
+
+- Task 5 (analysis library): gated-MLP head uses inputs [g*hA+(1-g)*hB, |hA-hB|, hA*hB] after per-reader linear maps to 256-d
+  (a variant of the design's [zA, zB, zA.W, |zA-zB|]; accepted, R21). Train-split student targets are cross-fitted OOF (K=5);
+  best single reader is chosen on val; probes_aligned.npz is stored in softmax form with `{A,B}_classes`; the pre-registration
+  is crash-resumable only if the plan is byte-identical and no results exist; text-bank cache is keyed by reader/spec/prompt hash.

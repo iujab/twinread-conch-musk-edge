@@ -14,14 +14,24 @@ def macro_f1(y, pred) -> float:
     return float(f1_score(y, pred, average="macro"))
 
 
-def bootstrap_ci(fn, *arrays, n=1000, seed=0, alpha=0.05):
-    """Percentile bootstrap over rows; fn(*resampled arrays) -> float."""
+def bootstrap_ci(fn, *arrays, n=1000, seed=0, alpha=0.05, groups=None):
+    """Percentile bootstrap; fn(*resampled arrays) -> float.
+
+    With ``groups`` (e.g. slide ids) whole clusters are resampled with replacement, which widens the interval when
+    tiles of a slide are correlated; without it rows are resampled (tile-level, anti-conservative on clustered data).
+    """
     arrays = [np.asarray(a) for a in arrays]
     m = len(arrays[0])
     rng = np.random.default_rng(seed)
+    if groups is not None:
+        _, inv = np.unique(np.asarray(groups), return_inverse=True)
+        members = [np.flatnonzero(inv == g) for g in range(inv.max() + 1)]
     vals = np.empty(n)
     for i in range(n):
-        idx = rng.integers(0, m, m)
+        if groups is None:
+            idx = rng.integers(0, m, m)
+        else:
+            idx = np.concatenate([members[j] for j in rng.integers(0, len(members), len(members))])
         vals[i] = fn(*[a[idx] for a in arrays])
     return float(np.quantile(vals, alpha / 2)), float(np.quantile(vals, 1 - alpha / 2))
 

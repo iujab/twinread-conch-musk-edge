@@ -369,15 +369,7 @@ def crc_from_folder(root: Path, out_dir: Path, split: str) -> dict:
 # ----------------------------------------------------------------------------------------------------------------
 # Camelyon17-WILDS
 # ----------------------------------------------------------------------------------------------------------------
-def fetch_camelyon(out_dir: Path, per_hospital: int = 1500, seed: int = 0, *, _shards=None) -> dict:
-    """``per_hospital`` 96x96 tiles from each of the 5 WILDS hospitals, half normal / half tumor where available.
-
-    Writes ``cam_{x,y,h}.npy`` and ``cam_manifest.json``.  ``h`` is the WILDS ``center`` id (0-4; 2 = WILDS test).
-    """
-    out_dir = Path(out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    shards = list(_shards) if _shards is not None else _list_remote(CAM_REPO, ("train-", "validation-", "test-"))
-    groups, _ = _scan(shards, ("center", "label"))
+def _cam_quotas(groups: dict, per_hospital: int) -> dict:
     half = per_hospital // 2
     quotas = {}
     for h in range(CAM_HOSPITALS):
@@ -388,6 +380,54 @@ def fetch_camelyon(out_dir: Path, per_hospital: int = 1500, seed: int = 0, *, _s
         # if one label is short, give the slack to the other
         n0 = min(avail0, per_hospital - n1) if n1 < per_hospital - half else n0
         quotas[(h, 0)], quotas[(h, 1)] = n0, n1
+    return quotas
+
+
+def reconstruct_cam_slides(out_dir: Path, per_hospital: int = 1500, seed: int = 0, *, _shards=None) -> np.ndarray:
+    """Rebuild ``cam_slide.npy`` (WILDS slide id per tile) for an already-fetched pool, metadata columns only.
+
+    Re-runs the seeded plan and shuffle; refuses to write unless the reconstructed labels and hospitals equal the
+    stored ``cam_y.npy`` / ``cam_h.npy`` exactly.
+    """
+    out_dir = Path(out_dir)
+    shards = list(_shards) if _shards is not None else _list_remote(CAM_REPO, ("train-", "validation-", "test-"))
+    groups, _ = _scan(shards, ("center", "label"))
+    plan = _plan_groups(groups, _cam_quotas(groups, per_hospital), np.random.default_rng(seed), rows_per_group=25)
+    cols = {"label": [], "center": [], "slide": []}
+    by_shard: dict = {}
+    for (si, rg), rows in plan.items():
+        by_shard.setdefault(si, []).append((rg, rows))
+    for si in sorted(by_shard):
+        with _open(shards[si]) as f:
+            pf = pq.ParquetFile(f)
+            for rg, rows in by_shard[si]:
+                t = pf.read_row_group(rg, columns=list(cols)).take(rows)
+                for c in cols:
+                    cols[c].append(t[c].to_numpy())
+    cols = {c: np.concatenate(v) for c, v in cols.items()}
+    perm = np.random.default_rng(seed + 1).permutation(len(cols["label"]))
+    y, h, sl = (cols[c][perm].astype(np.int64) for c in ("label", "center", "slide"))
+    if not (np.array_equal(y, np.load(out_dir / "cam_y.npy")) and np.array_equal(h, np.load(out_dir / "cam_h.npy"))):
+        raise RuntimeError("reconstructed labels/hospitals differ from cam_y/cam_h; refusing to write slide ids")
+    np.save(out_dir / "cam_slide.npy", sl)
+    mp = out_dir / "cam_manifest.json"
+    if mp.exists():
+        m = json.loads(mp.read_text())
+        m.setdefault("sha256", {})["cam_slide.npy"] = _sha256(out_dir / "cam_slide.npy")
+        mp.write_text(json.dumps(m, indent=2))
+    return sl
+
+
+def fetch_camelyon(out_dir: Path, per_hospital: int = 1500, seed: int = 0, *, _shards=None) -> dict:
+    """``per_hospital`` 96x96 tiles from each of the 5 WILDS hospitals, half normal / half tumor where available.
+
+    Writes ``cam_{x,y,h}.npy`` and ``cam_manifest.json``.  ``h`` is the WILDS ``center`` id (0-4; 2 = WILDS test).
+    """
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    shards = list(_shards) if _shards is not None else _list_remote(CAM_REPO, ("train-", "validation-", "test-"))
+    groups, _ = _scan(shards, ("center", "label"))
+    quotas = _cam_quotas(groups, per_hospital)
     plan = _plan_groups(groups, quotas, np.random.default_rng(seed), rows_per_group=25)
     y, ex, _ = _fetch_images(shards, plan, ("center",), 96, out_dir / "cam_x.npy", out_dir / "cam_y.npy", "label", seed)
     h = ex["center"].astype(np.int64)

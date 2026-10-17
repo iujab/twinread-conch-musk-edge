@@ -121,7 +121,8 @@ def _mini_cam(path, n_per=(40, 40)):
                 imgs.append({"bytes": b.getvalue(), "path": "x.png"})
                 lab.append(lbl)
                 cen.append(h)
-    t = pa.table({"image": pa.array(imgs, type=pa.struct([("bytes", pa.binary()), ("path", pa.string())])),
+    sl = [c * 3 + (i % 3) for i, c in enumerate(cen)]
+    t = pa.table({"slide": pa.array(sl, type=pa.uint8()), "image": pa.array(imgs, type=pa.struct([("bytes", pa.binary()), ("path", pa.string())])),
                   "label": pa.array(lab, type=pa.int64()), "center": pa.array(cen, type=pa.int64())})
     pq.write_table(t, path, row_group_size=20)
 
@@ -195,3 +196,16 @@ def test_reconstruct_refuses_on_label_mismatch(tmp_path):
     np.save(tmp_path / "crc_train_y.npy", (y + 1) % 9)
     with pytest.raises(RuntimeError):
         data.reconstruct_crc_groups(tmp_path, 20000, 0, _shards=[FIX])
+
+
+def test_reconstruct_cam_slides_matches_and_refuses(tmp_path):
+    shard = tmp_path / "train-00000-of-00001.parquet"
+    _mini_cam(shard)
+    data.fetch_camelyon(tmp_path, per_hospital=20, _shards=[shard])
+    sl = data.reconstruct_cam_slides(tmp_path, 20, 0, _shards=[shard])
+    h = np.load(tmp_path / "cam_h.npy")
+    assert sl.shape == h.shape and (sl // 3 == h).all()  # fixture slide ids encode the hospital
+    assert (np.load(tmp_path / "cam_slide.npy") == sl).all()
+    np.save(tmp_path / "cam_y.npy", 1 - np.load(tmp_path / "cam_y.npy"))
+    with pytest.raises(RuntimeError):
+        data.reconstruct_cam_slides(tmp_path, 20, 0, _shards=[shard])
