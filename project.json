@@ -1,0 +1,109 @@
+{
+  "slug": "twinread-conch-musk-edge",
+  "title": "TwinRead: CONCH + MUSK as two readers, distilled to an offline Arduino UNO Q",
+  "tagline": "CONCH and MUSK read every tile like two pathologists; the fused reader's own uncertainty sends 10% of tiles to review and catches 80% of its errors, and a 6 MB student runs offline on a UNO Q.",
+  "track": "pathology-core",
+  "description": "Pathology already uses a second, independent read for hard cases. **TwinRead** treats the two foundation models the organizers highlight, **CONCH** and **MUSK**, as two independent readers of every H&E tile (linear probes on frozen features). It adds a pre-registered fusion rule, a review flag that decides which tiles go to a pathologist, a census of shared blind spots, two custom CUDA kernels, and an int8 student distilled from both readers for an offline **Arduino UNO Q** with a USB camera. All numbers are local-subset dev numbers (20k NCT-CRC-HE-100K training tiles, full CRC-VAL-HE-7K test; Camelyon17-WILDS unseen hospital 2).\n\n**What the evidence says.** On CRC the fused reader reaches 0.9555 balanced accuracy vs 0.9480 for MUSK (+0.74 pts; tile-level CI, anti-conservative), but the gain is a MUS↔STR recall trade chosen on validation by 1-2 tiles, and there is no gain on Camelyon17 or for an open-model control pair (PathGen-CLIP + QuiltNet-B-16). At a 10% review budget the fused reader's own uncertainty catches 80.3% of its errors vs 74.1% for MUSK flagging itself; the learned flag that adds disagreement adds nothing, and on Camelyon17 the twin flag does not beat CONCH alone. The honest conclusion: two readers help by giving a better-calibrated fused reader, not because disagreement is informative per se. The pre-registered val-calibrated threshold over-flags CRC test (25.1% for a 10% target) because validation is near ceiling and val → test is a distribution shift.\n\n**Engineering.** K1 turns raw tiles into both readers' inputs in one CUDA launch, bit-exact to the official transforms, at 90,131 tiles/s (×202 vs PIL), but only ×1.11 end to end because this batched pipeline is GPU-forward-bound. K2 simulates a USB camera filming a screen (SIMULATION) at 46,315 images/s and makes student-training augmentation ×10.6 faster than torch. The 5.65 M-parameter student ties CONCH in fp32 (0.9415) but the deployed int8 model (0.9219, 6.0 MB) is below every teacher; its value is being offline, small and cheap.\n\n**Status: partial.** Complete: the OPEN and CM local-subset analyses, both kernels (verified, benchmarked, sanitizer-clean), CM and OPEN students and int8 bundles, the device app and compile-verified LED sketch, the capture rig, the NCSA kit, the host dashboard (127.0.0.1:1777) and figures. Pending: UNO Q on-board latency and offline demo (measured when the board is plugged in), real camera captures, and the full-data NCSA Delta runs. The CONCH/MUSK-derived student is CC-BY-NC-ND and not distributed; the OPEN bundle is the distributable one. Research prototype, not a diagnostic device.",
+  "highlights": [
+    "Fusion (CONCH + MUSK, local subset): CRC-VAL-HE-7K balanced accuracy 0.9555 vs MUSK 0.9480 and CONCH 0.9413 (+0.74 pts, tile-level CI +0.18 to +1.29, anti-conservative); a MUS↔STR recall trade, and no gain on Camelyon17 (−0.40 pts) or for the open control pair (+0.08 pts).",
+    "Review flag at a 10% budget (CRC): the fused reader's own uncertainty catches 80.3% of its errors vs 74.1% for MUSK and 66.0% for CONCH flagging themselves; adding disagreement adds nothing (80.3%), and plain disagreement catches 59.0%. On Camelyon17 the twin flag does not beat CONCH alone.",
+    "Pre-registered before any test label (fusion rule, flag, thresholds), out-of-fold student targets, slide-clustered CIs on Camelyon17; reported as measured, including that the val-calibrated threshold over-flags CRC test (25.1% for a 10% target).",
+    "K1 CUDA dual preprocess: bit-exact to the official CONCH and MUSK transforms, 90,131 tiles/s, ×202 vs PIL, but ×1.11 end to end because the model forward is 89.4% of the time.",
+    "K2 camera-of-screen augmentation (SIMULATION): 46,315 images/s, ≤ 1 level per op vs a numpy reference, and ×10.6 faster than torch in student training.",
+    "Edge student: 5.65 M parameters (1.4% of the teachers' vision towers), 6.0 MB int8; fp32 0.9415 (ties CONCH), 0.9135 at the strongest simulated camera severity; deployed int8 0.9219, below every teacher. UNO Q latency pending; LED sketch compile-verified, not flashed."
+  ],
+  "models": [
+    "MahmoodLab/CONCH (reader A, CM pair)",
+    "xiangjx/musk (reader B, CM pair)",
+    "jamessyx/pathgenclip-vit-large-patch14-hf (reader A, OPEN pair)",
+    "wisdomik/QuiltNet-B-16 (reader B, OPEN pair; chosen on validation)",
+    "microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224 (OPEN partner candidate, not chosen)",
+    "timm mobilenetv4_conv_small (edge student backbone, pretrained trunk)"
+  ],
+  "datasets": [
+    "1aurent/NCT-CRC-HE: NCT-CRC-HE-100K 20,007-tile class-balanced subset (17,349 train / 2,658 val, group-disjoint) + full CRC-VAL-HE-7K test (7,180 tiles)",
+    "wltjr1007/Camelyon17-WILDS: 7,500-tile subset (train hospitals 0/3/4: 4,500; val hospital 1: 1,500; test hospital 2: 1,500)"
+  ],
+  "images": [
+    {
+      "path": "figures/fig8_system.png",
+      "caption": "System overview: CONCH and MUSK read each tile (K1 preprocessing), a fused reader and review signals s1-s4 follow, and a K2-trained int8 student runs offline on an Arduino UNO Q. Status per stage: Delta runs and on-board measurements are pending."
+    },
+    {
+      "path": "figures/fig1_two_readers.png",
+      "caption": "Fused vs single readers with 95% CIs. CONCH + MUSK fusion gains +0.74 pts on CRC (tile-level CI, anti-conservative); no gain on Camelyon17 hospital 2 or for the open control pair. Local-subset dev numbers."
+    },
+    {
+      "path": "figures/fig2_review_flag.png",
+      "caption": "Review flag: errors caught vs review budget. The fused reader's uncertainty (s3) does the work; the learned flag with disagreement (s4) adds nothing; the pre-registered threshold over-flags CRC test. Right: per-class shared blind spots; bottom: the most confident shared errors (real CRC-VAL-HE-7K tiles)."
+    },
+    {
+      "path": "figures/fig3_kernels.png",
+      "caption": "K1 dual preprocess (bit-exact, 90,131 tiles/s) and its honest end-to-end effect (×1.11, forward-bound); K2 camera-of-screen augmentation (SIMULATION) throughput and its effect on student training. RTX 5060, shared GPU, estimates."
+    },
+    {
+      "path": "figures/k2_severity_grid.png",
+      "caption": "K2 output on real CRC-VAL tiles at increasing severity: a SIMULATION of a USB camera filming a screen (warp, stain jitter, display gamma, moiré, glare, defocus, noise, JPEG)."
+    },
+    {
+      "path": "figures/fig5_edge_student.png",
+      "caption": "Edge student vs teachers on CRC-VAL-HE-7K: fp32 ties CONCH, the deployed int8 model is below every teacher; 1.4% of the teachers' vision-tower parameters. UNO Q latency pending."
+    },
+    {
+      "path": "figures/ui_device_sim.png",
+      "caption": "Device app on the x86 desktop (not the UNO Q), REPLAY mode: the distributable OPEN int8 bundle on a real CRC-VAL-HE-7K tile. Latency shown is the x86 host's. Captured with headless Chromium."
+    },
+    {
+      "path": "figures/ui_dashboard.png",
+      "caption": "Host dashboard (127.0.0.1:1777, Playwright screenshot): headline tables read from results/headline.json and the tile viewer with both readers' calls, the fused call and the pre-registered flag (confident shared errors shown)."
+    }
+  ],
+  "hardware": "Arduino UNO Q (Debian on 4x Cortex-A53, STM32U585 MCU with the 8x13 LED matrix) plus a USB camera on a USB-C hub. Implemented: an offline device app (camera or replay -> crop + tissue check -> int8 student via onnxruntime -> AGREE/REVIEW with reasons) with a local web UI, a Bridge-RPC LED-matrix sketch (compile-verified for arduino:zephyr:unoq, not flashed), SHA256-verified bundles and an offline installer, and a screen-capture rig with parity-checked frame markers (0 wrong labels in 8,000 simulated captures). Runs today on x86 in replay mode. The demo camera films a screen, not a microscope. Pending: on-board latency and the offline board demo (measured when the board is plugged in), and real captures.",
+  "how_to_run": "cd twinread-conch-musk-edge\nbash run_demo.sh --smoke   # no GPU/network: headline JSON, figures, manifest tests, dashboard check\nbash run_demo.sh           # data -> OPEN embeddings -> analysis -> student -> bundle -> figures -> dashboard http://127.0.0.1:1777\nbash run_demo.sh --with-cm # + CONCH/MUSK local subset (needs HF access)",
+  "demo_port": 1777,
+  "event_scaleup": "The NCSA kit in ncsa/ is written and statically tested; nothing has run on Delta yet and every Delta command waits for the user's OK. Plan: on the login node install CONCH/MUSK and pre-download weights (compute nodes are offline) and stage NCT-CRC-HE-100K from /projects/bfqi/shared/datasets; J1 (<= 0.5 h A100) checks the environment and JIT-builds K1/K2 for sm_80; J2 (<= 1.5 h) embeds the full 100k + 7k CRC tiles with CONCH + MUSK through K1 (reference fallback); the same pre-registered analysis runs on a CPU node; J3 (<= 1.5 h) distils the CM student on full data with K2; J4 is spare (second seed or the OPEN pair). Target <= 10 A100-hours of a 30-hour budget; another reader pair is one PAIRS entry.",
+  "status": "partial",
+  "limitations": [
+    "Local-subset dev numbers (20k of 100k CRC training tiles; 7.5k Camelyon17 tiles); the full-data Delta runs are pending.",
+    "CRC has no slide/patient ids: CRC CIs and McNemar tests are tile-level and anti-conservative; validation is group-disjoint, not guaranteed slide-disjoint.",
+    "The CRC fusion gain is fragile (a MUS↔STR recall trade; rule chosen by 1-2 validation tiles) and absent on Camelyon17 and for the open pair.",
+    "The review flag's value comes from the fused reader's uncertainty, not disagreement; the pre-registered val-calibrated threshold over-flags CRC test, and on Camelyon17 the twin flag does not beat CONCH alone.",
+    "Confident shared errors (0.74% of CRC tiles) cannot be caught by any two-reader disagreement signal.",
+    "The deployed int8 student is below every teacher on test; int8 drift is larger on test than on validation.",
+    "UNO Q on-board latency, the offline board demo and the LED sketch on hardware are pending; the sketch is compile-verified only; the device screenshot is an x86 replay.",
+    "All camera numbers are SIMULATION (K2, simulated rig captures); the demo camera films a screen, not a microscope; no real captures yet.",
+    "Kernel throughput is measured on a shared GPU (estimate); sm_80/sm_90 builds are compile-checked only.",
+    "The CONCH/MUSK-derived student is CC-BY-NC-ND and not distributed; only the OPEN bundle is distributable.",
+    "Triage curves and the tile viewer use a post-hoc reproduction of the frozen fits (verified to match review.json exactly); the gallery and viewer need the git-ignored local data.",
+    "Research prototype, not a diagnostic device; no clinical validation."
+  ],
+  "metrics": {
+    "cm_crc_fused_bal_acc": 0.9555,
+    "cm_crc_musk_bal_acc": 0.948,
+    "cm_crc_conch_bal_acc": 0.9413,
+    "cm_crc_fusion_delta_pts": "+0.74 [+0.18, +1.29] tile-level",
+    "cm_cam_fusion_delta_pts": "−0.40 [−3.70, +0.76] slide-clustered",
+    "open_crc_fusion_delta_pts": "+0.08 [−0.52, +0.66] tile-level",
+    "cm_crc_errors_caught_at_10pct_review_s3": "80.3%",
+    "cm_crc_errors_caught_at_10pct_review_s4": "80.3%",
+    "cm_crc_errors_caught_at_10pct_review_musk_alone": "74.1%",
+    "cm_crc_prereg_threshold_flag_rate_test": "25.1%",
+    "k1_cuda_tiles_per_s": 90131,
+    "k1_preprocess_speedup_vs_pil": "×202",
+    "k1_end_to_end_speedup": "×1.11",
+    "k2_cuda_images_per_s": 46315,
+    "k2_train_aug_speedup_vs_torch": "×10.6",
+    "student_params_millions": 5.65,
+    "student_int8_mb": 6.0,
+    "cm_student_fp32_test_bal_acc": 0.9415,
+    "cm_student_int8_test_bal_acc": 0.9219,
+    "open_student_int8_test_bal_acc": 0.9085,
+    "uno_q_latency": "pending: measured when the board is plugged in",
+    "rig_simulated_capture_wrong_labels": "0 of 8,000"
+  },
+  "lay": {
+    "what": "TwinRead lets two different AI models look at the same small patch of a tissue slide, like two doctors giving independent opinions. It combines their answers, marks the patches a pathologist should double-check, and copies the result into a small program that runs on a cheap offline computer board.",
+    "why": "Second opinions catch mistakes, but they cost a second expert's time. If software can point to the uncertain patches, a pathologist can spend review time where it matters. A small offline version could someday help clinics without slide scanners, powerful computers or reliable internet.",
+    "impressive": "When only one in ten tissue patches is sent to a pathologist, the combined model's own doubt catches 80.3% of its mistakes on a public colon tissue test set of 7,180 patches. The better single model, checking itself the same way, catches 74.1%."
+  }
+}

@@ -28,7 +28,9 @@ A bundle that fails checksum verification is refused.
 
 ## Not measured
 UNO Q latency (target 250 ms/tile at 4 threads) is not measured; the 20-65 ms in the simulation is an x86 host with a tiny test model.
-`figures/ui_device_sim.png` is a simulation with a random test bundle, so its numbers are meaningless.
+`figures/ui_device_sim.png` is this app on the x86 desktop, not the UNO Q (Task 18 re-shot): `--mode replay` with the
+distributable OPEN int8 bundle on one real CRC-VAL-HE-7K tile (`data/replay_crc/`, git-ignored), captured with headless
+Chromium. The latency it shows is the x86 host's, not the board's.
 
 
 ## Building the bundle
