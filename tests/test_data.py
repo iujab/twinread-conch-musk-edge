@@ -68,7 +68,7 @@ def test_load_split_test_is_crc_val(tmp_path):
     assert xt.shape[0] == 27 == len(yt)
     xtr, ytr = load_split(tmp_path, "crc", "train")
     xv, yv = load_split(tmp_path, "crc", "val")
-    assert len(ytr) + len(yv) == 27 and set(yv) == set(range(9))
+    assert len(ytr) + len(yv) == 27 and len(yv) > 0
 
 
 def test_crc_from_folder(tmp_path):
@@ -139,4 +139,59 @@ def test_fetch_camelyon_local_and_load_split(tmp_path):
     assert len(yt) == 20 and (x[h == 2].shape[0] == 20)
     xtr, ytr = load_split(tmp_path, "cam", "train")
     xv, yv = load_split(tmp_path, "cam", "val")
-    assert len(ytr) + len(yv) == 80 and set(yv) == {0, 1}
+    assert (len(ytr), len(yv), len(yt)) == (60, 20, 20)
+    # hospital splits are identified by the class-coded red channel: h*40 + y*10
+    hof = lambda a: set((a[..., 0][:, 0, 0] // 40).tolist())  # noqa: E731
+    assert hof(xtr) == {0, 3, 4} and hof(xv) == {1} and hof(xt) == {2}
+
+
+def test_split_val_groups_disjoint_and_stratified():
+    y = np.repeat(np.arange(9), 100)
+    g = np.arange(900) // 10  # 90 groups of 10, class-pure
+    tr, va = split_val(y, 0.1, 0, groups=g)
+    assert not set(g[tr]) & set(g[va])
+    assert set(y[va]) == set(range(9))
+    assert len(tr) + len(va) == 900
+    assert (np.bincount(y[va]) == 10).all()
+
+
+def test_split_val_groups_mixed_class_groups_still_disjoint():
+    rng = np.random.default_rng(0)
+    y = rng.integers(0, 3, 300)
+    g = np.arange(300) // 20
+    tr, va = split_val(y, 0.2, 1, groups=g)
+    assert not set(g[tr]) & set(g[va]) and len(tr) + len(va) == 300
+    assert split_val(y, 0.2, 1, groups=g)[1].tolist() == va.tolist()
+
+
+def test_split_val_single_group_class_stays_in_train():
+    y = np.array([0] * 20 + [1] * 5)
+    g = np.array([0] * 10 + [1] * 10 + [2] * 5)
+    tr, va = split_val(y, 0.1, 0, groups=g)
+    assert 1 in set(y[tr]) and 1 not in set(y[va])
+
+
+def test_fetch_crc_records_groups_and_load_split_is_group_disjoint(tmp_path):
+    _fetch(tmp_path)
+    g = np.load(tmp_path / "crc_train_g.npy")
+    assert g.shape == (27,) and g.dtype == np.int64
+    tr, va = split_val(np.load(tmp_path / "crc_train_y.npy"), 0.1, 0, groups=g)
+    assert not set(g[tr]) & set(g[va])
+    x, y = load_split(tmp_path, "crc", "val")
+    assert len(y) == len(va)
+
+
+def test_reconstruct_crc_groups_matches_fetch(tmp_path):
+    _fetch(tmp_path)
+    g = np.load(tmp_path / "crc_train_g.npy")
+    (tmp_path / "crc_train_g.npy").unlink()
+    g2 = data.reconstruct_crc_groups(tmp_path, 20000, 0, _shards=[FIX])
+    assert (g == g2).all()
+
+
+def test_reconstruct_refuses_on_label_mismatch(tmp_path):
+    _fetch(tmp_path)
+    y = np.load(tmp_path / "crc_train_y.npy")
+    np.save(tmp_path / "crc_train_y.npy", (y + 1) % 9)
+    with pytest.raises(RuntimeError):
+        data.reconstruct_crc_groups(tmp_path, 20000, 0, _shards=[FIX])
