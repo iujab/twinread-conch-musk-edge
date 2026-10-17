@@ -1,0 +1,116 @@
+{
+  "pair": "OPEN",
+  "dataset": "crc",
+  "backbone": "mobilenetv4_conv_small",
+  "method_picked": "percentile99.9",
+  "calibration": "512 train tiles, seed 0, uint8 -> float [0,1] NCHW; ORT quantize_static QDQ per_channel QUInt8 act / QInt8 weights",
+  "candidates": {
+    "minmax": {
+      "cos_hA_mean": 0.981825590133667,
+      "cos_hA_min": 0.9071957468986511,
+      "cos_hB_mean": 0.9901664853096008,
+      "cos_hB_min": 0.9289922118186951,
+      "label_agreement": 0.9582392776523702,
+      "review_agreement": 0.9157261098570354,
+      "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+      "n": 2658,
+      "drift_score": 0.014003962278366089,
+      "quantize_s": 4.5
+    },
+    "entropy": {
+      "cos_hA_mean": 0.981825590133667,
+      "cos_hA_min": 0.9071957468986511,
+      "cos_hB_mean": 0.9901664853096008,
+      "cos_hB_min": 0.9289922118186951,
+      "label_agreement": 0.9582392776523702,
+      "review_agreement": 0.9157261098570354,
+      "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+      "n": 2658,
+      "drift_score": 0.014003962278366089,
+      "quantize_s": 40.4
+    },
+    "percentile99.99": {
+      "cos_hA_mean": 0.9924882054328918,
+      "cos_hA_min": 0.9362824559211731,
+      "cos_hB_mean": 0.994708240032196,
+      "cos_hB_min": 0.9341332316398621,
+      "label_agreement": 0.9736644093303235,
+      "review_agreement": 0.9699021820917983,
+      "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+      "n": 2658,
+      "drift_score": 0.006401777267456055,
+      "quantize_s": 29.0
+    },
+    "percentile99.9": {
+      "cos_hA_mean": 0.9943844676017761,
+      "cos_hA_min": 0.9331870079040527,
+      "cos_hB_mean": 0.9946979880332947,
+      "cos_hB_min": 0.9293707013130188,
+      "label_agreement": 0.9845748683220467,
+      "review_agreement": 0.972535741158766,
+      "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+      "n": 2658,
+      "drift_score": 0.0054587721824646,
+      "quantize_s": 18.5
+    }
+  },
+  "val_drift": {
+    "cos_hA_mean": 0.9943844676017761,
+    "cos_hA_min": 0.9331870079040527,
+    "cos_hB_mean": 0.9946979880332947,
+    "cos_hB_min": 0.9293707013130188,
+    "label_agreement": 0.9845748683220467,
+    "review_agreement": 0.972535741158766,
+    "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+    "n": 2658,
+    "drift_score": 0.0054587721824646,
+    "quantize_s": 18.5
+  },
+  "test_drift": {
+    "cos_hA_mean": 0.9930973052978516,
+    "cos_hA_min": 0.9081895351409912,
+    "cos_hB_mean": 0.9950113892555237,
+    "cos_hB_min": 0.9171674847602844,
+    "label_agreement": 0.9618384401114206,
+    "review_agreement": 0.9697771587743732,
+    "review_logit_note": "review agreement = sign of review_logit (sigmoid > 0.5) fp32 vs int8",
+    "n": 7180
+  },
+  "bal_acc": {
+    "val": {
+      "fp32_onnx": 0.9883539173843303,
+      "int8": 0.9763406804741701
+    },
+    "test": {
+      "fp32_onnx": 0.9485875135323626,
+      "int8": 0.9256652760834084
+    }
+  },
+  "thresholds": {
+    "torch_amp_val": {
+      "js": 0.008144548173000213,
+      "review": 0.36596668476224026
+    },
+    "int8_recalibrated": {
+      "js": 0.01149779438590045,
+      "review": 0.39268001138627995
+    },
+    "budget": 0.1
+  },
+  "flag_rate_int8": {
+    "val_torch_thr": 0.11775771256583897,
+    "val_recal_thr": 0.1000752445447705,
+    "test_torch_thr": 0.18495821727019499,
+    "test_recal_thr": 0.16350974930362117
+  },
+  "note": "label/review agreement and balanced accuracy are on the same tiles (val = held-out train groups; test = CRC-VAL-HE-7K, evaluated after preregistration.json). fp32_onnx = exported fp32 graph, torch AMP numbers live in metrics.json.",
+  "bundle_bytes": {
+    "SHA256SUMS": 314,
+    "config.json": 358,
+    "model.onnx": 5811429,
+    "probes.npz": 59034,
+    "prompt_bank.npz": 46586
+  },
+  "bundle_total_bytes": 5917721,
+  "verify_bundle": true
+}
