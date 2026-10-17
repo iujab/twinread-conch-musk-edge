@@ -1,0 +1,7 @@
+{
+  "classes": ["normal", "tumor"],
+  "synonyms": {
+    "normal": ["lymph node tissue", "normal lymph node", "benign lymph node without metastasis", "lymphoid tissue"],
+    "tumor": ["metastatic breast carcinoma in lymph node", "breast cancer metastasis", "tumor cells in lymph node", "malignant epithelial cells infiltrating lymph node"]
+  }
+}

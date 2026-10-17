@@ -1,0 +1,10 @@
+{
+  "templates": [
+    "an H&E image of {}",
+    "{}",
+    "a histopathology image showing {}",
+    "an image of {}",
+    "a photomicrograph of {}",
+    "H&E stained tissue section with {}"
+  ]
+}

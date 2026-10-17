@@ -1,0 +1,14 @@
+{
+  "classes": ["ADI", "BACK", "DEB", "LYM", "MUC", "MUS", "NORM", "STR", "TUM"],
+  "synonyms": {
+    "ADI": ["adipose tissue", "fat tissue", "adipocytes", "fatty tissue with lipid vacuoles"],
+    "BACK": ["background", "blank glass with no tissue", "empty slide background", "no tissue present"],
+    "DEB": ["debris", "necrotic debris", "cellular debris and necrosis", "degenerated tissue fragments"],
+    "LYM": ["lymphocytes", "lymphoid aggregate", "dense inflammatory lymphocytic infiltrate", "lymphocyte-rich tissue"],
+    "MUC": ["mucus", "mucin pool", "extracellular mucin", "mucinous secretion"],
+    "MUS": ["smooth muscle", "muscle tissue", "muscularis propria", "bundles of smooth muscle fibers"],
+    "NORM": ["normal colon mucosa", "normal colonic epithelium", "benign colon glands", "healthy colorectal mucosa"],
+    "STR": ["cancer-associated stroma", "stromal tissue", "fibrous stroma", "desmoplastic stroma"],
+    "TUM": ["colorectal adenocarcinoma epithelium", "tumor epithelium", "malignant glands", "colorectal cancer cells"]
+  }
+}
