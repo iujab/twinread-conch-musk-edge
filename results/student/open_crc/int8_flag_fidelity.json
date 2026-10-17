@@ -1,0 +1,64 @@
+{
+ "pair": "OPEN",
+ "dataset": "crc",
+ "split": "test (CRC-VAL-HE-7K, evaluated after preregistration.json)",
+ "bundle": "bundles/open",
+ "bundle_sha256sums_sha256": "8d79001425dbdb8ae6fe689024c6f2daa0a3bfdcc86677b53957b0ca6c507fc2",
+ "thresholds": {
+  "js": 0.014218837161929981,
+  "review": 0.4089430503946518
+ },
+ "runtime": "device/twinread_runtime.EdgeModel, onnxruntime CPU",
+ "threads": 4,
+ "host": "x86_64",
+ "seconds": 34.9,
+ "device_flag_definition": "argmax pA != argmax pB OR JS(pA,pB) > thr.js OR sigmoid(review_logit) > thr.review OR no_tissue (the deployed device rule; pA/pB = the two student heads through the aligned probes, on ONE shared student backbone)",
+ "teacher_flag_definition": "pre-registered s4 rule of the teacher pair at its val threshold (10% budget), student_targets.npz review_test",
+ "int8_device_flag": {
+  "n": 7180,
+  "fraction": 0.14623955431754876,
+  "teacher_fraction": 0.26337047353760445,
+  "agreement": 0.7706128133704735,
+  "kappa": 0.3102789805707459,
+  "teacher_recall": 0.3421470121628768,
+  "precision_vs_teacher": 0.6161904761904762,
+  "error_rate": 0.06476323119777158,
+  "errors_caught": 0.7376344086021506,
+  "acc_cleared": 0.9800978792822186
+ },
+ "int8_device_flag_without_no_tissue_clause": {
+  "n": 7180,
+  "fraction": 0.14540389972144846,
+  "teacher_fraction": 0.26337047353760445,
+  "agreement": 0.7706128133704735,
+  "kappa": 0.3094578348289727,
+  "teacher_recall": 0.34056054997355895,
+  "precision_vs_teacher": 0.6168582375478927,
+  "error_rate": 0.06476323119777158,
+  "errors_caught": 0.7354838709677419,
+  "acc_cleared": 0.9799543676662321
+ },
+ "int8_clause_fractions": {
+  "disagree": 0.02520891364902507,
+  "js": 0.11323119777158774,
+  "review_head": 0.08105849582172701,
+  "no_tissue": 0.0012534818941504179
+ },
+ "fp32_device_flag_from_metrics_json": {
+  "fraction": 0.1798050139275766,
+  "agreement": 0.771309192200557,
+  "kappa": 0.3437191017378006,
+  "teacher_recall": 0.4071919619249075,
+  "precision_vs_teacher": 0.5964368706429125,
+  "student_errors_caught": 0.7844827586206896
+ },
+ "checks": {
+  "int8_bal_acc": 0.908546379396576,
+  "int8_bal_acc_in_int8_drift_json": 0.908546379396576,
+  "bal_acc_matches_int8_drift": true,
+  "flag_rate_without_no_tissue": 0.14540389972144846,
+  "flag_rate_in_int8_drift_json": 0.14540389972144846,
+  "flag_rate_matches_int8_drift": true
+ },
+ "note": "Research prototype, not a diagnostic device."
+}

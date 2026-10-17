@@ -45,6 +45,15 @@ def host_info(dt_model: Path = DT_MODEL) -> dict:
     return {"machine": machine, "model": model, "is_uno_q": is_uno_q}
 BANNER = "Research prototype - not a diagnostic device"
 HOST = "127.0.0.1"
+# The device's two "readers" are two heads of ONE shared student backbone (distilled into the teachers' aligned
+# spaces), so they are far less independent than CONCH and MUSK; the UI names them as heads, never as readers.
+HEAD_LABELS = {"CM": ["Head A (CONCH-space)", "Head B (MUSK-space)"]}
+GENERIC_HEADS = ["Head A (space A)", "Head B (space B)"]
+HEADS_NOTE = "two heads of one student network: less independent than the two foundation models"
+
+
+def head_labels(pair: str) -> list:
+    return list(HEAD_LABELS.get(str(pair).upper(), GENERIC_HEADS))
 
 
 def synth_frame(i: int, h=480, w=640) -> np.ndarray:
@@ -76,7 +85,7 @@ class App:
         self.jpg = b""
         self._state = {"status": "idle", "mode": self.mode, "call": None}
         self.pair = str(self.model.cfg.get("pair", "A+B"))
-        self.readers = (self.pair.split("+") + ["B"])[:2] if "+" in self.pair else ["Reader A", "Reader B"]
+        self.readers = head_labels(self.pair)
         if mode == "camera":
             self._open_camera()
         self._set_banner()
@@ -163,7 +172,8 @@ class App:
             st.update(status=status, mode=self.mode, mode_reason=self.mode_reason, requested_mode=self.requested_mode,
                       banner=BANNER, mode_banner=self.mode_banner if hasattr(self, "mode_banner") else "",
                       bundle_note=("simulation with test bundle" if self.mode == "sim" else ""),
-                      pair=self.pair, readers=self.readers, classes=self.model.classes, thresholds=self.model.thr,
+                      pair=self.pair, readers=self.readers, heads_note=HEADS_NOTE, classes=self.model.classes,
+                      thresholds=self.model.thr,
                       distributable=self.model.cfg.get("distributable"), host=self.host,
                       host_label=(f"host: {self.host['model'] or 'UNO Q'}" if self.host["is_uno_q"] else
                                   f"host: {self.host['machine']}, not the UNO Q (latency is this host's)"),

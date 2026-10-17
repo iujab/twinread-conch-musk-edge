@@ -85,6 +85,11 @@ def _pair(results: Path, pair: str, ds: str) -> dict:
         "confident_shared_errors": {"n": v["confident_shared_errors"]["n"], "rate": v["confident_shared_errors"]["rate"],
                                     **_pairs(results, base)},
         "fused_error_rate": v["fused_error_rate"],
+        "s1_disagree_rate": v["errors_by_flag"]["s1_disagree_rate"],
+        "s1_budget_filled_in_test_order_at_10pct": 0.1 - v["errors_by_flag"]["s1_disagree_rate"],
+        "s1_note": "s1 is binary: at a 10% budget every disagreement is flagged and the rest of the budget is filled "
+                   "with tied (agreeing) tiles in stable test order, which is shuffled, so that part is effectively "
+                   "random (review.errors_caught, argsort kind=stable)",
     }
 
 
@@ -153,32 +158,41 @@ def build(results: Path = ROOT / "results") -> dict:
 
     cm_m, cm_i = _j(results, "student/cm_crc/metrics.json"), _j(results, "student/cm_crc/int8_drift.json")
     op_m, op_i = _j(results, "student/open_crc/metrics.json"), _j(results, "student/open_crc/int8_drift.json")
+    cm_f, op_f = (_j(results, f"student/{d}/int8_flag_fidelity.json")["int8_device_flag"] for d in ("cm_crc", "open_crc"))
     sz = _j(results, "student/model_sizes.json")
     cm = fus["CM_crc"]
     teachers = {"CONCH_probe": cm["bal_acc"]["A"], "MUSK_probe": cm["bal_acc"]["B"], "fused": cm["bal_acc"]["fused"],
                 "CONCH_aligned_probe": cm["aligned_probe_bal_acc"]["A"],
                 "MUSK_aligned_probe": cm["aligned_probe_bal_acc"]["B"]}
-    stud = lambda m, i: {
+    stud = lambda m, i, fl: {
         "fp32_test_bal_acc": {sev: m["test"][sev]["bal_acc"] for sev in ("clean", "sev0.5", "sev1.0")},
         "fp32_val_bal_acc_clean": m["val"]["clean"]["bal_acc"],
         "fp32_hA_hB_through_aligned_probes_test": {"A": m["test"]["clean"]["probe_A_bal_acc"],
                                                    "B": m["test"]["clean"]["probe_B_bal_acc"]},
         "int8_test_bal_acc": i["bal_acc"]["test"]["int8"], "fp32_onnx_test_bal_acc": i["bal_acc"]["test"]["fp32_onnx"],
         "int8_val_bal_acc": i["bal_acc"]["val"]["int8"],
+        "int8_cost_vs_fp32_test_pts": 100 * (m["test"]["clean"]["bal_acc"] - i["bal_acc"]["test"]["int8"]),
         "int8_test_label_agreement_with_fp32": i["test_drift"]["label_agreement"],
         "int8_bundle_flag_rate_test": i["flag_rate_int8"]["test_recal_thr"],
         "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs "
                                       "(int8_drift.json flag_rate_int8.test_recal_thr)",
         "fp32_device_flag_test_clean": {k: m["test"]["clean"]["device_flag"][k]
-                                   for k in ("fraction", "student_errors_caught", "teacher_recall", "acc_cleared")}}
+                                        for k in ("fraction", "student_errors_caught", "teacher_recall", "acc_cleared",
+                                                  "agreement", "kappa")},
+        "int8_device_flag_test_clean": {k: fl[k] for k in ("fraction", "errors_caught", "teacher_recall",
+                                                           "acc_cleared", "agreement", "kappa")},
+        "device_flag_note": "flag vs the teacher flag (pre-registered s4 at its val threshold; 25-26% of CRC test): "
+                            "kappa, teacher_recall, agreement. The two device 'readers' are two heads on ONE shared "
+                            "student backbone. int8: int8_flag_fidelity.json (device runtime, incl. no-tissue clause)"}
     student = {
-        "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift}.json, results/student/model_sizes.json",
+        "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift,int8_flag_fidelity}.json, "
+                  "results/student/model_sizes.json",
         "backbone": cm_m["backbone"],
-        "CM": stud(cm_m, cm_i) | {"teachers_test_bal_acc": teachers,
+        "CM": stud(cm_m, cm_i, cm_f) | {"teachers_test_bal_acc": teachers,
                                   "int8_below_every_teacher": cm_i["bal_acc"]["test"]["int8"] < min(teachers.values()),
                                   "distributable": False,
                                   "licence_note": "CONCH and MUSK are CC-BY-NC-ND-4.0; the CM student is not distributed"},
-        "OPEN": stud(op_m, op_i) | {"distributable": True},
+        "OPEN": stud(op_m, op_i, op_f) | {"distributable": True},
         "params": sz["students"]["CM"]["params_total"],
         "params_millions": sz["students"]["CM"]["params_total"] / 1e6,
         "int8_onnx_bytes": sz["students"]["CM"]["int8_onnx_bytes"],

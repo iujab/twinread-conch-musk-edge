@@ -2,7 +2,11 @@
 
 Research prototype - not a diagnostic device. The int8 student is built to run offline (on-board run pending); a USB
 camera films tissue images shown on a screen ("Camera filming a screen (demo)"); the local UI (127.0.0.1:8080) and the
-8x13 LED matrix show AGREE / REVIEW.
+8x13 LED matrix show AGREE / REVIEW. The device's two "readers" are two heads on ONE shared student backbone (Head A in
+CONCH-space and Head B in MUSK-space for the CM bundle; space A / space B for OPEN), so they are far less independent
+than CONCH and MUSK; the UI calls them student heads. Measured on CRC-VAL-HE-7K, the deployed CM int8 flag agrees with
+the teacher flag at kappa 0.34 and recovers 33.3% of teacher-flagged tiles
+(`results/student/cm_crc/int8_flag_fidelity.json`).
 
 - `twinread_runtime.py`: bundle verification (SHA256SUMS), `EdgeModel` (onnxruntime), `tissue_fraction`, `crop_from_frame`, `device_review_rule`.
 - `uno_q_app.py`: loop + stdlib `http.server` (`/`, `/state`, `/frame.jpg`), 127.0.0.1 only, no network calls.
@@ -53,9 +57,10 @@ A bundle that fails checksum verification is refused.
 
 ## Not measured
 UNO Q latency (target 250 ms/tile at 4 threads) is not measured; the 20-65 ms in the simulation is an x86 host with a tiny test model.
-`figures/ui_device_sim.png` is this app on the x86 desktop, not the UNO Q (Task 18 re-shot): `--mode replay` with the
-distributable OPEN int8 bundle on one real CRC-VAL-HE-7K tile (`data/replay_crc/`, git-ignored), captured with headless
-Chromium. The latency it shows is the x86 host's, not the board's.
+`figures/ui_device_sim.png` is this app on the x86 desktop, not the UNO Q (re-shot with the student-head labels):
+`--mode replay` with the distributable OPEN int8 bundle on one real CRC-VAL-HE-7K tile (`data/replay_crc/`,
+git-ignored), captured with headless Chromium (the Playwright MCP browser was locked). The latency it shows is the x86
+host's, not the board's.
 
 
 ## Building the bundle

@@ -92,7 +92,10 @@
     },
     "flagged_by_prereg_rule": 47
    },
-   "fused_error_rate": 0.03328690807799439
+   "fused_error_rate": 0.03328690807799439,
+   "s1_disagree_rate": 0.05598885793871866,
+   "s1_budget_filled_in_test_order_at_10pct": 0.044011142061281344,
+   "s1_note": "s1 is binary: at a 10% budget every disagreement is flagged and the rest of the budget is filled with tied (agreeing) tiles in stable test order, which is shuffled, so that part is effectively random (review.errors_caught, argsort kind=stable)"
   },
   "CM_cam": {
    "source": "results/cm_local/CM/cam/{readers,fusion,review}.json",
@@ -179,7 +182,10 @@
     },
     "flagged_by_prereg_rule": 1
    },
-   "fused_error_rate": 0.03533333333333333
+   "fused_error_rate": 0.03533333333333333,
+   "s1_disagree_rate": 0.03666666666666667,
+   "s1_budget_filled_in_test_order_at_10pct": 0.06333333333333334,
+   "s1_note": "s1 is binary: at a 10% budget every disagreement is flagged and the rest of the budget is filled with tied (agreeing) tiles in stable test order, which is shuffled, so that part is effectively random (review.errors_caught, argsort kind=stable)"
   },
   "OPEN_crc": {
    "source": "results/open/OPEN/crc/{readers,fusion,review}.json",
@@ -261,7 +267,10 @@
     "n": 50,
     "rate": 0.006963788300835654
    },
-   "fused_error_rate": 0.04359331476323125
+   "fused_error_rate": 0.04359331476323125,
+   "s1_disagree_rate": 0.07590529247910864,
+   "s1_budget_filled_in_test_order_at_10pct": 0.024094707520891365,
+   "s1_note": "s1 is binary: at a 10% budget every disagreement is flagged and the rest of the budget is filled with tied (agreeing) tiles in stable test order, which is shuffled, so that part is effectively random (review.errors_caught, argsort kind=stable)"
   },
   "OPEN_cam": {
    "source": "results/open/OPEN/cam/{readers,fusion,review}.json",
@@ -343,7 +352,10 @@
     "n": 7,
     "rate": 0.004666666666666667
    },
-   "fused_error_rate": 0.026666666666666616
+   "fused_error_rate": 0.026666666666666616,
+   "s1_disagree_rate": 0.052,
+   "s1_budget_filled_in_test_order_at_10pct": 0.04800000000000001,
+   "s1_note": "s1 is binary: at a 10% budget every disagreement is flagged and the rest of the budget is filled with tied (agreeing) tiles in stable test order, which is shuffled, so that part is effectively random (review.errors_caught, argsort kind=stable)"
   }
  },
  "crc_fusion_fragility": {
@@ -463,7 +475,7 @@
   "simulation_note": "K2 output is a SIMULATION of a USB camera filming a screen."
  },
  "student": {
-  "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift}.json, results/student/model_sizes.json",
+  "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift,int8_flag_fidelity}.json, results/student/model_sizes.json",
   "backbone": "mobilenetv4_conv_small",
   "CM": {
    "fp32_test_bal_acc": {
@@ -479,6 +491,7 @@
    "int8_test_bal_acc": 0.9219132650544279,
    "fp32_onnx_test_bal_acc": 0.9415366032015291,
    "int8_val_bal_acc": 0.9774240235908471,
+   "int8_cost_vs_fp32_test_pts": 1.9623338147101155,
    "int8_test_label_agreement_with_fp32": 0.9607242339832869,
    "int8_bundle_flag_rate_test": 0.12103064066852368,
    "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs (int8_drift.json flag_rate_int8.test_recal_thr)",
@@ -486,8 +499,19 @@
     "fraction": 0.14317548746518105,
     "student_errors_caught": 0.7953020134228188,
     "teacher_recall": 0.4102279043913285,
-    "acc_cleared": 0.9900845253576073
+    "acc_cleared": 0.9900845253576073,
+    "agreement": 0.8118384401114206,
+    "kappa": 0.415620687270334
    },
+   "int8_device_flag_test_clean": {
+    "fraction": 0.12144846796657381,
+    "errors_caught": 0.5758293838862559,
+    "teacher_recall": 0.3329627570872707,
+    "acc_cleared": 0.9716233354470514,
+    "agreement": 0.7948467966573816,
+    "kappa": 0.34065296935398537
+   },
+   "device_flag_note": "flag vs the teacher flag (pre-registered s4 at its val threshold; 25-26% of CRC test): kappa, teacher_recall, agreement. The two device 'readers' are two heads on ONE shared student backbone. int8: int8_flag_fidelity.json (device runtime, incl. no-tissue clause)",
    "teachers_test_bal_acc": {
     "CONCH_probe": 0.9413381608321247,
     "MUSK_probe": 0.9480392722521808,
@@ -513,6 +537,7 @@
    "int8_test_bal_acc": 0.908546379396576,
    "fp32_onnx_test_bal_acc": 0.9362220112327457,
    "int8_val_bal_acc": 0.9769309665083513,
+   "int8_cost_vs_fp32_test_pts": 2.7347870446461475,
    "int8_test_label_agreement_with_fp32": 0.9583565459610028,
    "int8_bundle_flag_rate_test": 0.14540389972144846,
    "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs (int8_drift.json flag_rate_int8.test_recal_thr)",
@@ -520,8 +545,19 @@
     "fraction": 0.1798050139275766,
     "student_errors_caught": 0.7844827586206896,
     "teacher_recall": 0.4071919619249075,
-    "acc_cleared": 0.9872643912379012
+    "acc_cleared": 0.9872643912379012,
+    "agreement": 0.771309192200557,
+    "kappa": 0.3437191017378006
    },
+   "int8_device_flag_test_clean": {
+    "fraction": 0.14623955431754876,
+    "errors_caught": 0.7376344086021506,
+    "teacher_recall": 0.3421470121628768,
+    "acc_cleared": 0.9800978792822186,
+    "agreement": 0.7706128133704735,
+    "kappa": 0.3102789805707459
+   },
+   "device_flag_note": "flag vs the teacher flag (pre-registered s4 at its val threshold; 25-26% of CRC test): kappa, teacher_recall, agreement. The two device 'readers' are two heads on ONE shared student backbone. int8: int8_flag_fidelity.json (device runtime, incl. no-tissue clause)",
    "distributable": true
   },
   "params": 5654634,

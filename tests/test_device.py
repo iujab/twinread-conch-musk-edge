@@ -329,3 +329,37 @@ def test_install_offline_stages_manylinux_2_28_pinned(tmp_path):
     r = subprocess.run(["bash", str(INSTALL), "stage"], env={**env, "PYVER": "banana"}, capture_output=True, text=True)
     assert r.returncode == 2
     assert subprocess.run(["bash", "-n", str(INSTALL)]).returncode == 0
+
+
+@pytest.mark.parametrize("pair,heads", [("CM", ["Head A (CONCH-space)", "Head B (MUSK-space)"]),
+                                        ("OPEN", ["Head A (space A)", "Head B (space B)"]),
+                                        ("test", ["Head A (space A)", "Head B (space B)"])])
+def test_ui_names_student_heads_not_readers(pair, heads):
+    """I7: the device's two 'readers' are two heads on one shared student backbone; the UI must not call them readers."""
+    import uno_q_app
+    assert uno_q_app.head_labels(pair) == heads
+    ui = (ROOT / "device" / "ui" / "app.js").read_text() + (ROOT / "device" / "ui" / "index.html").read_text()
+    assert "Both student heads agree" in ui and "Both readers agree" not in ui and "Reader A" not in ui
+    assert ">Readers<" not in ui and "heads_note" in ui
+    assert "Reader A" not in (ROOT / "device" / "uno_q_app.py").read_text()
+
+
+def test_state_carries_head_labels(bundle):
+    import uno_q_app
+    app = uno_q_app.App(bundle, mode="sim", threads=1)
+    st = app.state()
+    assert st["readers"] == ["Head A (space A)", "Head B (space B)"] and "one student network" in st["heads_note"]
+
+
+def test_int8_flag_fidelity_metrics():
+    """scripts/int8_flag_fidelity.py: agreement/kappa/recall of a device flag vs the teacher flag, on a toy case."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import int8_flag_fidelity as iff
+    flag = np.array([1, 1, 0, 0, 0, 1, 0, 0], bool)
+    teach = np.array([1, 0, 1, 0, 0, 1, 0, 0], bool)
+    pred, y = np.array([0, 1, 2, 3, 4, 5, 6, 7]), np.array([9, 1, 2, 3, 4, 9, 9, 7])  # errors at 0, 5, 6
+    m = iff.flag_fidelity(flag, teach, pred, y)
+    assert m["agreement"] == 6 / 8 and m["teacher_recall"] == 2 / 3 and m["precision_vs_teacher"] == 2 / 3
+    po, pe = 6 / 8, (3 / 8) * (3 / 8) + (5 / 8) * (5 / 8)
+    assert m["kappa"] == pytest.approx((po - pe) / (1 - pe))
+    assert m["errors_caught"] == 2 / 3 and m["acc_cleared"] == 4 / 5 and m["fraction"] == 3 / 8

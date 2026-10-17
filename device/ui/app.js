@@ -13,12 +13,12 @@ async function tick() {
     const st = s.status || "idle";
     $("badge").className = "badge " + st;
     $("badge").textContent = {agree: "AGREE", review: "REVIEW", no_tissue: "NO TISSUE", busy: "READING", idle: "IDLE", error: "ERROR"}[st] || st;
-    $("reasons").textContent = s.error ? s.error : (s.reasons && s.reasons.length ? "Why: " + s.reasons.join(", ") : (st === "agree" ? "Both readers agree" : ""));
+    $("reasons").textContent = s.error ? s.error : (s.reasons && s.reasons.length ? "Why: " + s.reasons.join(", ") : (st === "agree" ? "Both student heads agree" : ""));
     const c = s.call;
     if (c) {
       const top = p => { const k = p.indexOf(Math.max(...p)); return [s.classes[k], p[k]]; };
       const [la, pa] = top(c.probsA), [lb, pb] = top(c.probsB), [lf, pf] = top(c.probsF);
-      $("bars").innerHTML = bar("a", s.readers[0], la, pa) + bar("b", s.readers[1], lb, pb) + bar("f", "Fused", lf, pf);
+      $("bars").innerHTML = bar("a", s.readers[0], la, pa) + bar("b", s.readers[1], lb, pb) + bar("f", "Fused head", lf, pf);
       $("stats").innerHTML =
         `<div class="stat">Tissue fraction<b>${pct(s.tissue_fraction)}</b></div>` +
         `<div class="stat">Latency (${s.host && s.host.is_uno_q ? "UNO Q" : (s.host ? s.host.machine + " host" : "host")})<b>${s.latency_ms.toFixed(0)} ms</b></div>` +
@@ -26,6 +26,7 @@ async function tick() {
         `<div class="stat">Review score<b>${c.review_score.toFixed(2)}</b></div>`;
       $("meta").textContent = `tile #${s.n} | LED matrix: ${s.led ? "updated" : "not connected"}`;
     }
+    $("headsnote").textContent = s.heads_note || "";
     $("foot").textContent = `Thresholds: JS > ${s.thresholds.js}, review head > ${s.thresholds.review}. Pair: ${s.pair}.`;
     $("frame").src = "/frame.jpg?" + Date.now();
   } catch (e) { $("reasons").textContent = "UI cannot reach the device app: " + e; }
