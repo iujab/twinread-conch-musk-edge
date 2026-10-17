@@ -1,0 +1,83 @@
+{
+  "students": {
+    "CM": {
+      "run": "results/student/cm_crc",
+      "backbone": "mobilenetv4_conv_small",
+      "params_total": 5654634,
+      "params_trunk": 2493024,
+      "params_heads": 3161610,
+      "fp32_param_bytes": 22618536,
+      "int8_onnx": "bundles/cm/model.onnx",
+      "int8_onnx_bytes": 6012392,
+      "input": "224 px"
+    },
+    "OPEN": {
+      "run": "results/student/open_crc",
+      "backbone": "mobilenetv4_conv_small",
+      "params_total": 5457770,
+      "params_trunk": 2493024,
+      "params_heads": 2964746,
+      "fp32_param_bytes": 21831080,
+      "int8_onnx": "bundles/open/model.onnx",
+      "int8_onnx_bytes": 5811430,
+      "input": "224 px"
+    }
+  },
+  "teachers": {
+    "conch": {
+      "model": "MahmoodLab/CONCH (CoCa, ViT-B/16, 448 px)",
+      "params_total": 200522497,
+      "params_total_def": "parameters in the released checkpoint (image encoder + text encoder)",
+      "params_text_decoder_not_released": 194710272,
+      "params_vision_tower": 90392832,
+      "vision_tower_def": "model.visual",
+      "checkpoint": "pytorch_model.bin (fp32)",
+      "checkpoint_bytes": 802235437,
+      "counted_from": "model built and loaded on the CPU; the CoCa text decoder is built by the library but its weights are not in the public checkpoint (unused by the reader), so it is not counted"
+    },
+    "musk": {
+      "model": "xiangjx/musk (multiway BEiT-3 style, ViT-L/16, 384 px)",
+      "params_total": 675188737,
+      "params_vision_tower": 304988160,
+      "vision_tower_def": "all parameters except the language branch (.B.), text_embed, language_head, logit_scale",
+      "checkpoint": "model.safetensors (fp16)",
+      "checkpoint_bytes": 1350493986,
+      "counted_from": "meta device (architecture only, no weights loaded)"
+    },
+    "pathgenclip": {
+      "model": "jamessyx/pathgenclip-vit-large-patch14-hf (CLIP ViT-L/14, 336 px)",
+      "params_total": 427944193,
+      "params_vision_tower": 304293888,
+      "vision_tower_def": "vision_model + visual_projection",
+      "checkpoint": "pytorch_model.bin (main revision)",
+      "checkpoint_bytes": 1711973537,
+      "counted_from": "meta device from the cached config"
+    },
+    "quiltnet_b16": {
+      "model": "wisdomik/QuiltNet-B-16 (CLIP ViT-B/16, 224 px)",
+      "params_total": 149620737,
+      "params_vision_tower": 86192640,
+      "vision_tower_def": "model.visual",
+      "checkpoint": "open_clip_pytorch_model.bin",
+      "checkpoint_bytes": 598599013,
+      "counted_from": "model built and loaded on the CPU"
+    }
+  },
+  "ratios": {
+    "CM": {
+      "teacher_vision_towers_params_sum": 395380992,
+      "student_params_over_teacher_vision_towers": 0.014301734565934823,
+      "teacher_checkpoint_bytes_sum": 2152729423,
+      "student_int8_onnx_over_teacher_checkpoints": 0.00279291579134978
+    },
+    "OPEN": {
+      "teacher_vision_towers_params_sum": 390486528,
+      "student_params_over_teacher_vision_towers": 0.013976845828596679,
+      "teacher_checkpoint_bytes_sum": 2310572550,
+      "student_int8_onnx_over_teacher_checkpoints": 0.0025151471655802367
+    }
+  },
+  "note": "Parameter counts, not FLOPs. The teachers also need a GPU-class device at 384-448 px; the student is one 224-px CNN for both readers. Research prototype, not a diagnostic device.",
+  "created": "2026-10-17T06:11:55",
+  "torch": "2.14.1+cu130"
+}
