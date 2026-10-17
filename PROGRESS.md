@@ -38,3 +38,8 @@ Zero-shot bal acc (A / B): crc 0.815 / 0.423; cam 0.921 / 0.525. No `unstable` C
 Review flag, errors caught at 10% budget (crc / cam): s1 0.511 / 0.500; s2 0.502 / 0.425; s3 0.693 / 0.675; s4 0.607 / 0.700;
 baselines A-confidence 0.633 / 0.725, B-confidence 0.460 / 0.375. Fusion gives no significant accuracy gain over PathGen-CLIP alone,
 and s4 does not beat the best single reader's own confidence at 10% on either dataset (CIs overlap).
+
+### Task 8 fix round 1 (corrections to the entry above)
+- The "errors caught at 10% budget" figures above are top-10%-of-test rankings, NOT the deployed rule. The preregistered rule is "s4 > validation threshold at the 10% budget". Its actual test operating point (review.json, s4_val_threshold_operating_points, "0.1"): crc flags 26.3% of tiles (0.26337) and catches 85.9% of errors (0.8594), accuracy on cleared 0.9917; cam flags 5.7% (0.05667) and catches 62.5% (0.625), accuracy on cleared 0.9894.
+- Cause: crc val is near ceiling (19 fused errors on val vs 313 on test), so s4 and its threshold were fit on 19 positives. crc val to test is also a distribution shift (val is group-disjoint NCT-CRC-HE-100K, test is CRC-VAL-HE-7K), so val-calibrated review thresholds over-flag on test.
+- QuiltNet-B-16 zero-shot caveat: on cam it is a degenerate one-class predictor (1,461 of 1,500 test tiles predicted "tumor"). The Quilt paper's Table 9 reports 28.68% on NCT-CRC for this ViT-B/16 GPT/77 variant, so our 0.423 is consistent with the paper; its linear probe is strong (crc 0.914, cam 0.949).
