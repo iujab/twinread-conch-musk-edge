@@ -1,0 +1,8 @@
+data
+build
+bundles/cm
+.worktrees/
+.superpowers/
+__pycache__/
+*.onnx
+!tests/fixtures/*.onnx
