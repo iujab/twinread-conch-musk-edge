@@ -51,6 +51,7 @@ def parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--throughput", action="store_true",
                     help="only measure images/s (aug none/torch/k2) on real train tiles -> <out>/throughput.json")
     ap.add_argument("--throughput-steps", type=int, default=20)
+    ap.add_argument("--throughput-warmup", type=int, default=5)
     return ap.parse_args(argv)
 
 
@@ -62,7 +63,7 @@ def _throughput(a, out: Path) -> int:
         dimA, dimB, k = z["tA_train"].shape[1], z["tB_train"].shape[1], z["fused_logits_train"].shape[1]
     x, _ = load_split(a.data_dir or ROOT / "data", a.dataset, "train")
     res = student.measure_throughput(x[:a.batch], a.backbone, dimA, dimB, k, batch=a.batch,
-                                     steps=a.throughput_steps, device=a.device, pretrained=not a.no_pretrained)
+                                     steps=a.throughput_steps, warmup=a.throughput_warmup, device=a.device, pretrained=not a.no_pretrained)
     out.mkdir(parents=True, exist_ok=True)
     (out / "throughput.json").write_text(json.dumps(student._clean(res), indent=2))
     print(json.dumps(student._clean(res["results"]), indent=1))

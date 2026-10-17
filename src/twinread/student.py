@@ -933,11 +933,11 @@ def measure_throughput(x: np.ndarray, backbone: str, dimA: int, dimB: int, n_cla
             z = to_input(xb)
             return z.contiguous(memory_format=torch.channels_last) if amp else z
 
-        def step(i, prep=prep):
+        def step(i, prep=prep, rel="torch"):
             z = prep(i)
             with torch.autocast(dev.type, dtype=torch.float16, enabled=amp):
                 out = model(z)
-            loss, _ = distill_loss(out, tA, tB, fl, y, rv)
+            loss, _ = distill_loss(out, tA, tB, fl, y, rv, rel_impl=rel)
             opt.zero_grad(set_to_none=True)
             scaler.scale(loss).backward()
             scaler.step(opt)
@@ -945,7 +945,12 @@ def measure_throughput(x: np.ndarray, backbone: str, dimA: int, dimB: int, n_cla
 
         t_aug, t_step = timed(prep), timed(step)
         res[aug] = {"impl_used": impl, "aug_images_per_s": n / t_aug, "train_step_images_per_s": n / t_step,
-                    "aug_ms_per_batch": 1000 * t_aug, "train_step_ms_per_batch": 1000 * t_step}
+                    "aug_ms_per_batch": 1000 * t_aug, "train_step_ms_per_batch": 1000 * t_step,
+                    "rel_loss_impl": "torch"}
+        if rel_impl_used("auto", dev) != "torch":
+            t_bb = timed(lambda i: step(i, rel="bigbatch"))
+            res[aug]["train_step_images_per_s_bigbatch_rel"] = n / t_bb
+            res[aug]["train_step_ms_per_batch_bigbatch_rel"] = 1000 * t_bb
     del model, opt
     if amp:
         torch.cuda.empty_cache()

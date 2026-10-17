@@ -399,3 +399,18 @@ def test_resolve_targets_dir(tmp_path):
         (d / "student_targets.npz").unlink()
     with pytest.raises(FileNotFoundError, match="student_targets.npz"):
         student.resolve_targets_dir("OPEN", "crc", tmp_path / "res")
+
+
+def test_cli_throughput_writes_json(tmp_path):
+    data, tgt = make_fixture(tmp_path)
+    cli = _load_cli()
+    out = tmp_path / "tp"
+    rc = cli.main(["--pair", "OPEN", "--dataset", "cam", "--backbone", "lcnet_050", "--batch", "4", "--targets-dir",
+                   str(tgt), "--data-dir", str(data), "--device", "cpu", "--no-pretrained", "--out", str(out),
+                   "--throughput", "--throughput-steps", "1", "--throughput-warmup", "0"])
+    assert rc == 0
+    tp = json.loads((out / "throughput.json").read_text())
+    assert set(tp["results"]) == {"none", "torch", "k2"}
+    for v in tp["results"].values():
+        assert v["aug_images_per_s"] > 0 and v["train_step_images_per_s"] > 0
+    assert tp["results"]["k2"]["impl_used"] in ("k2", "torch")
