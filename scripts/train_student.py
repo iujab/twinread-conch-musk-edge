@@ -27,6 +27,16 @@ def default_out(pair: str, dataset: str, aug: str, seed: int) -> Path:
     return ROOT / "results" / "student" / name
 
 
+def _weights(text: str) -> dict:
+    try:
+        w = json.loads(text)
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(f"not JSON: {e}")
+    if not isinstance(w, dict) or not set(w) <= set(student.DEFAULT_WEIGHTS):
+        raise argparse.ArgumentTypeError(f"expected a JSON object with keys from {sorted(student.DEFAULT_WEIGHTS)}")
+    return {k: float(v) for k, v in w.items()}
+
+
 def parse_args(argv=None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--pair", required=True, type=str.upper, choices=["CM", "OPEN"])
@@ -47,6 +57,8 @@ def parse_args(argv=None) -> argparse.Namespace:
     ap.add_argument("--budget", type=float, default=None, help="seconds per invocation; exit 3 = rerun to resume")
     ap.add_argument("--device", default=None)
     ap.add_argument("--no-pretrained", action="store_true")
+    ap.add_argument("--loss-weights", type=_weights, default=None,
+                    help='override loss weights (ablations), e.g. \'{"rel": 0.0}\'; default = the brief\'s weights')
     ap.add_argument("--rel-impl", choices=["auto", "torch", "bigbatch"], default="auto")
     ap.add_argument("--throughput", action="store_true",
                     help="only measure images/s (aug none/torch/k2) on real train tiles -> <out>/throughput.json")
@@ -78,7 +90,8 @@ def main(argv=None) -> int:
     r = student.train_student(a.pair, a.dataset, a.backbone, a.epochs, a.batch, a.aug, out,
                               severity_max=a.severity_max, seed=a.seed, targets_dir=a.targets_dir,
                               data_dir=a.data_dir, results_dir=a.results_dir, pretrained=not a.no_pretrained,
-                              budget_s=a.budget, device=a.device, rel_impl=a.rel_impl)
+                              budget_s=a.budget, device=a.device, rel_impl=a.rel_impl,
+                              weights=a.loss_weights)
     keys = ("done", "epochs_completed", "resumed_from_epoch", "out_dir", "best_epoch")
     print(json.dumps({k: r.get(k) for k in keys}))
     return 0 if r["done"] else student.EXIT_RERUN

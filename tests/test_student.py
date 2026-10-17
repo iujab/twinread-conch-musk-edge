@@ -414,3 +414,18 @@ def test_cli_throughput_writes_json(tmp_path):
     for v in tp["results"].values():
         assert v["aug_images_per_s"] > 0 and v["train_step_images_per_s"] > 0
     assert tp["results"]["k2"]["impl_used"] in ("k2", "torch")
+
+
+def test_cli_loss_weights_override(tmp_path):
+    cli = _load_cli()
+    a = cli.parse_args(["--pair", "OPEN", "--dataset", "crc", "--loss-weights", '{"rel": 0.0}'])
+    assert a.loss_weights == {"rel": 0.0}
+    assert cli.parse_args(["--pair", "OPEN", "--dataset", "crc"]).loss_weights is None
+    with pytest.raises(SystemExit):
+        cli.parse_args(["--pair", "OPEN", "--dataset", "crc", "--loss-weights", '{"bogus": 1}'])
+    data, tgt = make_fixture(tmp_path)
+    out = tmp_path / "o"
+    assert cli.main(["--pair", "OPEN", "--dataset", "cam", "--backbone", "lcnet_050", "--batch", "4", "--aug", "none",
+                     "--epochs", "1", "--targets-dir", str(tgt), "--data-dir", str(data), "--device", "cpu",
+                     "--no-pretrained", "--out", str(out), "--loss-weights", '{"rel": 0.0}']) == 0
+    assert json.loads((out / "metrics.json").read_text())["loss_weights"]["rel"] == 0.0
