@@ -1,0 +1,8 @@
+{
+ "mobilenetv4_conv_small": "ok",
+ "efficientnet_b0": "ok",
+ "mobileone_s0": "ok",
+ "regnetx_002": "ok",
+ "resnet18": "ok",
+ "lcnet_050": "ok"
+}
