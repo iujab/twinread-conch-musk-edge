@@ -117,7 +117,19 @@ def reproduce(pair: str, dataset: str, results_dir: Path, data_dir: Path | None 
            "confident_shared_error_pairs": dict(sorted(pairs.items(), key=lambda kv: -kv[1])),
            "confident_shared_errors_flagged_by_prereg_rule": int(flag[rv["confident_shared_errors"]["indices"]].sum()),
            "verification": {"all_ok": ok, "checks": ver}}
-    (out / "triage_curves.json").write_text(json.dumps(doc, indent=1))
+    tc = out / "triage_curves.json"
+    if tgt is None and tc.exists():
+        # Clean clone: the npz checks cannot run, so keep the committed file (whose verification includes them) as
+        # long as everything recomputed here matches it; any difference is an error, never a silent rewrite.
+        old = json.loads(tc.read_text())
+        same = all(old.get(k) == json.loads(json.dumps(v)) for k, v in doc.items() if k != "verification")
+        if not same:
+            raise AssertionError(f"{tc} differs from the reproduction and student_targets.npz is absent")
+        doc = old
+    else:
+        if tgt is None:
+            doc["verification"]["npz_checks"] = "skipped: student_targets.npz absent (git-ignored)"
+        tc.write_text(json.dumps(doc, indent=1))
     np.savez_compressed(out / "tile_preds.npz", pA=tA.astype(np.float32), pB=tB.astype(np.float32),
                         pF=tF.astype(np.float32), y=y["test"].astype(np.int64), flag=flag,
                         **{k: sig[k].astype(np.float32) for k in SIGNALS})
