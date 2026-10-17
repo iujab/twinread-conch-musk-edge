@@ -105,3 +105,27 @@ def test_resolve_readers():
     assert embed.resolve_readers(None, ["pathgenclip", "quiltnet_b16"]) == ["pathgenclip", "quiltnet_b16"]
     with pytest.raises(KeyError):
         embed.resolve_readers(None, ["nope"])
+
+
+def test_cache_invalidated_on_middle_tile_change(tmp_path):
+    r, c = make_fake()
+    x = tiles(1200, hw=4)
+    embed.embed_array(r, x, "aligned", tmp_path / "a.npy", batch=64)
+    n = c.n
+    embed.embed_array(r, x, "aligned", tmp_path / "a.npy", batch=64)
+    assert c.n == n
+    i = int(embed._sample_idx(len(x))[len(embed._sample_idx(len(x))) // 2])
+    assert 64 <= i < len(x) - 64
+    x2 = x.copy(); x2[i, 0, 0, 0] ^= 1
+    embed.embed_array(r, x2, "aligned", tmp_path / "a.npy", batch=64)
+    assert c.n > n
+
+
+def test_cache_invalidated_on_middle_permutation(tmp_path):
+    r, c = make_fake()
+    x = tiles(1200, hw=4)
+    embed.embed_array(r, x, "aligned", tmp_path / "a.npy", batch=64)
+    n = c.n
+    x2 = x.copy(); x2[64:-64] = x[64:-64][::-1]
+    embed.embed_array(r, x2, "aligned", tmp_path / "a.npy", batch=64)
+    assert c.n > n

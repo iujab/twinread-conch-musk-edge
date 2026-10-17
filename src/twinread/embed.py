@@ -35,9 +35,19 @@ class NeedsRerun(Exception):
     """Time budget used up with chunks remaining; rerun the same command (exit code 3)."""
 
 
+N_STRIDED = 256
+
+
+def _sample_idx(n: int) -> np.ndarray:
+    """First 64, last 64 and >= 256 evenly spaced tile indices (all tiles when n is small)."""
+    idx = np.concatenate([np.arange(min(64, n)), np.linspace(0, n - 1, min(n, N_STRIDED)).astype(np.int64),
+                          np.arange(max(0, n - 64), n)]) if n else np.zeros(0, np.int64)
+    return np.unique(idx)
+
+
 def cache_key(reader_name: str, kind: str, spec: PreprocessSpec, impl: str, x: np.ndarray) -> str:
     h = hashlib.sha256()
-    edge = hashlib.sha256(np.ascontiguousarray(x[:64]).tobytes() + np.ascontiguousarray(x[-64:]).tobytes()).hexdigest()
+    edge = hashlib.sha256(np.ascontiguousarray(x[_sample_idx(len(x))]).tobytes()).hexdigest()
     h.update(repr((reader_name, kind, dataclasses.astuple(spec), impl, tuple(x.shape), edge)).encode())
     return h.hexdigest()
 
