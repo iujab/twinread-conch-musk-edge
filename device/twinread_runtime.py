@@ -89,10 +89,17 @@ def js_divergence(p, q) -> float:
 
 
 def tissue_fraction(x_uint8: np.ndarray) -> float:
-    """Fraction of pixels whose optical-density sum, OD = -log((I+1)/256) summed over RGB, exceeds 0.15."""
+    """Fraction of pixels that look like stained tissue. A pixel counts if ALL hold:
+      * OD sum > 0.15, OD = -log((I+1)/256) summed over RGB (StainForge's background rule: drops clean white glass);
+      * max channel > 30 (drops black bezels / black frames, whose OD is huge but which are not tissue);
+      * chroma (max-min over RGB) >= 15 (drops grey / dim "white", e.g. a screen at ~225 with camera noise, whose OD sum
+        is ~0.37 and would pass the plain OD rule; 225 +- 4 noise gives at most ~2 % of pixels above 15).
+    Measured offline on all 7,180 NCT-CRC test tiles: 9 fall below the 0.1 no_tissue cutoff, all ADI (fat, nearly
+    empty); every other class stays above it. Such near-empty fat tiles go to review, by design."""
     x = np.asarray(x_uint8, np.float32)
     od = -np.log((x + 1.0) / 256.0).sum(-1)
-    return float((od > OD_THRESHOLD).mean())
+    mx, mn = x.max(-1), x.min(-1)
+    return float(((od > OD_THRESHOLD) & (mx > 30) & ((mx - mn) >= 15)).mean())
 
 
 def _no_tissue(x_uint8: np.ndarray) -> bool:

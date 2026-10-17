@@ -14,9 +14,9 @@ A bundle that fails checksum verification is refused.
 
 ## Decisions
 - Review rule: flag if argmax(pA) != argmax(pB), JS(pA,pB) (base 2) > thr.js, sigmoid(review_logit) > thr.review, or no_tissue.
-- `tissue_fraction`: fraction of pixels with OD sum > 0.15, OD = -log((I+1)/256) summed over RGB (StainForge rule).
-  `no_tissue` = tissue_fraction < 0.10 OR pixel std < 6 grey levels. The std test is needed because an all-black tile has
-  OD far above 0.15 and would otherwise count as tissue.
+- `tissue_fraction`: a pixel is tissue if OD sum > 0.15 (StainForge rule; OD = -log((I+1)/256) summed over RGB) AND max channel > 30
+  (no black bezel/frame) AND chroma (max-min) >= 15 (no grey/dim-white screen with camera noise). `no_tissue` = tissue_fraction < 0.10
+  OR pixel std < 6 grey levels. On all 7,180 NCT-CRC test tiles only 9 fall under 0.10, all ADI (near-empty fat), and they go to review.
 - Crop: shorter side resized to 224 (bicubic), then centre crop. `--crop marker` tries the rig's marker warp, else centre.
 
 ## Bridge assumptions (verify on the board)

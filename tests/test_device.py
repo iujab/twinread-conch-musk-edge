@@ -105,8 +105,7 @@ def test_tissue_fraction_rule():
     assert rt.tissue_fraction(x) == 0.0
     x[:, :, :112] = (200, 100, 150)  # half the tile is stained
     assert abs(rt.tissue_fraction(x) - 0.5) < 1e-6
-    # black: OD = -log(1/256)*3 = 16.6 > 0.15 counts as "tissue" by the OD rule; no_tissue must still catch it
-    assert rt.tissue_fraction(np.zeros((1, 224, 224, 3), np.uint8)) == 1.0
+    assert rt.tissue_fraction(np.zeros((1, 224, 224, 3), np.uint8)) == 0.0  # black is not tissue
 
 
 def test_black_frame_flagged_by_uniformity(bundle):
@@ -198,3 +197,64 @@ def test_device_modules_import_only_allowed():
             for nm in names:
                 top = nm.split(".")[0]
                 assert top in ok | local | {"arduino", "rig", "match_captures"}, (f, nm)
+
+
+def test_half_black_half_white_is_no_tissue(bundle):
+    x = np.full((1, 224, 224, 3), 255, np.uint8)
+    x[:, :, :112] = 0
+    assert rt.tissue_fraction(x) == 0.0
+    r = rt.EdgeModel(bundle, threads=1).infer(x)[0]
+    assert r.no_tissue and r.review
+
+
+def test_dim_noisy_white_screen_is_no_tissue(bundle):
+    rng = np.random.default_rng(0)
+    x = np.clip(rng.normal(225, 4, (1, 224, 224, 3)), 0, 255).astype(np.uint8)
+    assert rt.tissue_fraction(x) < 0.1
+    assert rt.EdgeModel(bundle, threads=1).infer(x)[0].no_tissue
+
+
+def test_real_crc_tiles_are_tissue(bundle):
+    p = ROOT / "data" / "crc_test_x.npy"
+    if not p.exists():
+        pytest.skip("data/crc_test_x.npy not present")
+    x = np.load(p, mmap_mode="r")
+    y = np.load(ROOT / "data" / "crc_test_y.npy")
+    idx = np.sort(np.random.default_rng(0).choice(np.flatnonzero(y != 0), 60, replace=False))  # not ADI: fat can be near-empty
+    tiles = np.asarray(x[idx])
+    assert min(rt.tissue_fraction(t[None]) for t in tiles) >= 0.1
+    res = rt.EdgeModel(bundle, threads=1).infer(tiles)
+    assert not any(r.no_tissue for r in res)
+
+
+@pytest.mark.parametrize("k", [2, 3])
+def test_probe_parity_with_sklearn(tmp_path, bundle, k):
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    shutil.copytree(bundle, tmp_path / "b")
+    d = tmp_path / "b"
+    rng = np.random.default_rng(k)
+    pr = {}
+    ref = {}
+    for r, dd in (("A", 16), ("B", 24)):
+        y = rng.integers(0, k, 300)
+        X = rng.normal(size=(300, dd)) + 2.0 * np.eye(k)[y] @ rng.normal(size=(k, dd))  # separable-ish
+        sc = StandardScaler().fit(X)
+        lr = LogisticRegression(max_iter=2000).fit(sc.transform(X), y)
+        if k == 2:  # R24 binary expansion: softmax over [0, w.x + b] == sigmoid
+            coef = np.vstack([np.zeros(dd), lr.coef_[0]])
+            icpt = np.array([0.0, lr.intercept_[0]])
+        else:
+            coef, icpt = lr.coef_, lr.intercept_
+        pr.update({f"{r}_coef": coef.astype("f8"), f"{r}_intercept": icpt.astype("f8"), f"{r}_mean": sc.mean_,
+                   f"{r}_scale": sc.scale_, f"{r}_classes": lr.classes_})
+        ref[r] = (X, sc, lr)
+    np.savez(d / "probes.npz", **pr)
+    from make_device_bundle import write_sums
+    write_sums(d)
+    m = rt.EdgeModel(d, threads=1)
+    for r in ("A", "B"):
+        X, sc, lr = ref[r]
+        got = m._probe(r, X.astype(np.float64))
+        assert got.shape == (300, k)
+        assert np.abs(got - lr.predict_proba(sc.transform(X))).max() < 1e-6
