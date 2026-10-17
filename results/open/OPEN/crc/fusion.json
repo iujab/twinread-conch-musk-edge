@@ -1,0 +1,88 @@
+{
+  "candidates": {
+    "average": {
+      "bal_acc": 0.9493514960730322,
+      "bal_acc_ci": [
+        0.9438938830936493,
+        0.9552142837246862
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9438938830936493,
+        "hi": 0.9552142837246862,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.9475454481301051,
+      "accuracy": 0.9628133704735377
+    },
+    "concat_lr": {
+      "bal_acc": 0.9449795615354437,
+      "bal_acc_ci": [
+        0.9391996153447406,
+        0.9507627559406173
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9391996153447406,
+        "hi": 0.9507627559406173,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.9416210628066827,
+      "accuracy": 0.9590529247910864
+    },
+    "gated_mlp": {
+      "bal_acc": 0.9443010073711334,
+      "bal_acc_ci": [
+        0.9380937991564946,
+        0.9500857310683467
+      ],
+      "bal_acc_ci_info": {
+        "lo": 0.9380937991564946,
+        "hi": 0.9500857310683467,
+        "n": 1000,
+        "n_degenerate": 0,
+        "unstable": false
+      },
+      "macro_f1": 0.941636495970327,
+      "accuracy": 0.9564066852367687
+    }
+  },
+  "primary": "gated_mlp",
+  "best_single_reader": "A",
+  "delta_bal_acc_vs_best_single": 0.0007702392949183734,
+  "delta_ci_info": {
+    "lo": -0.005159094553584489,
+    "hi": 0.006568155408446634,
+    "n": 1000,
+    "n_degenerate": 0,
+    "unstable": false
+  },
+  "delta_ci": [
+    -0.005159094553584489,
+    0.006568155408446634
+  ],
+  "ci_mode": "tile-level, anti-conservative (no slide ids)",
+  "mcnemar_note": "tile-level exact test; anti-conservative when tiles cluster by slide",
+  "mcnemar_fused_vs_A": {
+    "b": 125,
+    "c": 133,
+    "p": 0.663064461563114
+  },
+  "mcnemar_fused_vs_B": {
+    "b": 323,
+    "c": 128,
+    "p": 1.6242106292454794e-20
+  },
+  "mcnemar_fused_vs_best_single": {
+    "b": 125,
+    "c": 133,
+    "p": 0.663064461563114
+  },
+  "val_balanced_accuracy": {
+    "average": 0.9920794208196472,
+    "concat_lr": 0.9920921503438227,
+    "gated_mlp": 0.9928099815771179
+  }
+}

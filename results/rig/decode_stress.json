@@ -1,0 +1,74 @@
+{
+ "note": "SIMULATED camera-filming-a-screen (rig/sim_capture.py), real CRC test tiles; 40 darkest of a 1/7 subsample + 160 random",
+ "min_tile_mean_level": 88.51669456845238,
+ "runs": [
+  {
+   "severity": 0.7,
+   "frame_hw": [
+    480,
+    640
+   ],
+   "trials": 2000,
+   "reject_reasons": {
+    "bad_geometry": 6
+   },
+   "ok": 1994,
+   "wrong_id": 0,
+   "wrong_session": 0,
+   "rejected": 6,
+   "accept_rate": 0.997,
+   "wrong_id_rate": 0.0
+  },
+  {
+   "severity": 1.0,
+   "frame_hw": [
+    480,
+    640
+   ],
+   "trials": 2000,
+   "reject_reasons": {
+    "bad_geometry": 215
+   },
+   "ok": 1785,
+   "wrong_id": 0,
+   "wrong_session": 0,
+   "rejected": 215,
+   "accept_rate": 0.8925,
+   "wrong_id_rate": 0.0
+  },
+  {
+   "severity": 0.7,
+   "frame_hw": [
+    720,
+    1280
+   ],
+   "trials": 2000,
+   "reject_reasons": {
+    "bad_geometry": 8
+   },
+   "ok": 1992,
+   "wrong_id": 0,
+   "wrong_session": 0,
+   "rejected": 8,
+   "accept_rate": 0.996,
+   "wrong_id_rate": 0.0
+  },
+  {
+   "severity": 1.0,
+   "frame_hw": [
+    720,
+    1280
+   ],
+   "trials": 2000,
+   "reject_reasons": {
+    "bad_geometry": 199
+   },
+   "ok": 1801,
+   "wrong_id": 0,
+   "wrong_session": 0,
+   "rejected": 199,
+   "accept_rate": 0.9005,
+   "wrong_id_rate": 0.0
+  }
+ ]
+}

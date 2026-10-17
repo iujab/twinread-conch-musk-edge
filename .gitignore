@@ -6,3 +6,4 @@ bundles/cm
 __pycache__/
 *.onnx
 !tests/fixtures/*.onnx
+results/**/*.npz

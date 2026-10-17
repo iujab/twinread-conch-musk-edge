@@ -46,3 +46,20 @@
   - InfoNCE stays available via `--loss-weights '{"rel": 0.5}'`, which uses BigBatch's Triton loss on CUDA.
   - K2 is not merged, so every `--aug k2` run used the plain-torch camera simulation (`aug_used` and `k2_fallback` in
     `metrics.json`).
+
+## Task 8: OPEN pair (PathGen-CLIP + QuiltNet-B-16), local results (numbers copied from results/open/)
+Partner chosen on val only (results/open/partner.json): quiltnet_b16 (mean val probe bal acc 0.9471, error phi vs PathGen-CLIP 0.365)
+over biomedclip (0.9450, phi 0.405); both eligible (within 3 points). Test, reference-impl embeddings.
+| dataset | A pathgenclip probe | B quiltnet_b16 probe | best single (val) | fused (primary) | delta vs best, 95% CI | McNemar fused vs best | CI mode |
+|---|---|---|---|---|---|---|---|
+| crc | 0.9435 [0.9376, 0.9490] | 0.9141 [0.9072, 0.9210] | A | gated_mlp 0.9443 [0.9381, 0.9501] | +0.0008 [-0.0052, +0.0066] | p=0.66 (b=125, c=133) | tile-level, anti-conservative |
+| cam | 0.9733 [0.9197, 0.9857] | 0.9493 [0.8973, 0.9728] | A | concat_lr 0.9733 [0.9344, 0.9830] | 0.0000 [-0.0122, +0.0165] | p=1.0 (b=8, c=8) | cluster by slide |
+Zero-shot bal acc (A / B): crc 0.815 / 0.423; cam 0.921 / 0.525. No `unstable` CI flag was raised anywhere.
+Review flag, errors caught at 10% budget (crc / cam): s1 0.511 / 0.500; s2 0.502 / 0.425; s3 0.693 / 0.675; s4 0.607 / 0.700;
+baselines A-confidence 0.633 / 0.725, B-confidence 0.460 / 0.375. Fusion gives no significant accuracy gain over PathGen-CLIP alone,
+and s4 does not beat the best single reader's own confidence at 10% on either dataset (CIs overlap).
+
+### Task 8 fix round 1 (corrections to the entry above)
+- The "errors caught at 10% budget" figures above are top-10%-of-test rankings, NOT the deployed rule. The preregistered rule is "s4 > validation threshold at the 10% budget". Its actual test operating point (review.json, s4_val_threshold_operating_points, "0.1"): crc flags 26.3% of tiles (0.26337) and catches 85.9% of errors (0.8594), accuracy on cleared 0.9917; cam flags 5.7% (0.05667) and catches 62.5% (0.625), accuracy on cleared 0.9894.
+- Cause: crc val is near ceiling (19 fused errors on val vs 313 on test), so s4 and its threshold were fit on 19 positives. crc val to test is also a distribution shift (val is group-disjoint NCT-CRC-HE-100K, test is CRC-VAL-HE-7K), so val-calibrated review thresholds over-flag on test.
+- QuiltNet-B-16 zero-shot caveat: on cam it is a degenerate one-class predictor (1,461 of 1,500 test tiles predicted "tumor"). The Quilt paper's Table 9 reports 28.68% on NCT-CRC for this ViT-B/16 GPT/77 variant, so our 0.423 is consistent with the paper; its linear probe is strong (crc 0.914, cam 0.949).

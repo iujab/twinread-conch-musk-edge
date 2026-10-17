@@ -1,0 +1,18 @@
+:root{--bg:#f5f6f8;--fg:#1b1f24;--card:#fff;--mut:#5b6572;--ok:#1c7c3f;--rev:#b4231a;--idle:#5b6572;--bar:#2f6fdb;--bar2:#8a4fd6;--barf:#1b1f24;--line:#d7dbe0}
+@media (prefers-color-scheme:dark){:root{--bg:#14171b;--fg:#e8eaed;--card:#1d2126;--mut:#9aa3ad;--ok:#4cc17a;--rev:#ff6b60;--idle:#9aa3ad;--bar:#6aa0ff;--bar2:#b58cf5;--barf:#e8eaed;--line:#343a42}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,sans-serif}
+.banner{background:#7a1010;color:#fff;text-align:center;padding:6px 12px;font-weight:700;letter-spacing:.02em}
+.modebar{padding:6px 16px;color:var(--mut);font-weight:600}
+main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;padding:0 16px 16px}
+@media(max-width:800px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+h2{margin:0 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}.sub{text-transform:none;letter-spacing:0;font-weight:400}
+#frame{width:100%;border-radius:6px;background:#000;min-height:120px}.meta{color:var(--mut);margin-top:6px}
+.badge{font-size:56px;font-weight:800;text-align:center;border-radius:10px;padding:12px;color:#fff}
+.badge.agree{background:var(--ok)}.badge.review,.badge.error{background:var(--rev)}.badge.no_tissue{background:#6b5200}.badge.idle,.badge.busy{background:var(--idle)}
+.reasons{min-height:24px;margin:8px 0 14px;color:var(--mut);text-align:center}
+.row{display:grid;grid-template-columns:90px 1fr 70px;gap:8px;align-items:center;margin:6px 0}
+.track{height:14px;background:var(--line);border-radius:7px;overflow:hidden}.fill{height:100%;background:var(--bar)}
+.row.b .fill{background:var(--bar2)}.row.f .fill{background:var(--barf)}.call{font-weight:600}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.stat{border:1px solid var(--line);border-radius:8px;padding:8px}
+.stat b{display:block;font-size:20px}footer{padding:0 16px 16px;color:var(--mut)}
