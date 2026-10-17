@@ -429,3 +429,65 @@ def test_cli_loss_weights_override(tmp_path):
                      "--epochs", "1", "--targets-dir", str(tgt), "--data-dir", str(data), "--device", "cpu",
                      "--no-pretrained", "--out", str(out), "--loss-weights", '{"rel": 0.0}']) == 0
     assert json.loads((out / "metrics.json").read_text())["loss_weights"]["rel"] == 0.0
+
+
+class _PixelModel(torch.nn.Module):
+    """Stand-in with the TwinStudent output dict whose outputs are raw pixels (random-init CNNs are ~input-blind)."""
+
+    def forward(self, z):
+        f = F.adaptive_avg_pool2d(z, 4).flatten(1)  # [B, 48]
+        return {"hA": F.normalize(f[:, :8], dim=1), "hB": F.normalize(f[:, 8:16], dim=1), "logits": f[:, :3],
+                "review_logit": f[:, 3]}
+
+
+def test_predict_eval_aug_independent_of_batch_size():
+    """Eval augmentation uses fixed 64-tile seed blocks: identical outputs for any eval batch (multiple of 64)."""
+    m = _PixelModel()
+    x = _tiles(130, 32, 32, seed=4).numpy()
+    clean = student.predict(m, x, 0.0, "torch", "cpu", batch=64)
+    a = student.predict(m, x, 0.5, "torch", "cpu", batch=64)
+    b = student.predict(m, x, 0.5, "torch", "cpu", batch=128)
+    assert a["hA"].shape == (130, 8)
+    assert np.abs(a["hA"] - clean["hA"]).max() > 1e-3  # the augmentation really changed the inputs
+    for k in a:
+        assert np.allclose(a[k], b[k], atol=1e-6), k
+    with pytest.raises(ValueError, match="multiple"):
+        student.predict(m, x, 0.5, "torch", "cpu", batch=100)
+
+
+def test_predict_halves_batch_on_oom(monkeypatch):
+    m = _PixelModel()
+    x = _tiles(130, 32, 32, seed=5).numpy()
+    ref = student.predict(m, x, 0.5, "torch", "cpu", batch=64)
+    real_forward = m.forward
+    calls = {"oom": 0}
+
+    def flaky(z):
+        if z.shape[0] > 64:
+            calls["oom"] += 1
+            raise torch.OutOfMemoryError("simulated")
+        return real_forward(z)
+
+    monkeypatch.setattr(m, "forward", flaky)
+    got = student.predict(m, x, 0.5, "torch", "cpu", batch=256)
+    assert calls["oom"] >= 1
+    for k in ref:
+        assert np.allclose(ref[k], got[k], atol=1e-6), k
+
+
+def test_gpu_staging_needs_headroom():
+    gib = 1 << 30
+    assert student._fits_on_gpu(int(2.6 * gib), free=int(7 * gib))
+    assert not student._fits_on_gpu(int(2.6 * gib), free=int(5 * gib))  # 2.6 + 3 GiB headroom > 5
+    assert student._fits_on_gpu(15 * gib, free=39 * gib)  # Delta A100: 100k tiles stay GPU-resident
+
+
+def test_changed_eval_protocol_invalidates_checkpoint(tmp_path, monkeypatch):
+    """Review Focus 4: a checkpoint trained under another eval protocol is never resumed."""
+    data, tgt = make_fixture(tmp_path)
+    out = tmp_path / "out"
+    kw = dict(targets_dir=tgt, data_dir=data, pretrained=False, device="cpu")
+    student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="none", out_dir=out, budget_s=0.0, **kw)
+    monkeypatch.setattr(student, "AUG_BLOCK", 32)
+    r = student.train_student("OPEN", "cam", "lcnet_050", epochs=2, batch=4, aug="none", out_dir=out, **kw)
+    assert r["resumed_from_epoch"] == 0

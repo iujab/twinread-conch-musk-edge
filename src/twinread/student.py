@@ -46,6 +46,8 @@ AUGS = ("k2", "torch", "none")
 EVAL_SEVERITIES = (0.0, 0.5, 1.0)
 EVAL_SEED = 20261017
 EVAL_BATCH = 256
+AUG_BLOCK = 64  # eval augmentation seed block (tiles)
+STAGE_HEADROOM = 3 << 30  # bytes of VRAM left free when staging the train tiles on the GPU
 REVIEW_BUDGET = 0.10
 EXIT_RERUN = 3
 ROOT = Path(__file__).resolve().parents[2]
@@ -564,25 +566,53 @@ def split_metrics(o: dict, tg: dict, probes: dict | None, classes: np.ndarray, t
     return m
 
 
+def eval_augment(xb: torch.Tensor, aug: str, severity: float, start: int) -> torch.Tensor:
+    """Fixed-seed evaluation augmentation in blocks of AUG_BLOCK tiles seeded by the global block index, so the
+    augmented tiles do not depend on the eval batch size (``start`` = global index of ``xb[0]``, a block multiple)."""
+    if severity <= 0 or len(xb) == 0:
+        return xb
+    if start % AUG_BLOCK:
+        raise ValueError(f"start must be a multiple of {AUG_BLOCK}")
+    base = EVAL_SEED + 1000 * int(round(severity * 100))
+    return torch.cat([augment(xb[j:j + AUG_BLOCK], aug, severity, base + (start + j) // AUG_BLOCK)
+                      for j in range(0, len(xb), AUG_BLOCK)])
+
+
 @torch.no_grad()
-def predict(model: TwinStudent, x, severity: float, aug_impl: str, device, batch: int = EVAL_BATCH) -> dict:
-    """Student outputs on uint8 tiles, optionally K2/torch-augmented at a fixed severity with fixed per-batch seeds."""
+def predict(model: nn.Module, x, severity: float, aug_impl: str, device, batch: int = EVAL_BATCH) -> dict:
+    """Student outputs on uint8 tiles, optionally augmented at a fixed severity (fixed per-block seeds).
+
+    On CUDA OOM (shared GPU) the batch is halved down to AUG_BLOCK; results are unchanged because seeds are per block.
+    """
+    if batch % AUG_BLOCK:
+        raise ValueError(f"eval batch must be a multiple of {AUG_BLOCK}")
     dev = torch.device(device)
     xt = torch.from_numpy(x) if isinstance(x, np.ndarray) else x
     model.eval()
     outs = defaultdict(list)
     amp = dev.type == "cuda"
-    for bi, i in enumerate(range(0, len(xt), batch)):
-        xb = xt[i:i + batch].to(dev)
-        if severity > 0:
-            xb = augment(xb, aug_impl, severity, EVAL_SEED + 1000 * int(round(severity * 100)) + bi)
-        z = to_input(xb)
-        if amp:
-            z = z.contiguous(memory_format=torch.channels_last)
-        with torch.autocast(dev.type, dtype=torch.float16, enabled=amp):
-            o = model(z)
+    i = 0
+    while i < len(xt):
+        try:
+            xb = eval_augment(xt[i:i + batch].to(dev), aug_impl, severity, i)
+            z = to_input(xb)
+            if amp:
+                z = z.contiguous(memory_format=torch.channels_last)
+            with torch.autocast(dev.type, dtype=torch.float16, enabled=amp):
+                o = model(z)
+            o = {k: v.float().cpu().numpy() for k, v in o.items()}
+        except torch.OutOfMemoryError:
+            if batch <= AUG_BLOCK:
+                raise
+            xb = z = None
+            if amp:
+                torch.cuda.empty_cache()
+            batch = max(AUG_BLOCK, (batch // 2) // AUG_BLOCK * AUG_BLOCK)
+            warnings.warn(f"CUDA OOM in predict; eval batch halved to {batch}")
+            continue
         for k, v in o.items():
-            outs[k].append(v.float().cpu().numpy())
+            outs[k].append(v)
+        i += batch
     keys = ("hA", "hB", "logits", "review_logit")
     if not outs:
         return {k: np.zeros((0,)) for k in keys}
@@ -641,13 +671,15 @@ def _atomic_json(obj, path: Path) -> None:
     os.replace(tmp, path)
 
 
+def _fits_on_gpu(nbytes: int, free: int, headroom: int = STAGE_HEADROOM) -> bool:
+    return nbytes + headroom < free
+
+
 def _stage(x: np.ndarray, dev: torch.device) -> torch.Tensor:
-    """uint8 tiles as a torch tensor: GPU-resident when they fit in half the free VRAM, else CPU."""
+    """uint8 tiles as a torch tensor: GPU-resident when they fit with STAGE_HEADROOM to spare (shared GPU), else CPU."""
     t = torch.from_numpy(np.ascontiguousarray(x))
-    if dev.type == "cuda":
-        free, _ = torch.cuda.mem_get_info(dev)
-        if t.numel() < 0.5 * free:
-            return t.to(dev)
+    if dev.type == "cuda" and _fits_on_gpu(t.numel(), torch.cuda.mem_get_info(dev)[0]):
+        return t.to(dev)
     return t
 
 
@@ -731,7 +763,9 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
            "weight_decay": weight_decay, "T": T, "weights": {**DEFAULT_WEIGHTS, **(weights or {})},
            "pretrained": bool(pretrained), "rel_impl": rel_impl, "eval_aug": eval_aug,
            "targets_sha256": _sha256(tpath), "probes_sha256": _sha256(ppath), "n_train": n_train,
-           "n_val": len(xs["val"]), "dimA": int(dimA), "dimB": int(dimB), "n_classes": int(n_classes)}
+           "n_val": len(xs["val"]), "dimA": int(dimA), "dimB": int(dimB), "n_classes": int(n_classes),
+           "eval_protocol": {"aug_block": AUG_BLOCK, "eval_seed": EVAL_SEED, "severities": list(EVAL_SEVERITIES),
+                             "selection": "mean val bal_acc over severities"}}
     chash = hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()
 
     torch.manual_seed(seed)
