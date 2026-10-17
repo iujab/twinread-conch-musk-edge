@@ -13,7 +13,8 @@ content; no camera). GPU timing: CUDA events, warmup 3, median of 10; achieved G
   python bench/bench_k1.py --part cpu                                   # CPU baselines, no GPU
   flock $B/.gpu.lock python bench/bench_k1.py --part gpu                # GPU paths (< 1 min)
   flock $B/.gpu.lock python bench/bench_k1.py --part parity             # bit-exactness + embedding cosines
-Parts merge into results/kernels/k1_bench.json and results/kernels/k1_parity.json. Research prototype.
+  python bench/bench_k1.py --part gpu --batch 64 --out results/delta/kernels   # NCSA J1: short run on the A100
+Parts merge into <out>/k1_bench.json and <out>/k1_parity.json (default out: results/kernels). Research prototype.
 """
 from __future__ import annotations
 
@@ -95,7 +96,7 @@ def env_block(gpu: bool) -> dict:
         e.update({
             "gpu": torch.cuda.get_device_name(0), "capability": ".".join(map(str, torch.cuda.get_device_capability(0))),
             "driver": _sh(["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"]),
-            "nvcc": _sh(["/usr/local/cuda/bin/nvcc", "--version"]).splitlines()[-1],
+            "nvcc": (_sh(["/usr/local/cuda/bin/nvcc", "--version"]) or "unavailable").splitlines()[-1],
             "triton": triton.__version__,
         })
     return e
@@ -247,12 +248,19 @@ def bench_gpu(inputs: dict) -> dict:
             "cuda_k1_incl_h2d": lambda: dual_preprocess(pinned.to(dev, non_blocking=True), A, B, impl="cuda"),
         }
         for m, fn in meths.items():
-            ms = cuda_time(fn)
+            try:  # one failing path (e.g. Triton on another GPU/toolchain) must not lose the others' numbers
+                ms = cuda_time(fn)
+            except Exception as e:  # noqa: BLE001
+                r[m] = {"error": f"{type(e).__name__}: {e}"}
+                print(name, m, "FAILED:", r[m]["error"], flush=True)
+                continue
+            finally:
+                torch.cuda.empty_cache()
             r[m] = {"ms": ms, "tiles_per_s": n / ms * 1e3, "eff_GBps": (in_b + out_b) / ms / 1e6,
                     "eff_frac_of_memcpy": (in_b + out_b) / ms / 1e6 / memcpy}
-            torch.cuda.empty_cache()
-        r["cuda_k1"]["kernels_ms"] = kernel_breakdown(meths["cuda_k1"])
-        r["triton"]["kernels_ms"] = kernel_breakdown(meths["triton"])
+        for m in ("cuda_k1", "triton"):
+            if "error" not in r[m]:
+                r[m]["kernels_ms"] = kernel_breakdown(meths[m])
         # accuracy of the interpolate shortcut on the first 16 inputs (the exact paths: see k1_parity.json)
         from PIL import Image
         tfa, tfb = official_transforms()
@@ -361,23 +369,26 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--part", choices=["cpu", "gpu", "parity", "all"], default="all")
     ap.add_argument("--cpu-repeats", type=int, default=3, help="CPU baselines: keep the best of N runs")
+    ap.add_argument("--out", type=Path, default=OUT, help="output dir (default results/kernels)")
+    ap.add_argument("--batch", type=int, default=BATCH, help="inputs per set (default 256; NCSA J1 uses 64)")
     a = ap.parse_args()
     torch.set_num_threads(4)
-    OUT.mkdir(parents=True, exist_ok=True)
-    inputs, meta = load_inputs()
-    bench_path = OUT / "k1_bench.json"
+    out = a.out if a.out.is_absolute() else P / a.out
+    out.mkdir(parents=True, exist_ok=True)
+    inputs, meta = load_inputs(a.batch)
+    bench_path = out / "k1_bench.json"
     parts = ["cpu", "gpu", "parity"] if a.part == "all" else [a.part]
     for part in parts:
         if part == "parity":
-            _merge(OUT / "k1_parity.json", "env", env_block(True))
-            _merge(OUT / "k1_parity.json", "result", bench_parity(inputs))
+            _merge(out / "k1_parity.json", "env", env_block(True))
+            _merge(out / "k1_parity.json", "result", bench_parity(inputs))
             continue
         res = bench_cpu(inputs, a.cpu_repeats) if part == "cpu" else bench_gpu(inputs)
         d = _merge(bench_path, part, res)
         d = _merge(bench_path, "env" if part == "gpu" else "env_cpu", env_block(part == "gpu"))
         _merge(bench_path, "inputs", meta)
         _merge(bench_path, "config", {
-            "batch": BATCH, "readers": {"A": f"conch {A.size}/{A.crop} bicubic", "B": f"musk {B.size}/{B.crop} bicubic"},
+            "batch": a.batch, "readers": {"A": f"conch {A.size}/{A.crop} bicubic", "B": f"musk {B.size}/{B.crop} bicubic"},
             "tiles_per_s": "raw inputs per second turned into BOTH readers' normalized tensors",
             "gpu_timing": "CUDA events, warmup 3, median of 10; input already on the GPU unless *_incl_h2d",
             "cpu_timing": "time.perf_counter; PIL single process: median of 3 passes over 256 inputs; DataLoader: "

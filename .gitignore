@@ -9,3 +9,6 @@ __pycache__/
 results/**/*.npz
 bundles/open/*.onnx
 bundles/open/*.npz
+*.pt
+bundles/cm_*
+logs/

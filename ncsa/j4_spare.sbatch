@@ -8,6 +8,10 @@
 #SBATCH --time=01:30:00
 #SBATCH --output=logs/j4_spare_%j.out
 # J4: spare job, only if J1-J3 leave a gap. Purpose: set by the user at submission via ACTION.
+#   embed_open    = PathGen-CLIP + QuiltNet-B-16 (the OPEN pair; PAIRS["OPEN"] names only PathGen-CLIP, the
+#                   partner was chosen on validation) on the full CRC data;
+#   distill_seed2 = a second CM student seed into results/delta/student/cm_crc_seed2; kernel_build = the sm_80 build.
+# Submit from ~/twinread (the --output path is relative; setup_login.sh creates logs/).
 # No --reservation. Never resubmits itself. Submit only with the user's explicit OK.
 # Record: results/ncsa/<job>_${SLURM_JOB_ID}.json is written by ncsa/job_record.py.
 # ACTION is an allow-list of named, fixed commands. Anything else is rejected. Use: sbatch --export=ALL,ACTION=embed_open
@@ -36,19 +40,19 @@ rc=0
 case "$ACTION" in
   embed_open)
     source ncsa/embed_loop.sh
-    run_embed OPEN crc "$IMPL"; rc=$? ;;
+    run_embed crc "$IMPL" --readers pathgenclip quiltnet_b16; rc=$? ;;
   distill_seed2)
     AUG=k2; [ "$IMPL" = k1 ] || AUG=torch
-    TARGETS=${TARGETS:-results/CM/crc}   # analysis outputs, as in J3
+    TARGETS=${TARGETS:-results/delta/CM/crc}   # analysis outputs, as in J3
     if [ -f "$TARGETS/student_targets.npz" ] && [ -f "$TARGETS/probes_aligned.npz" ]; then
       python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone "$BACKBONE" \
-        --epochs 15 --aug "$AUG" --seed 2
+        --epochs 15 --aug "$AUG" --seed 2 --out results/delta/student/cm_crc_seed2
       rc=$?
     else
       echo "missing $TARGETS/student_targets.npz or probes_aligned.npz; run the CPU analysis job first (README 6b)" >&2; rc=2
     fi ;;
   kernel_build)
-    python -c 'import twinread.kernels as k; k.load_ext("8.0"); print("extension build OK")'
+    python -c 'import twinread.kernels as k; m = k.load_ext("8.0"); assert m is not None and hasattr(m, "camera_aug"), k.EXT_ERRORS; print("extension build OK")'
     rc=$? ;;
 esac
 python ncsa/job_record.py j4_spare "$T0" "$rc" "action=$ACTION impl=$IMPL"

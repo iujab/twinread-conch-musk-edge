@@ -1,5 +1,11 @@
 """Build the edge bundle for a student: fp32 ONNX -> int8 (MinMax vs Entropy, lower val drift wins) -> thresholds
-recalibrated on int8 val outputs -> bundle + int8_drift.json.  usage: make_bundle.py --pair OPEN --dataset crc"""
+recalibrated on int8 val outputs -> bundle + int8_drift.json.  usage: make_bundle.py --pair OPEN --dataset crc
+
+On NCSA Delta (CM pair, the J3 student, Delta's own tiles, analysis targets and text banks; private home only):
+  make_bundle.py --pair CM --dataset crc --student results/delta/student/cm_crc \
+      --targets-dir results/delta/CM/crc --data-dir data --out bundles/cm_delta
+--data-dir (default <project>/data) holds the tiles and emb/<dataset>/bank_<reader>.npy; --targets-dir (alias
+--targets) holds student_targets.npz + probes_aligned.npz."""
 import argparse
 import json
 import sys
@@ -21,27 +27,34 @@ def to_f(x):  # uint8 NHWC -> float NCHW [0,1]
     return np.ascontiguousarray(x.transpose(0, 3, 1, 2), dtype=np.float32) / 255.0
 
 
-def main():
+def parse_args(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--pair", default="OPEN")
     ap.add_argument("--dataset", default="crc")
     ap.add_argument("--student", default=None)
-    ap.add_argument("--targets", default=None)
+    ap.add_argument("--targets", "--targets-dir", dest="targets", default=None,
+                    help="dir with student_targets.npz + probes_aligned.npz (default: searched under results/)")
+    ap.add_argument("--data-dir", default=None, help="tiles + emb/<dataset>/bank_*.npy (default <project>/data)")
     ap.add_argument("--out", default=None)
     ap.add_argument("--n_calib", type=int, default=512)
-    a = ap.parse_args()
+    return ap.parse_args(argv)
+
+
+def main(argv=None):
+    a = parse_args(argv)
     torch.set_num_threads(4)
     sdir = Path(a.student) if a.student else ROOT / "results" / "student" / f"{a.pair.lower()}_{a.dataset}"
     tdir = Path(a.targets) if a.targets else S.resolve_targets_dir(a.pair, a.dataset)
     out = Path(a.out) if a.out else ROOT / "bundles" / ("open" if a.pair.upper() == "OPEN" else "cm")
+    data = Path(a.data_dir) if a.data_dir else ROOT / "data"
     with np.load(tdir / "student_targets.npz") as z:
         T = {k: z[k] for k in z.files}
     with np.load(tdir / "probes_aligned.npz") as z:
         PR = {k: z[k] for k in z.files}
     classes = [CRC_CLASSES[i] for i in PR["A_classes"]] if a.dataset == "crc" else [str(i) for i in PR["A_classes"]]
-    xtr, _ = load_split(ROOT / "data", a.dataset, "train")
-    xv, yv = load_split(ROOT / "data", a.dataset, "val")
-    xt, yt = load_split(ROOT / "data", a.dataset, "test")
+    xtr, _ = load_split(data, a.dataset, "train")
+    xv, yv = load_split(data, a.dataset, "val")
+    xt, yt = load_split(data, a.dataset, "test")
     cal = to_f(xtr[np.sort(np.random.default_rng(0).choice(len(xtr), a.n_calib, replace=False))])
     model = S.load_student(sdir / "best.pt")
     work = Path(tempfile.mkdtemp(prefix="mkbundle_"))
@@ -87,9 +100,9 @@ def main():
            "note": "label/review agreement and balanced accuracy are on the same tiles (val = held-out train groups; test "
                    "= CRC-VAL-HE-7K, evaluated after preregistration.json). fp32_onnx = exported fp32 graph, torch AMP "
                    "numbers live in metrics.json."}
-    bundle = export.build_bundle(a.pair, q, {"A": np.load(ROOT / "data" / "emb" / a.dataset / "bank_pathgenclip.npy"),
-                                             "B": np.load(ROOT / "data" / "emb" / a.dataset / "bank_quiltnet_b16.npy")}
-                                 if a.pair.upper() == "OPEN" else _cm_banks(a.dataset), PR, classes, thr_new, out)
+    bundle = export.build_bundle(a.pair, q, _banks(data, a.dataset, ("pathgenclip", "quiltnet_b16")
+                                                   if a.pair.upper() == "OPEN" else ("conch", "musk")),
+                                 PR, classes, thr_new, out)
     rep["bundle_bytes"] = {p.name: p.stat().st_size for p in sorted(bundle.iterdir())}
     rep["bundle_total_bytes"] = sum(rep["bundle_bytes"].values())
     rep["verify_bundle"] = export.verify_bundle(bundle)
@@ -98,9 +111,9 @@ def main():
                                          "verify_bundle")}, indent=2))
 
 
-def _cm_banks(dataset):
-    return {"A": np.load(ROOT / "data" / "emb" / dataset / "bank_conch.npy"),
-            "B": np.load(ROOT / "data" / "emb" / dataset / "bank_musk.npy")}
+def _banks(data: Path, dataset: str, readers: tuple) -> dict:
+    """Text banks (prompt embeddings) of readers A and B from <data>/emb/<dataset>/bank_<reader>.npy."""
+    return {k: np.load(data / "emb" / dataset / f"bank_{r}.npy") for k, r in zip("AB", readers)}
 
 
 if __name__ == "__main__":

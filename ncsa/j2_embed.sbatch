@@ -7,7 +7,8 @@
 #SBATCH --mem=60G
 #SBATCH --time=01:30:00
 #SBATCH --output=logs/j2_embed_%j.out
-# J2: embed full CRC 100k + 7k with CONCH+MUSK (pair CM). Purpose: cache embeddings for J3.
+# J2: embed full CRC 100k + 7k with CONCH+MUSK (pair CM, batch 64). Purpose: embeddings for the CPU analysis job.
+# Submit from ~/twinread (the --output path is relative; setup_login.sh creates logs/).
 # No --reservation. Never resubmits itself. Submit only with the user's explicit OK.
 # Record: results/ncsa/<job>_${SLURM_JOB_ID}.json is written by ncsa/job_record.py.
 set -uo pipefail
@@ -27,7 +28,7 @@ IMPL=k1
 [ "$(cat results/ncsa/j1_build_status.txt 2>/dev/null)" = "ok" ] || IMPL=reference
 echo "impl=$IMPL"
 source ncsa/embed_loop.sh
-run_embed CM crc "$IMPL"
+run_embed crc "$IMPL" --pair CM
 rc=$?
 python ncsa/job_record.py j2_embed "$T0" "$rc" "impl=$IMPL"
 exit $rc

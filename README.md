@@ -222,8 +222,12 @@ bash run_demo.sh --with-cm        # + CONCH/MUSK local subset (needs Hugging Fac
 bash run_demo.sh --dry-run        # print the plan for the current state (heavy steps only printed)
 PYTHONPATH=src ../.venv/bin/python -m twinread.app_host            # dashboard only, http://127.0.0.1:1777
 ../.venv/bin/python rig/show_tiles.py                             # capture rig page, http://127.0.0.1:1778/rig
-CUDA_VISIBLE_DEVICES="" ../.venv/bin/python -m pytest tests -q    # CPU suite (< 2 min); GPU suite: flock ../.gpu.lock ... -m gpu
+CUDA_VISIBLE_DEVICES="" ../.venv/bin/python -m pytest tests -q    # CPU suite (< 2 min); gpu-marked tests skip
+flock ../.gpu.lock env TWINREAD_GPU_TESTS=1 PATH=/usr/local/cuda/bin:$PATH ../.venv/bin/python -m pytest tests -q -m gpu
 ```
+
+GPU tests run only with `TWINREAD_GPU_TESTS=1` (so the bench's default `pytest <slug>/tests` never loads CONCH or
+MUSK onto the shared GPU without the lock), and the reader tests skip when the weights are not in the local HF cache.
 
 **Clean-clone check.** In a fresh `git clone` with `data/` symlinked (so the download and GPU embedding steps were
 skipped, not exercised), `bash run_demo.sh --no-serve` ran in under 6 minutes:
@@ -242,15 +246,18 @@ skipped, not exercised), `bash run_demo.sh --no-serve` ran in under 6 minutes:
 The kit in `ncsa/` is written and tested locally (static tests only). **Nothing has run on Delta yet**, and every
 Delta command needs the user's explicit OK. The plan, from `ncsa/README.md`:
 
-1. **Login node.** Install CONCH and MUSK into the user site (`setup_login.sh`) and pre-download the weights
-   (`download_weights.py`), because compute nodes have no internet. Then stage NCT-CRC-HE-100K from
-   `/projects/bfqi/shared/datasets/` (`stage_data.sh`).
-2. **J1** (≤ 0.5 h A100). Environment check, offline CONCH/MUSK load, and the K1/K2 JIT build for sm_80.
-3. **J2** (≤ 1.5 h). CONCH + MUSK embeddings of the **full 100k + 7k** CRC tiles through K1. It falls back to the
-   reference transforms if the build failed.
-4. **CPU analysis** (`analyze_cpu.sbatch` or locally). The same pre-registered `run_pair_analysis`.
-5. **J3** (≤ 1.5 h). CM student distillation on the full data with K2.
-6. **J4** (optional). A second seed or the OPEN pair.
+1. **Login node.** Install CONCH and MUSK into the user site (`setup_login.sh`, which also creates `~/twinread/logs`
+   for the job logs) and pre-download the weights after `hf auth login` (`download_weights.py`), because compute
+   nodes have no internet. Then stage NCT-CRC-HE-100K from `/projects/bfqi/shared/datasets/` (`stage_data.sh`).
+2. **J1** (≤ 0.5 h A100). Environment and CUDA-toolkit check; the K1/K2 JIT build for sm_80, asserted; the GPU
+   K1/K2 correctness tests on the A100 (K1's embedding-cosine test loads CONCH and MUSK offline from the cache); and
+   a short K1 benchmark. Results go to `results/delta/kernels/`.
+3. **J2** (≤ 1.5 h). CONCH + MUSK embeddings of the **full 100k + 7k** CRC tiles through K1, batch 64. It falls back
+   to the reference transforms unless J1's build and kernel tests passed.
+4. **CPU analysis on Delta** (`analyze_cpu.sbatch`, the only supported route). The same pre-registered
+   `run_pair_analysis`, written to `results/delta/CM/crc/`.
+5. **J3** (≤ 1.5 h). CM student distillation on the full data with K2, into `results/delta/student/cm_crc/`.
+6. **J4** (optional). A second seed or the OPEN pair (PathGen-CLIP + QuiltNet-B-16).
 
 The target is ≤ 10 A100-hours of a 30-hour budget. Swapping in another reader pair is one entry in `PAIRS`. PathMMU
 subsets with recoverable labels are a stretch task.

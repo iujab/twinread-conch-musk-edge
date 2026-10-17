@@ -7,9 +7,11 @@
 #SBATCH --mem=60G
 #SBATCH --time=01:30:00
 #SBATCH --output=logs/j3_distill_%j.out
-# J3: distill the CM student. Purpose: student checkpoint + metrics. Inputs: the CRC tiles in data/ and the analysis
-# outputs $TARGETS/{student_targets.npz,probes_aligned.npz} (ncsa/analyze_cpu.sbatch after J2, or run locally and
-# copied up to ~/twinread/results/CM/crc; private home only). Targets come only from $TARGETS, not from data/emb.
+# J3: distill the CM student. Purpose: student checkpoint + metrics in results/delta/student/cm_crc (never the
+# committed results/student/cm_crc). Inputs: the CRC tiles in data/ and the analysis outputs
+# $TARGETS/{student_targets.npz,probes_aligned.npz} from ncsa/analyze_cpu.sbatch after J2 (results/delta/CM/crc,
+# private home only). Targets come only from $TARGETS, not from data/emb.
+# Submit from ~/twinread (the --output path is relative; setup_login.sh creates logs/).
 # No --reservation. Never resubmits itself. Submit only with the user's explicit OK.
 # Record: results/ncsa/<job>_${SLURM_JOB_ID}.json is written by ncsa/job_record.py.
 set -uo pipefail
@@ -26,7 +28,8 @@ cd "$TWINREAD_HOME"
 mkdir -p logs results/ncsa
 T0=$(date +%s)
 BACKBONE=${BACKBONE:-mobilenetv4_conv_small}  # = train_student.py default, every local student and the latency harness
-TARGETS=${TARGETS:-results/CM/crc}             # run_pair_analysis output dir (the CPU analysis job)
+TARGETS=${TARGETS:-results/delta/CM/crc}       # run_pair_analysis output dir (the CPU analysis job)
+OUT=results/delta/student/cm_crc               # Delta results never overwrite the committed local-subset ones
 die() { echo "J3 PRECHECK FAILED: $*" >&2; python ncsa/job_record.py j3_distill "$T0" 2 "precheck: $*"; exit 2; }
 
 # 1. Analysis outputs must exist: J2 embeds -> analyze_cpu.sbatch (CPU) -> J3.
@@ -48,7 +51,8 @@ import sys, timm
 timm.create_model(sys.argv[1], pretrained=True)
 PY
 
-python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone "$BACKBONE" --epochs 15 --aug "$AUG"
+python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone "$BACKBONE" --epochs 15 --aug "$AUG" \
+  --out "$OUT"
 rc=$?
-python ncsa/job_record.py j3_distill "$T0" "$rc" "backbone=$BACKBONE aug=$AUG targets=$TARGETS"
+python ncsa/job_record.py j3_distill "$T0" "$rc" "backbone=$BACKBONE aug=$AUG targets=$TARGETS out=$OUT"
 exit $rc

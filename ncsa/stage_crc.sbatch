@@ -7,7 +7,8 @@
 #SBATCH --time=01:00:00
 #SBATCH --output=logs/stage_crc_%j.out
 # CPU only: convert the shared NCT-CRC-HE-100K class folders to crc_train_{x,y}.npy. Never resubmits itself.
-# Submit only with the user's explicit OK.
+# Submit from ~/twinread (the --output path is relative; setup_login.sh creates logs/). Submit only with the user's
+# explicit OK.
 set -uo pipefail
 module load pytorch-conda/2.8
 unset PYTHONNOUSERSITE

@@ -4,6 +4,11 @@
 set -euo pipefail
 module load pytorch-conda/2.8
 unset PYTHONNOUSERSITE
+# Every sbatch writes --output=logs/<job>_%j.out RELATIVE to the submit dir (~/twinread). Slurm does not create that
+# directory and the job fails before its first line runs if it is missing, so create it here (and results/ncsa).
+TWINREAD_HOME=${TWINREAD_HOME:-$HOME/twinread}
+mkdir -p "$TWINREAD_HOME/logs" "$TWINREAD_HOME/results/ncsa"
+echo "created $TWINREAD_HOME/logs (submit every sbatch from $TWINREAD_HOME)"
 
 pip install --user "open_clip_torch>=2.24" onnx onnxruntime
 # CONCH and MUSK: --no-deps so their pins cannot replace Delta's torch/transformers.
@@ -13,6 +18,7 @@ pip install --user fairscale sentencepiece
 # MUSK vendors torchscale (musk/torchscale): do NOT pip-install torchscale. musk.modeling needs einops, safetensors, timm.
 python -c "import einops" 2>/dev/null || pip install --user einops
 python -c "import safetensors" 2>/dev/null || pip install --user safetensors
+python -c "import pytest" 2>/dev/null || pip install --user pytest   # J1 runs the GPU K1/K2 tests
 
 python - <<'PY'
 import sys
@@ -22,7 +28,7 @@ print("transformers", transformers.__version__, "(twinread.compat shims are no-o
 print("open_clip", open_clip.__version__)
 print("timm", timm.__version__)
 bad = []
-for m in ("conch", "fairscale", "sentencepiece", "onnx", "onnxruntime", "einops", "safetensors", "musk.modeling"):
+for m in ("conch", "fairscale", "sentencepiece", "onnx", "onnxruntime", "einops", "safetensors", "musk.modeling", "pytest"):
     try:
         __import__(m); print(m, "ok")
     except Exception as e:

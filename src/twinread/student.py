@@ -387,12 +387,30 @@ def _resolved_aug(requested: str, impl_at_start: str, fallback: dict | None) -> 
     return "k2+torch (runtime fallback)" if fallback and fallback.get("stage") == "runtime" else "k2"
 
 
-def aug_impl_used(aug: str) -> str:
+K2_TORCH_FALLBACK = "k2(torch-fallback)"
+
+
+def aug_impl_used(aug: str, device=None) -> str:
+    """What ``augment(x, aug, ...)`` will run for tiles on ``device`` (default: cuda if available, else cpu).
+
+    "k2": the K2 kernel on CUDA (or, on CPU, K2's torch port, which is what camera_aug runs for CPU tensors);
+    "k2(torch-fallback)": on CUDA but the K2 extension did not load, so camera_aug silently uses its torch path;
+    "torch": twinread.kernels is not importable (plain-torch camera augmentation); otherwise ``aug`` itself."""
     if aug not in AUGS:
         raise ValueError(aug)
-    if aug == "k2":
-        return "k2" if _k2() is not None else "torch"
-    return aug
+    if aug != "k2":
+        return aug
+    if _k2() is None:
+        return "torch"
+    dev = torch.device(device) if device is not None else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if dev.type != "cuda":
+        return "k2"
+    try:
+        from twinread.kernels import load_k2_ext
+        loaded = load_k2_ext() is not None
+    except Exception:  # noqa: BLE001 - any failure means camera_aug cannot use the CUDA kernel
+        loaded = False
+    return "k2" if loaded else K2_TORCH_FALLBACK
 
 
 def augment(x: torch.Tensor, aug: str, severity: float, seed: int) -> torch.Tensor:
@@ -808,7 +826,7 @@ def train_student(pair: str, dataset: str, backbone: str, epochs: int, batch: in
            "aug": aug, "severity_max": float(severity_max), "seed": int(seed), "lr": lr, "lr_backbone": lr_backbone,
            "weight_decay": weight_decay, "T": T, "weights": {**DEFAULT_WEIGHTS, **(weights or {})},
            "pretrained": bool(pretrained), "rel_impl": rel_impl, "eval_aug": eval_aug,
-           "aug_impl": aug_impl_used(aug), "eval_aug_impl": aug_impl_used(eval_aug),
+           "aug_impl": aug_impl_used(aug, dev), "eval_aug_impl": aug_impl_used(eval_aug, dev),
            "targets_sha256": _sha256(tpath), "probes_sha256": _sha256(ppath), "n_train": n_train,
            "n_val": len(xs["val"]), "dimA": int(dimA), "dimB": int(dimB), "n_classes": int(n_classes),
            "eval_protocol": {"aug_block": AUG_BLOCK, "eval_seed": EVAL_SEED, "severities": list(EVAL_SEVERITIES),
@@ -1034,7 +1052,7 @@ def measure_throughput(x: np.ndarray, backbone: str, dimA: int, dimB: int, n_cla
 
     res = {}
     for aug in augs:
-        impl = aug_impl_used(aug)
+        impl = aug_impl_used(aug, dev)
 
         def prep(i, aug=aug):
             xb = xb_all

@@ -57,7 +57,7 @@ def test_writes_job_record(p):
 def test_job_commands():
     j2 = (NCSA / "j2_embed.sbatch").read_text()
     loop = (NCSA / "embed_loop.sh").read_text()
-    assert "run_embed CM crc" in j2 and "reference" in j2 and "embed_loop.sh" in j2
+    assert 'run_embed crc "$IMPL" --pair CM' in j2 and "reference" in j2 and "embed_loop.sh" in j2
     assert "-m twinread.embed" in loop and "--budget" in loop and "-eq 3" in loop
     j3 = (NCSA / "j3_distill.sbatch").read_text()
     assert "scripts/train_student.py --pair CM --dataset crc" in j3 and "--epochs 15 --aug" in j3 and "AUG=k2" in j3
@@ -131,7 +131,7 @@ def test_j3_prechecks():
     assert "pretrained=True" in j3
     # Task 8b: the student trains on the analysis outputs, not on data/emb (it never derives targets itself)
     assert "derives targets from data/emb" not in j3 and "data/student_targets" not in j3
-    assert "TARGETS=${TARGETS:-results/CM/crc}" in j3
+    assert "TARGETS=${TARGETS:-results/delta/CM/crc}" in j3
     for f in ("student_targets.npz", "probes_aligned.npz"):
         assert re.search(rf'\[ -f "\$TARGETS/{f}" \] \|\| die', j3), f
     assert '--targets-dir "$TARGETS"' in j3 and "analyze_cpu.sbatch" in j3
@@ -162,7 +162,7 @@ def test_analyze_cpu_job():
     assert not re.search(r"\bsbatch\b|--requeue|scontrol\s+requeue", body)
     for s in ("HF_HUB_OFFLINE=1", "TRANSFORMERS_OFFLINE=1"):
         assert re.search(rf"^export {re.escape(s)}", t, re.M), s
-    assert "run_pair_analysis(\"CM\", \"crc\"" in t and 'results_dir=Path("results")' in t
+    assert "run_pair_analysis(\"CM\", \"crc\"" in t and 'results_dir=Path("results/delta")' in t
     assert "data/emb/crc/" in t and "die()" in t and "*.parts" in t
     assert "student_targets.npz" in t and "probes_aligned.npz" in t
     assert "results/ncsa/" in t and "SLURM_JOB_ID" in t and "job_record.py analyze_cpu" in t
@@ -190,7 +190,7 @@ def test_embed_loop_guards():
     assert "--budget" in loop and "margin=300" in loop and "stalls" in loop and "-lt 300" in loop
 
 
-def _run_loop(tmp_path, pair, rcs):
+def _run_loop(tmp_path, selector, rcs, **env):
     """Source embed_loop.sh with a fake ``python`` that logs its args, adds a cache part and exits with rcs[i]."""
     bin_ = tmp_path / "bin"
     bin_.mkdir()
@@ -201,26 +201,46 @@ def _run_loop(tmp_path, pair, rcs):
                     'touch data/emb/part_$n.npy\n'
                     f'rcs=({" ".join(map(str, rcs))}); exit ${{rcs[$n]}}\n')
     fake.chmod(0o755)
-    cmd = f'source {NCSA / "embed_loop.sh"}; T0=$(date +%s); WALL=5400; run_embed {pair} crc k1; echo rc=$?'
+    cmd = f'source {NCSA / "embed_loop.sh"}; T0=$(date +%s); WALL=5400; run_embed crc k1 {selector}; echo rc=$?'
     r = subprocess.run(["bash", "-c", cmd], cwd=tmp_path, capture_output=True, text=True,
-                       env={"PATH": f"{bin_}:/usr/bin:/bin"})
+                       env={"PATH": f"{bin_}:/usr/bin:/bin", **env})
     calls = [l.split() for l in (tmp_path / "calls.txt").read_text().splitlines()]
     return r, calls
 
 
-def test_embed_loop_caps_musk_budget(tmp_path):
-    """MUSK probe (ms_aug) chunks are slow: every CM call gets --budget <= 300 (exit 3 -> rerun with fresh budget)."""
-    r, calls = _run_loop(tmp_path, "CM", [3, 3, 0])
-    assert "rc=0" in r.stdout and len(calls) == 3
+def _arg(c, flag):
+    return c[c.index(flag) + 1]
+
+
+def test_embed_loop_cm_uses_whole_walltime_and_batch64(tmp_path):
+    """M1: on Delta a CM call gets the remaining walltime minus the 300 s margin (twinread.embed checks it per chunk),
+    not a 300 s per-call cap that reloads CONCH and MUSK every 5 min; encode batch 64."""
+    r, calls = _run_loop(tmp_path, "--pair CM", [3, 0])
+    assert "rc=0" in r.stdout and len(calls) == 2
     for c in calls:
-        assert c[:4] == ["-m", "twinread.embed", "--pair", "CM"] and "--impl" in c and c[c.index("--impl") + 1] == "k1"
-        assert 0 < int(c[c.index("--budget") + 1]) <= 300
+        assert c[:4] == ["-m", "twinread.embed", "--pair", "CM"] and _arg(c, "--impl") == "k1"
+        assert _arg(c, "--dataset") == "crc" and _arg(c, "--batch") == "64"
+        assert 4800 < int(_arg(c, "--budget")) <= 5100
+    loop = (NCSA / "embed_loop.sh").read_text()
+    assert "MUSK_CALL_BUDGET" not in loop and "EMBED_BATCH:-64" in loop
 
 
-def test_embed_loop_open_budget_uncapped(tmp_path):
-    r, calls = _run_loop(tmp_path, "OPEN", [0])
+def test_embed_loop_optional_cap_and_batch(tmp_path):
+    r, calls = _run_loop(tmp_path, "--pair CM", [3, 3, 0], EMBED_CALL_CAP="300", EMBED_BATCH="32")
+    assert "rc=0" in r.stdout and len(calls) == 3
+    assert all(0 < int(_arg(c, "--budget")) <= 300 and _arg(c, "--batch") == "32" for c in calls)
+
+
+def test_embed_loop_open_readers(tmp_path):
+    """M2: J4 embed_open embeds BOTH open readers (PAIRS["OPEN"] names only PathGen-CLIP)."""
+    r, calls = _run_loop(tmp_path, "--readers pathgenclip quiltnet_b16", [0])
     assert "rc=0" in r.stdout and len(calls) == 1
-    assert int(calls[0][calls[0].index("--budget") + 1]) > 300  # remaining walltime minus the 300 s margin
+    assert calls[0][2:5] == ["--readers", "pathgenclip", "quiltnet_b16"]
+    assert int(_arg(calls[0], "--budget")) > 300
+    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    assert 'run_embed crc "$IMPL" --readers pathgenclip quiltnet_b16' in j4 and "run_embed OPEN" not in j4
+    from twinread.embed import reader_groups, resolve_readers  # the names J4 passes are real readers, embedded as a pair
+    assert reader_groups(resolve_readers(None, ["pathgenclip", "quiltnet_b16"]), "k1") == [["pathgenclip", "quiltnet_b16"]]
 
 
 def test_j4_allowlist_rejects_unknown(tmp_path):
@@ -266,3 +286,148 @@ def test_backbone_defaults_match_trainer():
     for p in NCSA.iterdir():
         if p.is_file():
             assert "mobilenetv3" not in p.read_text(), p.name
+
+
+# ---- final review fixes (C1, I1, I2, I3, M1, M2, HF login) -------------------------------------------------------
+ALL_SBATCH = sorted(NCSA.glob("*.sbatch"))
+
+
+def _runbook():
+    t = (NCSA / "README.md").read_text()
+    return t[t.index("## Runbook"):t.index("## Local verification")]
+
+
+def test_logs_dir_created_before_first_sbatch():
+    """C1: Slurm opens --output=logs/... before the script runs and does not create logs/; setup and the runbook must."""
+    out_dirs = set()
+    for p in ALL_SBATCH:
+        out = _directives(p)["output"]
+        assert not out.startswith("/"), p.name
+        out_dirs.add(out.rsplit("/", 1)[0])
+    assert out_dirs == {"logs"}
+    setup = (NCSA / "setup_login.sh").read_text()
+    assert "TWINREAD_HOME=${TWINREAD_HOME:-$HOME/twinread}" in setup  # the dir the runbook rsyncs to (~/twinread/)
+    assert re.search(r'^mkdir -p "\$TWINREAD_HOME/logs"', setup, re.M)
+    rb = _runbook()
+    assert ":~/twinread/`" in rb
+    first_sbatch = rb.index("sbatch ")
+    assert "mkdir -p ~/twinread/logs" in rb[:first_sbatch]
+    for job in ("stage_crc", "j1_check"):  # the first two submissions also create it inline
+        assert f"cd ~/twinread && mkdir -p logs && sbatch ncsa/{job}.sbatch" in rb, job
+    assert "mkdir -p logs && sbatch ncsa/stage_crc.sbatch" in (NCSA / "stage_data.sh").read_text()
+
+
+def test_setup_creates_logs_dir(tmp_path):
+    """Run just setup_login.sh's directory lines (no module/pip) against a fake HOME."""
+    lines = [l for l in (NCSA / "setup_login.sh").read_text().splitlines()
+             if l.startswith(("TWINREAD_HOME=", "mkdir -p"))]
+    subprocess.run(["bash", "-c", "\n".join(lines)], env={"HOME": str(tmp_path), "PATH": "/usr/bin:/bin"}, check=True)
+    assert (tmp_path / "twinread" / "logs").is_dir()
+
+
+def test_j1_asserts_build_and_runs_kernel_smoke():
+    """I1: load_ext returns None on failure, so J1 asserts the module (with camera_aug) and records build=failed + errors;
+    then the GPU K1/K2 tests and a short K1 bench write under results/delta/kernels/."""
+    j1 = (NCSA / "j1_check.sbatch").read_text()
+    assert 'm = k.load_ext("8.0"); assert m is not None and hasattr(m, "camera_aug"), k.EXT_ERRORS' in j1
+    assert "BUILD=failed" in j1 and "errors=" in j1 and 'echo "$STATUS" > results/ncsa/j1_build_status.txt' in j1
+    assert "TWINREAD_GPU_TESTS=1" in j1 and "-m pytest -m gpu tests/test_k1.py tests/test_k2.py" in j1
+    assert "TWINREAD_REQUIRE_WEIGHTS=1" in j1
+    assert "bench/bench_k1.py --part gpu --batch 64 --out" in j1 and "KD=results/delta/kernels" in j1
+    assert 'STATUS=ok; else STATUS=failed' in j1 and '[ "$TESTS" = passed ]' in j1
+    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    assert 'assert m is not None and hasattr(m, "camera_aug")' in j4
+    src =(NCSA.parent / "bench" / "bench_k1.py").read_text()
+    assert '"--out"' in src and '"--batch"' in src
+
+
+def test_j1_build_status_logic(tmp_path):
+    """The status/record lines of J1, run with a fake python: build ok + tests failing -> status failed, rc != 0."""
+    bin_ = tmp_path / "bin"
+    bin_.mkdir()
+    (bin_ / "python").write_text('#!/bin/bash\ncase "$*" in *pytest*) exit 1;; esac\nexit 0\n')
+    (bin_ / "python").chmod(0o755)
+    for name in ("nvidia-smi", "module"):
+        (bin_ / name).write_text("#!/bin/bash\nexit 0\n")
+        (bin_ / name).chmod(0o755)
+    body = (NCSA / "j1_check.sbatch").read_text().replace("module load pytorch-conda/2.8", "true")
+    (tmp_path / "j1.sh").write_text(body)
+    r = subprocess.run(["bash", str(tmp_path / "j1.sh")], cwd=tmp_path, capture_output=True, text=True,
+                       env={"PATH": f"{bin_}:/usr/bin:/bin", "HOME": str(tmp_path), "TWINREAD_HOME": str(tmp_path),
+                            "SLURM_JOB_ID": "42"})
+    assert r.returncode != 0
+    assert (tmp_path / "results" / "ncsa" / "j1_build_status.txt").read_text().strip() == "failed"
+    (bin_ / "python").write_text("#!/bin/bash\nexit 0\n")
+    r = subprocess.run(["bash", str(tmp_path / "j1.sh")], cwd=tmp_path, capture_output=True, text=True,
+                       env={"PATH": f"{bin_}:/usr/bin:/bin", "HOME": str(tmp_path), "TWINREAD_HOME": str(tmp_path),
+                            "SLURM_JOB_ID": "43"})
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "results" / "ncsa" / "j1_build_status.txt").read_text().strip() == "ok"
+
+
+def test_delta_outputs_never_overwrite_committed_results():
+    """I2/I3: J3, J4 and the analysis job write under results/delta/, never to the committed results/{CM,student}/."""
+    j3 = (NCSA / "j3_distill.sbatch").read_text()
+    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    an = (NCSA / "analyze_cpu.sbatch").read_text()
+    assert "OUT=results/delta/student/cm_crc" in j3 and '--out "$OUT"' in j3
+    assert "--seed 2 --out results/delta/student/cm_crc_seed2" in j4
+    assert "OUT=results/delta/CM/crc" in an
+    for name, t in (("j3", j3), ("j4", j4), ("analyze", an)):
+        code = "\n".join(l for l in t.splitlines() if not l.lstrip().startswith("#"))
+        assert not re.search(r"results/(CM|student)/", code), name
+        assert 'results_dir=Path("results")' not in code, name
+    for p in ALL_SBATCH:
+        assert "train_student.py" not in p.read_text() or "--out" in p.read_text(), p.name
+
+
+def test_runbook_rsync_and_copy_back():
+    """I2: ship only code; copy back only results/delta/ and results/ncsa/."""
+    rb = _runbook()
+    ship = next(l for l in rb.splitlines() if "rsync -av --exclude" in l)
+    for ex in (".worktrees", "bundles", "results", "build", "data", ".git"):
+        assert f"--exclude {ex} " in ship, ex
+    assert "results/CM" not in ship
+    back = [l.strip(" `") for l in rb.splitlines() if "rsync -av <user>@" in l]
+    assert back == ["rsync -av <user>@login.delta.ncsa.illinois.edu:~/twinread/results/delta/ ./results/delta/",
+                    "rsync -av <user>@login.delta.ncsa.illinois.edu:~/twinread/results/ncsa/ ./results/ncsa/"]
+    assert "~/twinread/results/ ./results/" not in rb
+
+
+def test_analysis_only_on_delta():
+    """I3/R34: no 'analyse locally' alternative; Delta analysis writes results/delta/CM/<ds>/."""
+    t = (NCSA / "README.md").read_text()
+    assert "Alternative without a Delta CPU job" not in t and "run the same call locally" not in t
+    assert "only** supported full-data analysis route" in t
+    assert 'results_dir=Path("results/delta")' in t and "results/delta/CM/crc" in t
+    an = (NCSA / "analyze_cpu.sbatch").read_text()
+    assert "run the same call locally" not in an and "ONLY supported full-data analysis route" in an
+
+
+def test_make_bundle_delta_flags(tmp_path):
+    """I3: make_bundle gets --data-dir and --targets-dir (alias of --targets); defaults unchanged; banks from data-dir."""
+    import sys
+    import numpy as np
+    sys.path.insert(0, str(NCSA.parent / "scripts"))
+    import make_bundle
+    d = make_bundle.parse_args([])
+    assert d.data_dir is None and d.targets is None and d.out is None and d.pair == "OPEN"
+    a = make_bundle.parse_args(["--pair", "CM", "--targets-dir", "results/delta/CM/crc", "--data-dir", str(tmp_path)])
+    assert a.targets == "results/delta/CM/crc" and a.data_dir == str(tmp_path)
+    assert make_bundle.parse_args(["--targets", "x"]).targets == "x"
+    (tmp_path / "emb" / "crc").mkdir(parents=True)
+    for i, r in enumerate(("conch", "musk")):
+        np.save(tmp_path / "emb" / "crc" / f"bank_{r}.npy", np.full((2, 3), i, np.float32))
+    b = make_bundle._banks(tmp_path, "crc", ("conch", "musk"))
+    assert b["A"].max() == 0 and b["B"].min() == 1
+    rb = _runbook()
+    assert ("make_bundle.py --pair CM --dataset crc --student results/delta/student/cm_crc --targets-dir "
+            "results/delta/CM/crc --data-dir data --out bundles/cm_delta") in rb
+
+
+def test_hf_login_not_token_in_command():
+    """Use the stored `hf auth login`, never HF_TOKEN=... on a command line."""
+    for p in (NCSA / "README.md", NCSA / "download_weights.py", NCSA.parent / "README.md"):
+        assert "HF_TOKEN=" not in p.read_text(), p.name
+    assert "hf auth login" in (NCSA / "README.md").read_text()
+    assert "HF_TOKEN" not in (NCSA / "download_weights.py").read_text()

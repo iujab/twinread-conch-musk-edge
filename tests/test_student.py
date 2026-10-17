@@ -248,6 +248,19 @@ def test_k2_falls_back_to_torch_with_one_warning(monkeypatch):
     assert torch.equal(student.augment(x, "none", 1.0, seed=11), x)
 
 
+def test_aug_impl_used_reports_k2_torch_fallback_on_cuda(monkeypatch):
+    """I1: kernels importable but the K2 extension not loaded -> camera_aug silently uses torch on CUDA; say so."""
+    from twinread import kernels
+    monkeypatch.setattr(student, "_K2_STATE", {})  # real import of twinread.kernels
+    monkeypatch.setattr(kernels, "load_k2_ext", lambda *a, **k: None)
+    assert student.aug_impl_used("k2", device="cuda") == "k2(torch-fallback)" == student.K2_TORCH_FALLBACK
+    assert student.aug_impl_used("k2", device="cpu") == "k2"  # CPU tensors: K2's torch port, as camera_aug runs it
+    monkeypatch.setattr(kernels, "load_k2_ext", lambda *a, **k: object())
+    assert student.aug_impl_used("k2", device="cuda") == "k2"
+    assert student.aug_impl_used("torch", device="cuda") == "torch"
+    assert student._resolved_aug("k2", "k2(torch-fallback)", None) == "k2(torch-fallback)"
+
+
 def test_to_input_resizes_and_scales():
     x = torch.full((2, 96, 96, 3), 255, dtype=torch.uint8)
     z = student.to_input(x)
