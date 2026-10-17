@@ -378,10 +378,21 @@ def jpeg(img: np.ndarray, p: dict) -> np.ndarray:
 OPS = (("warp", warp), ("hed", hed_jitter), ("display", display), ("moire", moire), ("glare", glare),
        ("defocus", defocus), ("white_balance", white_balance), ("noise", sensor_noise), ("jpeg", jpeg))
 
-# A float32 implementation (the kernel) and this float64 reference can round a DCT coefficient that lies within
-# float error of a quantization boundary to different integers ("flip"); the decoded block then differs by up to
-# Q * |basis| levels. The two helpers below let tests separate such blocks from genuine errors.
-DCT_F32_ERR = 2e-3  # bound on the kernel's own float32 error in a coefficient (levels), YCbCr + 2 passes of 8 FMAs
+# Checking an implementation (CUDA kernel or torch path) against this reference is split in two, because JPEG
+# quantization is discontinuous: a DCT coefficient within float error of a rounding boundary can round to a
+# different integer ("flip") and the decoded block then differs by up to Q * |basis| levels.
+#   (i)  everything before JPEG is continuous: compare the implementation's float32 JPEG input with ``ref_pre_jpeg``
+#        directly (``decompose_differences``' ``pre_jpeg_max_diff_levels``) against a small epsilon;
+#   (ii) JPEG itself: compare the implementation's uint8 output with this reference's ``jpeg`` applied to the
+#        implementation's OWN JPEG input, so only the implementation's float32 YCbCr/DCT arithmetic separates the
+#        two; blocks with a coefficient whose margin on that input is below ``JPEG_TIE_TOL`` are exempt (they may
+#        flip), all other blocks must agree within 1 level (the final rounding).
+# JPEG_TIE_TOL is empirical. The rigorous float32 worst case for a coefficient (16 FMAs on values <= 2040) is about
+# 1.3e-3 levels, which would exempt ~2 % of blocks. Measured on 16 runs x 64 CRC-VAL tiles (802,816 blocks,
+# 154 M coefficients, bench_k2.py --part parity "jpeg_tie_tolerance_scan"): every block whose own-input JPEG
+# differs by more than 1 level had a margin <= 6.9e-5 (CUDA) / 3.8e-5 (torch); at 1e-4 the exempt fraction is
+# ~0.11 % (0.18 % at severity 0.25, where qualities are high and steps small) and no non-exempt block fails.
+JPEG_TIE_TOL = 1e-4
 
 
 def ref_pre_jpeg(img: np.ndarray, p: dict) -> np.ndarray:
@@ -418,23 +429,22 @@ def _block_max(a: np.ndarray, mode: str) -> np.ndarray:
     return a.reshape(a.shape[0] // 8, 8, a.shape[1] // 8, 8, 3).max(axis=(1, 3, 4))
 
 
-def explain_differences(out: np.ndarray, ref: np.ndarray, pre_impl: np.ndarray, pre_ref: np.ndarray, p: dict) -> dict:
-    """Split |out - ref| (uint8 HWC) by 8x8 block into blocks where the implementation's JPEG rounding decisions
-    provably equal the reference's, and "flip-possible" blocks.
+def decompose_differences(out: np.ndarray, pre_impl: np.ndarray, pre_ref: np.ndarray, p: dict) -> dict:
+    """Checks (i) and (ii) above for one image. ``out``: the implementation's uint8 HWC output; ``pre_impl``: its
+    float JPEG input in [0, 1] (the kernel's float32 intermediate); ``pre_ref``: ``ref_pre_jpeg(img, p)``.
 
-    A coefficient changes by |dF| <= 8 * max|dRGB| (levels; the row sums of |kron(C, C)| are <= 8 and every YCbCr
-    row has absolute sum <= 1) plus the implementation's own DCT error ``DCT_F32_ERR``. ``pre_impl``/``pre_ref``
-    are the JPEG inputs in [0, 1] (the kernel's float intermediate and ``ref_pre_jpeg``). In a block whose
-    ``jpeg_block_margins`` exceeds that bound both sides quantize identically, so the outputs may differ only by the
-    final rounding: at most 1 level."""
-    e = np.abs(out.astype(np.int32) - ref.astype(np.int32))
-    eb = _block_max(e, "constant")
-    db = _block_max(np.abs(pre_impl.astype(np.float64) - pre_ref) * 255.0, "edge")
-    well = jpeg_block_margins(pre_ref, p) >= 8.0 * db + DCT_F32_ERR
-    return {"max_err_provably_same_rounding": int(eb[well].max()) if well.any() else 0,
-            "max_err_flip_possible": int(eb[~well].max()) if (~well).any() else 0,
-            "n_blocks": int(eb.size), "n_flip_possible": int((~well).sum()),
-            "max_pre_jpeg_diff_levels": float(db.max())}
+    Returns the pre-JPEG max |difference| in levels and where it is, the max error of ``out`` against
+    ``jpeg(pre_impl)`` over non-exempt 8x8 blocks (should be <= 1) and over exempt blocks, and the block counts."""
+    v = np.asarray(pre_impl, dtype=np.float64)
+    d = np.abs(v - pre_ref) * 255.0
+    am = np.unravel_index(int(d.argmax()), d.shape)
+    own = np.rint(np.clip(jpeg(v, p), 0.0, 1.0) * 255.0)
+    eb = _block_max(np.abs(out.astype(np.float64) - own), "constant")
+    exempt = jpeg_block_margins(v, p) < JPEG_TIE_TOL
+    return {"pre_jpeg_max_diff_levels": float(d.max()), "pre_jpeg_argmax_yxc": [int(a) for a in am],
+            "jpeg_max_err": int(eb[~exempt].max()) if (~exempt).any() else 0,
+            "jpeg_max_err_exempt": int(eb[exempt].max()) if exempt.any() else 0,
+            "n_blocks": int(eb.size), "n_exempt": int(exempt.sum())}
 
 
 def ref_camera_aug_float(img: np.ndarray, p: dict) -> np.ndarray:

@@ -8,9 +8,17 @@ Error unit: uint8 levels. Tolerances, and why each one exists:
 * composition (brief): mean <= 2 levels, max <= 8 levels on the fixture tiles. The max is NOT a universal bound:
   when a DCT coefficient lies within float32 error of a JPEG quantization boundary, float32 and float64 round it
   differently and the decoded block differs by up to Q * |basis| (bench/bench_k2.py --part parity found 11 levels
-  in 2 of 16 runs of 64 tiles). So every composition test also runs ``_flip_check``: in every 8x8 block whose
-  reference rounding margin exceeds the propagated float32 bound (``camera_ops.explain_differences``), the output
-  must be within 1 level; larger differences are allowed only in the remaining "flip-possible" blocks.
+  in 2 of 16 runs of 64 tiles). So every composition, odd-size, batch-tail and uniform test also runs the
+  decomposed check ``_Decomposed`` (ruling R29; ``camera_ops.decompose_differences``):
+  (i)  pre-JPEG: |implementation float32 JPEG input - ref_pre_jpeg| <= EPS_PRE_JPEG[impl] levels at every value.
+       CUDA 0.02 (worst measured 0.0079 over 16 runs x 64 tiles). torch 0.2 (worst measured 0.098, at a near-black
+       input pixel [6, 0, 0]; elsewhere <= 0.008): grid_sample unnormalizes the warp coordinates in its own float32
+       order (source coordinates differ by ~1e-5 px from the reference's) and the HED log(max(v, 1e-6)) that follows
+       has slope 1/v, so where an input channel is ~0 that difference is amplified ~100x. Both are >= 2x the worst
+       measured value and catch any regression of a level or more.
+  (ii) JPEG: the output equals ``camera_ops.jpeg`` applied to the implementation's OWN float32 JPEG input within 1
+       level in every 8x8 block, except blocks with a coefficient within JPEG_TIE_TOL (1e-4 levels) of a rounding
+       boundary on that input; the exempt fraction must stay <= 0.1 % of the test's blocks.
 Research prototype, not a diagnostic device.
 """
 from pathlib import Path
@@ -45,18 +53,33 @@ def _ref_batch(arr: np.ndarray, dicts: list[dict], seed: int) -> np.ndarray:
     return np.stack([ref_camera_aug(im, dict(d, seed=seed, index=i)) for i, (im, d) in enumerate(zip(arr, dicts))])
 
 
-def _flip_check(arr: np.ndarray, inter: torch.Tensor, out: torch.Tensor, dicts: list[dict], seed: int) -> float:
-    """Assert <= 1 level in every block with provably identical JPEG rounding; return the flip-possible fraction."""
-    from twinread.ref.camera_ops import explain_differences, ref_camera_aug, ref_pre_jpeg
-    inter, out = inter.cpu().numpy(), out.cpu().numpy()
-    flagged = blocks = 0
-    for i, (im, d) in enumerate(zip(arr, dicts)):
-        d = dict(d, seed=seed, index=i)
-        r = explain_differences(out[i], ref_camera_aug(im, d), inter[i], ref_pre_jpeg(im, d), d)
-        assert r["max_err_provably_same_rounding"] <= 1, (i, r)
-        flagged += r["n_flip_possible"]
-        blocks += r["n_blocks"]
-    return flagged / blocks
+EPS_PRE_JPEG = {"cuda": 0.02, "torch": 0.2}  # levels; justification in the module docstring
+MAX_EXEMPT_FRAC = 1e-3
+
+
+class _Decomposed:
+    """The decomposed check (module docstring), accumulated over one test; ``finish`` asserts the exempt fraction."""
+
+    def __init__(self):
+        self.exempt = self.blocks = 0
+        self.pre_max: dict[str, float] = {}
+
+    def check(self, arr: np.ndarray, inter: torch.Tensor, out: torch.Tensor, dicts: list[dict], seed: int,
+              impl: str) -> None:
+        from twinread.ref.camera_ops import decompose_differences, ref_pre_jpeg
+        inter, out = inter.cpu().numpy(), out.cpu().numpy()
+        for i, (im, d) in enumerate(zip(arr, dicts)):
+            d = dict(d, seed=seed, index=i)
+            r = decompose_differences(out[i], inter[i], ref_pre_jpeg(im, d), d)
+            assert r["pre_jpeg_max_diff_levels"] <= EPS_PRE_JPEG[impl], (impl, i, r)  # (i)
+            assert r["jpeg_max_err"] <= 1, (impl, i, r)  # (ii), non-exempt blocks
+            self.exempt += r["n_exempt"]
+            self.blocks += r["n_blocks"]
+            self.pre_max[impl] = max(self.pre_max.get(impl, 0.0), r["pre_jpeg_max_diff_levels"])
+
+    def finish(self) -> None:
+        assert self.blocks > 0
+        assert self.exempt / self.blocks <= MAX_EXEMPT_FRAC, f"exempt {self.exempt}/{self.blocks} blocks"
 
 
 def _err(out: torch.Tensor, ref: np.ndarray) -> tuple[float, float]:
@@ -142,28 +165,34 @@ def test_composition_matches_numpy(ext, severity):
     from twinread.kernels import _camera_aug_impl, sample_camera_params
     arr = _tiles(8)
     p = sample_camera_params(8, severity, seed=21, device="cuda")
+    dc = _Decomposed()
     for impl in ("cuda", "torch"):
         out, inter = _camera_aug_impl(torch.from_numpy(arr).cuda(), p, 5, impl=impl, return_float=True)
         mean, mx = _err(out, _ref_batch(arr, p.to_dicts(), 5))
         assert mean <= 2.0 and mx <= 8, f"{impl} severity {severity}: mean {mean:.4f} max {mx}"
-        assert _flip_check(arr, inter, out, p.to_dicts(), 5) <= 0.25, impl
+        dc.check(arr, inter, out, p.to_dicts(), 5, impl)
+    dc.finish()
 
 
 @pytest.mark.gpu
 def test_composition_differences_are_jpeg_rounding_flips(ext):
-    """Wider than the brief's fixture check: 16 tiles x 3 severities x 2 param seeds (96 images). Mean <= 2 levels;
-    every difference above 1 level lies in a block where the reference's JPEG rounding is within float32 error of
-    flipping (see the module docstring); no max bound is asserted there."""
+    """Wider than the brief's fixture check: 16 tiles x 3 severities x 2 param seeds (96 images), both impls. Mean
+    <= 2 levels against the full reference; no max is asserted against it. Instead the decomposed check: pre-JPEG
+    within EPS_PRE_JPEG everywhere, and the output within 1 level of the reference JPEG of the implementation's own
+    input in every block except the <= 0.1 % within JPEG_TIE_TOL of a rounding boundary."""
     from twinread.kernels import _camera_aug_impl, sample_camera_params
     arr = _tiles(16)
     x = torch.from_numpy(arr).cuda()
+    dc = _Decomposed()
     for sev in (0.5, 0.75, 1.0):
         for ps in (1000, 1002):
             p = sample_camera_params(16, sev, seed=ps, device="cuda")
-            out, inter = _camera_aug_impl(x, p, 1234, impl="cuda", return_float=True)
-            mean, _ = _err(out, _ref_batch(arr, p.to_dicts(), 1234))
-            assert mean <= 2.0, (sev, ps, mean)
-            assert _flip_check(arr, inter, out, p.to_dicts(), 1234) <= 0.25, (sev, ps)
+            for impl in ("cuda", "torch"):
+                out, inter = _camera_aug_impl(x, p, 1234, impl=impl, return_float=True)
+                mean, _ = _err(out, _ref_batch(arr, p.to_dicts(), 1234))
+                assert mean <= 2.0, (impl, sev, ps, mean)
+                dc.check(arr, inter, out, p.to_dicts(), 1234, impl)
+    dc.finish()
 
 
 @pytest.mark.gpu
@@ -181,7 +210,9 @@ def test_k2_odd_sizes_match_numpy(ext, hw):
     assert out.shape == arr.shape
     mean, mx = _err(out, _ref_batch(arr, p.to_dicts(), 9))
     assert mean <= 2.0 and mx <= 8, f"{hw}: mean {mean:.4f} max {mx}"
-    _flip_check(arr, inter, out, p.to_dicts(), 9)
+    dc = _Decomposed()
+    dc.check(arr, inter, out, p.to_dicts(), 9, "cuda")
+    dc.finish()
 
 
 @pytest.mark.gpu
@@ -214,7 +245,9 @@ def test_k2_batch_tails(ext, n):
     out, inter = _camera_aug_impl(x, p, 2, impl="cuda", return_float=True)
     mean, mx = _err(out, _ref_batch(arr, p.to_dicts(), 2))
     assert mean <= 2.0 and mx <= 8, (n, mean, mx)
-    _flip_check(arr, inter, out, p.to_dicts(), 2)
+    dc = _Decomposed()
+    dc.check(arr, inter, out, p.to_dicts(), 2, "cuda")
+    dc.finish()
     # with the noise off (its stream is keyed by the image index), every element equals the image processed alone
     d = p.to_dicts()
     for e in d:
@@ -233,6 +266,7 @@ def test_k2_uniform_input_finite(ext, level):
     from twinread.kernels import _camera_aug_impl, sample_camera_params
     arr = np.full((6, 224, 224, 3), level, dtype=np.uint8)
     x = torch.from_numpy(arr).cuda()
+    dc = _Decomposed()
     for sev in (0.3, 1.0):
         p = sample_camera_params(6, sev, seed=level + 1, device="cuda")
         ref = _ref_batch(arr, p.to_dicts(), 3)
@@ -243,7 +277,8 @@ def test_k2_uniform_input_finite(ext, level):
             assert out.dtype == torch.uint8 and out.shape == x.shape
             mean, mx = _err(out, ref)
             assert mean <= 2.0 and mx <= 8, (impl, level, sev, mean, mx)
-            _flip_check(arr, inter, out, p.to_dicts(), 3)
+            dc.check(arr, inter, out, p.to_dicts(), 3, impl)
+    dc.finish()
 
 
 @pytest.mark.gpu
@@ -259,15 +294,20 @@ def test_philox_matches_curand(ext):
 
 @pytest.mark.gpu
 def test_torch_path_matches_cuda(ext):
-    from twinread.kernels import camera_aug, sample_camera_params
-    x = torch.from_numpy(_tiles(8)).cuda()
+    from twinread.kernels import _camera_aug_impl, sample_camera_params
+    arr = _tiles(8)
+    x = torch.from_numpy(arr).cuda()
+    dc = _Decomposed()
     for sev in (0.5, 1.0):
         p = sample_camera_params(8, sev, seed=12, device="cuda")
-        a = camera_aug(x, p, seed=1, impl="cuda")
-        b = camera_aug(x, p, seed=1, impl="torch")
+        a, ia = _camera_aug_impl(x, p, 1, impl="cuda", return_float=True)
+        b, ib = _camera_aug_impl(x, p, 1, impl="torch", return_float=True)
         assert b.is_cuda and b.dtype == torch.uint8
         mean, mx = _err(b, a.cpu().numpy())
         assert mean <= 2.0 and mx <= 8, (sev, mean, mx)
+        dc.check(arr, ia, a, p.to_dicts(), 1, "cuda")
+        dc.check(arr, ib, b, p.to_dicts(), 1, "torch")
+    dc.finish()
 
 
 @pytest.mark.gpu
@@ -379,6 +419,12 @@ def test_torch_path_cpu_matches_numpy():
     assert out.dtype == torch.uint8 and not out.is_cuda
     mean, mx = _err(out, _ref_batch(arr, p.to_dicts(), 6))
     assert mean <= 2.0 and mx <= 8, (mean, mx)
+    from twinread.kernels import _camera_aug_impl
+    out2, inter = _camera_aug_impl(torch.from_numpy(arr), p, 6, impl="torch", return_float=True)
+    assert torch.equal(out2, out)
+    dc = _Decomposed()
+    dc.check(arr, inter, out2, p.to_dicts(), 6, "torch")
+    dc.finish()
 
 
 def test_k2_fallback_when_ext_missing(monkeypatch):

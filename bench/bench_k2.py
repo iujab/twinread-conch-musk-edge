@@ -159,17 +159,41 @@ def _refs(arr: np.ndarray, dicts: list[dict], seed: int) -> np.ndarray:
     return np.stack([co.ref_camera_aug(im, dict(d, seed=seed, index=i)) for i, (im, d) in enumerate(zip(arr, dicts))])
 
 
-def _explain(arr: np.ndarray, out: np.ndarray, inter: np.ndarray, dicts: list[dict]) -> dict:
-    """camera_ops.explain_differences summed over a batch: the max error in blocks whose JPEG rounding provably
-    matches the reference, and how many blocks are flip-possible."""
-    rs = []
+TAUS = (2e-3, 1e-3, 5e-4, 2e-4, 1e-4, 5e-5, 2e-5, 1e-5)
+
+
+def _decomposed(arr: np.ndarray, out: np.ndarray, inter: np.ndarray, dicts: list[dict], sev: float, acc: dict) -> dict:
+    """camera_ops.decompose_differences over a batch (ruling R29): (i) pre-JPEG max |diff| and the input pixel at it,
+    (ii) output vs the reference JPEG of the implementation's own input, non-exempt and exempt blocks. Also collects
+    every block's margin and own-input error into ``acc`` for the JPEG_TIE_TOL scan."""
+    rs, worst = [], (0.0, None)
     for i, (im, d) in enumerate(zip(arr, dicts)):
         d = dict(d, seed=NSEED, index=i)
-        rs.append(co.explain_differences(out[i], co.ref_camera_aug(im, d), inter[i], co.ref_pre_jpeg(im, d), d))
-    return {"max_err_provably_same_rounding": max(r["max_err_provably_same_rounding"] for r in rs),
-            "max_err_flip_possible": max(r["max_err_flip_possible"] for r in rs),
-            "n_flip_possible_blocks": sum(r["n_flip_possible"] for r in rs), "n_blocks": sum(r["n_blocks"] for r in rs),
-            "max_pre_jpeg_diff_levels": max(r["max_pre_jpeg_diff_levels"] for r in rs)}
+        v = inter[i].astype(np.float64)
+        r = co.decompose_differences(out[i], v, co.ref_pre_jpeg(im, d), d)
+        rs.append(r)
+        if r["pre_jpeg_max_diff_levels"] > worst[0]:
+            y, x, _ = r["pre_jpeg_argmax_yxc"]
+            worst = (r["pre_jpeg_max_diff_levels"], {"image": i, "yx": [y, x], "input_rgb": im[y, x].tolist()})
+        own = np.rint(np.clip(co.jpeg(v, d), 0.0, 1.0) * 255.0)
+        acc.setdefault("margin", []).append(co.jpeg_block_margins(v, d).ravel())
+        acc.setdefault("err", []).append(co._block_max(np.abs(out[i] - own), "constant").ravel())
+        acc.setdefault("sev", []).append(np.full(acc["margin"][-1].size, sev))
+    return {"pre_jpeg_max_diff_levels": worst[0], "pre_jpeg_worst_at": worst[1],
+            "jpeg_max_err_non_exempt": max(r["jpeg_max_err"] for r in rs),
+            "jpeg_max_err_exempt": max(r["jpeg_max_err_exempt"] for r in rs),
+            "n_exempt_blocks": sum(r["n_exempt"] for r in rs), "n_blocks": sum(r["n_blocks"] for r in rs)}
+
+
+def _tie_scan(acc: dict) -> dict:
+    m, e, sv = (np.concatenate(acc[k]) for k in ("margin", "err", "sev"))
+    flips = m[e > 1]
+    return {"n_blocks": int(m.size), "n_blocks_own_input_err_gt1": int(flips.size),
+            "max_margin_of_blocks_with_err_gt1": float(flips.max()) if flips.size else None,
+            "by_tau": {f"{t:.0e}": {"exempt_frac": float(np.mean(m < t)),
+                                    "non_exempt_blocks_err_gt1": int(((m >= t) & (e > 1)).sum())} for t in TAUS},
+            "exempt_frac_at_JPEG_TIE_TOL_by_severity": {str(s): float(np.mean(m[sv == s] < co.JPEG_TIE_TOL))
+                                                        for s in sorted(set(sv.tolist()))}}
 
 
 def _op_dicts(op: str, n: int) -> list[dict]:  # same construction as tests/test_k2.py::_op_dicts
@@ -208,7 +232,7 @@ def parity(tiles64: np.ndarray) -> dict:
         res["per_op"][op] = r
         print(op, r["cuda"]["max_levels"], r["torch"]["max_levels"], flush=True)
     x64 = torch.from_numpy(tiles64).cuda()
-    comp, agg = [], {"cuda": [], "torch": [], "torch_vs_cuda": []}
+    comp, agg, accs = [], {"cuda": [], "torch": [], "torch_vs_cuda": []}, {"cuda": {}, "torch": {}}
     for sev in (0.25, 0.5, 0.75, 1.0):
         for k in range(4):
             p = sample_camera_params(len(tiles64), sev, 1000 + k, device="cuda")
@@ -218,8 +242,8 @@ def parity(tiles64: np.ndarray) -> dict:
             row = {"severity": sev, "param_seed": 1000 + k, "n_images": len(tiles64),
                    "cuda": _err(oc, ref), "torch": _err(ot, ref), "torch_vs_cuda": _err(ot, oc),
                    "effect_ref_vs_input_mae": float(np.abs(ref.astype(int) - tiles64).mean()),
-                   "cuda_by_block": _explain(tiles64, oc, ic, p.to_dicts()),
-                   "torch_by_block": _explain(tiles64, ot, it, p.to_dicts())}
+                   "cuda_decomposed": _decomposed(tiles64, oc, ic, p.to_dicts(), sev, accs["cuda"]),
+                   "torch_decomposed": _decomposed(tiles64, ot, it, p.to_dicts(), sev, accs["torch"])}
             comp.append(row)
             for key in agg:
                 agg[key].append(row[key])
@@ -231,13 +255,17 @@ def parity(tiles64: np.ndarray) -> dict:
               "runs_with_max_gt8": sum(e["max_levels"] > 8 for e in v),
               "frac_values_gt1_overall": float(np.mean([e["frac_gt1"] for e in v]))} for key, v in agg.items()}
     for impl in ("cuda", "torch"):
-        bb = [r[f"{impl}_by_block"] for r in comp]
-        res["composition_summary"][impl]["by_block"] = {
-            "max_err_provably_same_rounding": max(b["max_err_provably_same_rounding"] for b in bb),
-            "max_err_flip_possible": max(b["max_err_flip_possible"] for b in bb),
-            "frac_blocks_flip_possible": sum(b["n_flip_possible_blocks"] for b in bb) / sum(b["n_blocks"] for b in bb),
-            "max_pre_jpeg_diff_levels": max(b["max_pre_jpeg_diff_levels"] for b in bb),
-            "rule": "camera_ops.explain_differences: block margin >= 8 * max|pre-JPEG diff| + DCT_F32_ERR"}
+        bb = [r[f"{impl}_decomposed"] for r in comp]
+        res["composition_summary"][impl]["decomposed"] = {
+            "rule": "ruling R29 / camera_ops.decompose_differences: (i) pre-JPEG |impl - ref_pre_jpeg|; (ii) output "
+                    "vs camera_ops.jpeg(impl's own JPEG input), blocks with margin < JPEG_TIE_TOL exempt",
+            "JPEG_TIE_TOL": co.JPEG_TIE_TOL,
+            "pre_jpeg_max_diff_levels": max(b["pre_jpeg_max_diff_levels"] for b in bb),
+            "pre_jpeg_worst_at": max(bb, key=lambda b: b["pre_jpeg_max_diff_levels"])["pre_jpeg_worst_at"],
+            "jpeg_max_err_non_exempt": max(b["jpeg_max_err_non_exempt"] for b in bb),
+            "jpeg_max_err_exempt": max(b["jpeg_max_err_exempt"] for b in bb),
+            "exempt_frac": sum(b["n_exempt_blocks"] for b in bb) / sum(b["n_blocks"] for b in bb)}
+        res["composition_summary"][impl]["jpeg_tie_tolerance_scan"] = _tie_scan(accs[impl])
     # non-square camera-sized frames (3x3 mosaics of real tiles cropped to 480x640)
     frames = []
     for i in range(4):
