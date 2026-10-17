@@ -210,3 +210,25 @@ def test_fig2_keeps_committed_figure_without_gallery(monkeypatch, tmp_path):
     monkeypatch.setattr(figures, "FIG", tmp_path)  # elsewhere it draws the gallery-less variant, labelled
     out = figures.fig2_review_flag()
     assert out.parent == tmp_path and out.exists()
+
+
+def test_uno_q_latency_requires_real_on_board_run(tmp_path):
+    """M3: backbone_latency.json counts as on-board latency only with simulated == false on an aarch64 host."""
+    from twinread import headline
+    (tmp_path / "uno_q").mkdir()
+    p = tmp_path / "uno_q" / "backbone_latency.json"
+    assert headline.uno_q_latency(tmp_path) == headline.UNO_Q_PENDING  # no file
+    row = {"backbone": "mobilenetv4_conv_small", "precision": "int8", "threads": 4, "p50_ms": 80.0}
+    for sim, machine, rows in ((True, "aarch64", [row]), (False, "x86_64", [row]), (None, "aarch64", [row]),
+                               ("false", "aarch64", [row]), (False, "aarch64", [{**row, "error": "x"}]),
+                               (False, "aarch64", [])):
+        d = {"host": {"machine": machine}, "rows": rows}
+        if sim is not None:
+            d["simulated"] = sim
+        p.write_text(json.dumps(d))
+        assert headline.uno_q_latency(tmp_path) == headline.UNO_Q_PENDING, (sim, machine, rows)
+    p.write_text("{not json")
+    assert headline.uno_q_latency(tmp_path) == headline.UNO_Q_PENDING
+    good = {"host": {"machine": "aarch64"}, "simulated": False, "rows": [row]}
+    p.write_text(json.dumps(good))
+    assert headline.uno_q_latency(tmp_path) == good

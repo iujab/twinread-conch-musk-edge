@@ -1,5 +1,9 @@
 """Latency harness for candidate backbones. Imports only numpy + onnxruntime (+ stdlib): runs on the UNO Q.
-Research prototype, not a diagnostic device. Rows from a non-aarch64 host are flagged simulated=True."""
+Research prototype, not a diagnostic device. Rows from a non-aarch64 host are flagged simulated=True.
+
+Each (model, threads) runs in its own child process. A child that fails (crash, OOM kill, bad model) becomes an
+error row and the run continues; the JSON is rewritten after every row ("complete": false until the end), so an
+interrupted run on the board keeps every row measured so far. Exit code 1 if any row failed."""
 import argparse
 import glob
 import json
@@ -51,10 +55,27 @@ def bench_one(path, threads, runs, warmup=3):
     return float(np.percentile(ts, 50)), float(np.percentile(ts, 90)), round(peak_rss_mb() - base, 1), base
 
 
-def bench_isolated(path, threads, runs):
+def bench_isolated(path, threads, runs, timeout=None):
     r = subprocess.run([sys.executable, os.path.abspath(__file__), "--child", path, str(threads), str(runs)],
-                       capture_output=True, text=True, check=True)
+                       capture_output=True, text=True, check=True, timeout=timeout)
     return json.loads(r.stdout.strip().splitlines()[-1])
+
+
+def _error_text(e) -> str:
+    if isinstance(e, subprocess.CalledProcessError):
+        tail = (e.stderr or "").strip().splitlines()[-3:]
+        return f"child exited {e.returncode}: {' | '.join(tail)}"[:500]
+    return f"{type(e).__name__}: {e}"[:500]
+
+
+def write_json(out, host, simulated, rows, complete):
+    """Atomic rewrite of the whole result file (called after every row)."""
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
+    tmp = out + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump({"host": host, "simulated": simulated, "complete": complete,
+                   "n_errors": sum(1 for r in rows if "error" in r), "rows": rows}, f, indent=1)
+    os.replace(tmp, out)
 
 
 def main():
@@ -68,6 +89,7 @@ def main():
     ap.add_argument("--runs", type=int, default=30)
     ap.add_argument("--simulate", action="store_true")
     ap.add_argument("--out", default="results/uno_q/backbone_latency.json")
+    ap.add_argument("--timeout", type=float, default=600, help="seconds per child before it counts as failed")
     a = ap.parse_args()
     simulated = bool(a.simulate or platform.machine() != "aarch64")
     host = {"machine": platform.machine(), "system": platform.system(), "release": platform.release(),
@@ -78,14 +100,21 @@ def main():
         if not m:
             continue
         for th in a.threads:
-            p50, p90, rss, base = bench_isolated(p, th, a.runs)
-            rows.append({"backbone": m.group(1), "precision": m.group(2), "threads": th,
-                         "p50_ms": round(p50, 2), "p90_ms": round(p90, 2), "rss_mb": rss, "baseline_rss_mb": base,
-                         "size_mb": round(os.path.getsize(p) / 1e6, 2)})
-            print(rows[-1], flush=True)
-    os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
-    with open(a.out, "w") as f:
-        json.dump({"host": host, "simulated": simulated, "rows": rows}, f, indent=1)
+            row = {"backbone": m.group(1), "precision": m.group(2), "threads": th,
+                   "size_mb": round(os.path.getsize(p) / 1e6, 2)}
+            try:
+                p50, p90, rss, base = bench_isolated(p, th, a.runs, a.timeout)
+                row.update({"p50_ms": round(p50, 2), "p90_ms": round(p90, 2), "rss_mb": rss, "baseline_rss_mb": base})
+            except Exception as e:  # noqa: BLE001 - one failing child must not lose the other rows
+                row["error"] = _error_text(e)
+            rows.append(row)
+            print(row, flush=True)
+            write_json(a.out, host, simulated, rows, complete=False)
+    write_json(a.out, host, simulated, rows, complete=True)
+    n_err = sum(1 for r in rows if "error" in r)
+    if n_err:
+        print(f"{n_err} of {len(rows)} rows failed; see 'error' in {a.out}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import os
 import socket
+import struct
 
 STATES = ("idle", "busy", "agree", "review", "no_tissue", "error")
 METHOD = "set_state"

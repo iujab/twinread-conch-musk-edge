@@ -279,3 +279,53 @@ def test_uno_q_detection_reads_device_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(uno_q_app.platform, "machine", lambda: "x86_64")
     assert uno_q_app.host_info(model)["is_uno_q"] is False
     assert uno_q_app.host_info(tmp_path / "missing")["is_uno_q"] is False
+
+
+# ---- final review fixes: bridge msgpack encoder (struct), offline installer (I4) ---------------------------------
+def test_bridge_mp_request_large_msgid():
+    """bridge.py used struct without importing it: msgid >= 128 raised NameError."""
+    import bridge
+    small = bridge._mp_request(1, "set_state", "agree")
+    assert small[:3] == b"\x94\x00\x01" and small.endswith(b"\x91\xa5agree")
+    big = bridge._mp_request(300, "set_state", "review")
+    assert big[:5] == b"\x94\x00\xcd\x01\x2c" and big.endswith(b"\x91\xa6review")
+
+
+INSTALL = Path(__file__).resolve().parents[1] / "device" / "install_offline.sh"
+
+
+def _fake_python3(tmp_path, version="Python 3.13.5"):
+    bin_ = tmp_path / "bin"
+    bin_.mkdir(parents=True, exist_ok=True)
+    f = bin_ / "python3"
+    f.write_text("#!/bin/bash\n"
+                 f'if [ "$1" = --version ]; then echo "{version}"; exit 0; fi\n'
+                 f'echo "$@" >> {tmp_path / "calls.txt"}\n')
+    f.chmod(0o755)
+    return bin_
+
+
+def test_install_offline_stages_manylinux_2_28_pinned(tmp_path):
+    import subprocess
+    bin_ = _fake_python3(tmp_path)
+    wheels = tmp_path / "wheels"
+    env = {"PATH": f"{bin_}:/usr/bin:/bin", "WHEELS": str(wheels)}
+    r = subprocess.run(["bash", str(INSTALL), "stage"], env={**env, "PYVER": "Python 3.13.5"}, capture_output=True,
+                       text=True)
+    assert r.returncode == 0, r.stderr
+    args = (tmp_path / "calls.txt").read_text().split()
+    assert args[:3] == ["-m", "pip", "download"]
+    plats = [args[i + 1] for i, a in enumerate(args) if a == "--platform"]
+    assert plats[0] == "manylinux_2_28_aarch64" and "manylinux2014_aarch64" in plats
+    assert args[args.index("--python-version") + 1] == "3.13" and "--only-binary=:all:" in args
+    for pin in ("onnxruntime==1.31.0", "numpy==2.5.4", "pillow==13.0.0", "opencv-python-headless==5.0.0.93"):
+        assert pin in args, pin
+    assert (wheels / "PYVER").read_text().strip() == "3.13"
+    # on the board: wheels staged for 3.13 but the board runs 3.11 -> refuse before creating a venv
+    bin2 = _fake_python3(tmp_path / "board", "Python 3.11.2")
+    r = subprocess.run(["bash", str(INSTALL), "install"], env={"PATH": f"{bin2}:/usr/bin:/bin", "WHEELS": str(wheels)},
+                       capture_output=True, text=True)
+    assert r.returncode == 2 and "re-stage with PYVER=3.11" in r.stderr
+    r = subprocess.run(["bash", str(INSTALL), "stage"], env={**env, "PYVER": "banana"}, capture_output=True, text=True)
+    assert r.returncode == 2
+    assert subprocess.run(["bash", "-n", str(INSTALL)]).returncode == 0

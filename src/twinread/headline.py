@@ -19,6 +19,26 @@ def _j(results: Path, rel: str) -> dict:
     return json.loads((results / rel).read_text())
 
 
+def uno_q_latency(results: Path):
+    """On-board latency from results/uno_q/backbone_latency.json, or the pending string.
+
+    Counted as on-board only if the harness recorded ``simulated: false`` on an aarch64 host and at least one row has a
+    latency (device/bench_backbones.py flags every non-aarch64 or --simulate run simulated=True); anything else, e.g. an
+    x86 run saved under that name, stays pending."""
+    p = Path(results) / "uno_q" / "backbone_latency.json"
+    if not p.exists():
+        return UNO_Q_PENDING
+    try:
+        d = json.loads(p.read_text())
+    except ValueError:
+        return UNO_Q_PENDING
+    host = d.get("host") or {}
+    measured = [r for r in d.get("rows", []) if "p50_ms" in r and "error" not in r]
+    if d.get("simulated") is False and host.get("machine") in ("aarch64", "arm64") and measured:
+        return d
+    return UNO_Q_PENDING
+
+
 def _pairs(results: Path, base: str) -> dict:
     """(truth -> shared call) counts of the confident shared errors, from the post-hoc triage_curves.json if present."""
     p = results / base / "triage_curves.json"
@@ -171,12 +191,11 @@ def build(results: Path = ROOT / "results") -> dict:
     rig = _j(results, "rig/decode_stress.json")
     mcu = _j(results, "uno_q/mcu_compile.json")
     lat = _j(results, "uno_q/backbone_latency_x86_sim.json")
-    on_board = results / "uno_q" / "backbone_latency.json"
     device = {
         "source": "results/rig/decode_stress.json, results/uno_q/{mcu_compile,backbone_latency_x86_sim}.json",
         "mcu_sketch_compile_verified": bool(mcu["compile_verified"] and mcu["exit_code"] == 0),
         "mcu_fqbn": mcu["fqbn"], "mcu_flashed": False,
-        "uno_q_latency": (json.loads(on_board.read_text()) if on_board.exists() else UNO_Q_PENDING),
+        "uno_q_latency": uno_q_latency(results),
         "x86_latency_table_is_simulation": bool(lat["simulated"]),
         "rig_simulated_captures": sum(r["trials"] for r in rig["runs"]),
         "rig_simulated_wrong_ids": sum(r["wrong_id"] for r in rig["runs"]),

@@ -12,3 +12,5 @@ bundles/open/*.npz
 *.pt
 bundles/cm_*
 logs/
+device/wheels/
+device/.venv/
