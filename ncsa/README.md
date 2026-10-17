@@ -33,7 +33,7 @@ and records it in `results/ncsa/j1_toolkit_<jobid>.txt`.
 3b. Login-node offline load smoke (CPU, a few seconds; catches a missing cache before any A100 time; ask first):
    `cd ~/twinread && PYTHONPATH=src HF_HUB_OFFLINE=1 python -c "from twinread.readers import load_reader; r=load_reader('conch','cpu'); r.close()"`
    and the same with `'musk'`. HF cache is `$HF_HOME` (default `~/.cache/huggingface`, hub cache in `$HF_HOME/hub`), the same in every job.
-   `download_weights.py --backbones mobilenetv3_large_100` also caches the timm student backbone, since J3 loads it offline.
+   `download_weights.py --backbones mobilenetv4_conv_small` (the default) also caches the timm student backbone, since J3 loads it offline. It is the trainer's default and the backbone of every local student and of the latency harness rows (`results/uno_q/backbone_latency_x86_sim.json`).
 4. Login node: `bash ~/twinread/ncsa/stage_data.sh` (print-only; it runs nothing). It checks `/projects/bfqi/shared/datasets/NCT-CRC-HE-100K/data-samples/<CLASS>/*.tif`
    and, if readable, tells you to submit `sbatch ncsa/stage_crc.sbatch` (CPU partition, `--time=01:00:00`, `crc_from_folder` for train; needs its own OK). CRC-VAL-HE-7K is not on Delta; the script prints the HF (`fetch_crc`) or
    rsync-from-laptop command for the user to approve.

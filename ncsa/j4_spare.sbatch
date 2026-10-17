@@ -29,6 +29,7 @@ export PYTHONPATH=$TWINREAD_HOME/src:${PYTHONPATH:-}
 cd "$TWINREAD_HOME"
 mkdir -p logs results/ncsa
 T0=$(date +%s)
+BACKBONE=${BACKBONE:-mobilenetv4_conv_small}  # same default as J3 / train_student.py
 IMPL=k1
 [ "$(cat results/ncsa/j1_build_status.txt 2>/dev/null)" = "ok" ] || IMPL=reference
 rc=0
@@ -40,7 +41,7 @@ case "$ACTION" in
     AUG=k2; [ "$IMPL" = k1 ] || AUG=torch
     TARGETS=${TARGETS:-results/CM/crc}   # analysis outputs, as in J3
     if [ -f "$TARGETS/student_targets.npz" ] && [ -f "$TARGETS/probes_aligned.npz" ]; then
-      python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone mobilenetv3_large_100 \
+      python scripts/train_student.py --pair CM --dataset crc --targets-dir "$TARGETS" --backbone "$BACKBONE" \
         --epochs 15 --aug "$AUG" --seed 2
       rc=$?
     else

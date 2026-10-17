@@ -25,7 +25,7 @@ export PYTHONPATH=$TWINREAD_HOME/src:${PYTHONPATH:-}
 cd "$TWINREAD_HOME"
 mkdir -p logs results/ncsa
 T0=$(date +%s)
-BACKBONE=${BACKBONE:-mobilenetv3_large_100}   # confirm with the user; override via --export=ALL,BACKBONE=...
+BACKBONE=${BACKBONE:-mobilenetv4_conv_small}  # = train_student.py default, every local student and the latency harness
 TARGETS=${TARGETS:-results/CM/crc}             # run_pair_analysis output dir (the CPU analysis job)
 die() { echo "J3 PRECHECK FAILED: $*" >&2; python ncsa/job_record.py j3_distill "$T0" 2 "precheck: $*"; exit 2; }
 

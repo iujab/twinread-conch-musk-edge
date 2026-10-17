@@ -22,7 +22,7 @@ OPEN = [  # (repo, allow_patterns): the open readers used by the OPEN pair
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cache", default=None, help="HF hub cache dir (default: $HF_HOME/hub)")
-    ap.add_argument("--backbones", nargs="*", default=["mobilenetv3_large_100"],
+    ap.add_argument("--backbones", nargs="*", default=["mobilenetv4_conv_small"],
                     help="timm student backbones to pre-cache (pretrained=True would download on an offline node)")
     a = ap.parse_args()
     tok = os.environ.get("HF_TOKEN")

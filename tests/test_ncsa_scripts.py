@@ -230,3 +230,39 @@ def test_j4_allowlist_rejects_unknown(tmp_path):
         r = subprocess.run(["bash", str(NCSA / "j4_spare.sbatch")], env={"PATH": "/usr/bin:/bin", "ACTION": bad},
                            capture_output=True, text=True, cwd=tmp_path)
         assert r.returncode == 2 and "unknown ACTION" in r.stderr
+
+
+def _trainer_default_backbone():
+    import sys
+    sys.path.insert(0, str(NCSA.parent / "scripts"))
+    import train_student
+    return train_student.parse_args(["--pair", "CM", "--dataset", "crc"]).backbone
+
+
+def _download_default_backbones():
+    import ast
+    tree = ast.parse((NCSA / "download_weights.py").read_text())
+    for node in ast.walk(tree):
+        if (isinstance(node, ast.Call) and getattr(node.func, "attr", "") == "add_argument" and node.args
+                and isinstance(node.args[0], ast.Constant) and node.args[0].value == "--backbones"):
+            return next(ast.literal_eval(k.value) for k in node.keywords if k.arg == "default")
+    raise AssertionError("--backbones argument not found")
+
+
+def test_backbone_defaults_match_trainer():
+    """Delta must train the architecture the local runs and the latency harness used (the trainer's default)."""
+    want = _trainer_default_backbone()
+    assert want == "mobilenetv4_conv_small"
+    j3 = (NCSA / "j3_distill.sbatch").read_text()
+    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    assert re.search(r"^BACKBONE=\$\{BACKBONE:-(\S+)\}", j3, re.M).group(1) == want
+    assert re.search(r"^BACKBONE=\$\{BACKBONE:-(\S+)\}", j4, re.M).group(1) == want
+    for t in (j3, j4):
+        assert '--backbone "$BACKBONE"' in t
+        assert not re.search(r"--backbone (?!\"\$BACKBONE\")", t)  # no hard-coded backbone anywhere
+    assert _download_default_backbones() == [want]
+    readme = (NCSA / "README.md").read_text()
+    assert f"--backbones {want}" in readme and "mobilenetv3" not in readme
+    for p in NCSA.iterdir():
+        if p.is_file():
+            assert "mobilenetv3" not in p.read_text(), p.name
