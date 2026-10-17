@@ -219,10 +219,21 @@ cd twinread-conch-musk-edge
 bash run_demo.sh --smoke          # no GPU / network: headline JSON, figures -> build/smoke_figures/, manifest tests, dashboard check
 bash run_demo.sh                  # data -> OPEN embeddings (GPU lock) -> analysis -> student -> bundle -> figures -> dashboard :1777
 bash run_demo.sh --with-cm        # + CONCH/MUSK local subset (needs Hugging Face access to MahmoodLab/CONCH and xiangjx/musk)
+bash run_demo.sh --dry-run        # print the plan for the current state (heavy steps only printed)
 PYTHONPATH=src ../.venv/bin/python -m twinread.app_host            # dashboard only, http://127.0.0.1:1777
 ../.venv/bin/python rig/show_tiles.py                             # capture rig page, http://127.0.0.1:1778/rig
 CUDA_VISIBLE_DEVICES="" ../.venv/bin/python -m pytest tests -q    # CPU suite (< 2 min); GPU suite: flock ../.gpu.lock ... -m gpu
 ```
+
+**Clean-clone check.** In a fresh `git clone` with `data/` symlinked (so the download and GPU embedding steps were
+skipped, not exercised), `bash run_demo.sh --no-serve` ran in under 6 minutes:
+
+1. It reproduced the OPEN analysis into `build/reproduce/` with 0 mismatches against the committed JSON.
+2. It retrained the OPEN student under the GPU lock and rebuilt its int8 bundle there. On this machine the retrained
+   metrics and the bundle's `SHA256SUMS` were identical to the committed ones.
+3. It left every committed file unchanged.
+
+`bash run_demo.sh --dry-run` prints the plan for the current state without running the heavy steps.
 
 `device/README.md` covers the UNO Q app, the offline install and the bundle rebuild; `ncsa/README.md` covers Delta.
 

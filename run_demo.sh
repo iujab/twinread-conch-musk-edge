@@ -16,7 +16,8 @@
 #  - the committed analysis JSON is never rewritten: when its npz targets are missing they are reproduced into
 #    build/reproduce/<pair>/ by scripts/reproduce_analysis.py, which also checks the numbers match the committed JSON;
 #  - with no committed checkpoint the OPEN student is retrained into build/reproduce/student/open_crc/ and bundled into
-#    build/reproduce/bundle_open/ (a retrained student cannot match the committed bundles/open/SHA256SUMS);
+#    build/reproduce/bundle_open/, never over the committed files. On the build machine the retrained student and
+#    bundle came out identical to the committed ones (same metrics, same SHA256SUMS); other GPUs may differ;
 #  - figures/fig2 keeps its committed version when the tile gallery's inputs are missing.
 # The rig page (camera-of-screen capture) is separate: python rig/show_tiles.py  -> http://127.0.0.1:1778/rig
 # The device app is built for the Arduino UNO Q; today it runs as an x86 replay (see device/README.md).
