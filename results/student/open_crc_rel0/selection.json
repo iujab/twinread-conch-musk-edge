@@ -1,0 +1,40 @@
+{
+  "config_hash": "88fa396871bc7e6a3cdf9e7ff2ff89108809a1a7994bc1c7462fd0632931699f",
+  "best_epoch": 13,
+  "thresholds": {
+    "js": 0.008144548173000213,
+    "review": 0.36596668476224026
+  },
+  "selection_rule": "best epoch = highest mean val balanced accuracy over severities [0.0, 0.5, 1.0] (eval augmentation torch, fixed seed)",
+  "val_clean": {
+    "n": 2658,
+    "bal_acc": 0.9883539173843303,
+    "accuracy": 0.9883370955605718,
+    "macro_f1": 0.9883138343305843,
+    "agree_with_fused_teacher": 0.9864559819413092,
+    "cos_A": 0.9697956442832947,
+    "cos_B": 0.9762402176856995,
+    "review_auroc": 0.8803459841074258,
+    "probe_A_bal_acc": 0.9827065352968365,
+    "probe_B_bal_acc": 0.980443425339751,
+    "device_flag": {
+      "fraction": 0.1000752445447705,
+      "teacher_fraction": 0.1000752445447705,
+      "agreement": 0.9014296463506396,
+      "kappa": 0.45275291070485557,
+      "teacher_recall": 0.5075187969924813,
+      "precision_vs_teacher": 0.5075187969924813,
+      "clauses": {
+        "disagree": 0.0056433408577878106,
+        "js": 0.06696764484574869,
+        "review": 0.0854025583145222
+      },
+      "student_error_rate": 0.011662904439428141,
+      "student_errors_caught": 0.8709677419354839,
+      "acc_cleared": 0.9983277591973244,
+      "review_head_auroc_vs_student_error": 0.9367609317632035,
+      "js_auroc_vs_teacher_flag": 0.8619914124776824
+    }
+  },
+  "created_utc": "2026-10-17T08:37:26+00:00"
+}

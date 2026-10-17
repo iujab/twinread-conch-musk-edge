@@ -1,0 +1,44 @@
+{
+  "backbone": "mobilenetv4_conv_small",
+  "batch": 128,
+  "steps": 20,
+  "warmup": 5,
+  "severity": 0.5,
+  "device": "cuda",
+  "device_name": "NVIDIA GeForce RTX 5060",
+  "torch": "2.14.1+cu130",
+  "timing": "CUDA events, median per step",
+  "note": "shared GPU; estimate. Augmentation = simulated camera filming a screen.",
+  "results": {
+    "none": {
+      "impl_used": "none",
+      "aug_images_per_s": 189465.7099523897,
+      "train_step_images_per_s": 4462.266298477474,
+      "aug_ms_per_batch": 0.6755839884281158,
+      "train_step_ms_per_batch": 28.684975624084473,
+      "rel_loss_impl": "torch",
+      "train_step_images_per_s_bigbatch_rel": 4290.234309509749,
+      "train_step_ms_per_batch_bigbatch_rel": 29.835200309753418
+    },
+    "torch": {
+      "impl_used": "torch",
+      "aug_images_per_s": 2347.240827837691,
+      "train_step_images_per_s": 1550.829045506915,
+      "aug_ms_per_batch": 54.53211212158203,
+      "train_step_ms_per_batch": 82.5364990234375,
+      "rel_loss_impl": "torch",
+      "train_step_images_per_s_bigbatch_rel": 1529.6753377241143,
+      "train_step_ms_per_batch_bigbatch_rel": 83.67788696289064
+    },
+    "k2": {
+      "impl_used": "torch",
+      "aug_images_per_s": 2346.7030414709416,
+      "train_step_images_per_s": 1550.7166645962366,
+      "aug_ms_per_batch": 54.54460906982422,
+      "train_step_ms_per_batch": 82.54248046875,
+      "rel_loss_impl": "torch",
+      "train_step_images_per_s_bigbatch_rel": 1526.6895604970593,
+      "train_step_ms_per_batch_bigbatch_rel": 83.84153747558592
+    }
+  }
+}
