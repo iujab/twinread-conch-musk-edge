@@ -1,0 +1,523 @@
+{
+ "note": "Computed by twinread.headline from the source JSONs named in each block. LOCAL-SUBSET dev numbers (CRC 20k-tile train subset + full CRC-VAL-HE-7K test; Camelyon17-WILDS 7.5k subset); the full-data Delta runs are pending. Research prototype, not a diagnostic device.",
+ "fusion": {
+  "CM_crc": {
+   "source": "results/cm_local/CM/crc/{readers,fusion,review}.json",
+   "readers": {
+    "A": "conch",
+    "B": "musk"
+   },
+   "bal_acc": {
+    "A": 0.9413381608321247,
+    "B": 0.9480392722521808,
+    "fused": 0.9554582418005584
+   },
+   "bal_acc_ci": {
+    "A": [
+     0.9355675438996697,
+     0.9472613463061363
+    ],
+    "B": [
+     0.9422595931299795,
+     0.9536220060654623
+    ],
+    "fused": [
+     0.9501452482688734,
+     0.9608396869409227
+    ]
+   },
+   "aligned_probe_bal_acc": {
+    "A": 0.9355277759775793,
+    "B": 0.9309876649857188
+   },
+   "zeroshot_bal_acc": {
+    "A": 0.766883893428237,
+    "B": 0.8087222203035349
+   },
+   "primary_fusion": "average",
+   "best_single_reader": "B",
+   "delta_vs_best_single": 0.007418969548377619,
+   "delta_ci": [
+    0.0018340845475627449,
+    0.012863889343392323
+   ],
+   "delta_vs_best_single_pts": 0.7418969548377619,
+   "delta_ci_pts": [
+    0.18340845475627449,
+    1.2863889343392323
+   ],
+   "mcnemar_vs_best_single_p": 0.004319137524752693,
+   "ci_mode": "tile-level, anti-conservative (no slide ids)",
+   "review_caught_at_10pct": {
+    "s1_disagree": 0.5899581589958159,
+    "s2_js": 0.7280334728033473,
+    "s3_fused_uncertainty": 0.803347280334728,
+    "s4_learned": 0.803347280334728,
+    "A_own_confidence_own_errors": 0.6595744680851063,
+    "B_own_confidence_own_errors": 0.7412587412587412
+   },
+   "acc_cleared_at_10pct": {
+    "s3": 0.9927267099969049,
+    "s4": 0.9927267099969049,
+    "A_own": 0.9826679046734758,
+    "B_own": 0.9885484370164036
+   },
+   "aurc": {
+    "s1_disagree": 0.016919917093790322,
+    "s2_js": 0.0032311709448248336,
+    "s3_fused_unc": 0.0023528712902702127,
+    "s4": 0.0023369003483949403,
+    "base_A_own_error": 0.005257065075332949,
+    "base_B_own_error": 0.0033956172024686843
+   },
+   "prereg_rule_test_operating_point": {
+    "threshold_from_val": 0.001398140999080691,
+    "flagged_fraction": 0.25055710306406687,
+    "errors_caught": 0.9748953974895398,
+    "acc_cleared": 0.9988849656197732
+   },
+   "confident_shared_errors": {
+    "n": 53,
+    "rate": 0.007381615598885794,
+    "truth_to_call": {
+     "STR->MUS": 23,
+     "MUS->STR": 13,
+     "TUM->NORM": 11,
+     "TUM->DEB": 2,
+     "DEB->MUS": 1,
+     "ADI->MUS": 1,
+     "STR->DEB": 1,
+     "MUC->TUM": 1
+    },
+    "flagged_by_prereg_rule": 47
+   },
+   "fused_error_rate": 0.03328690807799439
+  },
+  "CM_cam": {
+   "source": "results/cm_local/CM/cam/{readers,fusion,review}.json",
+   "readers": {
+    "A": "conch",
+    "B": "musk"
+   },
+   "bal_acc": {
+    "A": 0.9686666666666667,
+    "B": 0.9586666666666667,
+    "fused": 0.9646666666666667
+   },
+   "bal_acc_ci": {
+    "A": [
+     0.9376725513569825,
+     0.9781519606173805
+    ],
+    "B": [
+     0.9245894384742532,
+     0.971295743947988
+    ],
+    "fused": [
+     0.9077408786603287,
+     0.9797908752861307
+    ]
+   },
+   "aligned_probe_bal_acc": {
+    "A": 0.9653333333333334,
+    "B": 0.9666666666666667
+   },
+   "zeroshot_bal_acc": {
+    "A": 0.9079999999999999,
+    "B": 0.9246666666666666
+   },
+   "primary_fusion": "gated_mlp",
+   "best_single_reader": "A",
+   "delta_vs_best_single": -0.0040000000000000036,
+   "delta_ci": [
+    -0.036985370611419016,
+    0.007568145643986828
+   ],
+   "delta_vs_best_single_pts": -0.40000000000000036,
+   "delta_ci_pts": [
+    -3.6985370611419017,
+    0.7568145643986829
+   ],
+   "mcnemar_vs_best_single_p": 0.4513808323961257,
+   "ci_mode": "cluster bootstrap by slide",
+   "review_caught_at_10pct": {
+    "s1_disagree": 0.3018867924528302,
+    "s2_js": 0.49056603773584906,
+    "s3_fused_uncertainty": 0.8113207547169812,
+    "s4_learned": 0.7547169811320755,
+    "A_own_confidence_own_errors": 0.7446808510638298,
+    "B_own_confidence_own_errors": 0.6612903225806451
+   },
+   "acc_cleared_at_10pct": {
+    "s3": 0.9925925925925926,
+    "s4": 0.9903703703703703,
+    "A_own": 0.9911111111111112,
+    "B_own": 0.9844444444444445
+   },
+   "aurc": {
+    "s1_disagree": 0.024678672403625892,
+    "s2_js": 0.009636317569383036,
+    "s3_fused_unc": 0.0027394665951021983,
+    "s4": 0.006617485747618385,
+    "base_A_own_error": 0.0038058146278365074,
+    "base_B_own_error": 0.005021617914135557
+   },
+   "prereg_rule_test_operating_point": {
+    "threshold_from_val": 0.080621786798854,
+    "flagged_fraction": 0.05333333333333334,
+    "errors_caught": 0.5849056603773585,
+    "acc_cleared": 0.9845070422535211
+   },
+   "confident_shared_errors": {
+    "n": 12,
+    "rate": 0.008,
+    "truth_to_call": {
+     "tumor->normal": 8,
+     "normal->tumor": 4
+    },
+    "flagged_by_prereg_rule": 1
+   },
+   "fused_error_rate": 0.03533333333333333
+  },
+  "OPEN_crc": {
+   "source": "results/open/OPEN/crc/{readers,fusion,review}.json",
+   "readers": {
+    "A": "pathgenclip",
+    "B": "quiltnet_b16"
+   },
+   "bal_acc": {
+    "A": 0.943530768076215,
+    "B": 0.9141015951507572,
+    "fused": 0.9443010073711334
+   },
+   "bal_acc_ci": {
+    "A": [
+     0.9376205312160312,
+     0.9490458303815253
+    ],
+    "B": [
+     0.9072165366776321,
+     0.9209977305814339
+    ],
+    "fused": [
+     0.9380937991564946,
+     0.9500857310683467
+    ]
+   },
+   "aligned_probe_bal_acc": {
+    "A": 0.9430034291110909,
+    "B": 0.9172205658145054
+   },
+   "zeroshot_bal_acc": {
+    "A": 0.815009125090751,
+    "B": 0.4233598303912648
+   },
+   "primary_fusion": "gated_mlp",
+   "best_single_reader": "A",
+   "delta_vs_best_single": 0.0007702392949183734,
+   "delta_ci": [
+    -0.005159094553584489,
+    0.006568155408446634
+   ],
+   "delta_vs_best_single_pts": 0.07702392949183734,
+   "delta_ci_pts": [
+    -0.5159094553584489,
+    0.6568155408446634
+   ],
+   "mcnemar_vs_best_single_p": 0.663064461563114,
+   "ci_mode": "tile-level, anti-conservative (no slide ids)",
+   "review_caught_at_10pct": {
+    "s1_disagree": 0.5111821086261981,
+    "s2_js": 0.5015974440894568,
+    "s3_fused_uncertainty": 0.6932907348242812,
+    "s4_learned": 0.6070287539936102,
+    "A_own_confidence_own_errors": 0.7049180327868853,
+    "B_own_confidence_own_errors": 0.5708661417322834
+   },
+   "acc_cleared_at_10pct": {
+    "s3": 0.9851439182915506,
+    "s4": 0.9809656453110492,
+    "A_own": 0.9860724233983287,
+    "B_own": 0.9662643144537295
+   },
+   "aurc": {
+    "s1_disagree": 0.028990711809464206,
+    "s2_js": 0.007894314941969545,
+    "s3_fused_unc": 0.00940378929772809,
+    "s4": 0.006624422966061075,
+    "base_A_own_error": 0.004167297984041784,
+    "base_B_own_error": 0.009896430004916969
+   },
+   "prereg_rule_test_operating_point": {
+    "threshold_from_val": 0.0044459853643782155,
+    "flagged_fraction": 0.26337047353760445,
+    "errors_caught": 0.8594249201277955,
+    "acc_cleared": 0.9916808470410285
+   },
+   "confident_shared_errors": {
+    "n": 50,
+    "rate": 0.006963788300835654
+   },
+   "fused_error_rate": 0.04359331476323125
+  },
+  "OPEN_cam": {
+   "source": "results/open/OPEN/cam/{readers,fusion,review}.json",
+   "readers": {
+    "A": "pathgenclip",
+    "B": "quiltnet_b16"
+   },
+   "bal_acc": {
+    "A": 0.9733333333333334,
+    "B": 0.9493333333333334,
+    "fused": 0.9733333333333334
+   },
+   "bal_acc_ci": {
+    "A": [
+     0.9197366440319529,
+     0.9856761643876817
+    ],
+    "B": [
+     0.8972727791986547,
+     0.9727894679884698
+    ],
+    "fused": [
+     0.9343788642247393,
+     0.9830130531394673
+    ]
+   },
+   "aligned_probe_bal_acc": {
+    "A": 0.9733333333333334,
+    "B": 0.9306666666666668
+   },
+   "zeroshot_bal_acc": {
+    "A": 0.9213333333333333,
+    "B": 0.5246666666666667
+   },
+   "primary_fusion": "concat_lr",
+   "best_single_reader": "A",
+   "delta_vs_best_single": 0.0,
+   "delta_ci": [
+    -0.01218848796104855,
+    0.016457230244869912
+   ],
+   "delta_vs_best_single_pts": 0.0,
+   "delta_ci_pts": [
+    -1.2188487961048549,
+    1.6457230244869911
+   ],
+   "mcnemar_vs_best_single_p": 1.0,
+   "ci_mode": "cluster bootstrap by slide",
+   "review_caught_at_10pct": {
+    "s1_disagree": 0.5,
+    "s2_js": 0.425,
+    "s3_fused_uncertainty": 0.675,
+    "s4_learned": 0.7,
+    "A_own_confidence_own_errors": 0.725,
+    "B_own_confidence_own_errors": 0.6578947368421053
+   },
+   "acc_cleared_at_10pct": {
+    "s3": 0.9903703703703703,
+    "s4": 0.9911111111111112,
+    "A_own": 0.9918518518518519,
+    "B_own": 0.9807407407407407
+   },
+   "aurc": {
+    "s1_disagree": 0.014086898294996254,
+    "s2_js": 0.008138594376405066,
+    "s3_fused_unc": 0.0022830979762757976,
+    "s4": 0.0021074968495292355,
+    "base_A_own_error": 0.0023516317567058792,
+    "base_B_own_error": 0.0062312753776365805
+   },
+   "prereg_rule_test_operating_point": {
+    "threshold_from_val": 0.08271538264215719,
+    "flagged_fraction": 0.056666666666666664,
+    "errors_caught": 0.625,
+    "acc_cleared": 0.9893992932862191
+   },
+   "confident_shared_errors": {
+    "n": 7,
+    "rate": 0.004666666666666667
+   },
+   "fused_error_rate": 0.026666666666666616
+  }
+ },
+ "crc_fusion_fragility": {
+  "source": "results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json (post hoc)",
+  "per_class_recall_delta_fused_minus_musk_pts": {
+   "ADI": 1.0463378176382654,
+   "BACK": 0.11806375442738881,
+   "DEB": 0.8849557522123908,
+   "LYM": 0.6309148264984188,
+   "MUC": 0.0,
+   "MUS": -13.175675675675668,
+   "NORM": 0.5398110661268496,
+   "STR": 13.064133016627078,
+   "TUM": 3.5685320356853123
+  },
+  "val_correct_tiles": {
+   "average": 2641,
+   "concat_lr": 2639,
+   "gated_mlp": 2640
+  },
+  "n_val": 2658,
+  "test_delta_vs_musk_by_candidate": {
+   "average": 0.007418969548377619,
+   "concat_lr": 0.007087906982406911,
+   "gated_mlp": -0.004038011307502032
+  },
+  "s3_s4_spearman": 0.9998859678117195,
+  "s3_s4_top10_overlap": 0.9972144846796658,
+  "val_fused_bal_acc": 0.9936145195601674
+ },
+ "kernels": {
+  "source": "results/kernels/{k1_bench,k1_parity,k1_embed_e2e,k2_bench,k2_parity,k2_sanitizer,builds}.json, results/student/{cm_crc,open_crc}/throughput.json",
+  "gpu": "NVIDIA GeForce RTX 5060",
+  "k1_bit_exact_fraction_min_over_sets_impls_readers": 1.0,
+  "k1_cuda_tiles_per_s_224": 90130.68978182162,
+  "k1_triton_tiles_per_s_224": 82058.43667457324,
+  "k1_torch_exact_tiles_per_s_224": 1340.3940733405905,
+  "pil_single_process_tiles_per_s_224": 220.82707947780307,
+  "dataloader_8w_tiles_per_s_224": 538.4219155308188,
+  "k1_e2e_tiles_per_s": {
+   "reference": 20.10612759484447,
+   "k1": 22.381851638814695
+  },
+  "k1_e2e_speedup_vs_reference": 1.1131855964424378,
+  "k1_e2e_speedup_vs_dataloader_4w": 1.009015707274766,
+  "k1_preprocess_speedup_vs_pil": 202.43401895676774,
+  "model_forward_share_of_reference_e2e": 0.8942168879500739,
+  "preprocess_share_of_reference_e2e": 0.09547454947879194,
+  "max_e2e_speedup_if_preprocessing_were_free": 1.1182969293863663,
+  "k1_vs_reference_embedding_cosine_min": {
+   "conch": 0.9999973177909851,
+   "musk": 0.9999999403953552
+  },
+  "k1_context": "Regime differs from the organizers' observed bottleneck. Their load test (ashby-hackathon-2026/CLAUDE.md, 'Load test, 2026-10-16': CONCH behind the hosted model server on one A40, about 65 images/s) found the limit was per-image CPU preprocessing inside the single uvicorn event loop (serve.py adapter.preprocess in the request handler), not the GPU. This benchmark is a batched (16), GPU-forward-bound pipeline on an RTX 5060 with CONCH in fp32, where preprocessing is only 9.5% of the reference run, hence x1.11 end to end. The preprocessing speedup itself is x202; on faster GPUs (shorter forward passes) or in per-image serving (preprocessing in the request path) the preprocessing share, and so K1's end-to-end effect, differs. Those regimes were not measured here.",
+  "k2_cuda_images_per_s_sev1": 46315.19234851237,
+  "k2_torch_gpu_images_per_s_sev1": 1096.9718259324216,
+  "k2_numpy_1proc_images_per_s": 44.06348954464955,
+  "k2_numpy_4proc_images_per_s": 166.23897188747665,
+  "k2_per_op_max_levels": 1,
+  "k2_composition_jpeg_max_err_non_exempt_levels": 1,
+  "k2_composition_exempt_block_fraction": 0.0011048608896683674,
+  "k2_composition_worst_max_levels": 11,
+  "k2_sanitizer_clean": true,
+  "builds_compile_ok": {
+   "8.0": true,
+   "9.0": true,
+   "12.0": true
+  },
+  "student_train_aug_images_per_s": {
+   "CM": {
+    "k2": 25038.02717078609,
+    "torch": 2354.570661805547
+   },
+   "OPEN": {
+    "k2": 25045.630021526693,
+    "torch": 2349.702668822132
+   }
+  },
+  "student_train_aug_speedup_k2_vs_torch": {
+   "CM": 10.633797310455856,
+   "OPEN": 10.659063529123735
+  },
+  "student_train_step_images_per_s": {
+   "CM": {
+    "k2": 3879.574265159139,
+    "torch": 1558.8276339964066,
+    "none": 4507.496854488371
+   },
+   "OPEN": {
+    "k2": 3901.7214667907065,
+    "torch": 1555.008349361398,
+    "none": 4488.350573468223
+   }
+  },
+  "simulation_note": "K2 output is a SIMULATION of a USB camera filming a screen."
+ },
+ "student": {
+  "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift}.json, results/student/model_sizes.json",
+  "backbone": "mobilenetv4_conv_small",
+  "CM": {
+   "fp32_test_bal_acc": {
+    "clean": 0.9415366032015291,
+    "sev0.5": 0.9311487597292076,
+    "sev1.0": 0.9134799883911229
+   },
+   "fp32_val_bal_acc_clean": 0.9822514170790969,
+   "fp32_hA_hB_through_aligned_probes_test": {
+    "A": 0.9418705192620033,
+    "B": 0.940099348948556
+   },
+   "int8_test_bal_acc": 0.9219132650544279,
+   "fp32_onnx_test_bal_acc": 0.9415366032015291,
+   "int8_val_bal_acc": 0.9774240235908471,
+   "int8_test_label_agreement_with_fp32": 0.9607242339832869,
+   "device_flag_test_clean": {
+    "fraction": 0.14317548746518105,
+    "student_errors_caught": 0.7953020134228188,
+    "teacher_recall": 0.4102279043913285,
+    "acc_cleared": 0.9900845253576073
+   },
+   "teachers_test_bal_acc": {
+    "CONCH_probe": 0.9413381608321247,
+    "MUSK_probe": 0.9480392722521808,
+    "fused": 0.9554582418005584,
+    "CONCH_aligned_probe": 0.9355277759775793,
+    "MUSK_aligned_probe": 0.9309876649857188
+   },
+   "int8_below_every_teacher": true,
+   "distributable": false,
+   "licence_note": "CONCH and MUSK are CC-BY-NC-ND-4.0; the CM student is not distributed"
+  },
+  "OPEN": {
+   "fp32_test_bal_acc": {
+    "clean": 0.9358942498430375,
+    "sev0.5": 0.9299964847241718,
+    "sev1.0": 0.9013656375159855
+   },
+   "fp32_val_bal_acc_clean": 0.9849836686710697,
+   "fp32_hA_hB_through_aligned_probes_test": {
+    "A": 0.9218398206251166,
+    "B": 0.9061807882980075
+   },
+   "int8_test_bal_acc": 0.908546379396576,
+   "fp32_onnx_test_bal_acc": 0.9362220112327457,
+   "int8_val_bal_acc": 0.9769309665083513,
+   "int8_test_label_agreement_with_fp32": 0.9583565459610028,
+   "device_flag_test_clean": {
+    "fraction": 0.1798050139275766,
+    "student_errors_caught": 0.7844827586206896,
+    "teacher_recall": 0.4071919619249075,
+    "acc_cleared": 0.9872643912379012
+   },
+   "distributable": true
+  },
+  "params": 5654634,
+  "params_millions": 5.654634,
+  "int8_onnx_bytes": 6012392,
+  "int8_onnx_mb": 6.012392,
+  "teacher_vision_tower_params": 395380992,
+  "teacher_vision_tower_params_millions": 395.380992,
+  "params_pct_of_teacher_vision_towers": 1.4301734565934823
+ },
+ "device": {
+  "source": "results/rig/decode_stress.json, results/uno_q/{mcu_compile,backbone_latency_x86_sim}.json",
+  "mcu_sketch_compile_verified": true,
+  "mcu_fqbn": "arduino:zephyr:unoq",
+  "mcu_flashed": false,
+  "uno_q_latency": "pending: measured when the board is plugged in",
+  "x86_latency_table_is_simulation": true,
+  "rig_simulated_captures": 8000,
+  "rig_simulated_wrong_ids": 0,
+  "rig_accept_rate_min": 0.8925,
+  "rig_note": "SIMULATED camera-filming-a-screen (rig/sim_capture.py), real CRC test tiles; 40 darkest of a 1/7 subsample + 160 random",
+  "real_camera_captures": 0
+ },
+ "pending": [
+  "UNO Q on-board latency and offline demo (pending: measured when the board is plugged in)",
+  "real camera-of-screen captures from the rig (none recorded yet)",
+  "NCSA Delta full-data CONCH+MUSK runs (100k CRC, A100; kit in ncsa/)"
+ ]
+}
