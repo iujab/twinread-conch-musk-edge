@@ -176,3 +176,22 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
   from a different regime: a batched, GPU-forward-bound pipeline on an RTX 5060 with CONCH in fp32, where preprocessing
   is 9.5% of the reference run. The preprocessing speedup itself is x202. On faster GPUs or in per-image serving the
   preprocessing share is different, and neither regime was measured here.
+
+## Final whole-branch review fixes (2026-10-17)
+
+- **Delta kit.** `setup_login.sh` and the runbook create `~/twinread/logs` (every `--output=logs/...` needs it). J1
+  asserts the sm_80 build (`load_ext` returns None on failure), runs `pytest -m gpu tests/test_k1.py tests/test_k2.py`
+  and a short `bench_k1.py --part gpu --batch 64` into `results/delta/kernels/`; `j1_build_status.txt` is `ok` only if
+  build and tests pass. J3/J4/analysis write `results/delta/...`; the copy-back fetches only `results/delta/` and
+  `results/ncsa/`; the rsync ships 13 MB instead of 1.07 GB. The embed loop drops the 300 s per-call cap on Delta
+  (batch 64); J4 `embed_open` embeds PathGen-CLIP + QuiltNet-B-16. `make_bundle.py --data-dir/--targets-dir` for
+  bundling on Delta. `hf auth login` instead of `HF_TOKEN=...`. TF32 for CONCH was not enabled (optional; it would
+  change numerics and the cache key does not record it).
+- **UNO Q.** `install_offline.sh` stages `manylinux_2_28_aarch64` wheels with pinned versions for the board's Python;
+  `bench_backbones.py` keeps going past a failing child and writes after every row; the headline counts on-board
+  latency only for `simulated: false` on aarch64; `bridge.py` imports `struct`.
+- **Device heads.** The device's two readers are two heads of one student. Deployed int8 flag vs the teacher flag
+  (`scripts/int8_flag_fidelity.py`, device runtime, CPU): CM kappa 0.34, recall 33.3%, agreement 79.5%, catches 57.6%
+  of int8 errors; OPEN kappa 0.31. UI relabelled ("Head A (CONCH-space)"), screenshot re-shot.
+- **GPU tests** run only with `TWINREAD_GPU_TESTS=1`; reader tests skip without cached weights.
+

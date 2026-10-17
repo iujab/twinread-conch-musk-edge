@@ -366,8 +366,9 @@ pipeline falls back to the Triton / torch-ops path automatically. The science ne
   - **J2 (≤ 1.5 h):** CM embeddings for D1 (107k tiles) + D3 + text prompt banks. Resumable, with checkpoints.
   - **J3 (≤ 1.5 h):** CM student distillation on the full D1 (preloaded into RAM as uint8, about 15 GB) with K2.
   - **J4 (≤ 1.5 h, only if needed):** a second seed, ablations, or a rerun.
-- **CPU work** (probes, fusion, flag analysis) runs on `bfqi-delta-cpu` or locally, after copying the embeddings
-  back. Embeddings are small.
+- **CPU work** (probes, fusion, flag analysis) runs on `bfqi-delta-cpu` (`ncsa/analyze_cpu.sbatch`, into
+  `results/delta/`). Ruling R34 (final review) made this the only supported full-data route: analysing locally would
+  overwrite the local 20k embedding caches and mix local labels with Delta embeddings.
 - **How Claude operates there.** The user sets up SSH with a persistent ControlMaster (one Duo prompt), so `ssh delta
   '...'` works non-interactively from this machine. Claude never submits a GPU job without stating its `--time` and
   purpose first. No job resubmits itself in a loop.
