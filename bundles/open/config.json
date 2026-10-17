@@ -12,8 +12,8 @@
     "TUM"
   ],
   "thresholds": {
-    "js": 0.01149779438590045,
-    "review": 0.39268001138627995
+    "js": 0.014218837161929981,
+    "review": 0.4089430503946518
   },
   "licence_note": "OPEN pair (PathGen-CLIP + QuiltNet-B/16 teachers, CC-BY-4.0 / MIT): distributable.",
   "distributable": true
