@@ -342,6 +342,34 @@ def test_k2_build_failure_leaves_k1_usable(ext, monkeypatch):
 
 
 # ----------------------------------------------------------------------------------------------- CPU-safe
+def test_decomposed_check_catches_regressions():
+    """The gate itself (ruling R29): the reference fed through _Decomposed passes; +1.5 levels of pre-JPEG error
+    that the implementation propagates consistently through its own JPEG (which the old block classification
+    would have filed as "flip-possible") fails (i); a 2-level JPEG-stage error fails (ii)."""
+    from twinread.ref import camera_ops as co
+    arr = _tiles(2)
+    dicts = [dict(co.sample_params(1.0, 40 + i), seed=3, index=i) for i in range(2)]
+    pre = np.stack([co.ref_pre_jpeg(im, d) for im, d in zip(arr, dicts)])
+
+    def run(pre_impl: np.ndarray, out: np.ndarray) -> None:  # parts (i) and (ii); the exempt-fraction cap
+        # (finish) is not exercised: on 2 tiles it is dominated by one q=90 image (4 of 784 blocks exempt, since the
+        # exempt rate scales ~1/Q), while the GPU tests' fixture mixes stay <= 0.1 %
+        _Decomposed().check(arr, torch.from_numpy(pre_impl), torch.from_numpy(out), dicts, 3, "cuda")
+
+    def own(v: np.ndarray) -> np.ndarray:
+        return np.stack([np.rint(np.clip(co.jpeg(x, d), 0, 1) * 255) for x, d in zip(v, dicts)]).astype(np.uint8)
+
+    run(pre, own(pre))  # perfect implementation
+    bad = pre.copy()
+    bad[0, 40:56, 40:56] = np.clip(bad[0, 40:56, 40:56] + 1.5 / 255, 0, 1)
+    with pytest.raises(AssertionError):
+        run(bad, own(bad))  # (i) pre-JPEG regression
+    out = own(pre)
+    out[1, 64:72, 64:72] = np.clip(out[1, 64:72, 64:72].astype(int) + 2, 0, 255).astype(np.uint8)
+    with pytest.raises(AssertionError):
+        run(pre, out)  # (ii) JPEG-stage regression
+
+
 def test_dct_matches_scipy():
     from scipy.fft import dctn, idctn
 
