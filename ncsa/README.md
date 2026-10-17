@@ -30,13 +30,17 @@ and records it in `results/ncsa/j1_toolkit_<jobid>.txt`.
    (or `git bundle create tw.bundle lane-d` and `scp` it). Never ship the CM student/bundle to a shared location.
 2. Login node: `bash ~/twinread/ncsa/setup_login.sh` (installs open_clip, onnx, CONCH/MUSK `--no-deps`, fairscale, sentencepiece; prints versions).
 3. Login node: `HF_TOKEN=... python ~/twinread/ncsa/download_weights.py` (CONCH `pytorch_model.bin`, MUSK `model.safetensors` + `tokenizer.spm`, open readers).
-4. Login node: `bash ~/twinread/ncsa/stage_data.sh`. It reads `/projects/bfqi/shared/datasets/NCT-CRC-HE-100K/data-samples/<CLASS>/*.tif`
-   with `crc_from_folder` for train if readable. CRC-VAL-HE-7K is not on Delta; the script prints the HF (`fetch_crc`) or
+3b. Login-node offline load smoke (CPU, a few seconds; catches a missing cache before any A100 time; ask first):
+   `cd ~/twinread && PYTHONPATH=src HF_HUB_OFFLINE=1 python -c "from twinread.readers import load_reader; r=load_reader('conch','cpu'); r.close()"`
+   and the same with `'musk'`. HF cache is `$HF_HOME` (default `~/.cache/huggingface`, hub cache in `$HF_HOME/hub`), the same in every job.
+   `download_weights.py --backbones mobilenetv3_large_100` also caches the timm student backbone, since J3 loads it offline.
+4. Login node: `bash ~/twinread/ncsa/stage_data.sh` (print-only; it runs nothing). It checks `/projects/bfqi/shared/datasets/NCT-CRC-HE-100K/data-samples/<CLASS>/*.tif`
+   and, if readable, tells you to submit `sbatch ncsa/stage_crc.sbatch` (CPU partition, `--time=01:00:00`, `crc_from_folder` for train; needs its own OK). CRC-VAL-HE-7K is not on Delta; the script prints the HF (`fetch_crc`) or
    rsync-from-laptop command for the user to approve.
 5. `cd ~/twinread && sbatch ncsa/j1_check.sbatch` (`--time=00:30:00`, purpose: env + CUDA probe + sm_80 kernel build). Read the result.
-6. `sbatch ncsa/j2_embed.sbatch` (`--time=01:30:00`, CM embeddings of 100k + 7k; uses `--impl k1`, falls back to `reference` if J1 recorded a failed build).
+6. `sbatch ncsa/j2_embed.sbatch` (`--time=01:30:00`, CM embeddings of 100k + 7k; uses `--impl k1`, falls back to `reference` if J1 recorded a failed build; loops on exit 3 inside the job with `--budget` = remaining walltime minus 300 s, and stops when budget < 300 s or two exit-3 runs add no cache parts).
 7. `sbatch ncsa/j3_distill.sbatch` (`--time=01:30:00`, `train_student.py --pair CM --dataset crc --backbone $BACKBONE --epochs 15 --aug k2`; set `BACKBONE` via `sbatch --export=ALL,BACKBONE=...`).
-8. `ncsa/j4_spare.sbatch` (`--time=01:30:00`) only if budget remains; purpose set with the user.
+8. `ncsa/j4_spare.sbatch` (`--time=01:30:00`) only if budget remains: `sbatch --export=ALL,ACTION=<embed_open|distill_seed2|kernel_build>`; any other ACTION is rejected. J3 refuses to start if J2 outputs are missing or the backbone is not cached, and uses `--aug torch` if J1 recorded a failed build.
 9. Copy `results/ncsa/*.json` back (run on the laptop): `rsync -av <user>@login.delta.ncsa.illinois.edu:~/twinread/results/ ./results/`.
 
 Every job writes `results/ncsa/<job>_<SLURM_JOB_ID>.json` (elapsed time, GPU, torch/CUDA/transformers versions, exit code).

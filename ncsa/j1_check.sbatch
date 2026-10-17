@@ -15,6 +15,7 @@ module load pytorch-conda/2.8
 unset PYTHONNOUSERSITE
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
+export HF_HOME=${HF_HOME:-$HOME/.cache/huggingface}   # hub cache = $HF_HOME/hub, same as download_weights.py
 export TORCH_CUDA_ARCH_LIST=8.0
 export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8
 export TWINREAD_HOME=${TWINREAD_HOME:-$HOME/twinread}

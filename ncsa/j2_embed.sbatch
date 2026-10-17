@@ -15,6 +15,7 @@ module load pytorch-conda/2.8
 unset PYTHONNOUSERSITE
 export HF_HUB_OFFLINE=1
 export TRANSFORMERS_OFFLINE=1
+export HF_HOME=${HF_HOME:-$HOME/.cache/huggingface}   # hub cache = $HF_HOME/hub, same as download_weights.py
 export TORCH_CUDA_ARCH_LIST=8.0
 export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8
 export TWINREAD_HOME=${TWINREAD_HOME:-$HOME/twinread}
@@ -25,13 +26,8 @@ T0=$(date +%s)
 IMPL=k1
 [ "$(cat results/ncsa/j1_build_status.txt 2>/dev/null)" = "ok" ] || IMPL=reference
 echo "impl=$IMPL"
-# exit code 3 = "time budget used, rerun me". Loop INSIDE this job; stop at ~80 min of the 90 min walltime.
-# This is not job resubmission.
-rc=3
-while [ $rc -eq 3 ]; do
-  python -m twinread.embed --pair CM --dataset crc --impl "$IMPL"
-  rc=$?
-  [ $rc -eq 3 ] && [ $(( $(date +%s) - T0 )) -gt 4800 ] && { echo "near walltime, stopping; rerun in a new, user-approved job"; break; }
-done
+source ncsa/embed_loop.sh
+run_embed CM crc "$IMPL"
+rc=$?
 python ncsa/job_record.py j2_embed "$T0" "$rc" "impl=$IMPL"
 exit $rc
