@@ -7,3 +7,5 @@ __pycache__/
 *.onnx
 !tests/fixtures/*.onnx
 results/**/*.npz
+bundles/open/*.onnx
+bundles/open/*.npz
