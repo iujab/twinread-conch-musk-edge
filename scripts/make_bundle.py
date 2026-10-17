@@ -52,10 +52,9 @@ def main(argv=None):
     with np.load(tdir / "probes_aligned.npz") as z:
         PR = {k: z[k] for k in z.files}
     classes = [CRC_CLASSES[i] for i in PR["A_classes"]] if a.dataset == "crc" else [str(i) for i in PR["A_classes"]]
-    xtr, _ = load_split(data, a.dataset, "train")
     xv, yv = load_split(data, a.dataset, "val")
     xt, yt = load_split(data, a.dataset, "test")
-    cal = to_f(xtr[np.sort(np.random.default_rng(0).choice(len(xtr), a.n_calib, replace=False))])
+    cal = to_f(load_split(data, a.dataset, "train", sample=(a.n_calib, 0))[0])  # 512 rows, not the whole train split
     model = S.load_student(sdir / "best.pt")
     work = Path(tempfile.mkdtemp(prefix="mkbundle_"))
     fp = export.export_onnx(model, work / "fp32.onnx")

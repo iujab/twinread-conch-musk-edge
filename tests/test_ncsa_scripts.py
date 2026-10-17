@@ -231,22 +231,25 @@ def test_embed_loop_optional_cap_and_batch(tmp_path):
     assert all(0 < int(_arg(c, "--budget")) <= 300 and _arg(c, "--batch") == "32" for c in calls)
 
 
-def test_embed_loop_open_readers(tmp_path):
-    """M2: J4 embed_open embeds BOTH open readers (PAIRS["OPEN"] names only PathGen-CLIP)."""
-    r, calls = _run_loop(tmp_path, "--readers pathgenclip quiltnet_b16", [0])
-    assert "rc=0" in r.stdout and len(calls) == 1
-    assert calls[0][2:5] == ["--readers", "pathgenclip", "quiltnet_b16"]
-    assert int(_arg(calls[0], "--budget")) > 300
+def test_j4_has_no_unanalysed_embed():
+    """R37: analyze_cpu is CM-only (R34), so J4 offers no OPEN embed that nothing would analyse."""
     j4 = (NCSA / "j4_spare.sbatch").read_text()
-    assert 'run_embed crc "$IMPL" --readers pathgenclip quiltnet_b16' in j4 and "run_embed OPEN" not in j4
-    from twinread.embed import reader_groups, resolve_readers  # the names J4 passes are real readers, embedded as a pair
-    assert reader_groups(resolve_readers(None, ["pathgenclip", "quiltnet_b16"]), "k1") == [["pathgenclip", "quiltnet_b16"]]
+    assert "embed_open" not in j4 and "run_embed" not in j4
+    assert 'run_pair_analysis("CM", "crc"' in (NCSA / "analyze_cpu.sbatch").read_text()
+    assert "embed_open" not in (NCSA / "README.md").read_text()
+
+
+def test_runbook_bundle_step_memory():
+    """8b: make_bundle peaks at ~13 GB on full CRC (val + test float32); the srun asks for more than that."""
+    import re
+    m = re.search(r"8b\..*?--mem=(\d+)G", (NCSA / "README.md").read_text(), re.S)
+    assert m and int(m.group(1)) >= 24
 
 
 def test_j4_allowlist_rejects_unknown(tmp_path):
     t = (NCSA / "j4_spare.sbatch").read_text()
     assert "bash -c" not in t and "eval" not in t
-    for bad in ("rm_rf", "embed_open; sbatch x", ""):
+    for bad in ("rm_rf", "embed_open", "distill_seed2; sbatch x", ""):
         r = subprocess.run(["bash", str(NCSA / "j4_spare.sbatch")], env={"PATH": "/usr/bin:/bin", "ACTION": bad},
                            capture_output=True, text=True, cwd=tmp_path)
         assert r.returncode == 2 and "unknown ACTION" in r.stderr

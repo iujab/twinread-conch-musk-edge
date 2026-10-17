@@ -184,7 +184,7 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
   and a short `bench_k1.py --part gpu --batch 64` into `results/delta/kernels/`; `j1_build_status.txt` is `ok` only if
   build and tests pass. J3/J4/analysis write `results/delta/...`; the copy-back fetches only `results/delta/` and
   `results/ncsa/`; the rsync ships 13 MB instead of 1.07 GB. The embed loop drops the 300 s per-call cap on Delta
-  (batch 64); J4 `embed_open` embeds PathGen-CLIP + QuiltNet-B-16. `make_bundle.py --data-dir/--targets-dir` for
+  (batch 64); J4 has no OPEN embed (CM-only analysis, R37). `make_bundle.py --data-dir/--targets-dir` for
   bundling on Delta. `hf auth login` instead of `HF_TOKEN=...`. TF32 for CONCH was not enabled (optional; it would
   change numerics and the cache key does not record it).
 - **UNO Q.** `install_offline.sh` stages `manylinux_2_28_aarch64` wheels with pinned versions for the board's Python;

@@ -448,8 +448,13 @@ def fetch_camelyon(out_dir: Path, per_hospital: int = 1500, seed: int = 0, *, _s
 # ----------------------------------------------------------------------------------------------------------------
 # loading
 # ----------------------------------------------------------------------------------------------------------------
-def load_split(out_dir: Path, dataset: str, split: str) -> tuple[np.ndarray, np.ndarray]:
+def load_split(out_dir: Path, dataset: str, split: str,
+               sample: tuple[int, int] | None = None) -> tuple[np.ndarray, np.ndarray]:
     """(x, y) for ``dataset`` in {crc, cam} and ``split`` in {train, val, test}.
+
+    ``sample=(n, seed)`` returns only ``np.sort(default_rng(seed).choice(len(split), n, replace=False))`` of the split,
+    read row by row from the memory map, so a 512-tile calibration sample of the full 90k train split does not load
+    13.5 GB.  Same rows as sampling the fully loaded split with that expression.
 
     crc: test = CRC-VAL-HE-7K (separate patient set); train/val = 90/10 of the saved train pool, stratified by class
     and made of whole 100-row parquet groups (``crc_train_g.npy``) so val shares no group with train.  Without the
@@ -461,17 +466,24 @@ def load_split(out_dir: Path, dataset: str, split: str) -> tuple[np.ndarray, np.
         raise ValueError(f"unknown split {split!r}")
     if dataset == "crc":
         if split == "test":
-            return np.load(out_dir / "crc_test_x.npy"), np.load(out_dir / "crc_test_y.npy")
-        x = np.load(out_dir / "crc_train_x.npy", mmap_mode="r")
-        y = np.load(out_dir / "crc_train_y.npy")
-        gp = out_dir / "crc_train_g.npy"
-        tr, va = split_val(y, 0.1, 0, groups=np.load(gp) if gp.exists() else None)
-        idx = tr if split == "train" else va
-        return np.ascontiguousarray(x[idx]), y[idx]
-    if dataset == "cam":
+            x = np.load(out_dir / "crc_test_x.npy", mmap_mode="r")
+            y = np.load(out_dir / "crc_test_y.npy")
+            idx = np.arange(len(y))
+        else:
+            x = np.load(out_dir / "crc_train_x.npy", mmap_mode="r")
+            y = np.load(out_dir / "crc_train_y.npy")
+            gp = out_dir / "crc_train_g.npy"
+            tr, va = split_val(y, 0.1, 0, groups=np.load(gp) if gp.exists() else None)
+            idx = tr if split == "train" else va
+    elif dataset == "cam":
         x = np.load(out_dir / "cam_x.npy", mmap_mode="r")
         y = np.load(out_dir / "cam_y.npy")
         h = np.load(out_dir / "cam_h.npy")
         idx = np.flatnonzero(np.isin(h, {"train": (0, 3, 4), "val": (1,), "test": (CAM_TEST_HOSPITAL,)}[split]))
-        return np.ascontiguousarray(x[idx]), y[idx]
+    else:
+        raise ValueError(f"unknown dataset {dataset!r}")
+    if sample is not None:
+        n, seed = sample
+        idx = idx[np.sort(np.random.default_rng(seed).choice(len(idx), n, replace=False))]
+    return np.ascontiguousarray(x[idx]), y[idx]
     raise ValueError(f"unknown dataset {dataset!r}")

@@ -69,6 +69,13 @@ def test_load_split_test_is_crc_val(tmp_path):
     xtr, ytr = load_split(tmp_path, "crc", "train")
     xv, yv = load_split(tmp_path, "crc", "val")
     assert len(ytr) + len(yv) == 27 and len(yv) > 0
+    # sample=(n, seed) = the same rows as sampling the fully loaded split (make_bundle's calibration set)
+    xs, ys = load_split(tmp_path, "crc", "train", sample=(5, 0))
+    pick = np.sort(np.random.default_rng(0).choice(len(xtr), 5, replace=False))
+    assert np.array_equal(xs, xtr[pick]) and np.array_equal(ys, ytr[pick])
+    xs, ys = load_split(tmp_path, "crc", "test", sample=(4, 1))
+    pick = np.sort(np.random.default_rng(1).choice(len(xt), 4, replace=False))
+    assert np.array_equal(xs, xt[pick]) and np.array_equal(ys, yt[pick])
 
 
 def test_crc_from_folder(tmp_path):
