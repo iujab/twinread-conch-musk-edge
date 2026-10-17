@@ -6,6 +6,8 @@ import json
 import os
 import platform
 import re
+import subprocess
+import sys
 import time
 
 import numpy as np
@@ -21,7 +23,18 @@ def rss_mb():
         return float("nan")
 
 
+def peak_rss_mb():
+    try:
+        with open("/proc/self/status") as f:
+            m = re.search(r"VmHWM:\s+(\d+) kB", f.read())
+        return round(int(m.group(1)) / 1024, 1)
+    except Exception:
+        return float("nan")
+
+
 def bench_one(path, threads, runs, warmup=3):
+    """Runs in a fresh child process: rss_mb = peak RSS minus the pre-session baseline (after importing onnxruntime)."""
+    base = rss_mb()
     so = ort.SessionOptions()
     so.intra_op_num_threads = threads
     so.inter_op_num_threads = 1
@@ -35,10 +48,20 @@ def bench_one(path, threads, runs, warmup=3):
         t = time.perf_counter()
         s.run(None, {name: x})
         ts.append((time.perf_counter() - t) * 1000)
-    return float(np.percentile(ts, 50)), float(np.percentile(ts, 90)), rss_mb()
+    return float(np.percentile(ts, 50)), float(np.percentile(ts, 90)), round(peak_rss_mb() - base, 1), base
+
+
+def bench_isolated(path, threads, runs):
+    r = subprocess.run([sys.executable, os.path.abspath(__file__), "--child", path, str(threads), str(runs)],
+                       capture_output=True, text=True, check=True)
+    return json.loads(r.stdout.strip().splitlines()[-1])
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "--child":
+        p50, p90, rss, base = bench_one(sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+        print(json.dumps([p50, p90, rss, base]))
+        return
     ap = argparse.ArgumentParser()
     ap.add_argument("--dir", default="device/backbones")
     ap.add_argument("--threads", type=int, nargs="+", default=[1, 2, 4])
@@ -55,9 +78,9 @@ def main():
         if not m:
             continue
         for th in a.threads:
-            p50, p90, rss = bench_one(p, th, a.runs)
+            p50, p90, rss, base = bench_isolated(p, th, a.runs)
             rows.append({"backbone": m.group(1), "precision": m.group(2), "threads": th,
-                         "p50_ms": round(p50, 2), "p90_ms": round(p90, 2), "rss_mb": rss,
+                         "p50_ms": round(p50, 2), "p90_ms": round(p90, 2), "rss_mb": rss, "baseline_rss_mb": base,
                          "size_mb": round(os.path.getsize(p) / 1e6, 2)})
             print(rows[-1], flush=True)
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)

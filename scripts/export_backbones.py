@@ -71,6 +71,8 @@ def export_backbone(name, out_dir, calib_x, pretrained=True, dimA=512, dimB=1024
     out_dir.mkdir(parents=True, exist_ok=True)
     fp32, pre, int8 = out_dir / f"{name}_fp32.onnx", out_dir / f"{name}_pre.onnx", out_dir / f"{name}_int8.onnx"
     m = LatencyProxy(name, dimA, dimB, n_classes, pretrained)
+    from timm.utils import reparameterize_model
+    m = reparameterize_model(m).eval()  # fuse multi-branch blocks (mobileone etc.) for deployment
     torch.onnx.export(m, torch.rand(1, 3, 224, 224), str(fp32), dynamo=False, opset_version=17,
                       input_names=["input"], output_names=["hA", "hB", "logits", "review_logit"],
                       dynamic_axes={"input": {0: "b"}})
