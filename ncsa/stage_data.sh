@@ -12,7 +12,8 @@ if [ -d "$SRC" ] && [ -r "$SRC" ] && [ -n "$(ls "$SRC" 2>/dev/null | head -1)" ]
 else
   echo "NOT readable: $SRC"
   echo "Fallback for the user to approve (login node, has internet), fetch_crc pulls all 100k from HF parquet:"
-  echo "  python -c \"from pathlib import Path; from twinread.data import fetch_crc; fetch_crc(Path('$OUT'), n_train=None)\""
+  echo "  module load pytorch-conda/2.8 && unset PYTHONNOUSERSITE && cd $TWINREAD_HOME && PYTHONPATH=src \\"
+  echo "    python -c \"from pathlib import Path; from twinread.data import fetch_crc; fetch_crc(Path('$OUT'), n_train=None)\""
 fi
 
 echo

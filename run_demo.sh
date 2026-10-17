@@ -123,6 +123,7 @@ if [ -f bundles/open/model.onnx ]; then
   echo "    bundle present: bundles/open/ (verify: device/README.md)"
 elif [ "$STU" = results/student/open_crc ]; then
   heavy $PY scripts/make_bundle.py --pair OPEN --dataset crc --targets "$TGT_OPEN"   # rebuilds the committed bundle
+  heavy $PY scripts/int8_flag_fidelity.py --pair OPEN   # keep the fidelity JSON in step with the rebuilt bundle
 else
   [ -f build/reproduce/bundle_open/model.onnx ] && echo "    bundle present: build/reproduce/bundle_open/" || \
     heavy $PY scripts/make_bundle.py --pair OPEN --dataset crc --student "$STU" --targets "$TGT_OPEN" \

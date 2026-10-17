@@ -31,6 +31,7 @@ import functools
 import logging
 import math
 import os
+import shutil
 import types
 import warnings
 from dataclasses import dataclass
@@ -261,7 +262,10 @@ def load_ext(arch_list: str | None = None, verbose: bool = False) -> types.Modul
     saved = {k: os.environ.get(k) for k in ("TORCH_CUDA_ARCH_LIST", "CUDA_HOME", "PATH", "MAX_JOBS")}
     mod = None
     try:
-        cuda_home = os.environ.get("CUDA_HOME") or "/usr/local/cuda"
+        # a loaded CUDA module may put nvcc on PATH without CUDA_HOME (Delta); honour it, as torch's own lookup does
+        nvcc = shutil.which("nvcc")
+        cuda_home = (os.environ.get("CUDA_HOME") or os.environ.get("CUDA_PATH")
+                     or (os.path.dirname(os.path.dirname(nvcc)) if nvcc else None) or "/usr/local/cuda")
         os.environ["CUDA_HOME"] = cuda_home
         os.environ["PATH"] = os.path.join(cuda_home, "bin") + os.pathsep + os.environ.get("PATH", "")
         os.environ["TORCH_CUDA_ARCH_LIST"] = arch
