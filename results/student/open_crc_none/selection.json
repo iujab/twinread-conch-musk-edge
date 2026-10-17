@@ -1,40 +1,44 @@
 {
-  "config_hash": "99ee6c4283007df4f55b7185e735f41aa6b175185e68413a4440e7c26b648091",
+  "config_hash": "f0c6a1c22d03674573f0f2fb8ec41c2db89391f1f04f1b5618c3b0e27c41ed49",
   "best_epoch": 5,
   "thresholds": {
-    "js": 0.0008543353785936002,
-    "review": 0.4041840450338533
+    "js": 0.004144963754475157,
+    "review": 0.39946023687075594
   },
-  "selection_rule": "best epoch = highest mean val balanced accuracy over severities [0.0, 0.5, 1.0] (eval augmentation torch, fixed seed)",
+  "selection_rule": "best epoch = highest mean val balanced accuracy over severities [0.0, 0.5, 1.0] (eval augmentation k2, fixed seed)",
   "val_clean": {
     "n": 2658,
-    "bal_acc": 0.9868893814801977,
-    "accuracy": 0.9868322046651617,
-    "macro_f1": 0.9868270287738683,
-    "agree_with_fused_teacher": 0.9845748683220467,
-    "cos_A": 0.7815041542053223,
-    "cos_B": 0.7794610857963562,
-    "review_auroc": 0.8798595569190536,
-    "probe_A_bal_acc": 0.984651782366758,
-    "probe_B_bal_acc": 0.9831000949464516,
+    "bal_acc": 0.9842330653702732,
+    "accuracy": 0.9841986455981941,
+    "macro_f1": 0.9841978015221703,
+    "agree_with_fused_teacher": 0.9826937547027841,
+    "cos_A": 0.9643841981887817,
+    "cos_B": 0.9723790287971497,
+    "review_auroc": 0.8731289448537732,
+    "cos_A_centred": 0.749227528469166,
+    "cos_B_centred": 0.7326558983352386,
+    "probe_kl_A": 0.0920597409440999,
+    "probe_kl_B": 0.1316380562288664,
+    "probe_A_bal_acc": 0.9815382651942901,
+    "probe_B_bal_acc": 0.9823197051677384,
     "device_flag": {
       "fraction": 0.1000752445447705,
       "teacher_fraction": 0.1000752445447705,
-      "agreement": 0.8954100827689992,
-      "kappa": 0.4193332411295795,
-      "teacher_recall": 0.4774436090225564,
-      "precision_vs_teacher": 0.4774436090225564,
+      "agreement": 0.8976674191121143,
+      "kappa": 0.4318656172203078,
+      "teacher_recall": 0.48872180451127817,
+      "precision_vs_teacher": 0.48872180451127817,
       "clauses": {
-        "disagree": 0.009781790820165538,
-        "js": 0.042136945071482315,
-        "review": 0.08465011286681716
+        "disagree": 0.006019563581640331,
+        "js": 0.0744920993227991,
+        "review": 0.07524454477050414
       },
-      "student_error_rate": 0.013167795334838224,
-      "student_errors_caught": 0.8857142857142857,
-      "acc_cleared": 0.9983277591973244,
-      "review_head_auroc_vs_student_error": 0.9106639071945972,
-      "js_auroc_vs_teacher_flag": 0.7812947921643574
+      "student_error_rate": 0.01580135440180587,
+      "student_errors_caught": 0.7857142857142857,
+      "acc_cleared": 0.9962374581939799,
+      "review_head_auroc_vs_student_error": 0.9265463448376293,
+      "js_auroc_vs_teacher_flag": 0.8519438227676214
     }
   },
-  "created_utc": "2026-10-17T08:26:09+00:00"
+  "created_utc": "2026-10-17T09:26:43+00:00"
 }

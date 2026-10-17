@@ -26,3 +26,23 @@
   (a variant of the design's [zA, zB, zA.W, |zA-zB|]; accepted, R21). Train-split student targets are cross-fitted OOF (K=5);
   best single reader is chosen on val; probes_aligned.npz is stored in softmax form with `{A,B}_classes`; the pre-registration
   is crash-resumable only if the plan is byte-identical and no results exist; text-bank cache is keyed by reader/spec/prompt hash.
+- 2026-10-17: Task 10 student (`twinread.student`, `scripts/train_student.py`). **Plan amendment R26:** the device student's
+  `DEFAULT_WEIGHTS["rel"]` is 0.0 (the plan had 0.5). The choice rests on VAL evidence, comparing `results/student/open_crc`
+  (rel 0) with `results/student/open_crc_rel05` (rel 0.5) on val clean tiles:
+
+  | metric | rel 0 | rel 0.5 |
+  |---|---|---|
+  | raw cos hA / hB | 0.970 / 0.976 | 0.774 / 0.768 |
+  | centred cos (h−μ vs t−μ) | 0.793 / 0.776 | 0.744 / 0.728 |
+  | probe KL(teacher‖student) A / B | 0.089 / 0.121 | 0.219 / 0.481 |
+  | val-chosen JS threshold | 8.1e-3 | 6.4e-4 |
+  | teacher-flag recall at sev 1.0 | 0.530 | 0.477 |
+  | bal acc | 0.9884 | 0.9872 |
+
+  - The rel 0.5 JS threshold is so small that int8 drift could move the flag rate.
+  - Cause: the teacher embeddings sit in a narrow cone (unit-mean norm about 0.91 for A and 0.94 for B, an ad-hoc
+    check of the train targets). Row-wise InfoNCE at τ 0.07 shrinks the component they all share.
+  - The change is not test-favoured: test clean bal acc is slightly lower with rel 0 (0.9487 vs 0.9534).
+  - InfoNCE stays available via `--loss-weights '{"rel": 0.5}'`, which uses BigBatch's Triton loss on CUDA.
+  - K2 is not merged, so every `--aug k2` run used the plain-torch camera simulation (`aug_used` and `k2_fallback` in
+    `metrics.json`).
