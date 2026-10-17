@@ -59,14 +59,7 @@ def test_refuses_tampered_bundle(bundle, tmp_path):
 
 
 def test_device_rule_matches_review_signals():
-    sys.path.insert(0, str(ROOT / "src"))
-    try:
-        import twinread.review as rv
-    except ImportError:  # lane worktree may lack review.py; read the main-tree copy
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("rv", ROOT.parents[1] / "src/twinread/review.py")
-        rv = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(rv)
+    import twinread.review as rv  # src/ is on sys.path via conftest
     rng = np.random.default_rng(3)
     pA = rng.dirichlet(np.ones(4) * 0.5, 200)
     pB = rng.dirichlet(np.ones(4) * 0.5, 200)
