@@ -165,7 +165,8 @@ def test_app_host_serves_and_binds_localhost(tmp_path):
 # ---- Task 18 fix round 1 (review): regression guards ------------------------------------------------------------
 OVERCLAIMS = ("recall trade", "runs offline on an arduino", "runs offline on a uno q", "runs on an arduino uno q",
               "runs on the uno q", "sends 10% of tiles", "make the pipeline cheap", "decoded 8,000",
-              "which reader to distrust", "phone-grade", "equally strong")
+              "which reader to distrust", "phone-grade", "equally strong", "no two-reader flag",
+              "could actually be given", "no two-reader system", "both readers agree")
 
 
 def _deliverable_texts():
@@ -232,3 +233,38 @@ def test_uno_q_latency_requires_real_on_board_run(tmp_path):
     good = {"host": {"machine": "aarch64"}, "simulated": False, "rows": [row]}
     p.write_text(json.dumps(good))
     assert headline.uno_q_latency(tmp_path) == good
+
+
+def test_device_heads_and_flag_fidelity_reported():
+    """I7: README §4 and deck slides 14-15 say the device's readers are two heads of one student, and quote the measured
+    fp32 and int8 flag fidelity vs the teacher flag from headline.json (int8 via the device runtime)."""
+    hl = json.loads((ROOT / "results" / "headline.json").read_text())["student"]["CM"]
+    fp, i8 = hl["fp32_device_flag_test_clean"], hl["int8_device_flag_test_clean"]
+    readme = (ROOT / "README.md").read_text()
+    sec4 = readme[readme.index("### 4. Edge student and device"):readme.index("### 5.")]
+    deck = (ROOT / "docs" / "deck_outline.md").read_text()
+    s14 = deck[deck.index("### Slide 14"):deck.index("### Slide 16")]
+    for txt in (sec4, s14):
+        assert "two heads on one shared student backbone" in txt
+        assert f"kappa {fp['kappa']:.2f}" in txt and f"kappa {i8['kappa']:.2f}" in txt
+        assert f"{100 * fp['agreement']:.1f}%" in txt and f"{100 * i8['agreement']:.1f}%" in txt
+        assert f"{100 * fp['teacher_recall']:.1f}%" in txt and f"{100 * i8['teacher_recall']:.1f}%" in txt
+    assert f"{100 * i8['errors_caught']:.1f}%" in sec4 and "Its error capture was not measured" not in readme
+    f = json.loads((ROOT / "results/student/cm_crc/int8_flag_fidelity.json").read_text())
+    assert f["checks"]["bal_acc_matches_int8_drift"] and f["checks"]["flag_rate_matches_int8_drift"]
+
+
+def test_s1_footnote_and_int8_cost_title():
+    """M6: s1's 59.0% carries the tie-fill footnote; M7: fig5's title gives both pairs' int8 cost."""
+    hl = json.loads((ROOT / "results" / "headline.json").read_text())
+    c = hl["fusion"]["CM_crc"]
+    rate, fill = c["s1_disagree_rate"], c["s1_budget_filled_in_test_order_at_10pct"]
+    assert fill == pytest.approx(0.1 - rate) and f"{100 * rate:.1f}%" == "5.6%" and f"{100 * fill:.1f}%" == "4.4%"
+    readme = (ROOT / "README.md").read_text()
+    assert "59.0%†" in readme and "shuffled test order" in readme
+    assert "4.4% of the budget is filled in shuffled test order" in (ROOT / "docs" / "deck_outline.md").read_text()
+    src = (ROOT / "src" / "twinread" / "figures.py").read_text()
+    assert "int8_cost_vs_fp32_test_pts" in src and "int8 costs about 2 points" not in src
+    assert "not both ≥ 0.80" in src and "< 0.80 confident" not in src
+    assert round(hl["student"]["CM"]["int8_cost_vs_fp32_test_pts"], 1) == 2.0
+    assert round(hl["student"]["OPEN"]["int8_cost_vs_fp32_test_pts"], 1) == 2.7

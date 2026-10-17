@@ -204,7 +204,7 @@ def fig2_review_flag() -> Path:
     left = np.zeros(len(cls))
     parts = ((onlyA, "only CONCH wrong", C["A"]), (onlyB, "only MUSK wrong", C["B"]),
              (diff, "both wrong, different calls", C["light"]),
-             (same - conf, "both wrong, same call, < 0.80 confident", C["grey"]),
+             (same - conf, "both wrong, same call, not both ≥ 0.80", C["grey"]),
              (conf, "both wrong, same call, both ≥ 0.80 confident", C["shared"]))
     for v, _, col in parts:
         a3.barh(y, v, left=left, color=col, height=0.72, edgecolor="white", linewidth=1.5)
@@ -382,14 +382,16 @@ def fig5_edge_student() -> Path:
              ("compile-verified (" + dev["mcu_fqbn"] + "), not flashed." if dev["mcu_sketch_compile_verified"]
               else "NOT compile-verified."), ha="left", va="top", fontsize=10.2, color=C["ink"], linespacing=1.45,
              bbox=dict(boxstyle="round,pad=0.7", fc="#fff4d6", ec=C["s1"]))
-    _title(fig, "Edge student: most of the teachers' accuracy at about 1% of the size; int8 costs about 2 points",
+    _title(fig, "Edge student: most of the teachers' accuracy at ~1% of the size; int8 costs "
+                f"{cm['int8_cost_vs_fp32_test_pts']:.1f} pts (CM), {op['int8_cost_vs_fp32_test_pts']:.1f} (OPEN)",
            y=1 - 10 / HP)
     _foot(fig, [
         "Student = mobilenetv4_conv_small with heads for both readers' aligned embeddings, the fused class and the "
         "review flag; trained on the 20k-tile subset (CE + KD, K2 augmentation).",
         "It is fine-tuned with labels, so matching frozen-feature probes is expected, not evidence of better features. "
         "Camera severities are a SIMULATION of a camera filming a screen.",
-        "The CM student derives from CC-BY-NC-ND models and is not distributed; the OPEN student is. " + DISCLAIMER],
+        "The CM student derives from CC-BY-NC-ND models and is not distributed; the OPEN student is distributable "
+        "(not distributed). " + DISCLAIMER],
         y=6 / HP)
     return _save(fig, "fig5_edge_student.png")
 

@@ -94,7 +94,8 @@ impact (19) and references (20).
 
 - CRC: fused uncertainty (s3) catches 80.3% of errors.
 - The learned flag with disagreement (s4) also catches 80.3%; the s3 and s4 rankings correlate at Spearman 0.9999.
-- Plain disagreement catches 59.0% and JS divergence 72.8%.
+- Plain disagreement catches 59.0% and JS divergence 72.8%. Footnote: s1 is binary, so it flags the 5.6% of tiles
+  where the readers disagree and the other 4.4% of the budget is filled in shuffled test order (effectively random).
 - Each reader flagging itself: MUSK 74.1%, CONCH 66.0%.
 - Figure: `figures/fig2_review_flag.png` (curves).
 - Note: "The useful signal is the fused reader's own doubt, not the disagreement itself."
@@ -112,7 +113,8 @@ impact (19) and references (20).
 - 53 confident shared errors on CRC (0.74%); 36 are MUS↔STR.
 - On Camelyon17, 11 of 12 pass the pre-registered flag unflagged.
 - Figure: `figures/fig2_review_flag.png` (blind-spot bars and gallery).
-- Note: "No two-reader system catches what both readers get wrong together; this is where pathologists stay essential."
+- Note: "No *disagreement* signal can catch what both readers get wrong together. The pre-registered flag still
+  catches 47 of the 53 on CRC, through the fused reader's uncertainty. This is where pathologists stay essential."
 
 ### Slide 12: Kernel K1. Bit-exact dual preprocessing
 
@@ -137,7 +139,10 @@ impact (19) and references (20).
 
 - 5.65 M parameters, 1.4% of the teachers' vision towers; 6.0 MB int8.
 - fp32 0.9415 (CONCH 0.9413); 0.9135 at the strongest simulated camera severity.
-- The deployed int8 model scores 0.9219, below every teacher.
+- The deployed int8 model scores 0.9219, below every teacher; int8 costs 2.0 points (CM) and 2.7 (OPEN).
+- Honest caveat: on the device the two "readers" are two heads on one shared student backbone, so they are less
+  independent than CONCH and MUSK. Against the teacher flag, the fp32 device flag agrees on 81.2% of tiles (kappa 0.42)
+  and recovers 41.0% of teacher-flagged tiles; the deployed int8 flag agrees on 79.5% (kappa 0.34) and recovers 33.3%.
 - Figure: `figures/fig5_edge_student.png`.
 - Note: "The value is offline, small and cheap, not beating the foundation models."
 
@@ -145,7 +150,9 @@ impact (19) and references (20).
 
 - UNO Q app: camera or replay → crop → int8 student → AGREE/REVIEW, with a local UI and an LED-matrix sketch
   (compile-verified, not flashed). It has run only as an x86 replay so far.
-- Deployed int8 bundle flag: 12.1% of clean CRC test tiles.
+- Deployed int8 bundle flag: 12.1% of clean CRC test tiles; it catches 57.6% of the int8 model's own errors and
+  agrees with the teacher flag at kappa 0.34 (`results/student/cm_crc/int8_flag_fidelity.json`).
+- The UI labels the bars as student heads (Head A CONCH-space, Head B MUSK-space), not as two independent readers.
 - Rig (simulated captures): 8,000 trials, 7,572 accepted, 0 wrong labels.
 - **Pending**: on-board latency (measured when the board is plugged in) and real camera captures.
 - Figure: `figures/ui_device_sim.png`. It is an x86 replay; say so aloud.

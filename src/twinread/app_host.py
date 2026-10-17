@@ -160,12 +160,15 @@ the net gain is mostly tumour recall ({fr['per_class_recall_delta_fused_minus_mu
 {fr['tum_contribution_pts']:+.2f} pts of balanced accuracy). Validation picked the fusion rule by 1-2 tiles. The open pair is a
 negative control: fusion adds nothing there.</p></section>
 <section class=card><h2>Review flag (CONCH + MUSK): errors caught when 10% of tiles go to review</h2>
-<table><tr><th>dataset</th><th>s1 disagree</th><th>s2 JS</th><th>s3 fused uncertainty</th><th>s4 learned</th>
+<table><tr><th>dataset</th><th>s1 disagree†</th><th>s2 JS</th><th>s3 fused uncertainty</th><th>s4 learned</th>
 <th>CONCH alone*</th><th>MUSK alone*</th><th>accuracy of cleared tiles (s4)</th><th>pre-registered threshold on test</th></tr>
 {rv_rows}</table>
 <p class=mut>* each reader flagged by its own confidence, scored against its own errors. s4 (which adds disagreement)
 adds nothing over s3; the value of two readers here is a better-calibrated fused reader. The val-calibrated
-threshold over-flags CRC test (val near ceiling; val → test is a distribution shift).</p></section>
+threshold over-flags CRC test (val near ceiling; val → test is a distribution shift).
+† s1 is binary: it flags the {_pct(f['CM_crc']['s1_disagree_rate'])} of CRC tiles where the readers disagree; the other
+{_pct(f['CM_crc']['s1_budget_filled_in_test_order_at_10pct'])} of the budget is filled in shuffled test order
+(effectively random).</p></section>
 <div class=grid2>
 <section class=card><h2>Kernels ({html.escape(k['gpu'])})</h2><div class=kv>
 <span>K1 dual preprocess</span><b>{k['k1_cuda_tiles_per_s_224']:,.0f} tiles/s input on GPU ({k['k1_cuda_incl_h2d_tiles_per_s_224']:,.0f} incl. H2D), {'bit-exact to the official transforms' if k['k1_bit_exact_fraction_min_over_sets_impls_readers'] == 1.0 else 'NOT bit-exact'}</b>
@@ -183,9 +186,10 @@ threshold over-flags CRC test (val near ceiling; val → test is a distribution 
 <span>LED sketch</span><b>{'compile-verified, not flashed' if dv['mcu_sketch_compile_verified'] else 'not verified'}</b>
 <span>rig (SIMULATED captures)</span><b>{dv['rig_simulated_captures']:,} trials, {dv['rig_simulated_accepted']:,} accepted, {dv['rig_simulated_wrong_ids']} wrong labels; real captures: {dv['real_camera_captures']}</b>
 <span>int8 bundle review flag (CM, test)</span><b>flags {_pct(cm['int8_bundle_flag_rate_test'])} (thresholds recalibrated on int8 val)</b>
+<span>int8 flag vs teacher flag (CM)</span><b>kappa {cm['int8_device_flag_test_clean']['kappa']:.2f}, recovers {_pct(cm['int8_device_flag_test_clean']['teacher_recall'])} of teacher-flagged tiles; two heads of one student</b>
 </div><div class=pending>UNO Q on-board latency: <b>{html.escape(str(dv['uno_q_latency']))}</b>.
 NCSA Delta full-data runs: pending (kit in <code>ncsa/</code>).</div>
-<p class=mut>The CM student derives from CONCH and MUSK (CC-BY-NC-ND-4.0) and is not distributed; the OPEN student is.</p></section>
+<p class=mut>The CM student derives from CONCH and MUSK (CC-BY-NC-ND-4.0) and is not distributed; the OPEN student is distributable (not distributed).</p></section>
 </div>
 <section class=card><h2>Tile viewer: CRC test tiles, both readers' calls, the fused call and the pre-registered flag</h2>
 <div class=controls><label>dataset <select id=ds><option value=crc>CRC-VAL-HE-7K</option><option value=cam>Camelyon17 hospital 2</option></select></label>

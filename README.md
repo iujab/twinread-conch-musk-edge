@@ -6,20 +6,20 @@
 
 ## Abstract
 
-Pathology already has a safety habit for hard cases: a second, independent read. TwinRead asks whether CONCH and MUSK,
-the two pathology foundation models the organizers highlight, can act as those two readers. Each reads every H&E tile
-through a linear probe on its frozen features. A pre-registered rule fuses them, a review flag picks tiles for a
-pathologist, and the pair is distilled into a 5.65 M-parameter int8 student built for an offline Arduino UNO Q with a
-USB camera; today it runs as an x86 replay, and the on-board run is pending. On a local subset (20k NCT-CRC-HE-100K
-training tiles, full CRC-VAL-HE-7K test), fusion reaches 0.9555 balanced accuracy against 0.9480 for MUSK alone (+0.74
-points, tile-level CI). Large opposing muscle and stroma swings cancel; the net gain is mostly tumour recall (+3.6
-points). Fusion adds nothing on Camelyon17 or for an open-model control pair. On CRC, with a 10% review budget, the
-fused reader's own uncertainty catches 80.3% of its errors against 74.1% for MUSK flagging itself, and adding
-disagreement adds nothing. On Camelyon17 the twin flag does not beat CONCH alone, and the pre-registered threshold
-over-flags CRC (25.1% of tiles, not 10%). So two readers help through a better-calibrated fused reader, not through
-disagreement. Custom CUDA kernels make preprocessing ×202 faster (×1.11 end to end on this GPU) and training
-augmentation ×10.6 faster. The deployed int8 student scores 0.9219, below every teacher, at 1.4% of their size. The
-Delta full-data runs are pending.
+Pathology has a safety habit for hard cases: a second, independent read. TwinRead asks whether CONCH and MUSK, the
+organizers' two pathology foundation models, can act as those two readers. Each reads H&E tiles through a linear probe
+on frozen features. A pre-registered rule fuses them, a review flag picks tiles for a pathologist, and the pair is
+distilled into a 5.65 M-parameter int8 student built for an offline Arduino UNO Q with a USB camera (an x86 replay
+today; the on-board run is pending). On a local subset (20k NCT-CRC-HE-100K training tiles, full CRC-VAL-HE-7K test),
+fusion reaches 0.9555 balanced accuracy against 0.9480 for MUSK alone (+0.74 points, tile-level CI). Large opposing
+muscle and stroma swings cancel; the net gain is mostly tumour recall (+3.6 points). Fusion adds nothing on Camelyon17
+or for an open-model control pair. On CRC, with a 10% review budget, the fused reader's own uncertainty catches 80.3%
+of its errors against 74.1% for MUSK flagging itself, and adding disagreement adds nothing. On Camelyon17 the twin
+flag does not beat CONCH alone, and the pre-registered threshold over-flags CRC (25.1% of tiles, not 10%). Two readers
+help through a better-calibrated fused reader, not through disagreement. Custom CUDA kernels speed up preprocessing
+×202 (×1.11 end to end) and training augmentation ×10.6. The deployed int8 student scores 0.9219, below every teacher,
+at 1.4% of their size. Full-data Delta runs are pending. For patients, a cheap offline second look could catch errors
+where no second pathologist or scanner is available; this is an unvalidated research prototype.
 
 ![System overview](figures/fig8_system.png)
 
@@ -33,7 +33,7 @@ accuracy uses CRC-VAL-HE-7K (7,180 tiles, 9 classes) and Camelyon17-WILDS hospit
 | Does fusing CONCH + MUSK beat the best single reader on CRC? | Yes, slightly: 0.9555 vs MUSK 0.9480 vs CONCH 0.9413; +0.74 pts, 95% CI [+0.18, +1.29], tile-level and anti-conservative (no slide ids); McNemar p = 0.0043. Large opposing MUS/STR recall swings cancel; the net gain is mostly tumour recall (+3.6 pts) | `results/cm_local/CM/crc/fusion.json`, `post_hoc_class_candidates_s3s4.json` |
 | ...on Camelyon17 (unseen hospital)? | No: fused 0.9647 vs CONCH 0.9687, −0.40 pts [−3.70, +0.76], slide-clustered CI | `results/cm_local/CM/cam/fusion.json` |
 | ...for the open control pair (PathGen-CLIP + QuiltNet-B-16)? | No: +0.08 pts [−0.52, +0.66] on CRC, 0.00 [−1.22, +1.65] on Camelyon17 | `results/open/OPEN/*/fusion.json` |
-| Errors caught at a 10% review budget (CRC) | fused uncertainty (s3) 80.3%, learned s4 80.3%, JS disagreement 72.8%, plain disagreement 59.0%; MUSK alone 74.1%, CONCH alone 66.0% | `results/cm_local/CM/crc/review.json` |
+| Errors caught at a 10% review budget (CRC) | fused uncertainty (s3) 80.3%, learned s4 80.3%, JS disagreement 72.8%, plain disagreement 59.0%†; MUSK alone 74.1%, CONCH alone 66.0% | `results/cm_local/CM/crc/review.json` |
 | ...on Camelyon17 | s3 81.1%, s4 75.5%; CONCH alone 74.5%. Cleared-tile accuracy: s4 99.04% vs CONCH alone 99.11%, so the twin flag does not beat CONCH alone | `results/cm_local/CM/cam/review.json` |
 | The pre-registered flag's actual test operating point | CRC: flags 25.1% of tiles (target 10%) and catches 97.5% of errors. Camelyon17: flags 5.3%, catches 58.5% | `review.json` `s4_val_threshold_operating_points` |
 | Shared blind spots (both wrong, same call, both ≥ 0.80 confident) | 53 CRC tiles (0.74%), 36 of them MUS↔STR; 12 Camelyon17 tiles | `review.json` (counts), `triage_curves.json` (truth → call pairs) |
@@ -42,6 +42,10 @@ accuracy uses CRC-VAL-HE-7K (7,180 tiles, 9 classes) and Camelyon17-WILDS hospit
 | Edge student (CM, mobilenetv4_conv_small) | fp32 0.9415 (CONCH 0.9413), 0.9135 at the strongest simulated camera severity; deployed int8 0.9219, below every teacher | `results/student/cm_crc/*.json` |
 | Size | 5.65 M parameters = 1.4% of the two teachers' vision towers (395.4 M); int8 ONNX 6.0 MB | `results/student/model_sizes.json` |
 | UNO Q | Not yet run on the board: the device app runs as an x86 replay today, the LED-matrix sketch is compile-verified (`arduino:zephyr:unoq`) but not flashed, and on-board latency is **pending: measured when the board is plugged in** | `results/uno_q/mcu_compile.json` |
+
+† s1 is binary. At a 10% budget it flags the 5.6% of CRC test tiles where the readers disagree; the other 4.4% of the
+budget is filled with tied (agreeing) tiles in the shuffled test order, so that part is effectively random
+(`results/headline.json`: `s1_disagree_rate`, `s1_budget_filled_in_test_order_at_10pct`).
 
 ## Problem and idea
 
@@ -60,7 +64,7 @@ A second read catches errors, but it costs a second pathologist. TwinRead tests 
 
 ## Two configurations, and why (licences)
 
-CONCH and MUSK are **CC-BY-NC-ND-4.0**, which bars commercial use and derivatives. Whether a distilled student
+CONCH and MUSK are **CC-BY-NC-ND-4.0**, which bars commercial use and sharing of adapted material. Whether a distilled student
 counts as a derivative is legally unsettled, so TwinRead is generic over the reader pair and ships two configurations.
 
 | | **TwinRead-CM** (research) | **TwinRead-OPEN** (distributable) |
@@ -68,7 +72,7 @@ counts as a derivative is legally unsettled, so TwinRead is generic over the rea
 | Readers | CONCH + MUSK | PathGen-CLIP (CC-BY-4.0) + QuiltNet-B-16 (MIT) |
 | Partner choice | the organizers' pair | QuiltNet-B-16 chosen on validation only, over BiomedCLIP (lower error correlation; `results/open/partner.json`) |
 | Student / bundle | `bundles/cm/` is git-ignored and marked `distributable: false`; never shipped | `bundles/open/` (config + SHA256SUMS committed); test balanced accuracy fp32 0.9359, int8 0.9085 |
-| Role here | the scientific result | negative control for fusion, and the bundle a hospital could actually be given |
+| Role here | the scientific result | negative control for fusion, and the licence-distributable bundle (research use only) |
 
 ## What was built
 
@@ -121,7 +125,7 @@ counts as a derivative is legally unsettled, so TwinRead is generic over the rea
 - **CRC, 10% review budget.** s3 (fused uncertainty) and s4 (learned) both catch 80.3% of fused errors. MUSK flagging
   its own errors catches 74.1%, CONCH 66.0%.
 - **s4 adds nothing over s3.** Their test rankings correlate at Spearman 0.9999, and the two top-10% sets overlap by
-  99.7%. Pure disagreement is weaker: s1 catches 59.0% and s2 72.8%.
+  99.7%. Pure disagreement is weaker: s1 catches 59.0%† and s2 72.8%.
 - **Camelyon17.** The twin system does not beat CONCH alone. s4 clears tiles at 99.04% accuracy against 99.11% for
   CONCH flagging itself. s4's AURC is 0.0066, worse than s3's 0.0027.
 - **The honest reading.** Two readers help by producing a better-calibrated fused reader, not because their
@@ -183,9 +187,15 @@ dataset, `results/cm_local/CM/*/triage_curves.json`). Nothing was re-selected on
   train tiles and test is a different patient set; this is not yet addressed.
 - **Size.** The student has 5.65 M parameters, 1.4% of the two vision towers. The int8 ONNX file is 6.0 MB. The value
   is offline, small and cheap, not beating the foundation models.
+- **The device's two "readers" are two heads on one shared student backbone**, so they are far less independent
+  than CONCH and MUSK, and the device flag only partly reproduces the teacher flag (the pre-registered s4 rule, which
+  flags 25.1% of CRC test tiles). The fp32 student's flag agrees with it on 81.2% of tiles (kappa 0.42) and recovers
+  41.0% of teacher-flagged tiles (`results/student/cm_crc/metrics.json`). The deployed int8 flag, run through the
+  device runtime (`device/twinread_runtime.EdgeModel`), agrees on 79.5% (kappa 0.34) and recovers 33.3%
+  (`results/student/cm_crc/int8_flag_fidelity.json`; OPEN: 77.1%, kappa 0.31, 34.2%).
 - **On-device flag.** The deployed int8 bundle, with its thresholds recalibrated on int8 validation outputs, flags
-  12.1% of clean test tiles (`results/student/cm_crc/int8_drift.json`). Its error capture was not measured. The fp32
-  student's flag (`results/student/cm_crc/metrics.json`) flags 14.3% and catches 79.5% of the fp32 student's errors.
+  12.1% of clean test tiles and catches 57.6% of the int8 model's own errors (cleared-tile accuracy 97.2%). The fp32
+  student's flag flags 14.3% and catches 79.5% of the fp32 student's errors.
 - **Device status.**
   - The app has run only on this x86 desktop, offline, in replay mode. Camera mode is implemented (a missing camera
     falls back to replay, tested) but has not run with the real camera or on the board.
@@ -202,7 +212,8 @@ dataset, `results/cm_local/CM/*/triage_curves.json`). Nothing was re-selected on
 
 *The device app on this x86 desktop, not the UNO Q. It runs the distributable OPEN int8 bundle, replaying a real
 CRC-VAL-HE-7K tile in REPLAY mode. The in-image labels say so: "REPLAY", "host: x86_64, not the UNO Q", and the
-latency is the x86 host's.*
+latency is the x86 host's. The bars are the student's heads (space A, space B, fused), not two independent readers.
+Captured with headless Chromium (the Playwright MCP browser was locked).*
 
 ### 5. Host dashboard
 
@@ -272,18 +283,21 @@ subsets with recoverable labels are a stretch task.
   recall; the rule was chosen by 1-2 validation tiles; there is no gain on Camelyon17 or for the open pair.
 - **The review flag's value is the fused reader's uncertainty, not disagreement.** The val-calibrated threshold
   over-flags CRC test (25.1% vs 10%).
-- **Shared blind spots.** 0.74% of CRC tiles are confident errors that both readers share; no two-reader flag can
-  catch them.
+- **Shared blind spots.** 0.74% of CRC tiles are confident errors that both readers share; no *disagreement* signal
+  can catch them (the pre-registered flag, through the fused reader's uncertainty, catches 47 of 53 on CRC).
 - **The int8 student is below every teacher on test** (0.9219), and int8 drift on test is larger than on validation.
 - **Device.**
   - UNO Q latency, the offline demo and the LED sketch on hardware are not yet measured.
   - The sketch is compile-verified only.
   - The device screenshot is an x86 replay.
+  - The device's two readers are two heads on one shared student backbone; the deployed int8 flag agrees with the
+    teacher flag at kappa 0.34.
 - **Camera.** The camera demo films a screen, not a microscope. All camera numbers so far are SIMULATION (K2,
   `rig/sim_capture.py`); there are no real captures yet.
 - **Kernel throughput** comes from a GPU and CPU shared with other jobs, so it is an estimate. sm_80 and sm_90 are
   compile-checked only.
-- **Licence.** The CM student derives from CC-BY-NC-ND-4.0 models and is not distributed. Only the OPEN bundle is.
+- **Licence.** The CM student derives from CC-BY-NC-ND-4.0 models and is not distributed. Only the OPEN bundle is
+  distributable (research use only).
 - **Downloads.** Local data downloads (~4.3 GB for the CRC subset and test set) exceed the bench's ~2 GB guideline.
   They live in `data/` and are never committed.
 - **Not clinically validated.** This is a research prototype, not a diagnostic device.
