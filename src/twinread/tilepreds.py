@@ -5,7 +5,7 @@ exactly what the analysis fitted on train/val (same probes, C values from prereg
 same s4), then checks that the refit reproduces the stored numbers before writing anything:
 
 - every signal's errors-caught at 5/10/20% and AURC in review.json;
-- the teacher review label (`review_test`) and fused logits in student_targets.npz.
+- the teacher review label (`review_test`) and fused logits in student_targets.npz (when present; it is git-ignored).
 
 Outputs (in the pair/dataset results dir):
 - `tile_preds.npz` (git-ignored): test pA, pB, pF, the review signals, the teacher flag, labels;
@@ -54,7 +54,8 @@ def reproduce(pair: str, dataset: str, results_dir: Path, data_dir: Path | None 
     out = Path(results_dir) / pair / dataset
     pre = json.loads((out / "preregistration.json").read_text())
     rv = json.loads((out / "review.json").read_text())
-    tgt = np.load(out / "student_targets.npz")
+    tgt_p = out / "student_targets.npz"  # git-ignored: checked when present (a clean clone has only the JSON)
+    tgt = np.load(tgt_p) if tgt_p.exists() else None
     names, prim = pre["readers"], pre["primary_fusion"]
     y = {s: _labels(data_dir, dataset, s) for s in ("train", "val", "test")}
     Z = {(r, s): _emb(data_dir, dataset, names[r], "probe", s) for r in "AB" for s in ("train", "val", "test")}
@@ -80,8 +81,9 @@ def reproduce(pair: str, dataset: str, results_dir: Path, data_dir: Path | None 
     corr = {"F": tF.argmax(1) == y["test"], "A": tA.argmax(1) == y["test"], "B": tB.argmax(1) == y["test"]}
 
     ver = {}
-    _check("fused_logits_test", np.log(np.clip(tF, 1e-8, 1.0)).astype(np.float32), tgt["fused_logits_test"], 1e-5, ver)
-    _check("review_test_label", flag, tgt["review_test"], 0, ver)
+    if tgt is not None:
+        _check("fused_logits_test", np.log(np.clip(tF, 1e-8, 1.0)).astype(np.float32), tgt["fused_logits_test"], 1e-5, ver)
+        _check("review_test_label", flag, tgt["review_test"], 0, ver)
     for k in SIGNALS:
         got = review.errors_caught(sig[k], corr["F"])
         for b in review.BUDGETS:

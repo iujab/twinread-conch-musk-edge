@@ -160,3 +160,53 @@ def test_app_host_serves_and_binds_localhost(tmp_path):
     t = client.get("/api/tiles?dataset=crc&n=4").json()
     assert "available" in t
     assert client.get("/tile/crc/0.png").status_code in (200, 404)
+
+
+# ---- Task 18 fix round 1 (review): regression guards ------------------------------------------------------------
+OVERCLAIMS = ("recall trade", "runs offline on an arduino", "runs offline on a uno q", "runs on an arduino uno q",
+              "runs on the uno q", "sends 10% of tiles", "make the pipeline cheap", "decoded 8,000",
+              "which reader to distrust", "phone-grade", "equally strong")
+
+
+def _deliverable_texts():
+    from fastapi.testclient import TestClient
+    from twinread import app_host
+    page = TestClient(app_host.make_app(ROOT / "results")).get("/").text
+    return {"README.md": (ROOT / "README.md").read_text(), "project.json": (ROOT / "project.json").read_text(),
+            "deck_outline.md": (ROOT / "docs" / "deck_outline.md").read_text(), "dashboard": page,
+            "figures.py": (ROOT / "src" / "twinread" / "figures.py").read_text()}
+
+
+def test_no_overclaims_in_deliverables():
+    bad = [(name, phrase) for name, txt in _deliverable_texts().items() for phrase in OVERCLAIMS
+           if phrase in txt.lower()]
+    assert not bad, bad
+
+
+def test_abstract_carries_required_caveats():
+    txt = (ROOT / "README.md").read_text()
+    abstract = re.search(r"^## Abstract\s*\n(.*?)(?=^!\[|^## )", txt, re.S | re.M).group(1)
+    for must in ("On CRC", "Camelyon17", "does not beat CONCH alone", "25.1%", "below every teacher", "x86 replay",
+                 "pending", "×1.11", "tumour recall"):
+        assert must in abstract, must
+
+
+def test_crc_gain_decomposition_in_headline():
+    hl = json.loads((ROOT / "results" / "headline.json").read_text())
+    c = hl["crc_fusion_fragility"]["per_class_contribution_to_bal_acc_delta_pts"]
+    assert sum(c.values()) == pytest.approx(hl["fusion"]["CM_crc"]["delta_vs_best_single_pts"], abs=1e-9)
+    assert abs(hl["crc_fusion_fragility"]["mus_plus_str_contribution_pts"]) < 0.05  # the MUS/STR swings cancel
+    rest = {k: v for k, v in c.items() if k not in ("MUS", "STR")}
+    assert c["TUM"] == max(rest.values()) and c["TUM"] > 0.5 * sum(rest.values())  # net gain mostly tumour recall
+
+
+def test_fig2_keeps_committed_figure_without_gallery(monkeypatch, tmp_path):
+    from twinread import figures
+    monkeypatch.setattr(figures, "_gallery_items", lambda n=8: None)
+    target = ROOT / "figures" / "fig2_review_flag.png"
+    before = target.read_bytes()
+    monkeypatch.setattr(figures, "FIG", figures.FIG_DEFAULT)
+    assert figures.fig2_review_flag() == target and target.read_bytes() == before
+    monkeypatch.setattr(figures, "FIG", tmp_path)  # elsewhere it draws the gallery-less variant, labelled
+    out = figures.fig2_review_flag()
+    assert out.parent == tmp_path and out.exists()

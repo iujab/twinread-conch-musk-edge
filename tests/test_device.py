@@ -251,3 +251,31 @@ def test_probe_parity_with_sklearn(tmp_path, bundle, k):
         got = m._probe(r, X.astype(np.float64))
         assert got.shape == (300, k)
         assert np.abs(got - lr.predict_proba(sc.transform(X))).max() < 1e-6
+
+
+@pytest.mark.parametrize("mode,label", [("replay", "Replay frame"), ("sim", "Simulated frame")])
+def test_state_labels_host_and_frame_source(bundle, mode, label):
+    """Task 18 fix (review 6b): a screenshot must say which host produced the latency and never call a replayed or
+    simulated frame 'live'. Off the board the host label says so explicitly."""
+    import uno_q_app
+    app = uno_q_app.App(bundle, mode=mode, threads=1)
+    app.step()
+    st = app.state()
+    assert st["frame_label"] == label
+    host = st["host"]
+    assert host["machine"] and isinstance(host["is_uno_q"], bool)
+    if not host["is_uno_q"]:
+        assert "not the UNO Q" in st["host_label"] and host["machine"] in st["host_label"]
+    ui = (ROOT / "device" / "ui" / "app.js").read_text()
+    assert "frame_label" in ui and "host_label" in ui
+
+
+def test_uno_q_detection_reads_device_tree(tmp_path, monkeypatch):
+    import uno_q_app
+    model = tmp_path / "model"
+    model.write_text("Arduino UNO Q\x00")
+    monkeypatch.setattr(uno_q_app.platform, "machine", lambda: "aarch64")
+    assert uno_q_app.host_info(model)["is_uno_q"] is True
+    monkeypatch.setattr(uno_q_app.platform, "machine", lambda: "x86_64")
+    assert uno_q_app.host_info(model)["is_uno_q"] is False
+    assert uno_q_app.host_info(tmp_path / "missing")["is_uno_q"] is False

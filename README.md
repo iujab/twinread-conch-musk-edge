@@ -1,4 +1,4 @@
-# TwinRead: CONCH and MUSK as two independent readers, fused, flagged and distilled to an offline Arduino UNO Q
+# TwinRead: CONCH and MUSK as two independent readers, fused, flagged and distilled for an offline Arduino UNO Q
 
 **Research prototype, not a diagnostic device.** Every result number here is read from `results/**/*.json`, mostly via
 `results/headline.json`, which `python -m twinread.headline` computes from the source files. Numbers are
@@ -7,17 +7,19 @@
 ## Abstract
 
 Pathology already has a safety habit for hard cases: a second, independent read. TwinRead asks whether CONCH and MUSK,
-the two pathology foundation models the organizers highlight, can act as those two readers. Each model reads every H&E
-tile through a linear probe on its frozen features. A pre-registered fusion rule combines the two, a review flag
-decides which tiles go to a pathologist, and the pair is distilled into a 5.65 M-parameter int8 student that runs
-offline on an Arduino UNO Q with a USB camera. The local subset uses 20k NCT-CRC-HE-100K training tiles and the full
-CRC-VAL-HE-7K test set. There, fusion reaches 0.9555 balanced accuracy against 0.9480 for MUSK alone (+0.74 points,
-tile-level CI). The gain is a muscle-versus-stroma trade, though, and fusion adds nothing on Camelyon17 or for an
-open-model control pair. When 10% of tiles go to review, the fused reader's own uncertainty catches 80.3% of its
-errors, against 74.1% for MUSK flagging itself, and adding disagreement adds nothing. So the value of two readers is a
-better-calibrated combined reader, not disagreement as such. Two custom CUDA kernels make the pipeline cheap: one does
-bit-exact preprocessing for both models, the other simulates a camera filming a screen. The int8 student keeps 0.9219
-at 1.4% of the teachers' size. The Delta full-data runs and the on-board measurements are pending.
+the two pathology foundation models the organizers highlight, can act as those two readers. Each reads every H&E tile
+through a linear probe on its frozen features. A pre-registered rule fuses them, a review flag picks tiles for a
+pathologist, and the pair is distilled into a 5.65 M-parameter int8 student built for an offline Arduino UNO Q with a
+USB camera; today it runs as an x86 replay, and the on-board run is pending. On a local subset (20k NCT-CRC-HE-100K
+training tiles, full CRC-VAL-HE-7K test), fusion reaches 0.9555 balanced accuracy against 0.9480 for MUSK alone (+0.74
+points, tile-level CI). Large opposing muscle and stroma swings cancel; the net gain is mostly tumour recall (+3.6
+points). Fusion adds nothing on Camelyon17 or for an open-model control pair. On CRC, with a 10% review budget, the
+fused reader's own uncertainty catches 80.3% of its errors against 74.1% for MUSK flagging itself, and adding
+disagreement adds nothing. On Camelyon17 the twin flag does not beat CONCH alone, and the pre-registered threshold
+over-flags CRC (25.1% of tiles, not 10%). So two readers help through a better-calibrated fused reader, not through
+disagreement. Custom CUDA kernels make preprocessing ×202 faster (×1.11 end to end on this GPU) and training
+augmentation ×10.6 faster. The deployed int8 student scores 0.9219, below every teacher, at 1.4% of their size. The
+Delta full-data runs are pending.
 
 ![System overview](figures/fig8_system.png)
 
@@ -28,18 +30,18 @@ accuracy uses CRC-VAL-HE-7K (7,180 tiles, 9 classes) and Camelyon17-WILDS hospit
 
 | Question | Answer (local subset) | Source |
 |---|---|---|
-| Does fusing CONCH + MUSK beat the best single reader on CRC? | Yes, slightly: 0.9555 vs MUSK 0.9480 vs CONCH 0.9413; +0.74 pts, 95% CI [+0.18, +1.29], tile-level and anti-conservative (no slide ids); McNemar p = 0.0043 | `results/cm_local/CM/crc/fusion.json` |
+| Does fusing CONCH + MUSK beat the best single reader on CRC? | Yes, slightly: 0.9555 vs MUSK 0.9480 vs CONCH 0.9413; +0.74 pts, 95% CI [+0.18, +1.29], tile-level and anti-conservative (no slide ids); McNemar p = 0.0043. Large opposing MUS/STR recall swings cancel; the net gain is mostly tumour recall (+3.6 pts) | `results/cm_local/CM/crc/fusion.json`, `post_hoc_class_candidates_s3s4.json` |
 | ...on Camelyon17 (unseen hospital)? | No: fused 0.9647 vs CONCH 0.9687, −0.40 pts [−3.70, +0.76], slide-clustered CI | `results/cm_local/CM/cam/fusion.json` |
 | ...for the open control pair (PathGen-CLIP + QuiltNet-B-16)? | No: +0.08 pts [−0.52, +0.66] on CRC, 0.00 [−1.22, +1.65] on Camelyon17 | `results/open/OPEN/*/fusion.json` |
 | Errors caught at a 10% review budget (CRC) | fused uncertainty (s3) 80.3%, learned s4 80.3%, JS disagreement 72.8%, plain disagreement 59.0%; MUSK alone 74.1%, CONCH alone 66.0% | `results/cm_local/CM/crc/review.json` |
-| ...on Camelyon17 | s3 81.1%, s4 75.5%; CONCH alone 74.5%. Cleared-tile accuracy: s4 99.04% vs CONCH alone 99.11%, so no gain | `results/cm_local/CM/cam/review.json` |
+| ...on Camelyon17 | s3 81.1%, s4 75.5%; CONCH alone 74.5%. Cleared-tile accuracy: s4 99.04% vs CONCH alone 99.11%, so the twin flag does not beat CONCH alone | `results/cm_local/CM/cam/review.json` |
 | The pre-registered flag's actual test operating point | CRC: flags 25.1% of tiles (target 10%) and catches 97.5% of errors. Camelyon17: flags 5.3%, catches 58.5% | `review.json` `s4_val_threshold_operating_points` |
-| Shared blind spots (both wrong, same call, both ≥ 0.80 confident) | 53 CRC tiles (0.74%), 36 of them MUS↔STR; 12 Camelyon17 tiles | `review.json`, `blindspots.csv` |
-| K1 dual preprocess (CUDA) | 90,131 tiles/s into both readers' inputs, bit-exact to the official transforms; preprocessing ×202 vs PIL, but ×1.11 end to end (forward-bound) | `results/kernels/k1_*.json` |
+| Shared blind spots (both wrong, same call, both ≥ 0.80 confident) | 53 CRC tiles (0.74%), 36 of them MUS↔STR; 12 Camelyon17 tiles | `review.json` (counts), `triage_curves.json` (truth → call pairs) |
+| K1 dual preprocess (CUDA) | Bit-exact to the official transforms. Kernel bench: 90,131 tiles/s with the input on the GPU (46,157 incl. host-to-device copy). In the CONCH + MUSK embedding run: preprocessing ×202 vs PIL, but ×1.11 end to end (forward-bound) | `results/kernels/k1_bench.json`, `k1_embed_e2e.json` |
 | K2 camera-of-screen augmentation (SIMULATION) | 46,315 images/s; ≤ 1 level per op vs a numpy reference; student-training augmentation ×10.6 vs torch | `results/kernels/k2_*.json`, `results/student/*/throughput.json` |
 | Edge student (CM, mobilenetv4_conv_small) | fp32 0.9415 (CONCH 0.9413), 0.9135 at the strongest simulated camera severity; deployed int8 0.9219, below every teacher | `results/student/cm_crc/*.json` |
 | Size | 5.65 M parameters = 1.4% of the two teachers' vision towers (395.4 M); int8 ONNX 6.0 MB | `results/student/model_sizes.json` |
-| UNO Q | LED-matrix sketch compile-verified (`arduino:zephyr:unoq`), not flashed. On-board latency **pending: measured when the board is plugged in** | `results/uno_q/mcu_compile.json` |
+| UNO Q | Not yet run on the board: the device app runs as an x86 replay today, the LED-matrix sketch is compile-verified (`arduino:zephyr:unoq`) but not flashed, and on-board latency is **pending: measured when the board is plugged in** | `results/uno_q/mcu_compile.json` |
 
 ## Problem and idea
 
@@ -53,8 +55,8 @@ A second read catches errors, but it costs a second pathologist. TwinRead tests 
   own confidence.
 - **Shared blind spots.** Disagreement cannot catch an error both readers make. We count where that happens.
 - **An offline edge copy.** A small student learns both readers' embeddings, the fused call and the review label.
-  It runs on an Arduino UNO Q (4× Cortex-A53, no CUDA) with a USB camera, for settings with no scanner, no GPU and no
-  reliable internet.
+  It is built for an Arduino UNO Q (4× Cortex-A53, no CUDA) with a USB camera, for settings with no scanner, no GPU
+  and no reliable internet. Today it runs as an x86 replay; the on-board run is pending.
 
 ## Two configurations, and why (licences)
 
@@ -86,8 +88,9 @@ counts as a derivative is legally unsettled, so TwinRead is generic over the rea
 5. **Export** (`twinread.export`, `scripts/make_bundle.py`). ONNX → ORT static int8 (QDQ, per-channel, percentile
    calibration on 512 train tiles). Thresholds are recalibrated on the int8 model's validation outputs, and the bundle
    is SHA256-verified on load.
-6. **Device** (`device/`). An offline camera → crop → int8 student → AGREE/REVIEW loop, with a local web UI and an
-   8×13 LED-matrix sketch over the Bridge RPC. Missing camera or Bridge falls back with a logged reason.
+6. **Device** (`device/`). An offline camera → crop → int8 student → AGREE/REVIEW loop built for the UNO Q, with a
+   local web UI and an 8×13 LED-matrix sketch over the Bridge RPC. Missing camera or Bridge falls back with a logged
+   reason. So far it has run only on x86 (replay mode); the on-board run is pending.
 7. **Screen-capture rig** (`rig/`). It shows held-out tiles with a parity-checked frame-ID marker for the camera to
    film (`rig/show_tiles.py`, http://127.0.0.1:1778/rig), then decodes and crops the captures.
 8. **Host dashboard** (`twinread.app_host`, http://127.0.0.1:1777). Headline tables plus a tile viewer with both
@@ -101,14 +104,15 @@ counts as a derivative is legally unsettled, so TwinRead is generic over the rea
 
 - On CRC the pre-registered rule (`average`) beats MUSK by +0.74 points. The CI excludes zero, but it is tile-level and
   anti-conservative.
-- The gain is a **MUS↔STR recall trade**: fused minus MUSK recall is −13.2 points on MUS and +13.1 on STR
-  (`results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json`, post hoc).
+- **Where the +0.74 comes from** (post hoc: `results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json`; the
+  per-class contributions are in `results/headline.json`). Balanced accuracy is the mean of the nine per-class recalls,
+  so each class contributes its recall change / 9. Fused minus MUSK recall is −13.2 points on MUS and +13.1 on STR:
+  large opposing swings that cancel (net −0.01 points of balanced accuracy). The net gain is mostly tumour recall
+  (+3.6 points, worth +0.40 of the +0.74), plus ADI +0.12, DEB +0.10, LYM +0.07 and NORM +0.06.
 - Validation picked `average` by 1-2 tiles: 2,641 correct of 2,658, against 2,640 for the gated MLP and 2,639 for
   concat-LR. The gated MLP scores −0.40 points against MUSK on test. Validation is near ceiling (fused 0.9936).
 - On Camelyon17 hospital 2 nothing beats CONCH alone.
-- For the open control pair, PathGen-CLIP plus a 3-point-weaker QuiltNet-B-16 gives no gain on either dataset. The one
-  gain appeared only where the two readers were about equally strong. That is consistent with complementarity
-  mattering, but one pair cannot show it.
+- For the open control pair (PathGen-CLIP + QuiltNet-B-16) fusion gives no gain on either dataset.
 
 ### 2. Review flag: the fused reader's own uncertainty does the work
 
@@ -143,10 +147,13 @@ dataset, `results/cm_local/CM/*/triage_curves.json`). Nothing was re-selected on
   both readers' normalized fp16 inputs (CONCH 448 px, MUSK 384 px, bicubic, center crop). It mirrors Pillow's resampling
   coefficients and is **bit-exact to `official_transform(img).half()`** for both readers on CRC tiles, mosaic frames and
   random non-square sizes. Embedding cosine against the reference is ≥ 0.999997.
-- K1 throughput is 90,131 tiles/s on the RTX 5060, against 221 for single-process PIL, 538 for an 8-worker DataLoader
-  and 82,058 for our Triton version.
+- **Kernel benchmark** (`results/kernels/k1_bench.json`, batch 256, input already on the GPU): K1 reaches 90,131
+  tiles/s on the RTX 5060, against 221 for single-process PIL (×408), 538 for an 8-worker DataLoader and 82,058 for
+  our Triton version. Including the host-to-device copy, K1 reaches 46,157 tiles/s.
 - **End to end the gain is ×1.11, and the reason matters.** In this batched pipeline the CONCH + MUSK forward pass is
-  89% of the time. K1 makes preprocessing ×202 faster, but the ceiling with free preprocessing is ×1.118. The
+  89% of the time. Inside that run K1's preprocessing, including the copy to the GPU, is ×202 faster than the official
+  PIL transforms (42,631 vs 211 tiles/s, `results/kernels/k1_embed_e2e.json`), but the ceiling with free
+  preprocessing is ×1.118. The
   organizers' hosted server was bound by per-image CPU preprocessing in the request handler. That regime, and faster
   GPUs, were not measured here (`results/kernels/k1_embed_e2e.json`, `context`).
 - **K2 camera-of-screen augmentation (SIMULATION).** One launch per batch with per-image Philox parameters. It applies
@@ -176,22 +183,26 @@ dataset, `results/cm_local/CM/*/triage_curves.json`). Nothing was re-selected on
   train tiles and test is a different patient set; this is not yet addressed.
 - **Size.** The student has 5.65 M parameters, 1.4% of the two vision towers. The int8 ONNX file is 6.0 MB. The value
   is offline, small and cheap, not beating the foundation models.
-- **On-device flag.** On clean test tiles it flags 14.3% and catches 79.5% of the student's own errors
-  (`results/student/cm_crc/metrics.json`).
+- **On-device flag.** The deployed int8 bundle, with its thresholds recalibrated on int8 validation outputs, flags
+  12.1% of clean test tiles (`results/student/cm_crc/int8_drift.json`). Its error capture was not measured. The fp32
+  student's flag (`results/student/cm_crc/metrics.json`) flags 14.3% and catches 79.5% of the fp32 student's errors.
 - **Device status.**
-  - The app runs offline in replay and camera modes.
+  - The app has run only on this x86 desktop, offline, in replay mode. Camera mode is implemented (a missing camera
+    falls back to replay, tested) but has not run with the real camera or on the board.
   - The LED-matrix sketch is compile-verified for `arduino:zephyr:unoq`, but **not flashed**.
   - **UNO Q on-board latency is pending: measured when the board is plugged in.** Only an x86 simulation table exists
     (`results/uno_q/backbone_latency_x86_sim.json`), and its numbers are not UNO Q numbers.
 - **Rig.**
-  - The capture rig decoded 8,000 **simulated** camera-of-screen captures with 0 wrong labels. Worst-case acceptance
-    was 89.25% at severity 1.0.
+  - Rig stress test on **simulated** camera-of-screen captures: 8,000 trials, 7,572 accepted, 0 wrong labels
+    (`results/rig/decode_stress.json`). Worst-case acceptance was 89.25% at severity 1.0. A test also runs 200 frames
+    through K2's own numpy camera model at severity 0.7 (`tests/test_rig.py`; ≥ 95% decoded, 0 wrong ids required).
   - **No real camera captures exist yet.**
 
 ![Device UI (x86 replay)](figures/ui_device_sim.png)
 
 *The device app on this x86 desktop, not the UNO Q. It runs the distributable OPEN int8 bundle, replaying a real
-CRC-VAL-HE-7K tile in REPLAY mode. The latency shown is the x86 host's.*
+CRC-VAL-HE-7K tile in REPLAY mode. The in-image labels say so: "REPLAY", "host: x86_64, not the UNO Q", and the
+latency is the x86 host's.*
 
 ### 5. Host dashboard
 
@@ -239,8 +250,8 @@ subsets with recoverable labels are a stretch task.
   are pending.
 - **CRC has no slide or patient ids**, so CRC CIs and McNemar tests are tile-level and anti-conservative. Validation is
   group-disjoint by parquet group, not guaranteed slide-disjoint.
-- **The CRC fusion gain is fragile.** It is a MUS↔STR trade, the rule was chosen by 1-2 validation tiles, and there is
-  no gain on Camelyon17 or for the open pair.
+- **The CRC fusion gain is fragile.** Large opposing MUS/STR recall swings cancel and the net gain is mostly tumour
+  recall; the rule was chosen by 1-2 validation tiles; there is no gain on Camelyon17 or for the open pair.
 - **The review flag's value is the fused reader's uncertainty, not disagreement.** The val-calibrated threshold
   over-flags CRC test (25.1% vs 10%).
 - **Shared blind spots.** 0.74% of CRC tiles are confident errors that both readers share; no two-reader flag can

@@ -12,7 +12,8 @@ impact (19) and references (20).
 
 ### Slide 1: TwinRead, two foundation-model readers, one honest second read
 
-- CONCH and MUSK as two independent readers, plus a fused reader, a review flag and an offline Arduino UNO Q student.
+- CONCH and MUSK as two independent readers, plus a fused reader, a review flag and an int8 student built for an
+  offline Arduino UNO Q (x86 replay today; on-board run pending).
 - Team, the Ashby Prize 2026 hackathon, and the disclaimer.
 - Figure: `figures/fig8_system.png` (thumbnail).
 - Note: "We tested whether two pathology foundation models can act like a second pathologist."
@@ -57,7 +58,7 @@ impact (19) and references (20).
 - Steps: tiles → K1 → CONCH / MUSK → probes → fused reader → signals s1-s4 → triage.
 - Distillation: teacher targets → K2 → student → int8 → UNO Q.
 - Figure: `figures/fig8_system.png`.
-- Note: "Teacher side on a GPU, student side on a textbook-priced board."
+- Note: "Teacher side on a GPU; the student side is built for a textbook-priced board, where it has not run yet."
 
 ### Slide 6: Statistics and honesty (methods)
 
@@ -80,11 +81,13 @@ impact (19) and references (20).
 
 ### Slide 8: Result 1b. Why the CRC gain is fragile
 
-- Fused minus MUSK recall: MUS −13.2 pts, STR +13.1. It is a trade, not a uniform gain.
+- Fused minus MUSK recall: MUS −13.2 pts, STR +13.1. Large opposing swings that cancel (net −0.01 pts of balanced
+  accuracy).
+- The net gain is mostly tumour recall: TUM +3.6 recall points, worth +0.40 of the +0.74 (balanced accuracy is the
+  mean of 9 class recalls); ADI, DEB, LYM and NORM add the rest.
 - Validation picked the fusion rule by 1-2 tiles (2,641 vs 2,640 vs 2,639 correct of 2,658). The runner-up, the gated
   MLP, scores −0.40 pts on test.
-- The gain appeared only where both readers were about equally strong. The open pair, with a 3-point-weaker partner,
-  shows none: consistent with complementarity mattering, not proof of it.
+- The open control pair shows no fusion gain on either dataset.
 - Note: "We'd rather show you the fragility than have a judge find it."
 
 ### Slide 9: Result 2. Triage: what 10% of review time buys
@@ -114,8 +117,10 @@ impact (19) and references (20).
 ### Slide 12: Kernel K1. Bit-exact dual preprocessing
 
 - One CUDA launch produces both readers' inputs, bit-exact to the official transforms.
-- 90,131 tiles/s, against 221 for single-process PIL and 82,058 for our Triton version.
-- Preprocessing gets ×202 faster, but end to end only ×1.11: the model forward is 89.4% of the time.
+- Kernel bench (input already on the GPU): 90,131 tiles/s, against 221 for single-process PIL (×408) and 82,058 for
+  our Triton version; 46,157 tiles/s including the host-to-device copy.
+- Inside the CONCH + MUSK embedding run, preprocessing gets ×202 faster than PIL (42,631 vs 211 tiles/s), but end to
+  end only ×1.11: the model forward is 89.4% of the time.
 - The organizers' server bottleneck (per-image CPU preprocessing) is a different regime, not measured here.
 - Figure: `figures/fig3_kernels.png` (top).
 - Note: "We report the small end-to-end number next to the big kernel number."
@@ -126,7 +131,7 @@ impact (19) and references (20).
 - 46,315 images/s, within 1 level per op of a numpy reference; compute-sanitizer clean.
 - Student-training augmentation is ×10.6 faster than torch.
 - Figures: `figures/k2_severity_grid.png` and `figures/fig3_kernels.png` (bottom).
-- Note: "It teaches the student what a phone-grade camera does to a slide image."
+- Note: "It teaches the student what a USB camera filming a screen does to a tile image. It is a simulation."
 
 ### Slide 14: The edge student
 
@@ -139,8 +144,9 @@ impact (19) and references (20).
 ### Slide 15: The device and the capture rig
 
 - UNO Q app: camera or replay → crop → int8 student → AGREE/REVIEW, with a local UI and an LED-matrix sketch
-  (compile-verified, not flashed).
-- Rig: 0 wrong labels in 8,000 simulated captures.
+  (compile-verified, not flashed). It has run only as an x86 replay so far.
+- Deployed int8 bundle flag: 12.1% of clean CRC test tiles.
+- Rig (simulated captures): 8,000 trials, 7,572 accepted, 0 wrong labels.
 - **Pending**: on-board latency (measured when the board is plugged in) and real camera captures.
 - Figure: `figures/ui_device_sim.png`. It is an x86 replay; say so aloud.
 - Note: "The demo camera films a screen, not a microscope."
@@ -150,7 +156,7 @@ impact (19) and references (20).
 - Every tile shows CONCH's call, MUSK's call, the fused call and the flag. Filters cover shared errors, missed errors
   and disagreements.
 - Figure: `figures/ui_dashboard.png`.
-- Note: "A pathologist can see why a tile was flagged, and which reader to distrust."
+- Note: "A pathologist can see why a tile was flagged and what each reader said."
 
 ### Slide 17: Challenges overcome
 
@@ -175,7 +181,8 @@ impact (19) and references (20).
 
 ### Slide 19: Why it matters to pathologists and patients
 
-- Triage: sending 10% of tiles to review catches about 80% of the fused reader's errors on CRC. Recalibrate per site.
+- Triage: on CRC, at a 10% review budget, the fused reader's uncertainty catches about 80% of its errors. On
+  Camelyon17 it does not beat CONCH alone, and the pre-registered threshold over-flagged CRC. Recalibrate per site.
 - Shared blind spots tell the pathologist where AI agreement is not reassurance.
 - An offline, distributable OPEN bundle points toward low-resource settings, pending real-world validation.
 - Context: multimodal pathology surveys (`reference/papers/li2025_multimodal_cpath_survey.md`,

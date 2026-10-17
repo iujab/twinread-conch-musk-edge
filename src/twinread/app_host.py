@@ -100,13 +100,15 @@ def _page(hl: dict) -> str:
         f"{d['delta_ci_pts'][1]:+.2f}]</span></td><td class=mut>{html.escape(d['ci_mode'])}</td></tr>"
         for k, d in f.items())
     rv_rows = ""
+    fr = hl["crc_fusion_fragility"]
     for k in ("CM_crc", "CM_cam"):
+        bname = nm[f[k]["readers"][f[k]["best_single_reader"]]]
         r, a, op = f[k]["review_caught_at_10pct"], f[k]["acc_cleared_at_10pct"], f[k]["prereg_rule_test_operating_point"]
         rv_rows += (f"<tr><td>{'CRC' if k.endswith('crc') else 'Camelyon17'}</td><td>{_pct(r['s1_disagree'])}</td>"
                     f"<td>{_pct(r['s2_js'])}</td><td><b>{_pct(r['s3_fused_uncertainty'])}</b></td>"
                     f"<td>{_pct(r['s4_learned'])}</td><td>{_pct(r['A_own_confidence_own_errors'])}</td>"
-                    f"<td>{_pct(r['B_own_confidence_own_errors'])}</td><td>{_pct(a['s4'], 2)} vs CONCH "
-                    f"{_pct(a['A_own'], 2)}</td><td>flags {_pct(op['flagged_fraction'])}, catches "
+                    f"<td>{_pct(r['B_own_confidence_own_errors'])}</td><td>{_pct(a['s4'], 2)} vs {bname} alone "
+                    f"{_pct(a['best_single_own'], 2)}</td><td>flags {_pct(op['flagged_fraction'])}, catches "
                     f"{_pct(op['errors_caught'])}</td></tr>")
     k, s, dv = hl["kernels"], hl["student"], hl["device"]
     cm = s["CM"]
@@ -145,14 +147,17 @@ a{{color:var(--A)}}
 </style></head><body>
 <div class=banner>Research prototype, not a diagnostic device</div>
 <header><h1>TwinRead: CONCH and MUSK as two independent readers</h1>
-<p class=sub>Fused reader, review flag, shared blind spots, and an offline int8 student for an Arduino UNO Q.
+<p class=sub>Fused reader, review flag, shared blind spots, and an int8 student built for an offline Arduino UNO Q
+(it runs as an x86 replay today; the on-board run is pending).
 LOCAL-SUBSET dev numbers (CRC 20k-tile train subset; full CRC-VAL-HE-7K test). Every number below is read from
 <code>results/headline.json</code>. Screen-capture rig: <a href="{RIG_URL}">{RIG_URL}</a> (run <code>rig/show_tiles.py</code>).</p></header>
 <main>
 <section class=card><h2>Fused vs single readers (test balanced accuracy)</h2>
 <table><tr><th>pair</th><th>dataset</th><th>reader A</th><th>reader B</th><th>fused</th><th>fused − best single, 95% CI</th><th>CI</th></tr>
 {fus_rows}</table>
-<p class=mut>The CRC gain is a MUS↔STR recall trade; validation picked the fusion rule by 1-2 tiles. The open pair is a
+<p class=mut>On CRC, large opposing MUS/STR recall swings cancel (net {fr['mus_plus_str_contribution_pts']:+.2f} pts);
+the net gain is mostly tumour recall ({fr['per_class_recall_delta_fused_minus_musk_pts']['TUM']:+.1f} pts, worth
+{fr['tum_contribution_pts']:+.2f} pts of balanced accuracy). Validation picked the fusion rule by 1-2 tiles. The open pair is a
 negative control: fusion adds nothing there.</p></section>
 <section class=card><h2>Review flag (CONCH + MUSK): errors caught when 10% of tiles go to review</h2>
 <table><tr><th>dataset</th><th>s1 disagree</th><th>s2 JS</th><th>s3 fused uncertainty</th><th>s4 learned</th>
@@ -163,8 +168,8 @@ adds nothing over s3; the value of two readers here is a better-calibrated fused
 threshold over-flags CRC test (val near ceiling; val → test is a distribution shift).</p></section>
 <div class=grid2>
 <section class=card><h2>Kernels ({html.escape(k['gpu'])})</h2><div class=kv>
-<span>K1 dual preprocess</span><b>{k['k1_cuda_tiles_per_s_224']:,.0f} tiles/s, {'bit-exact to the official transforms' if k['k1_bit_exact_fraction_min_over_sets_impls_readers'] == 1.0 else 'NOT bit-exact'}</b>
-<span>K1 preprocessing vs PIL</span><b>×{k['k1_preprocess_speedup_vs_pil']:.0f}</b>
+<span>K1 dual preprocess</span><b>{k['k1_cuda_tiles_per_s_224']:,.0f} tiles/s input on GPU ({k['k1_cuda_incl_h2d_tiles_per_s_224']:,.0f} incl. H2D), {'bit-exact to the official transforms' if k['k1_bit_exact_fraction_min_over_sets_impls_readers'] == 1.0 else 'NOT bit-exact'}</b>
+<span>K1 preprocessing vs PIL (end-to-end run)</span><b>×{k['k1_preprocess_speedup_vs_pil']:.0f} ({k['k1_e2e_preprocess_tiles_per_s']['k1_gpu_incl_h2d']:,.0f} vs {k['k1_e2e_preprocess_tiles_per_s']['pil_reference_cpu']:,.0f} tiles/s)</b>
 <span>K1 end to end (CONCH+MUSK)</span><b>×{k['k1_e2e_speedup_vs_reference']:.2f} (forward is {_pct(k['model_forward_share_of_reference_e2e'], 0)} of the time)</b>
 <span>K2 camera aug (SIMULATION)</span><b>{k['k2_cuda_images_per_s_sev1']:,.0f} images/s, ≤ {k['k2_per_op_max_levels']} level per op</b>
 <span>K2 vs torch in student training</span><b>×{k['student_train_aug_speedup_k2_vs_torch']['CM']:.1f}</b>
@@ -176,7 +181,8 @@ threshold over-flags CRC test (val near ceiling; val → test is a distribution 
 <span>OPEN student int8 (distributable)</span><b>{s['OPEN']['int8_test_bal_acc']:.4f}</b>
 <span>size</span><b>{s['params_millions']:.2f} M params ({s['params_pct_of_teacher_vision_towers']:.1f}% of the teachers' vision towers), {s['int8_onnx_mb']:.1f} MB int8</b>
 <span>LED sketch</span><b>{'compile-verified, not flashed' if dv['mcu_sketch_compile_verified'] else 'not verified'}</b>
-<span>rig (SIMULATED captures)</span><b>{dv['rig_simulated_captures']:,} decoded, {dv['rig_simulated_wrong_ids']} wrong labels; real captures: {dv['real_camera_captures']}</b>
+<span>rig (SIMULATED captures)</span><b>{dv['rig_simulated_captures']:,} trials, {dv['rig_simulated_accepted']:,} accepted, {dv['rig_simulated_wrong_ids']} wrong labels; real captures: {dv['real_camera_captures']}</b>
+<span>int8 bundle review flag (CM, test)</span><b>flags {_pct(cm['int8_bundle_flag_rate_test'])} (thresholds recalibrated on int8 val)</b>
 </div><div class=pending>UNO Q on-board latency: <b>{html.escape(str(dv['uno_q_latency']))}</b>.
 NCSA Delta full-data runs: pending (kit in <code>ncsa/</code>).</div>
 <p class=mut>The CM student derives from CONCH and MUSK (CC-BY-NC-ND-4.0) and is not distributed; the OPEN student is.</p></section>

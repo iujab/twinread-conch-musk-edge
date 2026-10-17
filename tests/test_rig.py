@@ -1,4 +1,5 @@
-"""Screen-capture rig tests (CPU, offline). Simulated capture = local degradation helper, not K2's camera_ops."""
+"""Screen-capture rig tests (CPU, offline). Simulated captures: rig/sim_capture.py (a local degradation helper) and,
+in test_marker_decodes_after_k2_reference_camera_aug, K2's own numpy reference (twinread.ref.camera_ops, ruling R14)."""
 import json
 import subprocess
 import sys
@@ -190,3 +191,40 @@ def test_real_dark_tiles_no_false_marker():
         assert sorted(v for v, _ in found) == sorted([fid, sess]) or fid == sess
         # a tile alone (no markers/frame) never yields a pair
         assert marker.pick_pair(marker.find_markers(cv2.resize(t, (672, 672)))) is None
+
+
+def _camera_frame(page, rng, out_hw=(480, 640), jitter=0.02):
+    """Geometry only: the page shrunk into a camera frame with small perspective jitter (photometry comes from K2)."""
+    h, w = page.shape[:2]
+    oh, ow = out_hw
+    s = min(ow * 0.94 / w, oh * 0.94 / h)
+    pw, ph = w * s, h * s
+    ox, oy = (ow - pw) / 2, (oh - ph) / 2
+    dst = np.array([[ox, oy], [ox + pw, oy], [ox + pw, oy + ph], [ox, oy + ph]], np.float32)
+    dst += rng.uniform(-jitter * min(pw, ph), jitter * min(pw, ph), dst.shape).astype(np.float32)
+    M = cv2.getPerspectiveTransform(np.array([[0, 0], [w, 0], [w, h], [0, h]], np.float32), dst)
+    return cv2.warpPerspective(page, M, (ow, oh), flags=cv2.INTER_AREA, borderValue=(40, 40, 40))
+
+
+def test_marker_decodes_after_k2_reference_camera_aug():
+    """Ruling R14 (assigned to Task 18): the rig's marker survives K2's own camera-of-screen model.
+    Real CRC-VAL-HE-7K tiles (tests/fixtures/crc16.npy) are rendered on the rig page, projected into a 480x640 camera
+    frame, then degraded by twinread.ref.camera_ops.ref_camera_aug (K2's numpy float64 reference: warp, HED jitter,
+    display gamma/profile, moire, glare, defocus, white balance, sensor noise, JPEG) with sample_params(0.7, seed).
+    SIMULATION, not real captures. Required: >= 95% decoded and zero wrong ids over 200 frames."""
+    from twinread.ref import camera_ops
+    tiles = np.load(ROOT / "tests" / "fixtures" / "crc16.npy")
+    rng = np.random.RandomState(14)
+    ids = rng.choice(2048, 200, replace=False)
+    ok = wrong = 0
+    for k, fid in enumerate(ids):
+        page = show_tiles.render_page(np.ascontiguousarray(tiles[k % len(tiles)][..., ::-1]), int(fid), 77)  # BGR page
+        rgb = np.ascontiguousarray(_camera_frame(page, rng)[..., ::-1])
+        cap = camera_ops.ref_camera_aug(rgb, camera_ops.sample_params(0.7, 1000 + k))
+        _, r = match_captures.process_frame(np.ascontiguousarray(cap[..., ::-1]))
+        got = None if r is None else r["fid"]
+        ok += int(got == fid)
+        wrong += int(got is not None and got != fid)
+    print("K2-reference decode rate", ok / len(ids), "wrong", wrong)
+    assert wrong == 0
+    assert ok >= 0.95 * len(ids)

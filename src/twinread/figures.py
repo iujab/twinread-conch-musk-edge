@@ -27,6 +27,7 @@ from twinread import headline  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 FIG = ROOT / "figures"
+FIG_DEFAULT = FIG
 RES = ROOT / "results"
 DPI, W = 130, 11.5  # 1495 px
 C = {"A": "#2a78d6", "B": "#eb6834", "F": "#1baf7a", "s4": "#6250d6", "s1": "#eda100", "s2": "#e87ba4",
@@ -78,9 +79,10 @@ def _pts(x):
 
 # ---------------------------------------------------------------------------------------------------------------
 def fig1_two_readers() -> Path:
+    tum = _hl()["crc_fusion_fragility"]["per_class_recall_delta_fused_minus_musk_pts"]["TUM"]
     hl = _hl()["fusion"]
-    fig, axes = plt.subplots(1, 4, figsize=(W, 5.6), sharey=True, layout="constrained")
-    _layout(fig, 0.1, 0.9)
+    fig, axes = plt.subplots(1, 4, figsize=(W, 5.85), sharey=True, layout="constrained")
+    _layout(fig, 0.125, 0.9)
     panels = (("CM_crc", "CONCH + MUSK\nCRC-VAL-HE-7K"), ("CM_cam", "CONCH + MUSK\nCamelyon17, hospital 2"),
               ("OPEN_crc", "Open pair (control)\nCRC-VAL-HE-7K"), ("OPEN_cam", "Open pair (control)\nCamelyon17, hospital 2"))
     for ax, (key, title) in zip(axes, panels):
@@ -112,7 +114,8 @@ def fig1_two_readers() -> Path:
         "CRC: train on a 20k-tile NCT-CRC-HE-100K subset, test on",
         "CRC-VAL-HE-7K (7,180 tiles, no slide ids). Camelyon17-WILDS: test on unseen hospital 2 (1,500 tiles). "
         "LOCAL-SUBSET dev numbers; full-data Delta runs are pending.",
-        "The CRC gain is a MUS↔STR recall trade, and validation picked the fusion rule by 1-2 tiles. " + DISCLAIMER])
+        f"On CRC, large opposing MUS/STR recall swings cancel; the net gain is mostly tumour recall ({tum:+.1f} pts). "
+        "Validation picked the fusion rule by 1-2 tiles.", DISCLAIMER])
     return _save(fig, "fig1_two_readers.png")
 
 
@@ -170,7 +173,11 @@ def fig2_review_flag() -> Path:
     hl = _hl()
     cur = {ds: json.loads((RES / f"cm_local/CM/{ds}/triage_curves.json").read_text()) for ds in ("crc", "cam")}
     gal = _gallery_items()
-    WP, HP = W * DPI, (1075 if gal else 700)
+    if gal is None and FIG.resolve() == FIG_DEFAULT.resolve():
+        print("fig2: tile_preds.npz or data/crc_test_x.npy missing; keeping the committed figures/fig2_review_flag.png "
+              "(run scripts/export_tile_preds.py to redraw it with the gallery)")
+        return FIG / "fig2_review_flag.png"
+    WP, HP = W * DPI, (1100 if gal else 740)
     fig = plt.figure(figsize=(W, HP / DPI))
     box = lambda x0, top, w, h: fig.add_axes((x0 / WP, 1 - (top + h) / HP, w / WP, h / HP))  # pixel layout
     a1, a2, a3 = box(78, 100, 440, 370), box(545, 100, 440, 370), box(1065, 100, 415, 370)
@@ -188,34 +195,43 @@ def fig2_review_flag() -> Path:
     onlyB = np.array([int(r["A_only"]) for r in rows])  # only CONCH right -> only MUSK wrong
     same = np.array([int(r["both_wrong_same_label"]) for r in rows])
     diff = np.array([int(r["both_wrong"]) for r in rows]) - same
+    conf = np.zeros(len(cls), int)  # confident shared errors per truth class, from triage_curves.json
+    for k, n in cur["crc"]["confident_shared_error_pairs"].items():
+        conf[cls.index(k.split("->")[0])] += n
+    cse = hl["fusion"]["CM_crc"]["confident_shared_errors"]
+    assert conf.sum() == cse["n"] and np.all(conf <= same)
     y = np.arange(len(cls))[::-1]
     left = np.zeros(len(cls))
     parts = ((onlyA, "only CONCH wrong", C["A"]), (onlyB, "only MUSK wrong", C["B"]),
              (diff, "both wrong, different calls", C["light"]),
-             (same, "both wrong, SAME call (disagreement is blind)", C["shared"]))
+             (same - conf, "both wrong, same call, < 0.80 confident", C["grey"]),
+             (conf, "both wrong, same call, both ≥ 0.80 confident", C["shared"]))
     for v, _, col in parts:
         a3.barh(y, v, left=left, color=col, height=0.72, edgecolor="white", linewidth=1.5)
         left += v
-    for yy, tot, s in zip(y, left, same):
+    for yy, tot, s in zip(y, left, conf):
         if s:
             a3.text(tot + 3, yy, f"{int(s)}", va="center", fontsize=9, color=C["ink"])
     a3.set_yticks(y, cls)
     a3.set_xlabel("test tiles where a reader is wrong")
     _grid(a3, "x")
     a3.set_xlim(0, left.max() * 1.15)
-    cse = hl["fusion"]["CM_crc"]["confident_shared_errors"]
-    a3.set_title(f"Shared blind spots (CRC)\n{cse['n']} confident shared errors ({100 * cse['rate']:.2f}%)",
+    a3.set_title(f"Shared blind spots, CRC: {cse['n']} confident\n({100 * cse['rate']:.2f}% of tiles) = darkest bars",
                  loc="left", fontsize=11, fontweight="bold")
     fig.legend([plt.Rectangle((0, 0), 1, 1, color=c) for _, _, c in parts], [p[1] for p in parts], ncol=1,
                loc="upper center", bbox_to_anchor=(1250 / WP, 1 - 528 / HP), fontsize=9.2)
+    if gal is None:
+        fig.text(12 / WP, 1 - 690 / HP, "Gallery omitted: it needs results/cm_local/CM/crc/tile_preds.npz and "
+                 "data/crc_test_x.npy (both git-ignored; scripts/export_tile_preds.py)", fontsize=10.5,
+                 color=C["ink2"], va="bottom")
     if gal:
-        fig.text(12 / WP, 1 - 668 / HP, "Confident shared errors: both readers wrong with the same call, each "
-                 "≥ 0.80 confident (the 8 most confident shown)", fontsize=10.8,
-                 fontweight="bold", color=C["ink"], va="bottom")
+        fig.text(12 / WP, 1 - 690 / HP, f"Confident shared errors (same wrong call, both ≥ 0.80): {len(gal)} of "
+                 f"{cse['n']} shown, most confident first, at most 3 per truth→call pair",
+                 fontsize=10.8, fontweight="bold", color=C["ink"], va="bottom")
         sz, gap = 176, 9
         x0 = (WP - (len(gal) * sz + (len(gal) - 1) * gap)) / 2
         for j, (i, img, truth, call, ca, cb, fl) in enumerate(gal):
-            a = box(x0 + j * (sz + gap), 725, sz, sz)
+            a = box(x0 + j * (sz + gap), 748, sz, sz)
             a.imshow(img)
             a.set_xticks([])
             a.set_yticks([])
@@ -260,18 +276,19 @@ def _hbar(ax, labels, vals, cols, fmt="{:,.0f}", log=True):
 
 def fig3_kernels() -> Path:
     k = _hl()["kernels"]
-    WP, HP = W * DPI, 1085
+    WP, HP = W * DPI, 1105
     fig = plt.figure(figsize=(W, HP / DPI))
     box, tt = _px(fig, WP, HP)
     a, b = box(300, 135, 430, 320), box(1000, 135, 460, 320)
     c, d = box(300, 615, 430, 320), box(1000, 615, 460, 320)
     _hbar(a, ["PIL, 1 CPU process", "PIL DataLoader, 8 workers", "torch GPU ops (exact)", "Triton (our baseline)",
-              "K1 CUDA (ours)"],
+              "K1 CUDA, incl. H2D copy", "K1 CUDA, input on GPU"],
           [k["pil_single_process_tiles_per_s_224"], k["dataloader_8w_tiles_per_s_224"],
-           k["k1_torch_exact_tiles_per_s_224"], k["k1_triton_tiles_per_s_224"], k["k1_cuda_tiles_per_s_224"]],
-          [C["grey"]] * 4 + [C["F"]])
+           k["k1_torch_exact_tiles_per_s_224"], k["k1_triton_tiles_per_s_224"],
+           k["k1_cuda_incl_h2d_tiles_per_s_224"], k["k1_cuda_tiles_per_s_224"]],
+          [C["grey"]] * 4 + ["#8fd6bc", C["F"]])
     a.set_xlim(100, 2e6)
-    a.set_xlabel("224-px tiles/s into BOTH readers' inputs (log)")
+    a.set_xlabel("224-px tiles/s into BOTH readers' inputs (log; kernel bench, batch 256)")
     tt(12, 72, "K1 dual preprocess: bit-exact to the official\nCONCH and MUSK transforms")
     e = k["k1_e2e_tiles_per_s"]
     vals = [e["reference"], e["k1"], e["reference"] * k["max_e2e_speedup_if_preprocessing_were_free"]]
@@ -281,7 +298,7 @@ def fig3_kernels() -> Path:
     b.set_xlabel("CONCH + MUSK embeddings, tiles/s")
     tt(800, 72, f"End to end ×{k['k1_e2e_speedup_vs_reference']:.2f}: the model forward is "
                 f"{100 * k['model_forward_share_of_reference_e2e']:.0f}%\nof the time "
-                f"(preprocessing itself ×{k['k1_preprocess_speedup_vs_pil']:.0f})")
+                f"(K1 preprocessing ×{k['k1_preprocess_speedup_vs_pil']:.0f} in this run)")
     _hbar(c, ["numpy, 1 process", "numpy, 4 processes", "torch GPU ops", "K2 CUDA (ours)"],
           [k["k2_numpy_1proc_images_per_s"], k["k2_numpy_4proc_images_per_s"], k["k2_torch_gpu_images_per_s_sev1"],
            k["k2_cuda_images_per_s_sev1"]], [C["grey"]] * 3 + [C["s4"]])
@@ -301,6 +318,10 @@ def fig3_kernels() -> Path:
     _foot(fig, [
         "CUDA-event timing (warmup 3, median of 10) on a shared GPU, so throughput is an estimate. K1 embedding cosine "
         "vs the official transforms ≥ 0.999997 for both readers.",
+        f"×{k['k1_preprocess_speedup_vs_pil']:.0f} = K1 incl. H2D vs PIL inside the end-to-end run "
+        f"({k['k1_e2e_preprocess_tiles_per_s']['k1_gpu_incl_h2d']:,.0f} vs "
+        f"{k['k1_e2e_preprocess_tiles_per_s']['pil_reference_cpu']:,.0f} tiles/s); the kernel bench (top left) gives "
+        f"×{k['k1_bench_speedup_vs_pil_single_process']:.0f} vs single-process PIL with the input already on the GPU.",
         "compute-sanitizer memcheck, racecheck and synccheck: clean. K1's end-to-end gain is small here because this "
         "pipeline is batched and GPU-forward-bound;",
         "the organizers' hosted server was bound by per-image CPU preprocessing, a regime not measured here. " +
@@ -399,8 +420,8 @@ def fig8_system() -> Path:
     lane(38, 16.5, "1  Teachers (GPU)", "done locally on a 20k-tile subset · full 100k on NCSA Delta: pending",
          "#eef4fb")
     lane(20, 16, "2  Student training (GPU)", "done locally (CM research + OPEN distributable)", "#f3f1fb")
-    lane(1.5, 16.5, "3  Arduino UNO Q, offline", "app + LED sketch built; on-board run and latency: pending",
-         "#f0f8f2")
+    lane(1.5, 16.5, "3  Arduino UNO Q, offline (target device)",
+         "built; runs as an x86 replay today · on-board run and latency: pending", "#f0f8f2")
     w = "white"
     box(3, 40, 11, 8, "tiles\n(uint8)", w)
     box(18, 40, 14, 8, "K1 CUDA\ndual preprocess\n(bit-exact)", "#d6f0e5", C["F"])

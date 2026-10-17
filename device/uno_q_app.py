@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import platform
 import sys
 import threading
 import time
@@ -27,6 +28,21 @@ import bridge  # noqa: E402
 import twinread_runtime as rt  # noqa: E402
 
 UI_DIR = Path(__file__).resolve().parent / "ui"
+DT_MODEL = Path("/proc/device-tree/model")
+FRAME_LABELS = {"camera": "Live frame", "replay": "Replay frame", "sim": "Simulated frame"}
+
+
+def host_info(dt_model: Path = DT_MODEL) -> dict:
+    """Which machine runs the app. The UNO Q is an aarch64 board whose device-tree model names Arduino; anything else
+    (e.g. the x86 desktop used for screenshots) is labelled as not the UNO Q, so its latency is never mistaken for
+    on-board latency."""
+    machine = platform.machine() or "unknown"
+    try:
+        model = dt_model.read_text(errors="replace").strip("\x00\n ")
+    except OSError:
+        model = ""
+    is_uno_q = machine in ("aarch64", "arm64") and "arduino" in model.lower()
+    return {"machine": machine, "model": model, "is_uno_q": is_uno_q}
 BANNER = "Research prototype - not a diagnostic device"
 HOST = "127.0.0.1"
 
@@ -55,6 +71,7 @@ class App:
             self.replay_files = sorted(p for p in Path(replay_dir).iterdir()
                                        if p.suffix.lower() in (".jpg", ".jpeg", ".png"))
         self.i = 0
+        self.host = host_info()
         self.lock = threading.Lock()
         self.jpg = b""
         self._state = {"status": "idle", "mode": self.mode, "call": None}
@@ -147,7 +164,10 @@ class App:
                       banner=BANNER, mode_banner=self.mode_banner if hasattr(self, "mode_banner") else "",
                       bundle_note=("simulation with test bundle" if self.mode == "sim" else ""),
                       pair=self.pair, readers=self.readers, classes=self.model.classes, thresholds=self.model.thr,
-                      distributable=self.model.cfg.get("distributable"), **kw)
+                      distributable=self.model.cfg.get("distributable"), host=self.host,
+                      host_label=(f"host: {self.host['model'] or 'UNO Q'}" if self.host["is_uno_q"] else
+                                  f"host: {self.host['machine']}, not the UNO Q (latency is this host's)"),
+                      frame_label=FRAME_LABELS.get(self.mode, "Frame"), **kw)
             st.setdefault("call", None)
             self._state = st
 

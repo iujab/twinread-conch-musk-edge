@@ -56,6 +56,7 @@ def _pair(results: Path, pair: str, ds: str) -> dict:
             "A_own_confidence_own_errors": c10("base_A_own_error")["errors_caught"],
             "B_own_confidence_own_errors": c10("base_B_own_error")["errors_caught"]},
         "acc_cleared_at_10pct": {"s3": c10("s3_fused_unc")["acc_cleared"], "s4": c10("s4")["acc_cleared"],
+                                 "best_single_own": c10(f"base_{best}_own_error")["acc_cleared"],
                                  "A_own": c10("base_A_own_error")["acc_cleared"],
                                  "B_own": c10("base_B_own_error")["acc_cleared"]},
         "aurc": {k: sc[k]["aurc"] for k in ("s1_disagree", "s2_js", "s3_fused_unc", "s4",
@@ -89,6 +90,10 @@ def build(results: Path = ROOT / "results") -> dict:
         "gpu": k1b["env"]["gpu"],
         "k1_bit_exact_fraction_min_over_sets_impls_readers": bit_exact,
         "k1_cuda_tiles_per_s_224": k1b["summary"]["tiles224"]["cuda_k1_tiles_per_s"],
+        "k1_cuda_tiles_per_s_224_note": "k1_bench.json: input already on the GPU, both readers, batch 256 (excludes "
+                                        "host-to-device copies; see k1_cuda_incl_h2d_tiles_per_s_224)",
+        "k1_cuda_incl_h2d_tiles_per_s_224": k1b["gpu"]["tiles224"]["cuda_k1_incl_h2d"]["tiles_per_s"],
+        "k1_bench_speedup_vs_pil_single_process": k1b["summary"]["tiles224"]["speedup_vs_pil_single_process"],
         "k1_triton_tiles_per_s_224": k1b["gpu"]["tiles224"]["triton"]["tiles_per_s"],
         "k1_torch_exact_tiles_per_s_224": k1b["gpu"]["tiles224"]["torch_exact"]["tiles_per_s"],
         "pil_single_process_tiles_per_s_224": k1b["cpu"]["tiles224"]["pil_single_process"]["tiles_per_s"],
@@ -97,6 +102,10 @@ def build(results: Path = ROOT / "results") -> dict:
         "k1_e2e_speedup_vs_reference": s["e2e_speedup_k1_vs_reference"],
         "k1_e2e_speedup_vs_dataloader_4w": s["e2e_speedup_k1_vs_dataloader_4w"],
         "k1_preprocess_speedup_vs_pil": s["preprocess_speedup_k1_vs_pil"],
+        "k1_preprocess_speedup_vs_pil_source": "k1_embed_e2e.json: K1 on the GPU incl. H2D vs the official PIL "
+                                               "transforms, 512 CRC tiles, both readers",
+        "k1_e2e_preprocess_tiles_per_s": {"k1_gpu_incl_h2d": k1e["results"]["preprocess_k1_gpu"]["tiles_per_s"],
+                                          "pil_reference_cpu": k1e["results"]["preprocess_reference_cpu"]["tiles_per_s"]},
         "model_forward_share_of_reference_e2e": s["share_of_reference_e2e"]["model_forward"],
         "preprocess_share_of_reference_e2e": s["share_of_reference_e2e"]["preprocess_cpu"],
         "max_e2e_speedup_if_preprocessing_were_free": s["max_e2e_speedup_if_preprocessing_were_free"],
@@ -137,7 +146,10 @@ def build(results: Path = ROOT / "results") -> dict:
         "int8_test_bal_acc": i["bal_acc"]["test"]["int8"], "fp32_onnx_test_bal_acc": i["bal_acc"]["test"]["fp32_onnx"],
         "int8_val_bal_acc": i["bal_acc"]["val"]["int8"],
         "int8_test_label_agreement_with_fp32": i["test_drift"]["label_agreement"],
-        "device_flag_test_clean": {k: m["test"]["clean"]["device_flag"][k]
+        "int8_bundle_flag_rate_test": i["flag_rate_int8"]["test_recal_thr"],
+        "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs "
+                                      "(int8_drift.json flag_rate_int8.test_recal_thr)",
+        "fp32_device_flag_test_clean": {k: m["test"]["clean"]["device_flag"][k]
                                    for k in ("fraction", "student_errors_caught", "teacher_recall", "acc_cleared")}}
     student = {
         "source": "results/student/{cm_crc,open_crc}/{metrics,int8_drift}.json, results/student/model_sizes.json",
@@ -168,6 +180,7 @@ def build(results: Path = ROOT / "results") -> dict:
         "x86_latency_table_is_simulation": bool(lat["simulated"]),
         "rig_simulated_captures": sum(r["trials"] for r in rig["runs"]),
         "rig_simulated_wrong_ids": sum(r["wrong_id"] for r in rig["runs"]),
+        "rig_simulated_accepted": sum(r["ok"] for r in rig["runs"]),
         "rig_accept_rate_min": min(r["accept_rate"] for r in rig["runs"]),
         "rig_note": rig["note"],
         "real_camera_captures": 0,
@@ -180,6 +193,11 @@ def build(results: Path = ROOT / "results") -> dict:
             "crc_fusion_fragility": {
                 "source": "results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json (post hoc)",
                 "per_class_recall_delta_fused_minus_musk_pts": {c: 100 * d for c, d in zip(classes, dlt)},
+                "per_class_contribution_to_bal_acc_delta_pts": {c: 100 * d / len(classes) for c, d in zip(classes, dlt)},
+                "mus_plus_str_contribution_pts": 100 * (dlt[classes.index("MUS")] + dlt[classes.index("STR")]) / len(classes),
+                "tum_contribution_pts": 100 * dlt[classes.index("TUM")] / len(classes),
+                "contribution_note": "balanced accuracy = mean of per-class recalls, so each class contributes its recall "
+                                     "delta / 9; the MUS and STR swings cancel and the net gain is mostly TUM (ruling R33)",
                 "val_correct_tiles": {k: v["val_correct_tiles"] for k, v in post["candidates"].items()},
                 "n_val": post["n_val"],
                 "test_delta_vs_musk_by_candidate": {k: v["test_delta_vs_best_single"] for k, v in post["candidates"].items()},

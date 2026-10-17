@@ -7,7 +7,8 @@ async function tick() {
   try {
     const s = await (await fetch("/state", {cache: "no-store"})).json();
     $("banner").textContent = s.banner;
-    const bits = [s.mode_banner, s.bundle_note, s.mode_reason].filter(Boolean);
+    const bits = [s.mode_banner, s.host_label, s.bundle_note, s.mode_reason].filter(Boolean);
+    $("framelabel").textContent = s.frame_label || "Frame";
     $("modebar").textContent = bits.join("  |  ");
     const st = s.status || "idle";
     $("badge").className = "badge " + st;
@@ -20,7 +21,7 @@ async function tick() {
       $("bars").innerHTML = bar("a", s.readers[0], la, pa) + bar("b", s.readers[1], lb, pb) + bar("f", "Fused", lf, pf);
       $("stats").innerHTML =
         `<div class="stat">Tissue fraction<b>${pct(s.tissue_fraction)}</b></div>` +
-        `<div class="stat">Latency<b>${s.latency_ms.toFixed(0)} ms</b></div>` +
+        `<div class="stat">Latency (${s.host && s.host.is_uno_q ? "UNO Q" : (s.host ? s.host.machine + " host" : "host")})<b>${s.latency_ms.toFixed(0)} ms</b></div>` +
         `<div class="stat">Fused call<b>${c.label}</b></div>` +
         `<div class="stat">Review score<b>${c.review_score.toFixed(2)}</b></div>`;
       $("meta").textContent = `tile #${s.n} | LED matrix: ${s.led ? "updated" : "not connected"}`;

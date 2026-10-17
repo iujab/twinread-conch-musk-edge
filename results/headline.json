@@ -59,6 +59,7 @@
    "acc_cleared_at_10pct": {
     "s3": 0.9927267099969049,
     "s4": 0.9927267099969049,
+    "best_single_own": 0.9885484370164036,
     "A_own": 0.9826679046734758,
     "B_own": 0.9885484370164036
    },
@@ -151,6 +152,7 @@
    "acc_cleared_at_10pct": {
     "s3": 0.9925925925925926,
     "s4": 0.9903703703703703,
+    "best_single_own": 0.9911111111111112,
     "A_own": 0.9911111111111112,
     "B_own": 0.9844444444444445
    },
@@ -237,6 +239,7 @@
    "acc_cleared_at_10pct": {
     "s3": 0.9851439182915506,
     "s4": 0.9809656453110492,
+    "best_single_own": 0.9860724233983287,
     "A_own": 0.9860724233983287,
     "B_own": 0.9662643144537295
    },
@@ -318,6 +321,7 @@
    "acc_cleared_at_10pct": {
     "s3": 0.9903703703703703,
     "s4": 0.9911111111111112,
+    "best_single_own": 0.9918518518518519,
     "A_own": 0.9918518518518519,
     "B_own": 0.9807407407407407
    },
@@ -355,6 +359,20 @@
    "STR": 13.064133016627078,
    "TUM": 3.5685320356853123
   },
+  "per_class_contribution_to_bal_acc_delta_pts": {
+   "ADI": 0.11625975751536283,
+   "BACK": 0.013118194936376535,
+   "DEB": 0.09832841691248786,
+   "LYM": 0.0701016473887132,
+   "MUC": 0.0,
+   "MUS": -1.4639639639639632,
+   "NORM": 0.05997900734742773,
+   "STR": 1.4515703351807865,
+   "TUM": 0.39650355952059024
+  },
+  "mus_plus_str_contribution_pts": -0.01239362878317681,
+  "tum_contribution_pts": 0.39650355952059024,
+  "contribution_note": "balanced accuracy = mean of per-class recalls, so each class contributes its recall delta / 9; the MUS and STR swings cancel and the net gain is mostly TUM (ruling R33)",
   "val_correct_tiles": {
    "average": 2641,
    "concat_lr": 2639,
@@ -375,6 +393,9 @@
   "gpu": "NVIDIA GeForce RTX 5060",
   "k1_bit_exact_fraction_min_over_sets_impls_readers": 1.0,
   "k1_cuda_tiles_per_s_224": 90130.68978182162,
+  "k1_cuda_tiles_per_s_224_note": "k1_bench.json: input already on the GPU, both readers, batch 256 (excludes host-to-device copies; see k1_cuda_incl_h2d_tiles_per_s_224)",
+  "k1_cuda_incl_h2d_tiles_per_s_224": 46157.39794698928,
+  "k1_bench_speedup_vs_pil_single_process": 408.1505311529572,
   "k1_triton_tiles_per_s_224": 82058.43667457324,
   "k1_torch_exact_tiles_per_s_224": 1340.3940733405905,
   "pil_single_process_tiles_per_s_224": 220.82707947780307,
@@ -386,6 +407,11 @@
   "k1_e2e_speedup_vs_reference": 1.1131855964424378,
   "k1_e2e_speedup_vs_dataloader_4w": 1.009015707274766,
   "k1_preprocess_speedup_vs_pil": 202.43401895676774,
+  "k1_preprocess_speedup_vs_pil_source": "k1_embed_e2e.json: K1 on the GPU incl. H2D vs the official PIL transforms, 512 CRC tiles, both readers",
+  "k1_e2e_preprocess_tiles_per_s": {
+   "k1_gpu_incl_h2d": 42630.881600400266,
+   "pil_reference_cpu": 210.59148961274445
+  },
   "model_forward_share_of_reference_e2e": 0.8942168879500739,
   "preprocess_share_of_reference_e2e": 0.09547454947879194,
   "max_e2e_speedup_if_preprocessing_were_free": 1.1182969293863663,
@@ -454,7 +480,9 @@
    "fp32_onnx_test_bal_acc": 0.9415366032015291,
    "int8_val_bal_acc": 0.9774240235908471,
    "int8_test_label_agreement_with_fp32": 0.9607242339832869,
-   "device_flag_test_clean": {
+   "int8_bundle_flag_rate_test": 0.12103064066852368,
+   "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs (int8_drift.json flag_rate_int8.test_recal_thr)",
+   "fp32_device_flag_test_clean": {
     "fraction": 0.14317548746518105,
     "student_errors_caught": 0.7953020134228188,
     "teacher_recall": 0.4102279043913285,
@@ -486,7 +514,9 @@
    "fp32_onnx_test_bal_acc": 0.9362220112327457,
    "int8_val_bal_acc": 0.9769309665083513,
    "int8_test_label_agreement_with_fp32": 0.9583565459610028,
-   "device_flag_test_clean": {
+   "int8_bundle_flag_rate_test": 0.14540389972144846,
+   "int8_bundle_flag_rate_note": "deployed int8 bundle with the thresholds recalibrated on int8 val outputs (int8_drift.json flag_rate_int8.test_recal_thr)",
+   "fp32_device_flag_test_clean": {
     "fraction": 0.1798050139275766,
     "student_errors_caught": 0.7844827586206896,
     "teacher_recall": 0.4071919619249075,
@@ -511,6 +541,7 @@
   "x86_latency_table_is_simulation": true,
   "rig_simulated_captures": 8000,
   "rig_simulated_wrong_ids": 0,
+  "rig_simulated_accepted": 7572,
   "rig_accept_rate_min": 0.8925,
   "rig_note": "SIMULATED camera-filming-a-screen (rig/sim_capture.py), real CRC test tiles; 40 darkest of a 1/7 subsample + 160 random",
   "real_camera_captures": 0
