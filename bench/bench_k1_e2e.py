@@ -41,6 +41,7 @@ from twinread.readers import load_reader  # noqa: E402
 
 OUT = P / "results" / "kernels" / "k1_embed_e2e.json"
 BATCH = 16
+CONTEXT = "Regime differs from the organizers' observed bottleneck. Their load test (ashby-hackathon-2026/CLAUDE.md, 'Load test, 2026-10-16': CONCH behind the hosted model server on one A40, about 65 images/s) found the limit was per-image CPU preprocessing inside the single uvicorn event loop (serve.py adapter.preprocess in the request handler), not the GPU. This benchmark is a batched (16), GPU-forward-bound pipeline on an RTX 5060 with CONCH in fp32, where preprocessing is only 9.5% of the reference run, hence x1.11 end to end. The preprocessing speedup itself is x202; on faster GPUs (shorter forward passes) or in per-image serving (preprocessing in the request path) the preprocessing share, and so K1's end-to-end effect, differs. Those regimes were not measured here."
 
 
 def _sync():
@@ -203,7 +204,7 @@ def main():
                    "dataloader_baseline": "4 workers, pin_memory, persistent workers (second pass timed)"},
         "model_load_seconds": {"conch": round(t_conch, 2), "musk": round(t_musk, 2)},
         "gpu_mem": {"free_at_start_bytes": int(free0), "allocated_after_both_models_bytes": int(mem_models)},
-        "results": res, "summary": summary,
+        "results": res, "summary": summary, "context": CONTEXT,
         "note": ("Shared GPU/CPU (other agents); estimate. K1 removes the CPU preprocessing from the serial path; the "
                  "model forward (CONCH fp32 ViT-B/16 at 448 px + MUSK fp16 ViT-L at 384 px) dominates, which bounds "
                  "the end-to-end gain (see max_e2e_speedup_if_preprocessing_were_free). Research prototype."),
