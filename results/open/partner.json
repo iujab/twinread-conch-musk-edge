@@ -1,0 +1,43 @@
+{
+  "rule": "Task 8 step 2: choose the OPEN partner for PathGen-CLIP on VAL ONLY (no test label or test embedding is read).\n\nRule: among quiltnet_b16 / biomedclip, keep candidates whose val balanced accuracy is within 3 points of the better\ncandidate, then take the lowest phi-correlation of val probe-error indicators with PathGen-CLIP's. One partner is\nchosen for both datasets, so the criterion uses the mean over {crc, cam} of both quantities (per-dataset values are\nrecorded too).",
+  "anchor": "pathgenclip",
+  "per_dataset": {
+    "crc": {
+      "anchor_val_bal_acc": 0.9909530099430821,
+      "quiltnet_b16": {
+        "val_bal_acc": 0.9781448413456645,
+        "error_phi_with_anchor": 0.33964602639083485
+      },
+      "biomedclip": {
+        "val_bal_acc": 0.9732715927689619,
+        "error_phi_with_anchor": 0.45285704441583796
+      }
+    },
+    "cam": {
+      "anchor_val_bal_acc": 0.9513333333333334,
+      "quiltnet_b16": {
+        "val_bal_acc": 0.9159999999999999,
+        "error_phi_with_anchor": 0.3894630322573354
+      },
+      "biomedclip": {
+        "val_bal_acc": 0.9166666666666666,
+        "error_phi_with_anchor": 0.3577906727680373
+      }
+    }
+  },
+  "candidates": {
+    "quiltnet_b16": {
+      "val_bal_acc": 0.9470724206728323,
+      "error_phi_with_anchor": 0.36455452932408516
+    },
+    "biomedclip": {
+      "val_bal_acc": 0.9449691297178142,
+      "error_phi_with_anchor": 0.40532385859193765
+    }
+  },
+  "eligible": [
+    "quiltnet_b16",
+    "biomedclip"
+  ],
+  "partner": "quiltnet_b16"
+}

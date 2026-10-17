@@ -26,3 +26,15 @@
   (a variant of the design's [zA, zB, zA.W, |zA-zB|]; accepted, R21). Train-split student targets are cross-fitted OOF (K=5);
   best single reader is chosen on val; probes_aligned.npz is stored in softmax form with `{A,B}_classes`; the pre-registration
   is crash-resumable only if the plan is byte-identical and no results exist; text-bank cache is keyed by reader/spec/prompt hash.
+
+## Task 8: OPEN pair (PathGen-CLIP + QuiltNet-B-16), local results (numbers copied from results/open/)
+Partner chosen on val only (results/open/partner.json): quiltnet_b16 (mean val probe bal acc 0.9471, error phi vs PathGen-CLIP 0.365)
+over biomedclip (0.9450, phi 0.405); both eligible (within 3 points). Test, reference-impl embeddings.
+| dataset | A pathgenclip probe | B quiltnet_b16 probe | best single (val) | fused (primary) | delta vs best, 95% CI | McNemar fused vs best | CI mode |
+|---|---|---|---|---|---|---|---|
+| crc | 0.9435 [0.9376, 0.9490] | 0.9141 [0.9072, 0.9210] | A | gated_mlp 0.9443 [0.9381, 0.9501] | +0.0008 [-0.0052, +0.0066] | p=0.66 (b=125, c=133) | tile-level, anti-conservative |
+| cam | 0.9733 [0.9197, 0.9857] | 0.9493 [0.8973, 0.9728] | A | concat_lr 0.9733 [0.9344, 0.9830] | 0.0000 [-0.0122, +0.0165] | p=1.0 (b=8, c=8) | cluster by slide |
+Zero-shot bal acc (A / B): crc 0.815 / 0.423; cam 0.921 / 0.525. No `unstable` CI flag was raised anywhere.
+Review flag, errors caught at 10% budget (crc / cam): s1 0.511 / 0.500; s2 0.502 / 0.425; s3 0.693 / 0.675; s4 0.607 / 0.700;
+baselines A-confidence 0.633 / 0.725, B-confidence 0.460 / 0.375. Fusion gives no significant accuracy gain over PathGen-CLIP alone,
+and s4 does not beat the best single reader's own confidence at 10% on either dataset (CIs overlap).

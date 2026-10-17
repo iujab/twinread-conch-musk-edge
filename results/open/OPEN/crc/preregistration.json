@@ -1,0 +1,86 @@
+{
+  "aligned_probe_C": {
+    "A": 0.1,
+    "B": 0.1
+  },
+  "baselines": [
+    "base_A = 1 - max pA",
+    "base_B = 1 - max pB"
+  ],
+  "best_single_reader": "A",
+  "best_single_reader_rule": "highest validation probe balanced accuracy (chosen on val, not test)",
+  "budgets": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "ci": {
+    "alpha": 0.05,
+    "method": "percentile bootstrap",
+    "n": 1000,
+    "seed": 0
+  },
+  "ci_mode": "tile-level, anti-conservative (no slide ids)",
+  "classes": [
+    "ADI",
+    "BACK",
+    "DEB",
+    "LYM",
+    "MUC",
+    "MUS",
+    "NORM",
+    "STR",
+    "TUM"
+  ],
+  "created_utc": "2026-10-17T07:38:09+00:00",
+  "dataset": "crc",
+  "fusion_candidates": [
+    "average",
+    "concat_lr",
+    "gated_mlp"
+  ],
+  "oof_folds": {
+    "k": 5,
+    "scheme": "crc: GroupKFold(K=5) by parquet group"
+  },
+  "pair": "OPEN",
+  "primary_flag": "s4",
+  "primary_fusion": "gated_mlp",
+  "primary_fusion_rule": "highest validation balanced accuracy among candidates (ties: listed order)",
+  "primary_readers": "linear probes on recommended probe features (kind 'probe'); aligned probes = sensitivity",
+  "probe_C": {
+    "A": 0.1,
+    "B": 0.1
+  },
+  "prompts_sha256": {
+    "cam.json": "7b150518f775383fc3cffbc80cf3b36400c7d56078c29fa22ab1cf39a00449e4",
+    "crc.json": "028650fd97dd9831f0c3d8830c968e80459aa0a158746c8c21808a8981ec54d1",
+    "templates.json": "337cf0bdf0ff64ba827153f1484b5e50f944f6f8ff22156bea8fb4b25df6de56"
+  },
+  "readers": {
+    "A": "pathgenclip",
+    "B": "quiltnet_b16"
+  },
+  "review_label": "s4 > validation threshold at the 10% budget",
+  "s4_val_thresholds": {
+    "0.05": 0.007046491439590295,
+    "0.1": 0.0044459853643782155,
+    "0.2": 0.004033748342428202
+  },
+  "signals": [
+    "s1_disagree",
+    "s2_js",
+    "s3_fused_unc",
+    "s4 (logistic on s1..s3, fitted on val)"
+  ],
+  "train_targets": "train targets are OOF (K=5); val/test use full-train fits",
+  "val_balanced_accuracy": {
+    "average": 0.9920794208196472,
+    "concat_lr": 0.9920921503438227,
+    "gated_mlp": 0.9928099815771179
+  },
+  "val_probe_balanced_accuracy": {
+    "A": 0.9909530099430821,
+    "B": 0.9781448413456645
+  }
+}
