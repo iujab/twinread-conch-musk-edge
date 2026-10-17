@@ -115,7 +115,22 @@ class _DS(torch.utils.data.Dataset):
         return self.tfa(im), self.tfb(im)
 
 
-def bench_cpu(inputs: dict) -> dict:
+def bench_cpu(inputs: dict, repeats: int = 1) -> dict:
+    """CPU baselines; with repeats > 1 every method is re-measured and the BEST rate is kept (the machine is shared
+    with other jobs, so best-of-N is the conservative baseline for K1's speedup). All runs are recorded."""
+    runs = [_bench_cpu_once(inputs) for _ in range(repeats)]
+    res = {}
+    for name in inputs:
+        res[name] = {}
+        for m in runs[0][name]:
+            all_r = [r[name][m] for r in runs]
+            best = max(all_r, key=lambda v: v["tiles_per_s"])
+            res[name][m] = dict(best, all_tiles_per_s=[v["tiles_per_s"] for v in all_r],
+                                loadavg_1m_per_run=[v["loadavg_1m"] for v in all_r], kept="best of runs")
+    return res
+
+
+def _bench_cpu_once(inputs: dict) -> dict:
     from PIL import Image
     tfa, tfb = official_transforms()
     res = {}
@@ -133,7 +148,7 @@ def bench_cpu(inputs: dict) -> dict:
             runs.append(time.perf_counter() - t)
         s = float(np.median(runs))
         r["pil_single_process"] = {"n": len(arr), "seconds_median3": s, "tiles_per_s": len(arr) / s,
-                                   "torch_threads": torch.get_num_threads()}
+                                   "torch_threads": torch.get_num_threads(), "loadavg_1m": os.getloadavg()[0]}
         reps, bs = (8, 64) if name == "tiles224" else (2, 32)
         for nw in (4, 8):
             ds = _DS(arr, reps, tfa, tfb)
@@ -146,7 +161,8 @@ def bench_cpu(inputs: dict) -> dict:
                 n += xa.shape[0]
             s = time.perf_counter() - t
             del dl
-            r[f"dataloader_{nw}w"] = {"n": n, "batch_size": bs, "seconds": s, "tiles_per_s": n / s}
+            r[f"dataloader_{nw}w"] = {"n": n, "batch_size": bs, "seconds": s, "tiles_per_s": n / s,
+                                      "loadavg_1m": os.getloadavg()[0]}
         res[name] = r
         print(name, {k: round(v["tiles_per_s"], 1) for k, v in r.items()}, flush=True)
     return res
@@ -344,6 +360,7 @@ def summarize(d: dict) -> dict:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--part", choices=["cpu", "gpu", "parity", "all"], default="all")
+    ap.add_argument("--cpu-repeats", type=int, default=3, help="CPU baselines: keep the best of N runs")
     a = ap.parse_args()
     torch.set_num_threads(4)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -355,7 +372,7 @@ def main():
             _merge(OUT / "k1_parity.json", "env", env_block(True))
             _merge(OUT / "k1_parity.json", "result", bench_parity(inputs))
             continue
-        res = bench_cpu(inputs) if part == "cpu" else bench_gpu(inputs)
+        res = bench_cpu(inputs, a.cpu_repeats) if part == "cpu" else bench_gpu(inputs)
         d = _merge(bench_path, part, res)
         d = _merge(bench_path, "env" if part == "gpu" else "env_cpu", env_block(part == "gpu"))
         _merge(bench_path, "inputs", meta)
@@ -364,7 +381,8 @@ def main():
             "tiles_per_s": "raw inputs per second turned into BOTH readers' normalized tensors",
             "gpu_timing": "CUDA events, warmup 3, median of 10; input already on the GPU unless *_incl_h2d",
             "cpu_timing": "time.perf_counter; PIL single process: median of 3 passes over 256 inputs; DataLoader: "
-                          "second epoch (persistent workers) over 2048 tiles (bs 64) or 512 frames (bs 32)",
+                          "second epoch (persistent workers) over 2048 tiles (bs 64) or 512 frames (bs 32); whole CPU "
+                          "part repeated --cpu-repeats times on a shared 16-core machine, best rate kept",
             "eff_GBps": "(uint8 input bytes + fp16 output bytes) / time",
         })
         _merge(bench_path, "summary", summarize(json.loads(bench_path.read_text())))
