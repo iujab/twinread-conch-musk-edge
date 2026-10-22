@@ -33,6 +33,28 @@ call and the review label, and is exported to int8 ONNX for an offline Arduino U
 CONCH and MUSK are CC-BY-NC-ND-4.0, so **TwinRead-CM** (the scientific result) never distributes its student, while
 **TwinRead-OPEN** (PathGen-CLIP + QuiltNet-B-16) is the control pair and the distributable bundle (`bundles/open`).
 
+## Custom CUDA kernels
+
+Both kernels are fused chains of dependent stages: each stage needs the previous stage's output, so instead of a
+launch and a global-memory round trip per stage, one launch keeps the intermediate in shared memory.
+
+- **K1, dual-reader preprocessing** (`csrc/k1_dual_preprocess.cu`). CONCH wants 448 px and MUSK 384 px, both from
+  the same raw tile. The first launch stages each input row once in shared memory and emits both readers' horizontal
+  resampling passes; the second does the vertical pass, crop, and normalisation through a 256-entry fp16 lookup,
+  with the grid's z index selecting the reader. The fixed-point math reproduces Pillow's resampler, so the output is
+  bit-exact to each model's official transform. 90,131 tiles/s with the input on the GPU (46,157 including the
+  host copy), ×202 faster than the PIL transforms inside the CONCH + MUSK embedding run, ×1.11 end to end because
+  the forward passes dominate.
+- **K2, training augmentation** (`csrc/k2_camera_aug.cu`). Nine dependent stages (perspective warp, HED stain
+  jitter, display gamma and colour profile, moiré, glare, separable Gaussian defocus, white balance, Philox sensor
+  noise) run in one launch per 32×16 tile with a shared-memory halo, then a second launch does the 8×8 DCT JPEG
+  quantisation. Every stage is within one grey level of a float64 numpy reference. 46,315 images/s, and student
+  training runs ×10.6 faster than with torch augmentation.
+- Verified with compute-sanitizer; built for sm_120 (RTX 5060) and compile-checked for sm_80 and sm_90 (Delta A100,
+  DeltaAI GH200). Triton and plain-torch fallbacks share the same plan.
+
+![Kernels](figures/fig3_kernels.png)
+
 ## Results
 
 Test sets: CRC-VAL-HE-7K (7,180 tiles, 9 classes; training on a 20k-tile NCT-CRC-HE-100K subset) and
@@ -48,8 +70,8 @@ Camelyon17-WILDS hospital 2 (1,500 tiles, unseen hospital). Every test number wa
 | ...Camelyon17 | s3 81.1%, s4 75.5%, CONCH alone 74.5%; cleared-tile accuracy s4 99.04% vs CONCH 99.11%, so the twin flag does not beat CONCH alone | `results/cm_local/CM/cam/review.json` |
 | Pre-registered threshold on test | CRC: flags 25.1% of tiles for a 10% target and catches 97.5% of errors. Camelyon17: flags 5.3%, catches 58.5% | `review.json` |
 | Confident shared errors (both wrong, same call, both ≥ 0.80) | 53 CRC tiles (0.74%), 36 of them MUS↔STR; 12 Camelyon17 tiles | `review.json`, `triage_curves.json` |
-| K1 dual-reader preprocessing (CUDA) | Bit-exact to the official transforms. 90,131 tiles/s with the input on the GPU (46,157 incl. the host copy); ×202 vs PIL inside the embedding run, ×1.11 end to end (forward-bound) | `results/kernels/k1_*.json` |
-| K2 augmentation (CUDA, simulated camera-of-screen degradation) | 46,315 images/s, ≤ 1 level per op vs a numpy reference; student training ×10.6 faster than torch augmentation | `results/kernels/k2_*.json`, `results/student/*/throughput.json` |
+| K1 kernel | Bit-exact to the official transforms. 90,131 tiles/s with the input on the GPU (46,157 incl. the host copy); ×202 vs PIL inside the embedding run, ×1.11 end to end (forward-bound) | `results/kernels/k1_*.json` |
+| K2 kernel | 46,315 images/s, ≤ 1 level per op vs a numpy reference; student training ×10.6 faster than torch augmentation | `results/kernels/k2_*.json`, `results/student/*/throughput.json` |
 | CM student, CRC (x86) | fp32 0.9415 (ties CONCH); int8 0.9219 with onnxruntime's default x86 kernels, 0.9301 with them off | `results/student/cm_crc/`, `results/uno_q/onboard/int8_kernel_check.json` |
 | Size | 5.65 M parameters (1.4% of the two vision towers); 6.0 MB int8 ONNX | `results/student/model_sizes.json` |
 | On the Arduino UNO Q | int8 student 18.7 ms per tile (4 threads); 0.9305 balanced accuracy on all 7,180 CRC test tiles; 25.4 tiles/s for the full app loop | `results/uno_q/onboard/` |
@@ -64,8 +86,6 @@ rule by 1-2 tiles at a near-ceiling 0.9936, and the val-calibrated threshold ove
 ![Fused vs single readers](figures/fig1_two_readers.png)
 
 ![Review flag and shared blind spots](figures/fig2_review_flag.png)
-
-![Kernels](figures/fig3_kernels.png)
 
 ![Edge student](figures/fig5_edge_student.png)
 

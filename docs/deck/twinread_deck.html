@@ -54,7 +54,6 @@ small, .muted { color: #52514e; }
      <span class="muted">2026 Ashby Prize in Computational Science Hackathon · NCSA and the Cancer Center at Illinois</span></p>
   <div class="foot"><span>Research prototype, not a diagnostic device</span><span>1 / 12</span></div>
 </section>
-
 <!-- 2 problem -->
 <section class="slide">
   <h1>Two models, trained differently, miss different tiles</h1>
@@ -91,7 +90,6 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>2 / 12</span></div>
 </section>
-
 <!-- 3 aim -->
 <section class="slide">
   <h1>Aim: a second read on every tile, then make it run anywhere</h1>
@@ -110,7 +108,6 @@ small, .muted { color: #52514e; }
      data and pre-registered before any test label is read.</p>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>3 / 12</span></div>
 </section>
-
 <!-- 4 method -->
 <section class="slide">
   <h1>Method</h1>
@@ -131,8 +128,28 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>4 / 12</span></div>
 </section>
-
-<!-- 5 fusion result -->
+<!-- 5 kernels -->
+<section class="slide">
+  <h1>Two custom CUDA kernels: fused chains of dependent stages</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 4.6in">
+      <ul>
+        <li><b>K1, dual-reader preprocessing.</b> CONCH wants 448 px and MUSK 384 px from the same tile. One launch
+            stages each input row once in shared memory and emits both readers' horizontal passes; a second launch
+            does the vertical pass, crop and normalisation. Fixed-point Pillow math makes the output bit-exact to
+            each model's official transform. 90,131 tiles/s; preprocessing ×202 faster than PIL, ×1.11 end to end
+            (the forward passes dominate).</li>
+        <li><b>K2, training augmentation.</b> Nine dependent stages (warp, stain jitter, gamma, moiré, glare,
+            defocus, white balance, sensor noise) in one launch per 32×16 tile with a shared-memory halo, then an
+            8×8 DCT JPEG pass. Each stage is within one grey level of a float64 reference. 46,315 images/s;
+            student training ×10.6 faster than with torch.</li>
+      </ul>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/fig3_kernels.png" alt="Kernels" style="max-height: 5.5in"></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>5 / 12</span></div>
+</section>
+<!-- 6 fusion result -->
 <section class="slide">
   <h1>Fusion covers the gaps: +0.74 points on CRC</h1>
   <div class="cols">
@@ -151,10 +168,9 @@ small, .muted { color: #52514e; }
     </div>
     <div class="col"><img class="fig" src="../../figures/fig1_two_readers.png" alt="Fused vs single readers" style="max-height: 5.4in"></div>
   </div>
-  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>5 / 12</span></div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>6 / 12</span></div>
 </section>
-
-<!-- 6 review flag -->
+<!-- 7 review flag -->
 <section class="slide">
   <h1>The fused reader knows which tiles to send for review</h1>
   <div class="cols">
@@ -168,28 +184,8 @@ small, .muted { color: #52514e; }
     </div>
     <div class="col"><img class="fig" src="../../figures/fig2_review_flag.png" alt="Review flag" style="max-height: 5.5in"></div>
   </div>
-  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>6 / 12</span></div>
-</section>
-
-<!-- 7 kernels -->
-<section class="slide">
-  <h1>Two CUDA kernels make the pair cheap to run and to train</h1>
-  <div class="cols">
-    <div class="col" style="flex: 0 0 4.4in">
-      <ul>
-        <li><b>K1, dual-reader preprocessing.</b> One launch turns a uint8 tile batch into both readers' inputs
-            (448 px and 384 px), bit-exact to the official transforms. 90,131 tiles/s on an RTX 5060; preprocessing
-            ×202 faster than PIL inside the embedding run, ×1.11 end to end because the forward pass dominates.</li>
-        <li><b>K2, training augmentation.</b> A simulated camera-of-screen degradation (warp, stain jitter, moiré,
-            glare, defocus, noise, JPEG) at 46,315 images/s; student training ×10.6 faster than torch augmentation.</li>
-        <li>Verified against numpy references and compute-sanitizer; built for sm_80, sm_90 and sm_120.</li>
-      </ul>
-    </div>
-    <div class="col"><img class="fig" src="../../figures/fig3_kernels.png" alt="Kernels" style="max-height: 5.5in"></div>
-  </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>7 / 12</span></div>
 </section>
-
 <!-- 8 board -->
 <section class="slide">
   <h1>It runs on the board</h1>
@@ -209,7 +205,6 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>8 / 12</span></div>
 </section>
-
 <!-- 9 fidelity -->
 <section class="slide">
   <h1>The board runs the model as specified</h1>
@@ -225,7 +220,6 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>9 / 12</span></div>
 </section>
-
 <!-- 10 challenges -->
 <section class="slide">
   <h1>Challenges</h1>
@@ -253,7 +247,6 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>10 / 12</span></div>
 </section>
-
 <!-- 11 why it matters -->
 <section class="slide">
   <h1>Why it matters</h1>
@@ -273,7 +266,6 @@ small, .muted { color: #52514e; }
   </div>
   <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>11 / 12</span></div>
 </section>
-
 <!-- 12 references -->
 <section class="slide">
   <h1>References</h1>
