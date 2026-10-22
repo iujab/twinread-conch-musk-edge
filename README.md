@@ -91,6 +91,10 @@ rule by 1-2 tiles at a near-ceiling 0.9936, and the val-calibrated threshold ove
 
 ## On the Arduino UNO Q
 
+<img src="figures/extra/uno_q_photo.jpg" alt="The Arduino UNO Q running TwinRead" width="520">
+
+*The board, powered over USB-C, with the LED matrix driven by the TwinRead sketch.*
+
 ![UNO Q system](figures/fig9_unoq_system.png)
 
 - Board: Qualcomm QRB2210, 4× Cortex-A53 at 2.0 GHz, 3.6 GiB RAM, Debian 13, onnxruntime 1.31 on CPU. The int8 CM
