@@ -7,7 +7,7 @@
 # IMPL (default reference: the cached local embeddings are reference-impl; k1 would recompute them, keys differ).
 set -uo pipefail
 P="$(cd "$(dirname "$0")/.." && pwd)"
-B=/home/nanashi-mumei/dev/ashbyhackathonbench
+B="${BENCH:-$(cd "$P/.." && pwd)}"   # bench root (venv + shared GPU lock); set BENCH for a clone elsewhere
 PY=${PY:-$B/.venv/bin/python}
 LOCK=${LOCK-flock $B/.gpu.lock}
 RESULTS=${RESULTS:-results/cm_local}

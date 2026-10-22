@@ -236,12 +236,12 @@ def test_uno_q_latency_requires_real_on_board_run(tmp_path):
 
 
 def test_device_heads_and_flag_fidelity_reported():
-    """I7: README §4 and deck slides 14-15 say the device's readers are two heads of one student, and quote the measured
+    """I7: the README device section and deck slides 14-15 say the device's readers are two heads of one student, and quote the measured
     fp32 and int8 flag fidelity vs the teacher flag from headline.json (int8 via the device runtime)."""
     hl = json.loads((ROOT / "results" / "headline.json").read_text())["student"]["CM"]
     fp, i8 = hl["fp32_device_flag_test_clean"], hl["int8_device_flag_test_clean"]
     readme = (ROOT / "README.md").read_text()
-    sec4 = readme[readme.index("### 4. Edge student and device"):readme.index("### 5.")]
+    sec4 = re.search(r"^## [^\n]*device[^\n]*\n(.*?)(?=^## |\Z)", readme, re.S | re.M | re.I).group(1)
     deck = (ROOT / "docs" / "deck_outline.md").read_text()
     s14 = deck[deck.index("### Slide 14"):deck.index("### Slide 16")]
     for txt in (sec4, s14):

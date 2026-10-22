@@ -104,5 +104,5 @@ Budget: about 5-6.5 A100-hours of the 30 for J1 + 2×J2 + J3 (+ J4).
 
 ## Pointers
 - Design: `docs/design.md`. Plan: `docs/plan.md`. Build decisions: `docs/rulings.md` (R1-R39).
-- Open minor issues: `docs/deferred-minors.md`. Per-task log: `PROGRESS.md`.
+- Open minor issues: `docs/deferred-minors.md`. Per-task log: `docs/progress.md`.
 - One-command reproduction: `bash run_demo.sh --smoke`.

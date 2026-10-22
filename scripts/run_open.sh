@@ -3,7 +3,8 @@
 # (produced by `python -m twinread.embed --impl reference` under the GPU lock); this script only verifies them.
 set -euo pipefail
 P="$(cd "$(dirname "$0")/.." && pwd)"
-PY=/home/nanashi-mumei/dev/ashbyhackathonbench/.venv/bin/python
+B="${BENCH:-$(cd "$P/.." && pwd)}"   # bench root; set BENCH for a clone elsewhere
+PY=${PY:-$B/.venv/bin/python}
 export PYTHONPATH="$P/src" OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
 cd "$P"
 for ds in cam crc; do for r in pathgenclip quiltnet_b16 biomedclip; do

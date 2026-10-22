@@ -14,3 +14,6 @@ bundles/cm_*
 logs/
 device/wheels/
 device/.venv/
+.pytest_cache/
+*.pyc
+*.egg-info/

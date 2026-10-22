@@ -41,7 +41,7 @@ IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 INPUT_SIZE = 224
 REL_TEMPERATURE = 0.07
-# Ruling R26 (plan amendment, val evidence in PROGRESS.md): rel = 0.0 for the device student. Row-wise InfoNCE at
+# Ruling R26 (plan amendment, val evidence in docs/progress.md): rel = 0.0 for the device student. Row-wise InfoNCE at
 # tau 0.07 shrinks the component all teacher embeddings share (they sit in a narrow cone), which distorts the device
 # probes and the JS clause. InfoNCE stays available via the weights (CLI --loss-weights) and BigBatch.
 DEFAULT_WEIGHTS = {"cos": 1.0, "rel": 0.0, "kd": 1.0, "ce": 0.5, "rev": 0.5}

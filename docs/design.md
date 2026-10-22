@@ -421,7 +421,7 @@ pipeline falls back to the Triton / torch-ops path automatically. The science ne
 
 ```
 twinread-conch-musk-edge/
-  README.md, project.json, run_demo.sh, PROGRESS.md
+  README.md, project.json, run_demo.sh, docs/progress.md
   docs/design.md (this file), docs/plan.md (implementation plan)
   src/twinread/        readers.py, data.py, embed.py, probes.py, fusion.py, review.py, blindspots.py,
                        student.py, export.py, figures.py, app_host.py (dashboard :1777)

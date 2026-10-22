@@ -31,8 +31,8 @@
 
 ## Global Constraints
 
-- **Project root:** `/home/nanashi-mumei/dev/ashbyhackathonbench/twinread-conch-musk-edge/` (below, `$P`). Bench root
-  `/home/nanashi-mumei/dev/ashbyhackathonbench/` (`$B`). Python is always `$B/.venv/bin/python`.
+- **Project root:** `<bench>/twinread-conch-musk-edge/` (below, `$P`). Bench root
+  `<bench>/` (`$B`). Python is always `$B/.venv/bin/python`.
 - **Stay inside `$P`.** Read other bench projects only. The exception is Task 1's `uv pip install --no-deps` of
   `conch`, `musk`, `fairscale` and `sentencepiece` into `$B/.venv`. Never upgrade or downgrade torch, timm,
   transformers or open_clip.

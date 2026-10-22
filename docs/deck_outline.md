@@ -173,7 +173,7 @@ impact (19) and references (20).
 - K2's JPEG differences were traced to provable rounding-boundary blocks.
 - int8 calibration collapsed with MinMax/Entropy (val label agreement 0.4406), so percentile calibration was used.
 - The licence problem was solved with two configurations.
-- Note: "Each of these is logged with its evidence in PROGRESS.md."
+- Note: "Each of these is logged with its evidence in docs/progress.md."
 
 ### Slide 18: Challenges remaining and next steps
 
