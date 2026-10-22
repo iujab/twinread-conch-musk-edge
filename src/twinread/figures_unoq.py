@@ -22,7 +22,7 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 from twinread import figures as F
 
 SRC = F.RES / "uno_q" / "onboard"
-OUT = F.FIG / "uno_q"
+OUT = F.FIG  # fig9 and fig11 are manifest figures; fig10 goes to figures/uno_q/
 C = F.C
 VIO, GREY, DARK = C["student"], C["grey"], C["shared"]
 
@@ -31,9 +31,10 @@ def _j(name: str) -> dict:
     return json.loads((SRC / name).read_text())
 
 
-def _save(fig, name) -> Path:
-    OUT.mkdir(parents=True, exist_ok=True)
-    p = OUT / name
+def _save(fig, name, sub: str | None = None) -> Path:
+    out = OUT / sub if sub else OUT
+    out.mkdir(parents=True, exist_ok=True)
+    p = out / name
     fig.savefig(p, dpi=F.DPI)
     plt.close(fig)
     return p
@@ -208,7 +209,7 @@ def fig10_unoq_speed() -> Path:
                   f"50 runs, each setting in a fresh process; p90 is within {spread:.1f} ms of p50. (b) scripts/uno_q/stage_timing.py calls the app's own functions",
                   "in App.step order (checked against EdgeModel.infer). Replay frames are 224-px PNGs, so a camera adds capture and a real resize.",
                   "The app loop runs one frame per second. " + F.DISCLAIMER])
-    return _save(fig, "fig10_unoq_speed.png")
+    return _save(fig, "fig10_unoq_speed.png", "uno_q")
 
 
 # ---------------------------------------------------------------------------------------------------------------

@@ -1,9 +1,8 @@
 # TwinRead deck outline (submission Wed Oct 21: at most 20 main slides)
 
 Each slide gives a title, the content, the figure and a one-line speaker note. Every number comes from
-`results/headline.json` or the JSON it cites. Numbers are local-subset dev numbers; the full-data Delta runs were
-not run. Every slide footer reads "Research prototype, not a
-diagnostic device."
+`results/headline.json` or the JSON it cites. Model numbers are local-subset numbers; device numbers are measured on
+the Arduino UNO Q. Every slide footer reads "Research prototype, not a diagnostic device."
 
 The deck covers, in order: aims (1-3), methods (4-6), results (7-16), challenges overcome and remaining (17-18),
 impact (19) and references (20).
@@ -12,8 +11,8 @@ impact (19) and references (20).
 
 ### Slide 1: TwinRead, two foundation-model readers, one honest second read
 
-- CONCH and MUSK as two independent readers, plus a fused reader, a review flag and an int8 student built for an
-  offline Arduino UNO Q (x86 replay today; on-board run pending).
+- CONCH and MUSK as two independent readers, plus a fused reader, a review flag and an int8 student that runs on an
+  offline Arduino UNO Q (18.7 ms per tile, measured on the board).
 - Team, the Ashby Prize 2026 hackathon, and the disclaimer.
 - Figure: `figures/fig8_system.png` (thumbnail).
 - Note: "We tested whether two pathology foundation models can act like a second pathologist."
@@ -132,7 +131,7 @@ impact (19) and references (20).
 - Warp, stain jitter, display gamma, moiré, glare, defocus, noise and JPEG, in one launch.
 - 46,315 images/s, within 1 level per op of a numpy reference; compute-sanitizer clean.
 - Student-training augmentation is ×10.6 faster than torch.
-- Figures: `figures/k2_severity_grid.png` and `figures/fig3_kernels.png` (bottom).
+- Figures: `figures/extra/k2_severity_grid.png` and `figures/fig3_kernels.png` (bottom).
 - Note: "It teaches the student what a USB camera filming a screen does to a tile image. It is a simulation."
 
 ### Slide 14: The edge student
@@ -146,23 +145,25 @@ impact (19) and references (20).
 - Figure: `figures/fig5_edge_student.png`.
 - Note: "The value is offline, small and cheap, not beating the foundation models."
 
-### Slide 15: The device and the capture rig
+### Slide 15: On the Arduino UNO Q
 
-- UNO Q app: camera or replay → crop → int8 student → AGREE/REVIEW, with a local UI and an LED-matrix sketch
-  (compile-verified, not flashed). It has run only as an x86 replay so far.
-- Deployed int8 bundle flag: 12.1% of clean CRC test tiles; it catches 57.6% of the int8 model's own errors and
-  agrees with the teacher flag at kappa 0.34 (`results/student/cm_crc/int8_flag_fidelity.json`).
-- The UI labels the bars as student heads (Head A CONCH-space, Head B MUSK-space), not as two independent readers.
-- Rig (simulated captures): 8,000 trials, 7,572 accepted, 0 wrong labels.
-- **Pending**: on-board latency (measured when the board is plugged in) and real camera captures.
-- Figure: `figures/ui_device_sim.png`. It is an x86 replay; say so aloud.
-- Note: "The demo camera films a screen, not a microscope."
+- Board: Qualcomm QRB2210, 4× Cortex-A53 at 2.0 GHz, 3.6 GiB, Debian 13, onnxruntime 1.31 on CPU.
+- int8 CM student: 18.7 ms per tile at 4 threads (52.8 ms single-threaded), 34 MB RAM. One app frame is about 90 ms;
+  the numpy tissue check, not the network, is the largest cost.
+- Full CRC-VAL-HE-7K on the board: 0.9305 balanced accuracy (CM), 0.9044 (OPEN), 7,180 tiles in 282 s. The lower x86
+  int8 scores (0.9219, 0.9085) were an onnxruntime kernel artefact: with fused int8 kernels off, x86 matches the board.
+- Board int8 flag vs the teacher flag: kappa 0.32; flags 10.2% of tiles and catches 57.2% of the board model's own errors.
+- LED sketch flashed over USB-C (OpenOCD); Bridge RPC verified, 8 ms per call. Replay mode on stored tiles; no real
+  camera captures yet.
+- Figures: `figures/fig9_unoq_system.png`, `figures/uno_q/fig10_unoq_speed.png`, `figures/fig11_unoq_fidelity.png`,
+  `figures/ui_device_unoq.png`.
+- Note: "Everything on this slide was measured on the board."
 
 ### Slide 16: Interpretability in practice: the dashboard
 
 - Every tile shows CONCH's call, MUSK's call, the fused call and the flag. Filters cover shared errors, missed errors
   and disagreements.
-- Figure: `figures/ui_dashboard.png`.
+- Figure: `figures/extra/ui_dashboard.png`.
 - Note: "A pathologist can see why a tile was flagged and what each reader said."
 
 ### Slide 17: Challenges overcome
@@ -175,16 +176,14 @@ impact (19) and references (20).
 - The licence problem was solved with two configurations.
 - Note: "Each of these is logged with its evidence in docs/progress.md."
 
-### Slide 18: Challenges remaining and next steps
+### Slide 18: Next steps
 
-- NCSA Delta full-data runs (100k CRC, CONCH + MUSK, A100): not run; the kit is ready in `ncsa/`.
-- UNO Q latency and offline demo: pending.
-- Real camera captures: none yet.
-- CRC slide ids for clustered CIs.
-- Closing the int8 test gap.
-- Site-specific threshold calibration.
-- PathMMU subsets (`reference/papers/sun2024_pathmmu.md`) as extra tasks.
-- Note: "Here is what we would do with one more day of Delta time."
+- Real camera captures: film tiles shown on a screen with the USB camera through `rig/` and score them on the board.
+  Camera robustness so far is the K2 simulation.
+- Full-data run on NCSA Delta: the kit in `ncsa/` embeds all 100k CRC training tiles with CONCH + MUSK (J1-J3,
+  ≤ 10 A100-hours) to test whether the fragile fusion gain holds with 5× the training data.
+- CRC slide ids for clustered CIs; per-site threshold calibration; closing the int8 gap.
+- Note: "Camera first, then Delta."
 
 ### Slide 19: Why it matters to pathologists and patients
 

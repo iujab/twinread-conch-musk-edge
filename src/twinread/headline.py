@@ -20,12 +20,12 @@ def _j(results: Path, rel: str) -> dict:
 
 
 def uno_q_latency(results: Path):
-    """On-board latency from results/uno_q/backbone_latency.json, or the pending string.
+    """On-board latency from results/uno_q/onboard/latency.json, or the pending string.
 
     Counted as on-board only if the harness recorded ``simulated: false`` on an aarch64 host and at least one row has a
     latency (device/bench_backbones.py flags every non-aarch64 or --simulate run simulated=True); anything else, e.g. an
     x86 run saved under that name, stays pending."""
-    p = Path(results) / "uno_q" / "backbone_latency.json"
+    p = Path(results) / "uno_q" / "onboard" / "latency.json"
     if not p.exists():
         return UNO_Q_PENDING
     try:
@@ -205,11 +205,49 @@ def build(results: Path = ROOT / "results") -> dict:
     rig = _j(results, "rig/decode_stress.json")
     mcu = _j(results, "uno_q/mcu_compile.json")
     lat = _j(results, "uno_q/backbone_latency_x86_sim.json")
+    board = _j(results, "uno_q/onboard/board_info.json")
+    score = _j(results, "uno_q/onboard/testset_score.json")
+    stages = _j(results, "uno_q/onboard/stage_timing_cm.json")["stages"]
+    onboard_lat = uno_q_latency(results)
+
+    def _row(backbone, threads):
+        rows = onboard_lat["rows"] if isinstance(onboard_lat, dict) else []
+        return next((r for r in rows if r["backbone"] == backbone and r["threads"] == threads), {})
+
+    def _stage(name):
+        return next((st["p50_ms"] for st in stages if st["stage"] == name), None)
+
+    sc_cm, sc_op = score["pairs"]["CM"], score["pairs"]["OPEN"]
     device = {
-        "source": "results/rig/decode_stress.json, results/uno_q/{mcu_compile,backbone_latency_x86_sim}.json",
+        "source": "results/uno_q/onboard/{board_info,latency,testset_score,stage_timing_cm}.json (measured on the board), "
+                  "results/uno_q/mcu_compile.json, results/rig/decode_stress.json",
         "mcu_sketch_compile_verified": bool(mcu["compile_verified"] and mcu["exit_code"] == 0),
-        "mcu_fqbn": mcu["fqbn"], "mcu_flashed": False,
-        "uno_q_latency": uno_q_latency(results),
+        "mcu_fqbn": mcu["fqbn"],
+        # Bridge set_state round-trips were timed on the board, which needs the sketch running on the MCU
+        "mcu_flashed": _stage("LED result (Bridge RPC)") is not None,
+        "uno_q_latency": onboard_lat,
+        "onboard": {
+            "board": board["board_model"], "machine": board["machine"], "os": board["os"],
+            "cpu_count": board["cpu_count"], "cpu_max_ghz": board["cpu_max_khz"] / 1e6,
+            "mem_total_mib": board["mem_total_mib"], "onnxruntime": board["onnxruntime"],
+            "cm_int8_p50_ms_4_threads": _row("student_cm", 4).get("p50_ms"),
+            "cm_int8_p50_ms_1_thread": _row("student_cm", 1).get("p50_ms"),
+            "cm_int8_rss_mb": _row("student_cm", 4).get("rss_mb"),
+            "open_int8_p50_ms_4_threads": _row("student_open", 4).get("p50_ms"),
+            "stage_p50_ms": {st["stage"]: st["p50_ms"] for st in stages},
+            "app_frame_ms_p50_sum_of_stages": sum(st["p50_ms"] for st in stages),
+            "led_bridge_rpc_ms_per_call": _stage("LED result (Bridge RPC)"),
+            "test_split": score["split"],
+            "cm_int8_bal_acc_board": sc_cm["int8_bal_acc_board"],
+            "cm_int8_bal_acc_x86": sc_cm["int8_bal_acc_committed_x86"],
+            "open_int8_bal_acc_board": sc_op["int8_bal_acc_board"],
+            "open_int8_bal_acc_x86": sc_op["int8_bal_acc_committed_x86"],
+            "cm_full_loop_tiles_per_s": sc_cm["board_run"]["tiles_per_s"],
+            "cm_full_loop_seconds": sc_cm["board_run"]["seconds"],
+            "cm_board_vs_x86_pred_agreement": sc_cm["board_vs_x86"]["pred_agreement"],
+            "cm_board_device_flag": sc_cm["board_device_flag"],
+            "note": score["note"],
+        },
         "x86_latency_table_is_simulation": bool(lat["simulated"]),
         "rig_simulated_captures": sum(r["trials"] for r in rig["runs"]),
         "rig_simulated_wrong_ids": sum(r["wrong_id"] for r in rig["runs"]),
@@ -221,7 +259,8 @@ def build(results: Path = ROOT / "results") -> dict:
 
     return {"note": "Computed by twinread.headline from the source JSONs named in each block. LOCAL-SUBSET dev "
                     "numbers (CRC 20k-tile train subset + full CRC-VAL-HE-7K test; Camelyon17-WILDS 7.5k subset); "
-                    "the full-data Delta runs are pending. Research prototype, not a diagnostic device.",
+                    "device numbers are measured on the Arduino UNO Q (results/uno_q/onboard/). Research prototype, not a "
+                    "diagnostic device.",
             "fusion": fus,
             "crc_fusion_fragility": {
                 "source": "results/cm_local/CM/crc/post_hoc_class_candidates_s3s4.json (post hoc)",
@@ -238,9 +277,9 @@ def build(results: Path = ROOT / "results") -> dict:
                 "s3_s4_top10_overlap": post["s3_s4_agreement"]["top10pct_overlap"],
                 "val_fused_bal_acc": pre_crc["val_balanced_accuracy"][pre_crc["primary_fusion"]]},
             "kernels": kernels, "student": student, "device": device,
-            "pending": ["UNO Q on-board latency and offline demo (" + UNO_Q_PENDING + ")",
-                        "real camera-of-screen captures from the rig (none recorded yet)",
-                        "NCSA Delta full-data CONCH+MUSK runs (100k CRC, A100; kit in ncsa/)"]}
+            "future_steps": ["real camera captures through the rig (the board has only run on stored tiles; camera "
+                             "robustness so far is the K2 simulation)",
+                             "full-data CONCH + MUSK run on NCSA Delta (100k CRC training tiles; kit in ncsa/)"]}
 
 
 def write(results: Path = ROOT / "results") -> Path:

@@ -113,7 +113,7 @@ def fig1_two_readers() -> Path:
         "Linear probes on frozen features. The fusion rule was chosen on validation and pre-registered before test. "
         "CRC: train on a 20k-tile NCT-CRC-HE-100K subset, test on",
         "CRC-VAL-HE-7K (7,180 tiles, no slide ids). Camelyon17-WILDS: test on unseen hospital 2 (1,500 tiles). "
-        "LOCAL-SUBSET dev numbers; full-data NCSA Delta runs were not run.",
+        "Local-subset numbers (20k of 100k CRC training tiles).",
         f"On CRC, large opposing MUS/STR recall swings cancel; the net gain is mostly tumour recall ({tum:+.1f} pts). "
         "Validation picked the fusion rule by 1-2 tiles.", DISCLAIMER])
     return _save(fig, "fig1_two_readers.png")
@@ -347,9 +347,9 @@ def fig5_edge_student() -> Path:
             ("CM student fp32, clean", cm["fp32_test_bal_acc"]["clean"], C["student"], "o"),
             ("CM student fp32, camera sim 0.5", cm["fp32_test_bal_acc"]["sev0.5"], C["student"], "^"),
             ("CM student fp32, camera sim 1.0", cm["fp32_test_bal_acc"]["sev1.0"], C["student"], "v"),
-            ("CM student int8 (deployed)", cm["int8_test_bal_acc"], C["student"], "D"),
+            ("CM student int8 (x86, default kernels)", cm["int8_test_bal_acc"], C["student"], "D"),
             ("OPEN student fp32 (distributable)", op["fp32_test_bal_acc"]["clean"], C["grey"], "o"),
-            ("OPEN student int8 (distributable)", op["int8_test_bal_acc"], C["grey"], "D")]
+            ("OPEN student int8 (x86, distributable)", op["int8_test_bal_acc"], C["grey"], "D")]
     y = np.arange(len(rows))[::-1].astype(float)
     y[:5] += 0.6
     y[-2:] -= 0.6
@@ -377,11 +377,16 @@ def fig5_edge_student() -> Path:
     _grid(b, "x")
     tt(800, 60, f"Student: {s['params_pct_of_teacher_vision_towers']:.1f}% of the two vision towers' "
                 f"parameters;\nint8 ONNX file {s['int8_onnx_mb']:.1f} MB")
-    fig.text(800 / WP, 1 - 530 / HP, "Arduino UNO Q on-board latency: PENDING\n(measured when the board is plugged "
-             "in; only an\nx86 simulation exists so far). LED-matrix sketch:\n" +
-             ("compile-verified (" + dev["mcu_fqbn"] + "), not flashed." if dev["mcu_sketch_compile_verified"]
-              else "NOT compile-verified."), ha="left", va="top", fontsize=10.2, color=C["ink"], linespacing=1.45,
-             bbox=dict(boxstyle="round,pad=0.7", fc="#fff4d6", ec=C["s1"]))
+    ob, on_board = dev.get("onboard") or {}, isinstance(dev["uno_q_latency"], dict)
+    board_txt = (f"Arduino UNO Q, measured on the board:\nint8 student {ob['cm_int8_p50_ms_4_threads']:.1f} ms per tile "
+                 f"(4 threads);\n{ob['cm_int8_bal_acc_board']:.4f} balanced accuracy on all 7,180\nCRC-VAL-HE-7K tiles. "
+                 "LED sketch flashed, Bridge verified." if on_board else
+                 "Arduino UNO Q on-board latency: PENDING.\nLED-matrix sketch: " +
+                 ("compile-verified (" + dev["mcu_fqbn"] + ")." if dev["mcu_sketch_compile_verified"]
+                  else "NOT compile-verified."))
+    fig.text(800 / WP, 1 - 530 / HP, board_txt, ha="left", va="top", fontsize=10.2, color=C["ink"], linespacing=1.45,
+             bbox=dict(boxstyle="round,pad=0.7", fc="#e8f5ec" if on_board else "#fff4d6",
+                       ec=C["F"] if on_board else C["s1"]))
     _title(fig, "Edge student: most of the teachers' accuracy at ~1% of the size; int8 costs "
                 f"{cm['int8_cost_vs_fp32_test_pts']:.1f} pts (CM), {op['int8_cost_vs_fp32_test_pts']:.1f} (OPEN)",
            y=1 - 10 / HP)
@@ -419,11 +424,13 @@ def fig8_system() -> Path:
         ax.text(2.2, y + h - 1.4, title, fontsize=11, fontweight="bold", va="top", color=C["ink"])
         ax.text(97.8, y + h - 1.4, status, fontsize=9, va="top", ha="right", color=C["ink2"], style="italic")
 
-    lane(38, 16.5, "1  Teachers (GPU)", "done locally on a 20k-tile subset · full 100k on NCSA Delta: not run (kit ready)",
-         "#eef4fb")
+    ob = _hl()["device"].get("onboard") or {}
+    lane(38, 16.5, "1  Teachers (GPU)", "done locally on a 20k-tile subset", "#eef4fb")
     lane(20, 16, "2  Student training (GPU)", "done locally (CM research + OPEN distributable)", "#f3f1fb")
-    lane(1.5, 16.5, "3  Arduino UNO Q, offline (target device)",
-         "built; runs as an x86 replay today · on-board run and latency: pending", "#f0f8f2")
+    lane(1.5, 16.5, "3  Arduino UNO Q, offline",
+         f"measured on the board: {ob.get('cm_int8_p50_ms_4_threads', float('nan')):.1f} ms per tile · "
+         f"{ob.get('cm_int8_bal_acc_board', float('nan')):.4f} on CRC-VAL-HE-7K" if ob else
+         "built; on-board run pending", "#f0f8f2")
     w = "white"
     box(3, 40, 11, 8, "tiles\n(uint8)", w)
     box(18, 40, 14, 8, "K1 CUDA\ndual preprocess\n(bit-exact)", "#d6f0e5", C["F"])
@@ -441,7 +448,7 @@ def fig8_system() -> Path:
     box(65, 22, 15, 8, f"ONNX → int8\n({s['int8_onnx_mb']:.1f} MB model,\nSHA256-checked)", w, fs=9.2)
     arrow(17, 26, 21, 26); arrow(37, 26, 41, 26); arrow(61, 26, 65, 26)
     arrow(59, 40, 10, 30.3)
-    box(3, 3.5, 14, 8, "USB camera\n(films a screen\nin the demo)", w, fs=9.2)
+    box(3, 3.5, 14, 8, "frame\n(replay tiles;\nUSB camera next)", w, fs=9.2)
     box(21, 3.5, 14, 8, "crop + tissue\ncheck", w, fs=9.2)
     box(39, 3.5, 17, 8, "int8 student\n(onnxruntime,\n4 Cortex-A53)", w, fs=9.2)
     box(60, 3.5, 16, 8, "call + AGREE /\nREVIEW flag", "#d6f0e5", C["F"], fs=9.2)

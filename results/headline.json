@@ -1,5 +1,5 @@
 {
- "note": "Computed by twinread.headline from the source JSONs named in each block. LOCAL-SUBSET dev numbers (CRC 20k-tile train subset + full CRC-VAL-HE-7K test; Camelyon17-WILDS 7.5k subset); the full-data Delta runs are pending. Research prototype, not a diagnostic device.",
+ "note": "Computed by twinread.headline from the source JSONs named in each block. LOCAL-SUBSET dev numbers (CRC 20k-tile train subset + full CRC-VAL-HE-7K test; Camelyon17-WILDS 7.5k subset); device numbers are measured on the Arduino UNO Q (results/uno_q/onboard/). Research prototype, not a diagnostic device.",
  "fusion": {
   "CM_crc": {
    "source": "results/cm_local/CM/crc/{readers,fusion,review}.json",
@@ -569,11 +569,134 @@
   "params_pct_of_teacher_vision_towers": 1.4301734565934823
  },
  "device": {
-  "source": "results/rig/decode_stress.json, results/uno_q/{mcu_compile,backbone_latency_x86_sim}.json",
+  "source": "results/uno_q/onboard/{board_info,latency,testset_score,stage_timing_cm}.json (measured on the board), results/uno_q/mcu_compile.json, results/rig/decode_stress.json",
   "mcu_sketch_compile_verified": true,
   "mcu_fqbn": "arduino:zephyr:unoq",
-  "mcu_flashed": false,
-  "uno_q_latency": "pending: measured when the board is plugged in",
+  "mcu_flashed": true,
+  "uno_q_latency": {
+   "host": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "6.16.7-g0dd6551ae96b",
+    "python": "3.13.5",
+    "onnxruntime": "1.31.0",
+    "cpu_count": 4
+   },
+   "simulated": false,
+   "complete": true,
+   "n_errors": 0,
+   "rows": [
+    {
+     "backbone": "student_cm",
+     "precision": "int8",
+     "threads": 1,
+     "size_mb": 6.01,
+     "p50_ms": 52.75,
+     "p90_ms": 53.02,
+     "rss_mb": 34.7,
+     "baseline_rss_mb": 45.6
+    },
+    {
+     "backbone": "student_cm",
+     "precision": "int8",
+     "threads": 2,
+     "size_mb": 6.01,
+     "p50_ms": 30.29,
+     "p90_ms": 30.62,
+     "rss_mb": 33.3,
+     "baseline_rss_mb": 45.6
+    },
+    {
+     "backbone": "student_cm",
+     "precision": "int8",
+     "threads": 4,
+     "size_mb": 6.01,
+     "p50_ms": 18.69,
+     "p90_ms": 19.19,
+     "rss_mb": 34.4,
+     "baseline_rss_mb": 45.6
+    },
+    {
+     "backbone": "student_open",
+     "precision": "int8",
+     "threads": 1,
+     "size_mb": 5.81,
+     "p50_ms": 52.55,
+     "p90_ms": 52.91,
+     "rss_mb": 35.6,
+     "baseline_rss_mb": 45.6
+    },
+    {
+     "backbone": "student_open",
+     "precision": "int8",
+     "threads": 2,
+     "size_mb": 5.81,
+     "p50_ms": 29.9,
+     "p90_ms": 30.22,
+     "rss_mb": 34.7,
+     "baseline_rss_mb": 45.6
+    },
+    {
+     "backbone": "student_open",
+     "precision": "int8",
+     "threads": 4,
+     "size_mb": 5.81,
+     "p50_ms": 16.67,
+     "p90_ms": 17.25,
+     "rss_mb": 33.8,
+     "baseline_rss_mb": 45.6
+    }
+   ]
+  },
+  "onboard": {
+   "board": "Arduino SA,Imola",
+   "machine": "aarch64",
+   "os": "Debian GNU/Linux 13 (trixie)",
+   "cpu_count": 4,
+   "cpu_max_ghz": 2.016,
+   "mem_total_mib": 3670,
+   "onnxruntime": "1.31.0",
+   "cm_int8_p50_ms_4_threads": 18.69,
+   "cm_int8_p50_ms_1_thread": 52.75,
+   "cm_int8_rss_mb": 34.4,
+   "open_int8_p50_ms_4_threads": 16.67,
+   "stage_p50_ms": {
+    "LED busy (Bridge RPC)": 8.089011000038226,
+    "frame read (PNG decode)": 5.593749999889042,
+    "crop to 224 px": 0.12710900023193972,
+    "uint8 -> float NCHW": 1.18716150018372,
+    "int8 student (onnxruntime)": 18.751328500229647,
+    "probes + softmax": 0.5577609999818378,
+    "tissue check": 23.409089000097083,
+    "review rule": 0.5186460000459192,
+    "LED result (Bridge RPC)": 8.246614500194482,
+    "tissue fraction again (UI)": 22.049296999966828,
+    "UI frame (box + JPEG)": 1.4781505001337791
+   },
+   "app_frame_ms_p50_sum_of_stages": 90.0079180009925,
+   "led_bridge_rpc_ms_per_call": 8.246614500194482,
+   "test_split": "CRC-VAL-HE-7K test (7,180 tiles)",
+   "cm_int8_bal_acc_board": 0.9305484575898711,
+   "cm_int8_bal_acc_x86": 0.9219132650544279,
+   "open_int8_bal_acc_board": 0.9044419589386413,
+   "open_int8_bal_acc_x86": 0.908546379396576,
+   "cm_full_loop_tiles_per_s": 25.44,
+   "cm_full_loop_seconds": 282.25,
+   "cm_board_vs_x86_pred_agreement": 0.9814763231197772,
+   "cm_board_device_flag": {
+    "n": 7180,
+    "fraction": 0.10181058495821727,
+    "teacher_fraction": 0.25055710306406687,
+    "agreement": 0.7958217270194986,
+    "kappa": 0.32245236675120126,
+    "teacher_recall": 0.29571984435797666,
+    "precision_vs_teacher": 0.7277701778385773,
+    "error_rate": 0.05236768802228412,
+    "errors_caught": 0.5718085106382979,
+    "acc_cleared": 0.9750348891300977
+   },
+   "note": "Board = Arduino UNO Q (aarch64, onnxruntime CPU) running device/twinread_runtime.EdgeModel; host = x86_64 rerun of the same bundle and loop. Research prototype, not a diagnostic device."
+  },
   "x86_latency_table_is_simulation": true,
   "rig_simulated_captures": 8000,
   "rig_simulated_wrong_ids": 0,
@@ -582,9 +705,8 @@
   "rig_note": "SIMULATED camera-filming-a-screen (rig/sim_capture.py), real CRC test tiles; 40 darkest of a 1/7 subsample + 160 random",
   "real_camera_captures": 0
  },
- "pending": [
-  "UNO Q on-board latency and offline demo (pending: measured when the board is plugged in)",
-  "real camera-of-screen captures from the rig (none recorded yet)",
-  "NCSA Delta full-data CONCH+MUSK runs (100k CRC, A100; kit in ncsa/)"
+ "future_steps": [
+  "real camera captures through the rig (the board has only run on stored tiles; camera robustness so far is the K2 simulation)",
+  "full-data CONCH + MUSK run on NCSA Delta (100k CRC training tiles; kit in ncsa/)"
  ]
 }

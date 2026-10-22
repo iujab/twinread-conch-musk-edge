@@ -1,12 +1,12 @@
 # TwinRead device app (Arduino UNO Q, offline)
 
-Research prototype - not a diagnostic device. The int8 student is built to run offline (on-board run pending); a USB
-camera films tissue images shown on a screen ("Camera filming a screen (demo)"); the local UI (127.0.0.1:8080) and the
+Research prototype - not a diagnostic device. The int8 student runs offline on the board (measured: 18.7 ms per tile at
+4 threads, `results/uno_q/onboard/`); a USB camera can film tissue images shown on a screen (not done yet; replay mode so far); the local UI (127.0.0.1:8080) and the
 8x13 LED matrix show AGREE / REVIEW. The device's two "readers" are two heads on ONE shared student backbone (Head A in
 CONCH-space and Head B in MUSK-space for the CM bundle; space A / space B for OPEN), so they are far less independent
 than CONCH and MUSK; the UI calls them student heads. Measured on CRC-VAL-HE-7K, the deployed CM int8 flag agrees with
-the teacher flag at kappa 0.34 and recovers 33.3% of teacher-flagged tiles
-(`results/student/cm_crc/int8_flag_fidelity.json`).
+the teacher flag at kappa 0.34 on x86 and 0.32 on the board
+(`results/student/cm_crc/int8_flag_fidelity.json`, `results/uno_q/onboard/testset_score.json`).
 
 - `twinread_runtime.py`: bundle verification (SHA256SUMS), `EdgeModel` (onnxruntime), `tissue_fraction`, `crop_from_frame`, `device_review_rule`.
 - `uno_q_app.py`: loop + stdlib `http.server` (`/`, `/state`, `/frame.jpg`), 127.0.0.1 only, no network calls.
@@ -34,7 +34,8 @@ flatbuffers and packaging; the install step is unverified on a board.
 
 ## Latency harness (`bench_backbones.py`)
 
-`python bench_backbones.py --dir backbones --threads 1 2 4 --out ../results/uno_q/backbone_latency.json` on the board.
+`python bench_backbones.py --dir backbones --threads 1 2 4 --out ../results/uno_q/onboard/latency.json` on the board
+(done; that file holds the measured rows).
 Each (model, threads) runs in a child process; a failing child becomes an error row and the run continues, and the
 JSON is rewritten after every row (`"complete": false` until the end), so nothing measured is lost. The headline counts
 the file as UNO Q latency only if it says `"simulated": false` with an aarch64 host; anything else stays "pending".
@@ -48,20 +49,18 @@ A bundle that fails checksum verification is refused.
   OR pixel std < 6 grey levels. On all 7,180 NCT-CRC test tiles only 9 fall under 0.10, all ADI (near-empty fat), and they go to review.
 - Crop: shorter side resized to 224 (bicubic), then centre crop. `--crop marker` tries the rig's marker warp, else centre.
 
-## Bridge assumptions (verify on the board)
+## Bridge (verified on the board)
 1. App Lab: `from arduino.app_utils import Bridge; Bridge.call("set_state", state)`.
 2. Else a msgpack-RPC request `[0, 1, "set_state", [state]]` to the unix socket `/var/run/arduino-router.sock`
    (override with `ARDUINO_ROUTER_SOCK`). Socket path, framing and reply check are untested off-board.
-3. The sketch registers `set_state` with `Bridge.provide`. It is compile-verified only (arduino:zephyr:unoq, see
-   `results/uno_q/mcu_compile.json`), not flashed. The LED icon shapes have not been seen on hardware.
+3. The sketch registers `set_state` with `Bridge.provide`. It is flashed over USB-C with OpenOCD (arduino:zephyr:unoq);
+   `set_state` is delivered and an unknown method is refused; one call costs about 8 ms (`results/uno_q/onboard/stage_timing_cm.json`).
 
-## Not measured
-UNO Q latency (target 250 ms/tile at 4 threads) is not measured; the 20-65 ms in the simulation is an x86 host with a tiny test model.
-`figures/ui_device_sim.png` is this app on the x86 desktop, not the UNO Q (re-shot with the student-head labels):
-`--mode replay` with the distributable OPEN int8 bundle on one real CRC-VAL-HE-7K tile (`data/replay_crc/`,
-git-ignored), captured with headless Chromium (the Playwright MCP browser was locked). The latency it shows is the x86
-host's, not the board's.
-
+## Measured on the board (`results/uno_q/onboard/`, `scripts/uno_q/`)
+int8 CM student 18.7 ms per tile at 4 threads (52.8 ms at 1 thread), 34 MB RAM; full CRC-VAL-HE-7K 0.9305 (CM) and 0.9044
+(OPEN) balanced accuracy, 7,180 tiles in 282 s; one app frame about 90 ms, half of it the numpy tissue check.
+`figures/ui_device_unoq.png` is this app on the board in `--mode replay` with the CM bundle on one real CRC-VAL-HE-7K
+tile. Not done: real camera captures.
 
 ## Building the bundle
 

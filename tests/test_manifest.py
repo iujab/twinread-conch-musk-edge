@@ -88,7 +88,7 @@ def test_readme_has_disclaimer_and_abstract():
     words = len(m.group(1).split())
     assert 150 <= words <= 260, words
     assert txt.index("## Abstract") < 1200, "the abstract opens the README"
-    for word in ("pending", "SIMULATION", "CC-BY-NC-ND"):
+    for word in ("CC-BY-NC-ND", "UNO Q", "measured on the board"):
         assert word.lower() in low, word
 
 
@@ -118,7 +118,8 @@ def test_headline_matches_sources():
     on_disk = json.loads((ROOT / "results" / "headline.json").read_text())
     assert on_disk == json.loads(json.dumps(headline.build(ROOT / "results"), default=str))
     assert on_disk["student"]["CM"]["int8_below_every_teacher"] is True
-    assert on_disk["device"]["uno_q_latency"].startswith("pending")
+    lat = on_disk["device"]["uno_q_latency"]
+    assert isinstance(lat, dict) and lat["simulated"] is False and lat["host"]["machine"] == "aarch64"
 
 
 def test_caught_curve_matches_errors_caught():
@@ -156,15 +157,15 @@ def test_app_host_serves_and_binds_localhost(tmp_path):
     assert r.status_code == 200
     low = r.text.lower()
     assert "research prototype" in low and "not a diagnostic device" in low and "1778/rig" in r.text
-    assert client.get("/api/headline").json()["device"]["uno_q_latency"].startswith("pending")
+    assert isinstance(client.get("/api/headline").json()["device"]["uno_q_latency"], dict)
+    assert "measured on the board" in low
     t = client.get("/api/tiles?dataset=crc&n=4").json()
     assert "available" in t
     assert client.get("/tile/crc/0.png").status_code in (200, 404)
 
 
 # ---- Task 18 fix round 1 (review): regression guards ------------------------------------------------------------
-OVERCLAIMS = ("recall trade", "runs offline on an arduino", "runs offline on a uno q", "runs on an arduino uno q",
-              "runs on the uno q", "sends 10% of tiles", "make the pipeline cheap", "decoded 8,000",
+OVERCLAIMS = ("recall trade", "sends 10% of tiles", "make the pipeline cheap", "decoded 8,000",
               "which reader to distrust", "phone-grade", "equally strong", "no two-reader flag",
               "could actually be given", "no two-reader system", "both readers agree")
 
@@ -187,8 +188,8 @@ def test_no_overclaims_in_deliverables():
 def test_abstract_carries_required_caveats():
     txt = (ROOT / "README.md").read_text()
     abstract = re.search(r"^## Abstract\s*\n(.*?)(?=^!\[|^## )", txt, re.S | re.M).group(1)
-    for must in ("On CRC", "Camelyon17", "does not beat CONCH alone", "25.1%", "below every teacher", "x86 replay",
-                 "pending", "×1.11", "tumour recall"):
+    for must in ("On CRC", "Camelyon17", "does not beat CONCH alone", "25.1%", "below every teacher", "on the board",
+                 "UNO Q", "×1.11", "tumour recall"):
         assert must in abstract, must
 
 
@@ -214,10 +215,10 @@ def test_fig2_keeps_committed_figure_without_gallery(monkeypatch, tmp_path):
 
 
 def test_uno_q_latency_requires_real_on_board_run(tmp_path):
-    """M3: backbone_latency.json counts as on-board latency only with simulated == false on an aarch64 host."""
+    """M3: onboard/latency.json counts as on-board latency only with simulated == false on an aarch64 host."""
     from twinread import headline
-    (tmp_path / "uno_q").mkdir()
-    p = tmp_path / "uno_q" / "backbone_latency.json"
+    (tmp_path / "uno_q" / "onboard").mkdir(parents=True)
+    p = tmp_path / "uno_q" / "onboard" / "latency.json"
     assert headline.uno_q_latency(tmp_path) == headline.UNO_Q_PENDING  # no file
     row = {"backbone": "mobilenetv4_conv_small", "precision": "int8", "threads": 4, "p50_ms": 80.0}
     for sim, machine, rows in ((True, "aarch64", [row]), (False, "x86_64", [row]), (None, "aarch64", [row]),
@@ -241,7 +242,7 @@ def test_device_heads_and_flag_fidelity_reported():
     hl = json.loads((ROOT / "results" / "headline.json").read_text())["student"]["CM"]
     fp, i8 = hl["fp32_device_flag_test_clean"], hl["int8_device_flag_test_clean"]
     readme = (ROOT / "README.md").read_text()
-    sec4 = re.search(r"^## [^\n]*device[^\n]*\n(.*?)(?=^## |\Z)", readme, re.S | re.M | re.I).group(1)
+    sec4 = re.search(r"^## [^\n]*(device|UNO Q)[^\n]*\n(.*?)(?=^## |\Z)", readme, re.S | re.M | re.I).group(2)
     deck = (ROOT / "docs" / "deck_outline.md").read_text()
     s14 = deck[deck.index("### Slide 14"):deck.index("### Slide 16")]
     for txt in (sec4, s14):

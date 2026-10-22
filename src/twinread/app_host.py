@@ -147,8 +147,8 @@ a{{color:var(--A)}}
 </style></head><body>
 <div class=banner>Research prototype, not a diagnostic device</div>
 <header><h1>TwinRead: CONCH and MUSK as two independent readers</h1>
-<p class=sub>Fused reader, review flag, shared blind spots, and an int8 student built for an offline Arduino UNO Q
-(it runs as an x86 replay today; the on-board run is pending).
+<p class=sub>Fused reader, review flag, shared blind spots, and an int8 student that runs on an offline Arduino UNO Q
+(device numbers measured on the board).
 LOCAL-SUBSET dev numbers (CRC 20k-tile train subset; full CRC-VAL-HE-7K test). Every number below is read from
 <code>results/headline.json</code>. Screen-capture rig: <a href="{RIG_URL}">{RIG_URL}</a> (run <code>rig/show_tiles.py</code>).</p></header>
 <main>
@@ -183,12 +183,11 @@ threshold over-flags CRC test (val near ceiling; val → test is a distribution 
 <span>CM student int8 (deployed)</span><b>{cm['int8_test_bal_acc']:.4f} (below every teacher)</b>
 <span>OPEN student int8 (distributable)</span><b>{s['OPEN']['int8_test_bal_acc']:.4f}</b>
 <span>size</span><b>{s['params_millions']:.2f} M params ({s['params_pct_of_teacher_vision_towers']:.1f}% of the teachers' vision towers), {s['int8_onnx_mb']:.1f} MB int8</b>
-<span>LED sketch</span><b>{'compile-verified, not flashed' if dv['mcu_sketch_compile_verified'] else 'not verified'}</b>
+<span>LED sketch</span><b>{'flashed on the board; Bridge RPC verified' if dv.get('mcu_flashed') else ('compile-verified, not flashed' if dv['mcu_sketch_compile_verified'] else 'not verified')}</b>
 <span>rig (SIMULATED captures)</span><b>{dv['rig_simulated_captures']:,} trials, {dv['rig_simulated_accepted']:,} accepted, {dv['rig_simulated_wrong_ids']} wrong labels; real captures: {dv['real_camera_captures']}</b>
 <span>int8 bundle review flag (CM, test)</span><b>flags {_pct(cm['int8_bundle_flag_rate_test'])} (thresholds recalibrated on int8 val)</b>
 <span>int8 flag vs teacher flag (CM)</span><b>kappa {cm['int8_device_flag_test_clean']['kappa']:.2f}, recovers {_pct(cm['int8_device_flag_test_clean']['teacher_recall'])} of teacher-flagged tiles; two heads of one student</b>
-</div><div class=pending>UNO Q on-board latency: <b>{html.escape(str(dv['uno_q_latency']))}</b>.
-NCSA Delta full-data runs: pending (kit in <code>ncsa/</code>).</div>
+</div><div class=pending>Arduino UNO Q, measured on the board: <b>{_board(dv)}</b>.</div>
 <p class=mut>The CM student derives from CONCH and MUSK (CC-BY-NC-ND-4.0) and is not distributed; the OPEN student is distributable (not distributed).</p></section>
 </div>
 <section class=card><h2>Tile viewer: CRC test tiles, both readers' calls, the fused call and the pre-registered flag</h2>
@@ -214,6 +213,15 @@ async function load(reset){{if(reset){{off=0;$('#tiles').innerHTML=''}};const ds
  $('#info').textContent=`${{off}} of ${{r.n_match}} tiles`}}
 $('#ds').onchange=()=>load(true);$('#filt').onchange=()=>load(true);$('#more').onclick=()=>load(false);load(true);
 </script></body></html>"""
+
+
+def _board(dv: dict) -> str:
+    ob = dv.get("onboard") or {}
+    if not isinstance(dv.get("uno_q_latency"), dict) or not ob:
+        return html.escape(str(dv.get("uno_q_latency")))
+    return (f"int8 student {ob['cm_int8_p50_ms_4_threads']:.1f} ms per tile (4 threads); {ob['cm_int8_bal_acc_board']:.4f} "
+            f"balanced accuracy (CM) on all 7,180 CRC-VAL-HE-7K tiles; {ob['cm_full_loop_tiles_per_s']:.1f} tiles/s "
+            "for the full app loop")
 
 
 def make_app(results: Path = ROOT / "results", data_dir: Path = ROOT / "data") -> FastAPI:

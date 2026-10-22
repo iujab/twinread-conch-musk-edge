@@ -20,7 +20,7 @@
 #    bundle came out identical to the committed ones (same metrics, same SHA256SUMS); other GPUs may differ;
 #  - figures/fig2 keeps its committed version when the tile gallery's inputs are missing.
 # The rig page (camera-of-screen capture) is separate: python rig/show_tiles.py  -> http://127.0.0.1:1778/rig
-# The device app is built for the Arduino UNO Q; today it runs as an x86 replay (see device/README.md).
+# The device app has run on the Arduino UNO Q (results/uno_q/onboard/, device/README.md).
 set -euo pipefail
 P="$(cd "$(dirname "$0")" && pwd)"
 B="${BENCH:-$(cd "$P/.." && pwd)}"   # bench root (venv + shared GPU lock); set BENCH when running a clone elsewhere

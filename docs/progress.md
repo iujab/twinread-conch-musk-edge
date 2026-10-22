@@ -195,3 +195,8 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
   of int8 errors; OPEN kappa 0.31. UI relabelled ("Head A (CONCH-space)"), screenshot re-shot.
 - **GPU tests** run only with `TWINREAD_GPU_TESTS=1`; reader tests skip without cached weights.
 
+- 2026-10-22: UNO Q on-board run (`results/uno_q/onboard/`, `scripts/uno_q/`, `figures_unoq.py`): int8 CM student
+  18.7 ms per tile at 4 threads, 0.9305 on all 7,180 CRC test tiles (x86 int8 0.9219 was an onnxruntime fused-kernel
+  artefact; x86 with fused kernels off gives 0.9301), 25.4 tiles/s full loop, LED sketch flashed and Bridge verified.
+  README, project.json, headline, fig5/fig8, dashboard, deck outline and tests updated; camera and NCSA moved to
+  future steps. Manifest figures: fig1, fig2, fig3, fig5, fig8, fig9, fig11, ui_device_unoq; extras in figures/extra/.

@@ -15,7 +15,7 @@ GPU timing: CUDA events, warmup 3, median of 10. CPU: best of N runs (the machin
   flock $B/.gpu.lock python bench/bench_k2.py --part gpu
   flock $B/.gpu.lock python bench/bench_k2.py --part parity
   flock $B/.gpu.lock python bench/bench_k2.py --part figure
-Parts merge into results/kernels/k2_bench.json and k2_parity.json; the figure is figures/k2_severity_grid.png
+Parts merge into results/kernels/k2_bench.json and k2_parity.json; the figure is figures/extra/k2_severity_grid.png
 (its params: results/kernels/k2_figure.json). Research prototype, not a diagnostic device.
 """
 from __future__ import annotations
@@ -43,7 +43,7 @@ from twinread.kernels import CameraAugParams, _camera_aug_impl, camera_aug, load
 from twinread.ref import camera_ops as co  # noqa: E402
 
 OUT = P / "results" / "kernels"
-FIG = P / "figures" / "k2_severity_grid.png"
+FIG = P / "figures" / "extra" / "k2_severity_grid.png"
 BATCH, PSEED, NSEED = 256, 0, 1234
 CLASSES = ["ADI", "BACK", "DEB", "LYM", "MUC", "MUS", "NORM", "STR", "TUM"]  # 1aurent/NCT-CRC-HE label names
 OP_KEYS = {"warp": ["warp"], "hed": ["hed_alpha", "hed_beta"], "display": ["gamma", "profile"],
