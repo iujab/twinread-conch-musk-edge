@@ -1,0 +1,140 @@
+{
+ "split": "CRC-VAL-HE-7K test (7,180 tiles)",
+ "pairs": {
+  "OPEN": {
+   "bundle_sha256sums_sha256": "8d79001425dbdb8ae6fe689024c6f2daa0a3bfdcc86677b53957b0ca6c507fc2",
+   "board_run": {
+    "n": 7180,
+    "threads": 4,
+    "batch": 64,
+    "seconds": 279.7,
+    "ms_per_tile": 38.95,
+    "tiles_per_s": 25.67
+   },
+   "board_host": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "6.16.7-g0dd6551ae96b",
+    "node": "uno-q",
+    "python": "3.13.5",
+    "onnxruntime": "1.31.0",
+    "numpy": "2.5.4",
+    "cpu_count": 4
+   },
+   "board_temps_c": {
+    "before_max": 40.5,
+    "after_max": 47.8
+   },
+   "int8_bal_acc_board": 0.9044419589386413,
+   "int8_bal_acc_host_x86_rerun": 0.908546379396576,
+   "int8_bal_acc_committed_x86": 0.908546379396576,
+   "board_device_flag": {
+    "n": 7180,
+    "fraction": 0.14122562674094707,
+    "teacher_fraction": 0.26337047353760445,
+    "agreement": 0.7639275766016713,
+    "kappa": 0.28507699487139493,
+    "teacher_recall": 0.3199365415124273,
+    "precision_vs_teacher": 0.596646942800789,
+    "error_rate": 0.06754874651810584,
+    "errors_caught": 0.7402061855670103,
+    "acc_cleared": 0.9795653584171262
+   },
+   "committed_x86_device_flag": {
+    "n": 7180,
+    "fraction": 0.14623955431754876,
+    "teacher_fraction": 0.26337047353760445,
+    "agreement": 0.7706128133704735,
+    "kappa": 0.3102789805707459,
+    "teacher_recall": 0.3421470121628768,
+    "precision_vs_teacher": 0.6161904761904762,
+    "error_rate": 0.06476323119777158,
+    "errors_caught": 0.7376344086021506,
+    "acc_cleared": 0.9800978792822186
+   },
+   "board_vs_x86": {
+    "pred_agreement": 0.9809192200557103,
+    "pred_mismatches": 137,
+    "review_agreement": 0.9459610027855153,
+    "review_mismatches": 388,
+    "reasons_mismatched_tiles": 723,
+    "max_abs_diff_probsF": 0.9275601344222351,
+    "max_abs_diff_probsA": 0.9670361243188381,
+    "max_abs_diff_probsB": 0.889341376721859,
+    "max_abs_diff_review_score": 0.48534466663608344
+   },
+   "checks": {
+    "board_bal_acc_matches_committed": false,
+    "board_kappa_matches_committed": false
+   }
+  },
+  "CM": {
+   "bundle_sha256sums_sha256": "697e5103b00d6062c14b4d4c44f55e4126896a93bf34e844cb7fbff25ec3b1be",
+   "board_run": {
+    "n": 7180,
+    "threads": 4,
+    "batch": 64,
+    "seconds": 282.25,
+    "ms_per_tile": 39.31,
+    "tiles_per_s": 25.44
+   },
+   "board_host": {
+    "machine": "aarch64",
+    "system": "Linux",
+    "release": "6.16.7-g0dd6551ae96b",
+    "node": "uno-q",
+    "python": "3.13.5",
+    "onnxruntime": "1.31.0",
+    "numpy": "2.5.4",
+    "cpu_count": 4
+   },
+   "board_temps_c": {
+    "before_max": 48.1,
+    "after_max": 48.1
+   },
+   "int8_bal_acc_board": 0.9305484575898711,
+   "int8_bal_acc_host_x86_rerun": 0.9219132650544279,
+   "int8_bal_acc_committed_x86": 0.9219132650544279,
+   "board_device_flag": {
+    "n": 7180,
+    "fraction": 0.10181058495821727,
+    "teacher_fraction": 0.25055710306406687,
+    "agreement": 0.7958217270194986,
+    "kappa": 0.32245236675120126,
+    "teacher_recall": 0.29571984435797666,
+    "precision_vs_teacher": 0.7277701778385773,
+    "error_rate": 0.05236768802228412,
+    "errors_caught": 0.5718085106382979,
+    "acc_cleared": 0.9750348891300977
+   },
+   "committed_x86_device_flag": {
+    "n": 7180,
+    "fraction": 0.12144846796657381,
+    "teacher_fraction": 0.25055710306406687,
+    "agreement": 0.7948467966573816,
+    "kappa": 0.34065296935398537,
+    "teacher_recall": 0.3329627570872707,
+    "precision_vs_teacher": 0.6869266055045872,
+    "error_rate": 0.05877437325905292,
+    "errors_caught": 0.5758293838862559,
+    "acc_cleared": 0.9716233354470514
+   },
+   "board_vs_x86": {
+    "pred_agreement": 0.9814763231197772,
+    "pred_mismatches": 133,
+    "review_agreement": 0.9600278551532033,
+    "review_mismatches": 287,
+    "reasons_mismatched_tiles": 470,
+    "max_abs_diff_probsF": 0.9902738673624563,
+    "max_abs_diff_probsA": 0.9999844483115226,
+    "max_abs_diff_probsB": 0.9998867217218503,
+    "max_abs_diff_review_score": 0.6667104422498167
+   },
+   "checks": {
+    "board_bal_acc_matches_committed": false,
+    "board_kappa_matches_committed": false
+   }
+  }
+ },
+ "note": "Board = Arduino UNO Q (aarch64, onnxruntime CPU) running device/twinread_runtime.EdgeModel; host = x86_64 rerun of the same bundle and loop. Research prototype, not a diagnostic device."
+}

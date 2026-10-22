@@ -1,0 +1,72 @@
+{
+ "bundle": "/home/arduino/twinread-conch-musk-edge/bundles/cm",
+ "config": {
+  "pair": "CM",
+  "classes": [
+   "ADI",
+   "BACK",
+   "DEB",
+   "LYM",
+   "MUC",
+   "MUS",
+   "NORM",
+   "STR",
+   "TUM"
+  ],
+  "thresholds": {
+   "js": 0.04168356591417004,
+   "review": 0.4298337586868884
+  },
+  "licence_note": "CONCH + MUSK derived student: model licences (CC-BY-NC-ND) do NOT permit redistribution; keep local, not distributable.",
+  "distributable": false
+ },
+ "n": 7180,
+ "threads": 4,
+ "batch": 64,
+ "seconds": 282.25,
+ "ms_per_tile": 39.31,
+ "tiles_per_s": 25.44,
+ "batch_seconds_p50": 2.5171467170000597,
+ "batch_seconds_max": 2.6255086969999866,
+ "host": {
+  "machine": "aarch64",
+  "system": "Linux",
+  "release": "6.16.7-g0dd6551ae96b",
+  "node": "uno-q",
+  "python": "3.13.5",
+  "onnxruntime": "1.31.0",
+  "numpy": "2.5.4",
+  "cpu_count": 4
+ },
+ "temps_c_before": {
+  "mapss-thermal": 45.3,
+  "video-thermal": 45.6,
+  "wlan-thermal": 43.4,
+  "cpuss0-thermal": 48.1,
+  "cpuss1-thermal": 47.8,
+  "mdm0-thermal": 44.6,
+  "mdm1-thermal": 45.3,
+  "gpu-thermal": 44.6,
+  "hm-center-thermal": 45.6,
+  "camera-thermal": 44.6
+ },
+ "temps_c_after": {
+  "mapss-thermal": 45.6,
+  "video-thermal": 45.9,
+  "wlan-thermal": 44.0,
+  "cpuss0-thermal": 47.8,
+  "cpuss1-thermal": 48.1,
+  "mdm0-thermal": 45.3,
+  "mdm1-thermal": 45.6,
+  "gpu-thermal": 44.9,
+  "hm-center-thermal": 45.9,
+  "camera-thermal": 44.9
+ },
+ "reasons_order": [
+  "disagree",
+  "js",
+  "review_head",
+  "no_tissue"
+ ],
+ "note": "EdgeModel.infer timing includes the tissue check and probes, not camera capture or cropping."
+}

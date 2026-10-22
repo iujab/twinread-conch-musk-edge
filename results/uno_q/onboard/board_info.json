@@ -1,0 +1,36 @@
+{
+ "board_model": "Arduino SA,Imola",
+ "compatible": [
+  "arduino,imola",
+  "qcom,qcm2290",
+  "qcom,qrb2210"
+ ],
+ "machine": "aarch64",
+ "kernel": "6.16.7-g0dd6551ae96b",
+ "os": "Debian GNU/Linux 13 (trixie)",
+ "cpu_count": 4,
+ "cpu_part": [
+  "0x801"
+ ],
+ "cpu_features": [
+  "fp",
+  "asimd",
+  "evtstrm",
+  "aes",
+  "pmull",
+  "sha1",
+  "sha2",
+  "crc32",
+  "cpuid"
+ ],
+ "cpu_max_khz": 2016000,
+ "mem_total_mib": 3670,
+ "python": "3.13.5",
+ "onnxruntime": "1.31.0",
+ "ort_providers": [
+  "AzureExecutionProvider",
+  "CPUExecutionProvider"
+ ],
+ "numpy": "2.5.4",
+ "router_socket": true
+}

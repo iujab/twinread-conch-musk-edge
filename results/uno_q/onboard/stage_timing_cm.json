@@ -1,0 +1,97 @@
+{
+ "bundle": "../bundles/cm",
+ "frame": "../data/replay_crc/crc_test_2621_TUM.png",
+ "frame_shape": [
+  224,
+  224,
+  3
+ ],
+ "threads": 4,
+ "iters": 300,
+ "warmup": 10,
+ "host": {
+  "machine": "aarch64",
+  "node": "uno-q",
+  "release": "6.16.7-g0dd6551ae96b"
+ },
+ "simulated": false,
+ "stages": [
+  {
+   "stage": "LED busy (Bridge RPC)",
+   "p50_ms": 8.089011000038226,
+   "p90_ms": 9.041922000051272,
+   "mean_ms": 8.174972416676004
+  },
+  {
+   "stage": "frame read (PNG decode)",
+   "p50_ms": 5.593749999889042,
+   "p90_ms": 5.702510400124083,
+   "mean_ms": 5.599887336658564
+  },
+  {
+   "stage": "crop to 224 px",
+   "p50_ms": 0.12710900023193972,
+   "p90_ms": 0.13865129994883318,
+   "mean_ms": 0.12993592333411166
+  },
+  {
+   "stage": "uint8 -> float NCHW",
+   "p50_ms": 1.18716150018372,
+   "p90_ms": 1.3461101000302733,
+   "mean_ms": 1.2216279766592681
+  },
+  {
+   "stage": "int8 student (onnxruntime)",
+   "p50_ms": 18.751328500229647,
+   "p90_ms": 18.947365099938906,
+   "mean_ms": 18.40685085000435
+  },
+  {
+   "stage": "probes + softmax",
+   "p50_ms": 0.5577609999818378,
+   "p90_ms": 0.62360440001612,
+   "mean_ms": 0.5543118100013089
+  },
+  {
+   "stage": "tissue check",
+   "p50_ms": 23.409089000097083,
+   "p90_ms": 23.79908319990136,
+   "mean_ms": 23.24274094001339
+  },
+  {
+   "stage": "review rule",
+   "p50_ms": 0.5186460000459192,
+   "p90_ms": 0.5818022002586076,
+   "mean_ms": 0.5028395566584246
+  },
+  {
+   "stage": "LED result (Bridge RPC)",
+   "p50_ms": 8.246614500194482,
+   "p90_ms": 9.167854299676037,
+   "mean_ms": 8.35487848000715
+  },
+  {
+   "stage": "tissue fraction again (UI)",
+   "p50_ms": 22.049296999966828,
+   "p90_ms": 22.35650979996535,
+   "mean_ms": 21.911871519993536
+  },
+  {
+   "stage": "UI frame (box + JPEG)",
+   "p50_ms": 1.4781505001337791,
+   "p90_ms": 1.5641560002222832,
+   "mean_ms": 1.4730348899972039
+  }
+ ],
+ "total_p50_ms": 90.21752600006039,
+ "total_p90_ms": 91.8991672001539,
+ "check": {
+  "staged_label": "TUM",
+  "edgemodel_label": "TUM",
+  "staged_review": false,
+  "edgemodel_review": false,
+  "tissue_fraction": 0.9634088010204082,
+  "matches_edgemodel": true
+ },
+ "note": "Replay mode: the frame is a 224x224 PNG, so crop is a no-op resize; a camera frame adds capture and a real resize. Research prototype, not a diagnostic device."
+}

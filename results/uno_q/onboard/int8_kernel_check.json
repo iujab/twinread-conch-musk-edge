@@ -1,0 +1,72 @@
+{
+ "host": {
+  "machine": "x86_64",
+  "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+  "avx2": true,
+  "avx512_vnni": false,
+  "avx_vnni": false,
+  "onnxruntime": "1.31.0"
+ },
+ "open": {
+  "bal_acc": {
+   "board": 0.9044419589386413,
+   "x86": 0.908546379396576,
+   "x86_noopt": 0.9038502756698095
+  },
+  "fp32_student_bal_acc": 0.9358942498430375,
+  "pred_agreement_with_fp32_student": {
+   "board": 0.9541782729805014,
+   "x86": 0.958217270194986,
+   "x86_noopt": 0.9544568245125348
+  },
+  "board_vs_x86": {
+   "pred_mismatches": 137,
+   "review_mismatches": 388,
+   "max_abs_diff_probsF": 0.9275601344222351,
+   "mean_abs_diff_probsF": 0.004288174242128041
+  },
+  "board_vs_x86_noopt": {
+   "pred_mismatches": 10,
+   "review_mismatches": 98,
+   "max_abs_diff_probsF": 0.23121781527594565,
+   "mean_abs_diff_probsF": 0.00047603737481820806
+  },
+  "x86_vs_x86_noopt": {
+   "pred_mismatches": 135,
+   "review_mismatches": 380,
+   "max_abs_diff_probsF": 0.9275601297663472,
+   "mean_abs_diff_probsF": 0.004340840689422295
+  }
+ },
+ "cm": {
+  "bal_acc": {
+   "board": 0.9305484575898711,
+   "x86": 0.9219132650544279,
+   "x86_noopt": 0.9300760534314946
+  },
+  "fp32_student_bal_acc": 0.9415366032015291,
+  "pred_agreement_with_fp32_student": {
+   "board": 0.9676880222841225,
+   "x86": 0.9607242339832869,
+   "x86_noopt": 0.9675487465181059
+  },
+  "board_vs_x86": {
+   "pred_mismatches": 133,
+   "review_mismatches": 287,
+   "max_abs_diff_probsF": 0.9902738673624563,
+   "mean_abs_diff_probsF": 0.004499302299715054
+  },
+  "board_vs_x86_noopt": {
+   "pred_mismatches": 13,
+   "review_mismatches": 36,
+   "max_abs_diff_probsF": 0.13674391634041794,
+   "mean_abs_diff_probsF": 0.0004072432622991233
+  },
+  "x86_vs_x86_noopt": {
+   "pred_mismatches": 127,
+   "review_mismatches": 293,
+   "max_abs_diff_probsF": 0.9902738649876344,
+   "mean_abs_diff_probsF": 0.004471306881528132
+  }
+ }
+}
