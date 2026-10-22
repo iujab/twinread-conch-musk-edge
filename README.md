@@ -2,7 +2,8 @@
 
 **Research prototype, not a diagnostic device.** Every number here comes from `results/**/*.json`
 (`python -m twinread.headline` collects them into `results/headline.json`). Model numbers are from a local subset on
-one RTX 5060. Device numbers are measured on the Arduino UNO Q.
+one RTX 5060. Device numbers are measured on the Arduino UNO Q. Slides: `docs/twinread_deck.pdf` (12 slides,
+built from `docs/deck/twinread_deck.html` by `docs/deck/build_deck.sh`).
 
 ## Abstract
 

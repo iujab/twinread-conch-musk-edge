@@ -1,5 +1,8 @@
 # TwinRead deck outline (submission Wed Oct 21: at most 20 main slides)
 
+The submitted deck is `docs/twinread_deck.pdf` (12 slides, built from `docs/deck/twinread_deck.html`). This outline
+is the longer reference it was condensed from.
+
 Each slide gives a title, the content, the figure and a one-line speaker note. Every number comes from
 `results/headline.json` or the JSON it cites. Model numbers are local-subset numbers; device numbers are measured on
 the Arduino UNO Q. Every slide footer reads "Research prototype, not a diagnostic device."

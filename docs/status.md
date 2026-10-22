@@ -35,7 +35,8 @@ Tests: CPU suite `pytest tests -q` (about 80 s); GPU tests under the lock with `
 2. NCSA Delta full-data run (every command needs the user's OK first): follow `ncsa/README.md` J1 -> J2 ->
    `analyze_cpu.slurm` -> J3; copy back only `results/delta/`. Then swap the local-subset numbers in README,
    `project.json` and the deck outline.
-3. Submission: abstract (README opens with it) and a deck of at most 20 slides from `docs/deck_outline.md`.
+3. Submission: abstract (README opens with it) and the deck `docs/twinread_deck.pdf` (12 slides; rebuild with
+   `bash docs/deck/build_deck.sh` after editing `docs/deck/twinread_deck.html`).
 
 ## Hard rules
 - CONCH and MUSK are CC-BY-NC-ND. The CM student and bundle (`bundles/cm`, `distributable: false`) are never

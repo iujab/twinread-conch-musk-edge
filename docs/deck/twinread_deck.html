@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TwinRead deck</title>
+<!-- Sources: every number is from results/headline.json or the JSON it names (results/cm_local/CM/crc/{fusion,review,
+     reader_error_overlap}.json, results/kernels/*.json, results/student/model_sizes.json, results/uno_q/onboard/*.json).
+     Build: bash docs/deck/build_deck.sh  ->  docs/twinread_deck.pdf -->
+<style>
+@page { size: 13.333in 7.5in; margin: 0; }
+html, body { margin: 0; padding: 0; background: #fff; }
+* { box-sizing: border-box; }
+.slide { width: 13.333in; height: 7.5in; padding: 0.55in 0.75in 0.7in; position: relative; overflow: hidden;
+         page-break-after: always; break-after: page; font-family: "Liberation Sans", Arial, Helvetica, sans-serif;
+         color: #0b0b0b; background: #fff; }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+h1 { font-size: 27pt; font-weight: 700; margin: 0 0 0.28in; line-height: 1.15; letter-spacing: -0.01em; }
+h2 { font-size: 15pt; font-weight: 700; margin: 0 0 0.08in; }
+p, li { font-size: 14.5pt; line-height: 1.38; margin: 0 0 0.12in; }
+ul { padding-left: 0.22in; margin: 0; }
+li { margin-bottom: 0.1in; }
+small, .muted { color: #52514e; }
+.cols { display: flex; gap: 0.5in; align-items: flex-start; }
+.col { flex: 1; min-width: 0; }
+.fig { display: block; max-width: 100%; height: auto; }
+.foot { position: absolute; left: 0.75in; right: 0.75in; bottom: 0.3in; display: flex; justify-content: space-between;
+        font-size: 9.5pt; color: #52514e; }
+.stat { margin-bottom: 0.22in; }
+.stat .n { font-size: 34pt; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; }
+.stat .l { font-size: 11.5pt; color: #52514e; margin-top: 0.04in; }
+.row3 { display: flex; gap: 0.45in; }
+.row3 > div { flex: 1; }
+.num { font-size: 30pt; font-weight: 700; color: #52514e; line-height: 1; margin-bottom: 0.12in; }
+.A { color: #2a78d6; } .B { color: #eb6834; } .F { color: #1baf7a; }
+.title { padding-top: 1.7in; }
+.title h1 { font-size: 54pt; margin-bottom: 0.2in; }
+.title p { font-size: 18pt; max-width: 10.5in; }
+.title .by { margin-top: 0.6in; font-size: 14pt; }
+.ref { font-size: 11.5pt; line-height: 1.4; margin-bottom: 0.09in; }
+.readers { display: grid; grid-template-columns: auto 1fr; column-gap: 0.3in; row-gap: 0.04in; align-items: baseline; }
+.readers .v { font-size: 30pt; font-weight: 700; letter-spacing: -0.02em; }
+.readers .k { font-size: 13pt; }
+.caveat { border-top: 1px solid #c9c8c2; padding-top: 0.12in; margin-top: 0.1in; }
+</style>
+</head>
+<body>
+
+<!-- 1 title -->
+<section class="slide title">
+  <h1>TwinRead</h1>
+  <p>Two pathology foundation models as two independent readers: fused for accuracy, flagged for review, and
+     shrunk to run offline on an Arduino UNO Q.</p>
+  <p class="by">Noah Zhang · University of Illinois Urbana-Champaign<br>
+     <span class="muted">2026 Ashby Prize in Computational Science Hackathon · NCSA and the Cancer Center at Illinois</span></p>
+  <div class="foot"><span>Research prototype, not a diagnostic device</span><span>1 / 12</span></div>
+</section>
+
+<!-- 2 problem -->
+<section class="slide">
+  <h1>Two models, trained differently, miss different tiles</h1>
+  <div class="cols">
+    <div class="col" style="flex: 1.05">
+      <ul>
+        <li><b class="A">CONCH</b> (Lu et al., <i>Nat Med</i> 2024): contrastive image–caption pretraining on
+            1.17 million histology image–caption pairs.</li>
+        <li><b class="B">MUSK</b> (Xiang et al., <i>Nature</i> 2025): masked modelling on 50 million pathology
+            images and 1 billion text tokens, unpaired.</li>
+        <li>Different data and different objectives give different blind spots. On the 7,180 CRC-VAL-HE-7K test
+            tiles, CONCH misses 329 and MUSK 286, but only 110 are missed by both.</li>
+        <li>Each reader gets most of the other's misses right: 219 of CONCH's 329 errors (67%) and 176 of MUSK's
+            286 (62%). That is the gap a second reader can cover.</li>
+      </ul>
+    </div>
+    <div class="col" style="flex: 1">
+      <h2>Tiles that at least one reader gets wrong (505 of 7,180)</h2>
+      <svg viewBox="0 0 600 125" width="100%" style="display:block; margin-top: 0.15in" font-family="Liberation Sans, Arial, sans-serif">
+        <!-- 505 tiles over 580 px: 219 / 110 / 176 -->
+        <rect x="10" y="40" width="249.5" height="44" rx="4" fill="#2a78d6"/>
+        <rect x="261.5" y="40" width="124.3" height="44" fill="#3d3c39"/>
+        <rect x="387.8" y="40" width="202.2" height="44" rx="4" fill="#eb6834"/>
+        <text x="134" y="68" font-size="18" fill="#fff" text-anchor="middle" font-weight="700">219</text>
+        <text x="324" y="68" font-size="18" fill="#fff" text-anchor="middle" font-weight="700">110</text>
+        <text x="489" y="68" font-size="18" fill="#fff" text-anchor="middle" font-weight="700">176</text>
+        <text x="134" y="112" font-size="14" fill="#0b0b0b" text-anchor="middle">CONCH wrong, MUSK right</text>
+        <text x="324" y="112" font-size="14" fill="#0b0b0b" text-anchor="middle">both wrong</text>
+        <text x="489" y="112" font-size="14" fill="#0b0b0b" text-anchor="middle">MUSK wrong, CONCH right</text>
+      </svg>
+      <p class="muted" style="font-size: 10.5pt; margin-top: 0.05in">Linear probes on frozen features, CRC-VAL-HE-7K, 9 tissue classes.<br>Source: results/cm_local/CM/crc/reader_error_overlap.json</p>
+      <p style="margin-top: 0.25in">Fusing the two readers leaves 239 errors, fewer than either reader alone.</p>
+    </div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>2 / 12</span></div>
+</section>
+
+<!-- 3 aim -->
+<section class="slide">
+  <h1>Aim: a second read on every tile, then make it run anywhere</h1>
+  <div class="row3" style="margin-top: 0.3in">
+    <div><div class="num">1</div><h2>Two readers, one call</h2>
+      <p>Treat CONCH and MUSK as two independent readers of every H&amp;E tile and fuse them, so each covers the
+         other's gaps.</p></div>
+    <div><div class="num">2</div><h2>Know when to ask a pathologist</h2>
+      <p>Within a fixed review budget, send the tiles the fused reader is least sure about for a human second look.
+         Count the blind spots both readers share.</p></div>
+    <div><div class="num">3</div><h2>Run it with no internet, no GPU, no mains power</h2>
+      <p>Distil both readers into one 6 MB int8 model and run it on a USB-powered Arduino UNO Q, for settings with
+         no scanner, no server and no reliable connectivity.</p></div>
+  </div>
+  <p class="muted" style="margin-top: 0.5in">Every design choice (fusion rule, review threshold) is made on validation
+     data and pre-registered before any test label is read.</p>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>3 / 12</span></div>
+</section>
+
+<!-- 4 method -->
+<section class="slide">
+  <h1>Method</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 4.2in">
+      <ul>
+        <li><b>Readers.</b> A linear probe on frozen CONCH features and one on frozen MUSK features. A custom CUDA
+            kernel (K1) prepares both readers' inputs from one tile batch, bit-exact to the official transforms.</li>
+        <li><b>Fusion and review.</b> Three fusion candidates; the winner is chosen on validation. Review signals:
+            disagreement, Jensen–Shannon divergence, fused uncertainty, and a learned combination.</li>
+        <li><b>Student.</b> A 5.65 M-parameter network learns both readers' embeddings, the fused call and the review
+            label, trained with a GPU augmentation kernel (K2), then exported to int8 ONNX.</li>
+        <li><b>Data.</b> NCT-CRC-HE-100K (20k-tile training subset), CRC-VAL-HE-7K (test), Camelyon17-WILDS (unseen
+            hospital as test).</li>
+      </ul>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/fig8_system.png" alt="System overview" style="max-height: 5.5in"></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>4 / 12</span></div>
+</section>
+
+<!-- 5 fusion result -->
+<section class="slide">
+  <h1>Fusion covers the gaps: +0.74 points on CRC</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 4.6in">
+      <div class="readers">
+        <span class="v A">0.9413</span><span class="k">CONCH alone</span>
+        <span class="v B">0.9480</span><span class="k">MUSK alone</span>
+        <span class="v F">0.9555</span><span class="k">CONCH + MUSK fused</span>
+      </div>
+      <p class="muted" style="margin-top: 0.1in">Balanced accuracy, CRC-VAL-HE-7K, 7,180 tiles, 9 classes.</p>
+      <p>+0.74 points over the best single reader (95% CI +0.18 to +1.29, tile-level). Most of the gain is tumour
+         recall, +3.6 points.</p>
+      <p class="caveat"><b>Where it does not help:</b> on Camelyon17 (tumour vs normal, unseen hospital) CONCH alone
+         is already at 0.9687 and fusion gives no gain (0.9647). An open-model control pair gains nothing on either
+         dataset. The gain is real but small and dataset-dependent.</p>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/fig1_two_readers.png" alt="Fused vs single readers" style="max-height: 5.4in"></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>5 / 12</span></div>
+</section>
+
+<!-- 6 review flag -->
+<section class="slide">
+  <h1>The fused reader knows which tiles to send for review</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 4.4in">
+      <div class="stat"><div class="n">80.3%</div><div class="l">of the fused reader's errors are caught by reviewing the 10% of tiles it is least sure about</div></div>
+      <p>The same budget catches 74.1% with MUSK checking itself and 66.0% with CONCH. Disagreement between the two
+         readers alone catches 59.0%: the value comes from a better-calibrated fused reader, not from disagreement
+         itself.</p>
+      <p class="caveat"><b>Shared blind spots:</b> 53 tiles (0.74%) are called confidently wrong by both readers,
+         mostly muscle vs stroma. No disagreement signal can catch those.</p>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/fig2_review_flag.png" alt="Review flag" style="max-height: 5.5in"></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>6 / 12</span></div>
+</section>
+
+<!-- 7 kernels -->
+<section class="slide">
+  <h1>Two CUDA kernels make the pair cheap to run and to train</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 4.4in">
+      <ul>
+        <li><b>K1, dual-reader preprocessing.</b> One launch turns a uint8 tile batch into both readers' inputs
+            (448 px and 384 px), bit-exact to the official transforms. 90,131 tiles/s on an RTX 5060; preprocessing
+            ×202 faster than PIL inside the embedding run, ×1.11 end to end because the forward pass dominates.</li>
+        <li><b>K2, training augmentation.</b> A simulated camera-of-screen degradation (warp, stain jitter, moiré,
+            glare, defocus, noise, JPEG) at 46,315 images/s; student training ×10.6 faster than torch augmentation.</li>
+        <li>Verified against numpy references and compute-sanitizer; built for sm_80, sm_90 and sm_120.</li>
+      </ul>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/fig3_kernels.png" alt="Kernels" style="max-height: 5.5in"></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>7 / 12</span></div>
+</section>
+
+<!-- 8 board -->
+<section class="slide">
+  <h1>It runs on the board</h1>
+  <div class="row3" style="margin-bottom: 0.2in">
+    <div class="stat"><div class="n">18.7 ms</div><div class="l">per tile, int8 student, 4 threads</div></div>
+    <div class="stat"><div class="n">0.9305</div><div class="l">balanced accuracy on all 7,180 CRC test tiles</div></div>
+    <div class="stat"><div class="n">6.0 MB</div><div class="l">model, 34 MB RAM while running, no network</div></div>
+  </div>
+  <div class="cols">
+    <div class="col"><img class="fig" src="../../figures/fig9_unoq_system.png" alt="UNO Q system" style="max-height: 4.3in"></div>
+    <div class="col" style="flex: 0 0 3.3in">
+      <p>Arduino UNO Q: four Cortex-A53 cores, 3.6 GiB RAM, USB-powered, Debian 13, onnxruntime on CPU.</p>
+      <p>The full app loop (frame, tissue check, student, flag, LED) processes 25.4 tiles/s. The LED-matrix sketch
+         is flashed and the Bridge RPC to the MCU is verified.</p>
+      <p class="muted">Every number on this slide was measured on the board.</p>
+    </div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>8 / 12</span></div>
+</section>
+
+<!-- 9 fidelity -->
+<section class="slide">
+  <h1>The board runs the model as specified</h1>
+  <div class="cols">
+    <div class="col"><img class="fig" src="../../figures/fig11_unoq_fidelity.png" alt="int8 fidelity" style="max-height: 5.3in"></div>
+    <div class="col" style="flex: 0 0 3.6in">
+      <p>On x86, onnxruntime's default fused int8 kernels scored the CM student at 0.9219. The board gives 0.9305,
+         and so does x86 with those kernels switched off: 13 of 7,180 calls differ between the board and that
+         reference.</p>
+      <p>The board's review flag matches the teachers' flag at kappa 0.32. The device's two "readers" are two heads
+         of one network, so they are less independent than CONCH and MUSK.</p>
+    </div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>9 / 12</span></div>
+</section>
+
+<!-- 10 challenges -->
+<section class="slide">
+  <h1>Challenges</h1>
+  <div class="cols">
+    <div class="col">
+      <h2>Overcome</h2>
+      <ul>
+        <li>CONCH and MUSK are CC-BY-NC-ND. Two configurations: the CONCH + MUSK student stays local, and an open
+            pair (PathGen-CLIP + QuiltNet) is the distributable control.</li>
+        <li>int8 calibration collapsed with MinMax and Entropy; percentile calibration fixed it.</li>
+        <li>The x86 int8 scores were an onnxruntime kernel artefact, found only by running on the board.</li>
+        <li>The pre-registered threshold over-flagged the test set (25.1% for a 10% target) because validation was
+            near ceiling; reported as measured.</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h2>Remaining</h2>
+      <ul>
+        <li>Real camera captures. The board has run on stored tiles; the screen-capture rig is ready.</li>
+        <li>Full-data run on NCSA Delta: 100k training tiles instead of 20k, to see whether the fusion gain holds.</li>
+        <li>Slide identifiers for CRC, so confidence intervals can be clustered by slide.</li>
+        <li>Per-site threshold calibration, then clinical validation.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>10 / 12</span></div>
+</section>
+
+<!-- 11 why it matters -->
+<section class="slide">
+  <h1>Why it matters</h1>
+  <div class="cols">
+    <div class="col" style="flex: 0 0 6.6in">
+      <ul>
+        <li><b>For pathologists:</b> a second read on every tile and a short list of tiles worth a second look, with
+            both readers' calls shown, instead of a single black-box score.</li>
+        <li><b>For patients:</b> a cheap offline second look where there is no second pathologist, no scanner, no
+            GPU, no internet and no reliable mains power. The whole system fits in 6 MB on a USB-powered board.</li>
+        <li><b>Limits:</b> the fusion gain is small and dataset-dependent; the device's two readers share one
+            backbone; nothing here is clinically validated. Research prototype, not a diagnostic device.</li>
+      </ul>
+    </div>
+    <div class="col"><img class="fig" src="../../figures/ui_device_unoq.png" alt="Board UI" style="max-height: 4.6in">
+      <p class="muted" style="font-size: 10.5pt; margin-top: 0.08in">The app on the UNO Q: a stored CRC tile, both student heads, the fused call and AGREE / REVIEW.</p></div>
+  </div>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>11 / 12</span></div>
+</section>
+
+<!-- 12 references -->
+<section class="slide">
+  <h1>References</h1>
+  <p class="ref">Lu MY, Chen B, Williamson DFK, et al. A visual-language foundation model for computational pathology (CONCH). <i>Nature Medicine</i> 2024. doi:10.1038/s41591-024-02856-4</p>
+  <p class="ref">Xiang J, Wang X, Zhang X, et al. A vision-language foundation model for precision oncology (MUSK). <i>Nature</i> 2025. doi:10.1038/s41586-024-08378-w</p>
+  <p class="ref">Ikezogwo WO, Seyfioglu MS, Ghezloo F, et al. Quilt-1M: one million image-text pairs for histopathology (QuiltNet). NeurIPS 2023. arXiv:2306.11207</p>
+  <p class="ref">Sun Y, Wu H, Zhu C, et al. PathMMU: a massive multimodal expert-level benchmark for understanding and reasoning in pathology. ECCV 2024. arXiv:2401.16355</p>
+  <p class="ref">Li et al. Multi-modal foundation models for computational pathology: a survey. 2025. PMC13081565</p>
+  <p class="ref">Muneer A, Waqas M, Saad MB, et al. From classical machine learning to emerging foundation models: review on multimodal data integration for cancer research. <i>Artificial Intelligence Review</i> 2026. doi:10.1007/s10462-026-11522-9</p>
+  <p class="ref">Kather JN et al. NCT-CRC-HE-100K and CRC-VAL-HE-7K (CC-BY-4.0). Bandi P et al. Camelyon17; Koh PW et al. WILDS (Camelyon17-WILDS, CC0).</p>
+  <p class="ref">Open models: PathGen-CLIP (jamessyx/pathgenclip-vit-large-patch14-hf, CC-BY-4.0), QuiltNet-B-16 (wisdomik/QuiltNet-B-16, MIT), timm mobilenetv4_conv_small.</p>
+  <p class="ref" style="margin-top: 0.25in">Code, results JSON and figures: github.com/iujab/twinread-conch-musk-edge. Every number in this deck is read from results/headline.json or the JSON it names.</p>
+  <div class="foot"><span>TwinRead · Research prototype, not a diagnostic device</span><span>12 / 12</span></div>
+</section>
+
+</body>
+</html>

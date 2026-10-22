@@ -1,0 +1,20 @@
+{
+ "note": "Post hoc, descriptive: per-reader error overlap on CRC-VAL-HE-7K test (CONCH = A, MUSK = B, fused = F) from the frozen fits in tile_preds.npz. Research prototype, not a diagnostic device.",
+ "n": 7180,
+ "conch_errors": 329,
+ "musk_errors": 286,
+ "fused_errors": 239,
+ "conch_only_errors": 219,
+ "musk_only_errors": 176,
+ "both_wrong": 110,
+ "both_wrong_same_call": 103,
+ "either_wrong": 505,
+ "conch_errors_fixed_by_fusion": 113,
+ "musk_errors_fixed_by_fusion": 154,
+ "fused_errors_where_a_reader_was_right": 130,
+ "pct": {
+  "conch_only": 3.0501392757660164,
+  "musk_only": 2.4512534818941503,
+  "both": 1.532033426183844
+ }
+}
