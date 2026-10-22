@@ -2,24 +2,23 @@
 
 **Research prototype, not a diagnostic device.** Every result number here is read from `results/**/*.json`, mostly via
 `results/headline.json`, which `python -m twinread.headline` computes from the source files. Numbers are
-**LOCAL-SUBSET dev numbers**; the full-data NCSA Delta runs are **pending**.
+**local-subset numbers** from one RTX 5060; the full-data NCSA Delta runs were **not run** (the kit is in `ncsa/`).
 
 ## Abstract
 
-Pathology has a safety habit for hard cases: a second, independent read. TwinRead asks whether CONCH and MUSK, the
-organizers' two pathology foundation models, can act as those two readers. Each reads H&E tiles through a linear probe
-on frozen features. A pre-registered rule fuses them, a review flag picks tiles for a pathologist, and the pair is
-distilled into a 5.65 M-parameter int8 student built for an offline Arduino UNO Q with a USB camera (an x86 replay
-today; the on-board run is pending). On a local subset (20k NCT-CRC-HE-100K training tiles, full CRC-VAL-HE-7K test),
-fusion reaches 0.9555 balanced accuracy against 0.9480 for MUSK alone (+0.74 points, tile-level CI). Large opposing
-muscle and stroma swings cancel; the net gain is mostly tumour recall (+3.6 points). Fusion adds nothing on Camelyon17
-or for an open-model control pair. On CRC, with a 10% review budget, the fused reader's own uncertainty catches 80.3%
-of its errors against 74.1% for MUSK flagging itself, and adding disagreement adds nothing. On Camelyon17 the twin
-flag does not beat CONCH alone, and the pre-registered threshold over-flags CRC (25.1% of tiles, not 10%). Two readers
-help through a better-calibrated fused reader, not through disagreement. Custom CUDA kernels speed up preprocessing
-×202 (×1.11 end to end) and training augmentation ×10.6. The deployed int8 student scores 0.9219, below every teacher,
-at 1.4% of their size. Full-data Delta runs are pending. For patients, a cheap offline second look could catch errors
-where no second pathologist or scanner is available; this is an unvalidated research prototype.
+Pathology has a safety habit for hard cases: a second, independent read. TwinRead asks whether CONCH and MUSK,
+the organizers' two pathology foundation models, can act as those two readers. Linear probes on their frozen
+features are fused by a pre-registered rule, and a review flag picks tiles for a pathologist. On a local subset
+(20k NCT-CRC-HE-100K training tiles, full CRC-VAL-HE-7K test), fusion reaches 0.9555 balanced accuracy against
+0.9480 for MUSK alone (+0.74 points, tile-level CI), mostly through tumour recall. It adds nothing on Camelyon17
+or for an open-model control pair. On CRC, at a 10% review budget, the fused reader's own uncertainty catches
+80.3% of its errors against 74.1% for MUSK flagging itself; adding disagreement adds nothing. On Camelyon17 the
+flag does not beat CONCH alone, and the pre-registered threshold over-flags CRC (25.1% of tiles, not 10%). Two
+readers help by making a better-calibrated reader, not through disagreement. Custom CUDA kernels speed up
+preprocessing ×202 (×1.11 end to end) and training augmentation ×10.6. A 6 MB int8 student built for an offline
+Arduino UNO Q scores 0.9219, below every teacher (x86 replay so far; the on-board run is pending). For patients,
+a cheap offline second look could help where no second pathologist is available. Research prototype, not
+clinically validated.
 
 ![System overview](figures/fig8_system.png)
 
@@ -254,8 +253,8 @@ skipped, not exercised), `bash run_demo.sh --no-serve` ran in under 6 minutes:
 
 ## Event scale-up (NCSA Delta)
 
-The kit in `ncsa/` is written and tested locally (static tests only). **Nothing has run on Delta yet**, and every
-Delta command needs the user's explicit OK. The plan, from `ncsa/README.md`:
+The kit in `ncsa/` is written and tested locally (static tests only). **It has not been run on Delta**, so every
+number above comes from the local subset. The plan, from `ncsa/README.md`:
 
 1. **Login node.** Install CONCH and MUSK into the user site (`setup_login.sh`, which also creates `~/twinread/logs`
    for the job logs) and pre-download the weights after `hf auth login` (`download_weights.py`), because compute
@@ -265,7 +264,7 @@ Delta command needs the user's explicit OK. The plan, from `ncsa/README.md`:
    a short K1 benchmark. Results go to `results/delta/kernels/`.
 3. **J2** (≤ 1.5 h). CONCH + MUSK embeddings of the **full 100k + 7k** CRC tiles through K1, batch 64. It falls back
    to the reference transforms unless J1's build and kernel tests passed.
-4. **CPU analysis on Delta** (`analyze_cpu.sbatch`, the only supported route). The same pre-registered
+4. **CPU analysis on Delta** (`analyze_cpu.slurm`, the only supported route). The same pre-registered
    `run_pair_analysis`, written to `results/delta/CM/crc/`.
 5. **J3** (≤ 1.5 h). CM student distillation on the full data with K2, into `results/delta/student/cm_crc/`.
 6. **J4** (optional). A second seed or the OPEN pair (PathGen-CLIP + QuiltNet-B-16).
@@ -275,8 +274,8 @@ subsets with recoverable labels are a stretch task.
 
 ## Limitations
 
-- **Local-subset dev numbers.** 20k of 100k CRC training tiles and a 7.5k Camelyon17 subset. Full-data Delta numbers
-  are pending.
+- **Local-subset dev numbers.** 20k of 100k CRC training tiles and a 7.5k Camelyon17 subset. The full-data Delta runs
+  were not run.
 - **CRC has no slide or patient ids**, so CRC CIs and McNemar tests are tile-level and anti-conservative. Validation is
   group-disjoint by parquet group, not guaranteed slide-disjoint.
 - **The CRC fusion gain is fragile.** Large opposing MUS/STR recall swings cancel and the net gain is mostly tumour

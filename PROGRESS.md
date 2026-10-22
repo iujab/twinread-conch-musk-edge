@@ -106,7 +106,7 @@ MUSK embedding: reduction rule not applied. Measured MUSK rates (256 tiles, cam,
   H2D, x202). So K1 removes the preprocessing cost, but the end-to-end ceiling with free preprocessing is x1.118: running
   both readers is cheap in preprocessing, not in forward passes. k1 vs reference cosine on the 512 tiles: min 0.999997
   (CONCH), 0.99999994 (MUSK). Shared GPU, estimate.
-- **NCSA kit.** J2 embeds -> new `ncsa/analyze_cpu.sbatch` (bfqi-delta-cpu, cpu, 16 CPUs, 01:00:00; or locally) writes
+- **NCSA kit.** J2 embeds -> new `ncsa/analyze_cpu.slurm` (bfqi-delta-cpu, cpu, 16 CPUs, 01:00:00; or locally) writes
   `results/CM/crc/{student_targets,probes_aligned}.npz` -> J3 trains with `--targets-dir` and its precheck asserts both
   files. `embed_loop.sh` caps `--budget` at 300 s per call for the CM pair (MUSK ms_aug probe chunks). Nothing in `ncsa/`
   passes loss weights (R26 default rel 0). Untested on Delta.

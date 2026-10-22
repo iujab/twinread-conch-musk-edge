@@ -736,7 +736,7 @@ def send_status(state: Literal["idle","busy","agree","review","no_tissue","error
 
 **Files:**
 - Create in `$P/ncsa/`: `README.md` (runbook + approval protocol), `setup_login.sh`, `download_weights.py`,
-  `stage_data.sh`, `j1_check.sbatch`, `j2_embed.sbatch`, `j3_distill.sbatch`, `j4_spare.sbatch`.
+  `stage_data.sh`, `j1_check.slurm`, `j2_embed.slurm`, `j3_distill.slurm`, `j4_spare.slurm`.
 - Tests: `$P/tests/test_ncsa_scripts.py`.
 
 **Interfaces:**
@@ -777,9 +777,9 @@ def send_status(state: Literal["idle","busy","agree","review","no_tissue","error
   2. `setup_login.sh`;
   3. `download_weights.py`;
   4. `stage_data.sh`;
-  5. `sbatch j1_check.sbatch`;
+  5. `sbatch j1_check.slurm`;
   6. read the J1 output;
-  7. `sbatch j2_embed.sbatch`.
+  7. `sbatch j2_embed.slurm`.
 - [ ] **Step 2:** Copy the embeddings back (small). Run `run_pair_analysis("CM", "crc", results_dir=$P/results/cm)`
   locally (CPU), plus D3 if the PathMMU subsets have recoverable labels (inspect with a user-approved `ls`/`head`).
 - [ ] **Step 3:** J3 student distillation (CM, full data, the backbone from Task 15). Copy the checkpoint back.

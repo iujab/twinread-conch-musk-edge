@@ -1,8 +1,8 @@
 # TwinRead deck outline (submission Wed Oct 21: at most 20 main slides)
 
 Each slide gives a title, the content, the figure and a one-line speaker note. Every number comes from
-`results/headline.json` or the JSON it cites. Numbers are local-subset dev numbers until the Delta runs land; if
-they land, update from `results/` and keep the honest framing. Every slide footer reads "Research prototype, not a
+`results/headline.json` or the JSON it cites. Numbers are local-subset dev numbers; the full-data Delta runs were
+not run. Every slide footer reads "Research prototype, not a
 diagnostic device."
 
 The deck covers, in order: aims (1-3), methods (4-6), results (7-16), challenges overcome and remaining (17-18),
@@ -177,7 +177,7 @@ impact (19) and references (20).
 
 ### Slide 18: Challenges remaining and next steps
 
-- NCSA Delta full-data runs (100k CRC, CONCH + MUSK, A100): pending; the kit is in `ncsa/`.
+- NCSA Delta full-data runs (100k CRC, CONCH + MUSK, A100): not run; the kit is ready in `ncsa/`.
 - UNO Q latency and offline demo: pending.
 - Real camera captures: none yet.
 - CRC slide ids for clustered CIs.

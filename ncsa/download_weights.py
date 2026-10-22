@@ -2,7 +2,7 @@
 was granted CONCH and MUSK access. Log in once (the token is stored under $HF_HOME, never typed into a command line):
 
     hf auth login                      # older huggingface_hub: huggingface-cli login
-    python ncsa/download_weights.py [--cache DIR]
+    python ncsa/download_weights.py [--cache DIR] [--skip-open]
 Run only after the user's explicit OK. huggingface_hub uses the stored token automatically.
 """
 import argparse
@@ -26,6 +26,8 @@ def main() -> int:
     ap.add_argument("--cache", default=None, help="HF hub cache dir (default: $HF_HOME/hub)")
     ap.add_argument("--backbones", nargs="*", default=["mobilenetv4_conv_small"],
                     help="timm student backbones to pre-cache (pretrained=True would download on an offline node)")
+    ap.add_argument("--skip-open", action="store_true",
+                    help="skip the open readers (no Delta job embeds the OPEN pair); CONCH, MUSK and backbones only")
     a = ap.parse_args()
     failed = []
     for repo, files in GATED:
@@ -34,7 +36,7 @@ def main() -> int:
                 print(repo, f, "->", hf_hub_download(repo, f, cache_dir=a.cache))
             except Exception as e:  # noqa: BLE001
                 failed.append(f"{repo}/{f}: {e}"); print("FAILED", repo, f, e)
-    for repo, pats in OPEN:
+    for repo, pats in ([] if a.skip_open else OPEN):
         try:
             print(repo, "->", snapshot_download(repo, allow_patterns=pats, cache_dir=a.cache))
         except Exception as e:  # noqa: BLE001

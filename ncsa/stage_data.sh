@@ -8,7 +8,7 @@ OUT=${OUT:-$TWINREAD_HOME/data}
 if [ -d "$SRC" ] && [ -r "$SRC" ] && [ -n "$(ls "$SRC" 2>/dev/null | head -1)" ]; then
   echo "shared CRC-100K readable at $SRC"
   echo "Train conversion (100k TIFs, CPU job; ask the user, then submit):"
-  echo "  cd $TWINREAD_HOME && mkdir -p logs && sbatch ncsa/stage_crc.sbatch     # --time=01:00:00, runs crc_from_folder(train)"
+  echo "  cd $TWINREAD_HOME && mkdir -p logs && sbatch ncsa/stage_crc.slurm     # --time=01:00:00, runs crc_from_folder(train)"
 else
   echo "NOT readable: $SRC"
   echo "Fallback for the user to approve (login node, has internet), fetch_crc pulls all 100k from HF parquet:"

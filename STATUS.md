@@ -1,4 +1,4 @@
-# TwinRead — status and what's left (2026-10-17)
+# TwinRead — status and what's left (updated 2026-10-21)
 
 TwinRead uses CONCH and MUSK as two independent readers of every pathology tile. Fusing them makes the call more
 accurate, and the fused reader's uncertainty flags tiles for a second look. Custom CUDA kernels speed up
@@ -22,7 +22,7 @@ working handoff.
 | Rig (marker tiles shown on a screen, camera capture) | simulation only | `results/rig/decode_stress.json` |
 | NCSA Delta kit (J1-J4, CPU analysis job, runbook) | ready, **not run** | `ncsa/README.md` |
 | UNO Q bring-up (Task 15) | **pending: needs the board** | — |
-| Delta full-data runs (Task 17) | **pending: needs SSH + per-command OK** | — |
+| Delta full-data runs (Task 17) | **not run**; the event's Delta window has passed (see §1) | — |
 
 Test suites: CPU `271 passed, 62 skipped` (about 70 s). GPU, under the lock with `TWINREAD_GPU_TESTS=1`: `62 passed`.
 
@@ -48,21 +48,27 @@ Every value is copied from `results/headline.json`.
 
 ## To do, in order
 
-### 1. NCSA Delta (hack days, Oct 17-18). Every command needs the user's explicit OK first.
+### 1. NCSA Delta. Every command needs the user's explicit OK first.
+Not run during the event. The organizers' guide (`../ashby-hackathon-2026/HACKATHON_COMPUTE.md` §1, §5) gave Delta
+access through Mon Oct 19 and reserved A100 nodes only until Sun Oct 18 18:00, so first check that the account still
+works (`accounts` should list `bfqi-delta-gpu`); GPU jobs now go through the normal queue.
+Login: `ssh <username>@login.delta.ncsa.illinois.edu`, NCSA password, then Duo (`1` for a push). The username is on
+<https://allocations.access-ci.org> → My Projects → the hackathon's Delta project. If logins hang, the organizers
+point to a specific `dt-login0N.delta.ncsa.illinois.edu`. Do not use DeltaAI (`bfqi-dtai-gh`).
 Follow `ncsa/README.md` step by step:
 1. rsync the project. Its excludes already drop `.worktrees`, `bundles`, `results` and `build`.
 2. Run `ncsa/setup_login.sh`. It creates `logs/` and installs pytest.
 3. On the login node, run `hf auth login`, then `ncsa/download_weights.py`.
-4. Run `ncsa/stage_data.sh`. If staging is needed, run `stage_crc.sbatch`.
-5. Run J1 (`j1_check.sbatch`, 30 min).
+4. Run `ncsa/stage_data.sh`. If staging is needed, run `stage_crc.slurm`.
+5. Run J1 (`j1_check.slurm`, 30 min).
    - It builds the sm_80 kernels and runs the K1/K2 GPU tests and a short benchmark.
    - If it reports no `nvcc`, load the CUDA module its probe lists and re-run.
-6. Run J2 (`j2_embed.sbatch`).
+6. Run J2 (`j2_embed.slurm`).
    - It embeds CONCH and MUSK on 100k + 7k tiles.
    - Expect two submissions: CONCH stays fp32 with TF32 off (ruling R36), and MUSK's multi-scale probe is slow.
    - The job resumes from its cache.
-7. Run `analyze_cpu.sbatch`. This CPU job is the only full-data analysis route (R34).
-8. Run J3 (`j3_distill.sbatch`). It trains the CM student into `results/delta/student/cm_crc`.
+7. Run `analyze_cpu.slurm`. This CPU job is the only full-data analysis route (R34).
+8. Run J3 (`j3_distill.slurm`). It trains the CM student into `results/delta/student/cm_crc`.
 9. Optional: J4 (`distill_seed2` or `kernel_build`). Optional: step 8b, the CM bundle on Delta (CPU).
 10. Copy back only `results/delta/` and `results/ncsa/`.
 
@@ -84,7 +90,8 @@ Budget: about 5-6.5 A100-hours of the 30 for J1 + 2×J2 + J3 (+ J4).
 - Re-check the device tissue thresholds (chroma 15, max 30) on real rig frames.
 
 ### 4. Submission, Wed Oct 21 (watch Slack for the time)
-- Submit the abstract and team-availability form. `README.md` opens with the abstract.
+- Submit the abstract and team-availability form. `README.md` opens with the abstract (205 words, trimmed
+  2026-10-21; Delta wording changed from "pending" to "not run" in README, `project.json`, the outline and fig1/fig8).
 - Submit a stand-alone deck of at most 20 slides, built from `docs/deck_outline.md`: aims, methods, results,
   challenges, references.
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sourced by j2_embed.sbatch and j4_spare.sbatch (Delta only; run_demo.sh has its own local loop). Defines
+# Sourced by j2_embed.slurm and j4_spare.slurm (Delta only; run_demo.sh has its own local loop). Defines
 #   run_embed <dataset> <impl> <reader selector...>     e.g.  run_embed crc k1 --pair CM
 #                                                             run_embed crc k1 --readers pathgenclip quiltnet_b16
 # Exit code 3 from twinread.embed means "time budget used, rerun me". We loop INSIDE the job (not resubmission),

@@ -366,7 +366,7 @@ pipeline falls back to the Triton / torch-ops path automatically. The science ne
   - **J2 (≤ 1.5 h):** CM embeddings for D1 (107k tiles) + D3 + text prompt banks. Resumable, with checkpoints.
   - **J3 (≤ 1.5 h):** CM student distillation on the full D1 (preloaded into RAM as uint8, about 15 GB) with K2.
   - **J4 (≤ 1.5 h, only if needed):** a second seed, ablations, or a rerun.
-- **CPU work** (probes, fusion, flag analysis) runs on `bfqi-delta-cpu` (`ncsa/analyze_cpu.sbatch`, into
+- **CPU work** (probes, fusion, flag analysis) runs on `bfqi-delta-cpu` (`ncsa/analyze_cpu.slurm`, into
   `results/delta/`). Ruling R34 (final review) made this the only supported full-data route: analysing locally would
   overwrite the local 20k embedding caches and mix local labels with Delta embeddings.
 - **How Claude operates there.** The user sets up SSH with a persistent ControlMaster (one Duo prompt), so `ssh delta
@@ -427,7 +427,7 @@ twinread-conch-musk-edge/
                        student.py, export.py, figures.py, app_host.py (dashboard :1777)
   src/twinread/csrc/   k1_dual_preprocess.cu, k2_camera_aug.cu, bindings.cpp ; kernels.py (build + fallbacks)
   prompts/             per-dataset prompt ensembles (frozen before test)
-  ncsa/                setup_login.sh, j1_check.sbatch, j2_embed.sbatch, j3_distill.sbatch, j4_spare.sbatch, README.md
+  ncsa/                setup_login.sh, j1_check.slurm, j2_embed.slurm, j3_distill.slurm, j4_spare.slurm, README.md
   device/              uno_q_app.py, ui/ (static), mcu/twinread_led/twinread_led.ino, install_offline.sh, bundle/
   tests/               CPU tests (always) + GPU-gated kernel tests (skip without CUDA)
   figures/ results/ data/ (git-ignored style)

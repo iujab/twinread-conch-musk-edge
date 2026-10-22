@@ -113,7 +113,7 @@ def fig1_two_readers() -> Path:
         "Linear probes on frozen features. The fusion rule was chosen on validation and pre-registered before test. "
         "CRC: train on a 20k-tile NCT-CRC-HE-100K subset, test on",
         "CRC-VAL-HE-7K (7,180 tiles, no slide ids). Camelyon17-WILDS: test on unseen hospital 2 (1,500 tiles). "
-        "LOCAL-SUBSET dev numbers; full-data Delta runs are pending.",
+        "LOCAL-SUBSET dev numbers; full-data NCSA Delta runs were not run.",
         f"On CRC, large opposing MUS/STR recall swings cancel; the net gain is mostly tumour recall ({tum:+.1f} pts). "
         "Validation picked the fusion rule by 1-2 tiles.", DISCLAIMER])
     return _save(fig, "fig1_two_readers.png")
@@ -419,7 +419,7 @@ def fig8_system() -> Path:
         ax.text(2.2, y + h - 1.4, title, fontsize=11, fontweight="bold", va="top", color=C["ink"])
         ax.text(97.8, y + h - 1.4, status, fontsize=9, va="top", ha="right", color=C["ink2"], style="italic")
 
-    lane(38, 16.5, "1  Teachers (GPU)", "done locally on a 20k-tile subset · full 100k on NCSA Delta: pending",
+    lane(38, 16.5, "1  Teachers (GPU)", "done locally on a 20k-tile subset · full 100k on NCSA Delta: not run (kit ready)",
          "#eef4fb")
     lane(20, 16, "2  Student training (GPU)", "done locally (CM research + OPEN distributable)", "#f3f1fb")
     lane(1.5, 16.5, "3  Arduino UNO Q, offline (target device)",

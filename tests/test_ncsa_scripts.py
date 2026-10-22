@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 NCSA = Path(__file__).resolve().parents[1] / "ncsa"
-SBATCH = sorted(NCSA.glob("j*.sbatch"))
+SBATCH = sorted(NCSA.glob("j*.slurm"))
 TIMES = {"j1_check": "00:30:00", "j2_embed": "01:30:00", "j3_distill": "01:30:00", "j4_spare": "01:30:00"}
 
 
@@ -55,13 +55,13 @@ def test_writes_job_record(p):
 
 
 def test_job_commands():
-    j2 = (NCSA / "j2_embed.sbatch").read_text()
+    j2 = (NCSA / "j2_embed.slurm").read_text()
     loop = (NCSA / "embed_loop.sh").read_text()
     assert 'run_embed crc "$IMPL" --pair CM' in j2 and "reference" in j2 and "embed_loop.sh" in j2
     assert "-m twinread.embed" in loop and "--budget" in loop and "-eq 3" in loop
-    j3 = (NCSA / "j3_distill.sbatch").read_text()
+    j3 = (NCSA / "j3_distill.slurm").read_text()
     assert "scripts/train_student.py --pair CM --dataset crc" in j3 and "--epochs 15 --aug" in j3 and "AUG=k2" in j3
-    assert "load_ext(\"8.0\")" in (NCSA / "j1_check.sbatch").read_text()
+    assert "load_ext(\"8.0\")" in (NCSA / "j1_check.slurm").read_text()
 
 
 def test_readme_has_approval_protocol():
@@ -84,8 +84,8 @@ def test_login_scripts_content():
     assert "/projects/bfqi/shared/datasets/NCT-CRC-HE-100K/data-samples" in st and "crc_from_folder" in st
 
 
-@pytest.mark.parametrize("p", [*SBATCH, NCSA / "setup_login.sh", NCSA / "stage_data.sh", NCSA / "stage_crc.sbatch",
-                               NCSA / "embed_loop.sh", NCSA / "analyze_cpu.sbatch"], ids=lambda p: p.name)
+@pytest.mark.parametrize("p", [*SBATCH, NCSA / "setup_login.sh", NCSA / "stage_data.sh", NCSA / "stage_crc.slurm",
+                               NCSA / "embed_loop.sh", NCSA / "analyze_cpu.slurm"], ids=lambda p: p.name)
 def test_bash_syntax(p):
     r = subprocess.run(["bash", "-n", str(p)], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
@@ -99,14 +99,14 @@ def test_compat_noop_on_transformers_v4(monkeypatch):
     assert compat.patch_conch() is None and not called
 
 
-@pytest.mark.parametrize("p", [*SBATCH, NCSA / "stage_crc.sbatch", NCSA / "analyze_cpu.sbatch"], ids=lambda p: p.name)
+@pytest.mark.parametrize("p", [*SBATCH, NCSA / "stage_crc.slurm", NCSA / "analyze_cpu.slurm"], ids=lambda p: p.name)
 def test_hf_home_pinned(p):
     assert re.search(r"^export HF_HOME=\$\{HF_HOME:-\$HOME/\.cache/huggingface\}", p.read_text(), re.M)
     assert 'os.environ.setdefault("HF_HOME"' in (NCSA / "download_weights.py").read_text()
 
 
 def test_stage_crc_cpu_header():
-    p = NCSA / "stage_crc.sbatch"
+    p = NCSA / "stage_crc.slurm"
     d = _directives(p)
     assert d["account"] == "bfqi-delta-cpu" and d["partition"] == "cpu"
     assert int(d["cpus-per-task"]) <= 16 and _secs(d["time"]) <= 3600
@@ -126,7 +126,7 @@ def test_download_weights_has_meta_and_backbones():
 
 
 def test_j3_prechecks():
-    j3 = (NCSA / "j3_distill.sbatch").read_text()
+    j3 = (NCSA / "j3_distill.slurm").read_text()
     assert "die()" in j3 and "j1_build_status.txt" in j3 and "AUG=torch" in j3
     assert "pretrained=True" in j3
     # Task 8b: the student trains on the analysis outputs, not on data/emb (it never derives targets itself)
@@ -134,7 +134,7 @@ def test_j3_prechecks():
     assert "TARGETS=${TARGETS:-results/delta/CM/crc}" in j3
     for f in ("student_targets.npz", "probes_aligned.npz"):
         assert re.search(rf'\[ -f "\$TARGETS/{f}" \] \|\| die', j3), f
-    assert '--targets-dir "$TARGETS"' in j3 and "analyze_cpu.sbatch" in j3
+    assert '--targets-dir "$TARGETS"' in j3 and "analyze_cpu.slurm" in j3
 
 
 def test_train_student_flag_exists():
@@ -147,12 +147,12 @@ def test_train_student_flag_exists():
 
 
 def test_j4_distill_uses_analysis_targets():
-    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    j4 = (NCSA / "j4_spare.slurm").read_text()
     assert '--targets-dir "$TARGETS"' in j4 and "student_targets.npz" in j4 and "probes_aligned.npz" in j4
 
 
 def test_analyze_cpu_job():
-    p = NCSA / "analyze_cpu.sbatch"
+    p = NCSA / "analyze_cpu.slurm"
     t = p.read_text()
     d = _directives(p)
     assert d["account"] == "bfqi-delta-cpu" and d["partition"] == "cpu"
@@ -170,8 +170,8 @@ def test_analyze_cpu_job():
 
 def test_runbook_order_j2_analysis_j3():
     t = (NCSA / "README.md").read_text()
-    i2, ia, i3 = t.index("sbatch ncsa/j2_embed.sbatch"), t.index("sbatch ncsa/analyze_cpu.sbatch"), \
-        t.index("sbatch ncsa/j3_distill.sbatch")
+    i2, ia, i3 = t.index("sbatch ncsa/j2_embed.slurm"), t.index("sbatch ncsa/analyze_cpu.slurm"), \
+        t.index("sbatch ncsa/j3_distill.slurm")
     assert i2 < ia < i3
     assert "--targets-dir" in t and "student_targets.npz" in t and "probes_aligned.npz" in t
     assert "derives targets from data/emb" not in t
@@ -233,9 +233,9 @@ def test_embed_loop_optional_cap_and_batch(tmp_path):
 
 def test_j4_has_no_unanalysed_embed():
     """R37: analyze_cpu is CM-only (R34), so J4 offers no OPEN embed that nothing would analyse."""
-    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    j4 = (NCSA / "j4_spare.slurm").read_text()
     assert "embed_open" not in j4 and "run_embed" not in j4
-    assert 'run_pair_analysis("CM", "crc"' in (NCSA / "analyze_cpu.sbatch").read_text()
+    assert 'run_pair_analysis("CM", "crc"' in (NCSA / "analyze_cpu.slurm").read_text()
     assert "embed_open" not in (NCSA / "README.md").read_text()
 
 
@@ -247,10 +247,10 @@ def test_runbook_bundle_step_memory():
 
 
 def test_j4_allowlist_rejects_unknown(tmp_path):
-    t = (NCSA / "j4_spare.sbatch").read_text()
+    t = (NCSA / "j4_spare.slurm").read_text()
     assert "bash -c" not in t and "eval" not in t
     for bad in ("rm_rf", "embed_open", "distill_seed2; sbatch x", ""):
-        r = subprocess.run(["bash", str(NCSA / "j4_spare.sbatch")], env={"PATH": "/usr/bin:/bin", "ACTION": bad},
+        r = subprocess.run(["bash", str(NCSA / "j4_spare.slurm")], env={"PATH": "/usr/bin:/bin", "ACTION": bad},
                            capture_output=True, text=True, cwd=tmp_path)
         assert r.returncode == 2 and "unknown ACTION" in r.stderr
 
@@ -276,8 +276,8 @@ def test_backbone_defaults_match_trainer():
     """Delta must train the architecture the local runs and the latency harness used (the trainer's default)."""
     want = _trainer_default_backbone()
     assert want == "mobilenetv4_conv_small"
-    j3 = (NCSA / "j3_distill.sbatch").read_text()
-    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    j3 = (NCSA / "j3_distill.slurm").read_text()
+    j4 = (NCSA / "j4_spare.slurm").read_text()
     assert re.search(r"^BACKBONE=\$\{BACKBONE:-(\S+)\}", j3, re.M).group(1) == want
     assert re.search(r"^BACKBONE=\$\{BACKBONE:-(\S+)\}", j4, re.M).group(1) == want
     for t in (j3, j4):
@@ -292,7 +292,7 @@ def test_backbone_defaults_match_trainer():
 
 
 # ---- final review fixes (C1, I1, I2, I3, M1, M2, HF login) -------------------------------------------------------
-ALL_SBATCH = sorted(NCSA.glob("*.sbatch"))
+ALL_SBATCH = sorted(NCSA.glob("*.slurm"))
 
 
 def _runbook():
@@ -316,8 +316,8 @@ def test_logs_dir_created_before_first_sbatch():
     first_sbatch = rb.index("sbatch ")
     assert "mkdir -p ~/twinread/logs" in rb[:first_sbatch]
     for job in ("stage_crc", "j1_check"):  # the first two submissions also create it inline
-        assert f"cd ~/twinread && mkdir -p logs && sbatch ncsa/{job}.sbatch" in rb, job
-    assert "mkdir -p logs && sbatch ncsa/stage_crc.sbatch" in (NCSA / "stage_data.sh").read_text()
+        assert f"cd ~/twinread && mkdir -p logs && sbatch ncsa/{job}.slurm" in rb, job
+    assert "mkdir -p logs && sbatch ncsa/stage_crc.slurm" in (NCSA / "stage_data.sh").read_text()
 
 
 def test_setup_creates_logs_dir(tmp_path):
@@ -331,14 +331,14 @@ def test_setup_creates_logs_dir(tmp_path):
 def test_j1_asserts_build_and_runs_kernel_smoke():
     """I1: load_ext returns None on failure, so J1 asserts the module (with camera_aug) and records build=failed + errors;
     then the GPU K1/K2 tests and a short K1 bench write under results/delta/kernels/."""
-    j1 = (NCSA / "j1_check.sbatch").read_text()
+    j1 = (NCSA / "j1_check.slurm").read_text()
     assert 'm = k.load_ext("8.0"); assert m is not None and hasattr(m, "camera_aug"), k.EXT_ERRORS' in j1
     assert "BUILD=failed" in j1 and "errors=" in j1 and 'echo "$STATUS" > results/ncsa/j1_build_status.txt' in j1
     assert "TWINREAD_GPU_TESTS=1" in j1 and "-m pytest -m gpu tests/test_k1.py tests/test_k2.py" in j1
     assert "TWINREAD_REQUIRE_WEIGHTS=1" in j1
     assert "bench/bench_k1.py --part gpu --batch 64 --out" in j1 and "KD=results/delta/kernels" in j1
     assert 'STATUS=ok; else STATUS=failed' in j1 and '[ "$TESTS" = passed ]' in j1
-    j4 = (NCSA / "j4_spare.sbatch").read_text()
+    j4 = (NCSA / "j4_spare.slurm").read_text()
     assert 'assert m is not None and hasattr(m, "camera_aug")' in j4
     src =(NCSA.parent / "bench" / "bench_k1.py").read_text()
     assert '"--out"' in src and '"--batch"' in src
@@ -353,7 +353,7 @@ def test_j1_build_status_logic(tmp_path):
     for name in ("nvidia-smi", "module"):
         (bin_ / name).write_text("#!/bin/bash\nexit 0\n")
         (bin_ / name).chmod(0o755)
-    body = (NCSA / "j1_check.sbatch").read_text().replace("module load pytorch-conda/2.8", "true")
+    body = (NCSA / "j1_check.slurm").read_text().replace("module load pytorch-conda/2.8", "true")
     (tmp_path / "j1.sh").write_text(body)
     r = subprocess.run(["bash", str(tmp_path / "j1.sh")], cwd=tmp_path, capture_output=True, text=True,
                        env={"PATH": f"{bin_}:/usr/bin:/bin", "HOME": str(tmp_path), "TWINREAD_HOME": str(tmp_path),
@@ -370,9 +370,9 @@ def test_j1_build_status_logic(tmp_path):
 
 def test_delta_outputs_never_overwrite_committed_results():
     """I2/I3: J3, J4 and the analysis job write under results/delta/, never to the committed results/{CM,student}/."""
-    j3 = (NCSA / "j3_distill.sbatch").read_text()
-    j4 = (NCSA / "j4_spare.sbatch").read_text()
-    an = (NCSA / "analyze_cpu.sbatch").read_text()
+    j3 = (NCSA / "j3_distill.slurm").read_text()
+    j4 = (NCSA / "j4_spare.slurm").read_text()
+    an = (NCSA / "analyze_cpu.slurm").read_text()
     assert "OUT=results/delta/student/cm_crc" in j3 and '--out "$OUT"' in j3
     assert "--seed 2 --out results/delta/student/cm_crc_seed2" in j4
     assert "OUT=results/delta/CM/crc" in an
@@ -403,7 +403,7 @@ def test_analysis_only_on_delta():
     assert "Alternative without a Delta CPU job" not in t and "run the same call locally" not in t
     assert "only** supported full-data analysis route" in t
     assert 'results_dir=Path("results/delta")' in t and "results/delta/CM/crc" in t
-    an = (NCSA / "analyze_cpu.sbatch").read_text()
+    an = (NCSA / "analyze_cpu.slurm").read_text()
     assert "run the same call locally" not in an and "ONLY supported full-data analysis route" in an
 
 
