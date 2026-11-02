@@ -35,7 +35,7 @@ Tests: CPU suite `pytest tests -q` (about 80 s); GPU tests under the lock with `
 2. NCSA Delta full-data run (every command needs the user's OK first): follow `ncsa/README.md` J1 -> J2 ->
    `analyze_cpu.slurm` -> J3; copy back only `results/delta/`. Then swap the local-subset numbers in README,
    `project.json` and the deck outline.
-3. Talk: abstract (README opens with it) and the deck `docs/twinread_deck.pptx` (13-slide talk, about 10:40 spoken, then
+3. Talk: abstract (README opens with it) and the deck `docs/twinread_deck.pptx` (14-slide talk, about 11:40 spoken, then
    references and backups). Edit it in PowerPoint, or change `docs/deck/build_deck.js` and rerun
    `cd docs/deck && npm install && node build_deck.js`. A rebuild overwrites edits made in PowerPoint.
 

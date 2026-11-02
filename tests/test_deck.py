@@ -26,17 +26,26 @@ def slides():
     return [_text(x) for x in _parts("ppt/slides/slide").values()]
 
 
+def test_paragraphs_have_one_properties_element():
+    """pptxgenjs repeats <a:pPr> in mixed-run paragraphs. That is invalid, and it silently drops bullets."""
+    for prefix in ("ppt/slides/slide", "ppt/slideLayouts/slideLayout", "ppt/notesSlides/notesSlide"):
+        for name, xml in _parts(prefix).items():
+            for p in re.findall(r"<a:p>.*?</a:p>", xml, flags=re.S):
+                assert len(re.findall(r"<a:pPr[ />]", p)) <= 1, name
+
+
 def test_within_limit_with_native_charts_and_notes():
     assert len(_parts("ppt/slides/slide")) <= 20
     assert len(_parts("ppt/charts/chart")) >= 5
     assert len(_parts("ppt/notesSlides/notesSlide")) == len(_parts("ppt/slides/slide"))
 
 
-def test_every_slide_carries_the_research_prototype_label():
-    layouts = _parts("ppt/slideLayouts/slideLayout")
-    labelled = [n for n, x in layouts.items() if "not a diagnostic device" in _text(x)]
-    assert len(labelled) >= 3  # CONTENT, CONTENT_PLAIN, CLOSE; the cover states it on the slide
-    assert "not a diagnostic device" in _parts("ppt/slides/slide")["ppt/slides/slide1.xml"]
+def test_disclaimer_is_spoken_and_in_the_readme_not_on_slides():
+    phrase = "not a diagnostic device"
+    for prefix in ("ppt/slides/slide", "ppt/slideLayouts/slideLayout", "ppt/slideMasters/slideMaster"):
+        assert not [n for n, x in _parts(prefix).items() if phrase in x.lower()]
+    assert phrase in _text(_parts("ppt/notesSlides/notesSlide")["ppt/notesSlides/notesSlide1.xml"])
+    assert phrase in (ROOT / "README.md").read_text().lower()
 
 
 def test_headline_numbers_match_results(slides):
@@ -68,6 +77,25 @@ def test_dependent_kernel_slide_recomputes_from_results(slides):
     text = next(t for t in slides if "Fusing dependent stages" in t)
     for want in (f"\u00d7{unfused / fused:.1f} the traffic", f"K2 takes {k2_ms:.1f} ms", f"within {round(100 * (over_floor - 1))}%"):
         assert want in text, want
+
+
+def test_why_shrink_slide_matches_results(slides):
+    ms = json.loads((ROOT / "results/student/model_sizes.json").read_text())["students"]["CM"]
+    kc = json.loads((ROOT / "results/uno_q/onboard/int8_kernel_check.json").read_text())["cm"]
+    x86 = json.loads((ROOT / "results/uno_q/backbone_latency_x86_sim.json").read_text())["rows"]
+    row = {r["precision"]: r for r in x86 if r["backbone"] == "mobilenetv4_conv_small" and r["threads"] == 4}
+    fp, i8 = ms["fp32_param_bytes"], ms["int8_onnx_bytes"]
+    text = next(t for t in slides if "Why quantise" in t)
+    for want in (f"{fp / 1e6:.1f} MB down to {i8 / 1e6:.1f} MB, \u00d7{fp / i8:.1f}",
+                 f"\u00d7{row['fp32']['p50_ms'] / row['int8']['p50_ms']:.1f} faster",
+                 f"\u00d7{row['fp32']['rss_mb'] / row['int8']['rss_mb']:.1f} less RAM",
+                 f"{100 * kc['fp32_student_bal_acc']:.2f}% to {100 * kc['bal_acc']['board']:.2f}%",
+                 f"{100 * kc['pred_agreement_with_fp32_student']['board']:.1f}% of calls"):
+        assert want in text, want
+    assert "x86" in text and "not timed on the board" in text  # the speed claim stays labelled
+    assert text.count("Low-access clinics") == 1 and "Hurricane Maria" in text and "Mars" in text
+    assert "FCC 2017" in text and "NASA" in text and "Arduino 2026" in text  # the external facts stay cited
+    assert 'buChar' in _parts("ppt/slides/slide")["ppt/slides/slide10.xml"]
 
 
 def test_no_overclaims(slides):

@@ -44,11 +44,11 @@ def main():
     (OUT / "blindspots.json").write_text(json.dumps(
         {"n": len(rows), "flagged": sum(r["flagged"] for r in rows), "pairs": pairs, "missed": missed}, indent=1) + "\n")
 
-    # Board photo (crop only: away from the USB dongle at the lower right) and the app screenshot (threshold line off).
+    # Board photo (crop only: away from the USB dongle at the lower right) and the app screenshot (banner and threshold line off).
     Image.open(ROOT / "figures/extra/uno_q_photo.jpg").convert("RGB").crop((230, 0, 1450, 968)).save(
         OUT / "uno_q.jpg", quality=90)
     im = Image.open(ROOT / "figures/ui_device_unoq.png").convert("RGB")
-    im.crop((0, 0, im.width, 895)).save(OUT / "app_ui.png")
+    im.crop((0, 35, im.width, 895)).save(OUT / "app_ui.png")
 
     # Footer motif: the two readers, overlapping, in the deck's theme colours.
     w, h = 600, 400

@@ -1,11 +1,11 @@
 # TwinRead deck outline (submission Wed Oct 21: at most 20 main slides)
 
-The live deck is `docs/twinread_deck.pptx` (13-slide talk, references, backups), built by `docs/deck/build_deck.js`
+The live deck is `docs/twinread_deck.pptx` (14-slide talk, references, backups), built by `docs/deck/build_deck.js`
 from the results JSON. This outline is the longer reference for the original submission.
 
 Each slide gives a title, the content, the figure and a one-line speaker note. Every number comes from
 `results/headline.json` or the JSON it cites. Model numbers are local-subset numbers; device numbers are measured on
-the Arduino UNO Q. Every slide footer reads "Research prototype, not a diagnostic device."
+the Arduino UNO Q. The talk says aloud that this is a research prototype, not a diagnostic device; the slides do not carry it.
 
 The deck covers, in order: aims (1-3), methods (4-6), results (7-16), challenges overcome and remaining (17-18),
 impact (19) and references (20).

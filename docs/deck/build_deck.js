@@ -1,6 +1,6 @@
 // Builds docs/twinread_deck.pptx: editable text, shapes, tables and native charts, with speaker notes.
-// Every TwinRead number is read from results/**/*.json at build time. The only numbers typed by hand are the two
-// literature figures on slide 2, each cited on the slide.
+// Every TwinRead number is read from results/**/*.json at build time. The only numbers typed by hand are external facts,
+// each cited on its slide: the two literature figures on slide 2, and the disaster, Mars and price figures on slide 10.
 //
 //   cd docs/deck && npm install && node build_deck.js
 //
@@ -24,6 +24,8 @@ const KC = J("results/uno_q/onboard/int8_kernel_check.json");
 const SM = J("results/student/cm_crc/metrics.json");
 const BS = JSON.parse(fs.readFileSync(A("blindspots.json"), "utf8"));
 const KF = JSON.parse(fs.readFileSync(A("kernel_figures.json"), "utf8"));
+const MS = J("results/student/model_sizes.json");
+const X86 = J("results/uno_q/backbone_latency_x86_sim.json");
 
 const CC = H.fusion.CM_crc, CA = H.fusion.CM_cam, OC = H.fusion.OPEN_crc, OA = H.fusion.OPEN_cam;
 const K = H.kernels, S = H.student, D = H.device.onboard, FR = H.crc_fusion_fragility;
@@ -63,7 +65,7 @@ const CONCH = C.accent1, MUSK = C.accent2, FUSED = C.accent3, DISAGREE = C.accen
 const INK = C.text1, WHITE = C.background1, TINT = C.background2, NIGHT = C.text2;
 
 const LM = 0.6, CW = 12.13; // left margin and content width
-const FOOT = "TwinRead  ·  Research prototype, not a diagnostic device";
+const FOOT = "TwinRead";
 
 const footerObjects = () => [
   { image: { path: A("motif.png"), x: LM, y: 7.03, w: 0.3, h: 0.2 } },
@@ -101,9 +103,7 @@ pres.defineSlideMaster({
 });
 pres.defineSlideMaster({
   title: "CLOSE", background: { color: NIGHT }, slideNumber: { ...slideNo, color: RULE },
-  objects: [titlePh({ color: WHITE, fontSize: 32 }), {
-    text: { text: FOOT.replace("TwinRead  ·  ", ""), options: { x: LM, y: 6.99, w: 8, h: 0.28, fontSize: 10, color: RULE, margin: 0, valign: "middle" } },
-  }],
+  objects: [titlePh({ color: WHITE, fontSize: 32 })],
 });
 
 // ---- helpers --------------------------------------------------------------------------------------------------------
@@ -143,7 +143,6 @@ pres.addSection({ title: "Talk" });
   T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", 0.75, 4.55, 6.5, 0.35, { fontSize: 16, color: WHITE, bold: true });
   T(s, "University of Illinois Urbana-Champaign", 0.75, 4.93, 6.5, 0.3, { fontSize: 14, color: RULE });
   T(s, "2026 Ashby Prize in Computational Science Hackathon", 0.75, 5.23, 6.5, 0.3, { fontSize: 14, color: RULE });
-  T(s, "Research prototype, not a diagnostic device", 0.75, 6.28, 6.5, 0.3, { fontSize: 12, color: RULE });
   const order = ["TUM", "STR", "LYM", "MUS", "NORM", "DEB", "MUC", "ADI", "BACK"];
   const names = { ADI: "adipose", BACK: "background", DEB: "debris", LYM: "lymphocytes", MUC: "mucus", MUS: "smooth muscle", NORM: "normal mucosa", STR: "stroma", TUM: "tumour epithelium" };
   const d = 1.62, g = 0.06, x0_ = 7.85, y0_ = 1.26;
@@ -151,7 +150,7 @@ pres.addSection({ title: "Talk" });
     path: A(`class_${c}.jpg`), x: x0_ + (i % 3) * (d + g), y: y0_ + Math.floor(i / 3) * (d + g), w: d, h: d,
     altText: `H&E tile from the CRC-VAL-HE-7K test set: ${names[c]}`,
   }));
-  s.addNotes(`[0:20] Hello, we are team TwinRead. Our question comes straight from the challenge: can foundation models make pathology more precise, more reproducible and more interpretable? These nine tiles are the nine tissue classes in our test set, all real H&E.`);
+  s.addNotes(`[0:20] Hello, we are team TwinRead. This is a research prototype, not a diagnostic device. Our question comes straight from the challenge: can foundation models make pathology more precise, more reproducible and more interpretable? These nine tiles are the nine tissue classes in our test set, all real H&E.`);
 }
 
 // ---- 2 problem ------------------------------------------------------------------------------------------------------
@@ -416,7 +415,45 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] Now the limit of the whole idea. These are shared blind spots: tiles where both readers make the same wrong call, both with high confidence. There are ${BS.n} on the colorectal test set, ${pct2(CC.confident_shared_errors.rate)} of tiles. Most are muscle versus stroma, but ${BS.pairs["TUM->NORM"]} are tumour called normal.\n\nNo disagreement signal can catch these, because the readers agree. The fused uncertainty flag still catches ${BS.flagged} of them, at the cost of reviewing a quarter of tiles. The ${nMiss} on this slide escaped even that.\n\nPathologists in the room may disagree with some of these labels, and we would welcome that. The point stands: when two models agree, that is not proof.\n\nIf asked: on Camelyon17 the flag catches only ${CA.confident_shared_errors.flagged_by_prereg_rule} of ${CA.confident_shared_errors.n} such tiles.\n\nSources: results/cm_local/CM/crc/review.json, triage_curves.json, tile_preds.npz.`);
 }
 
-// ---- 10 board --------------------------------------------------------------------------------------------------------
+// ---- 10 why quantise, why a small device: the reasons, before the board results on slide 11
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const ck = MS.ratios.CM.teacher_checkpoint_bytes_sum / 1e6, fp = MS.students.CM.fp32_param_bytes / 1e6, i8 = MS.students.CM.int8_onnx_bytes / 1e6;
+  const row = (prec) => X86.rows.find((r) => r.backbone === "mobilenetv4_conv_small" && r.precision === prec && r.threads === 4);
+  const xSpeed = row("fp32").p50_ms / row("int8").p50_ms, xRam = row("fp32").rss_mb / row("int8").rss_mb;
+  const fpAcc = KC.cm.fp32_student_bal_acc, bdAcc = KC.cm.bal_acc.board, agree = KC.cm.pred_agreement_with_fp32_student.board;
+  const PRICE = 79; // USD, 4 GB board (ours has 3.6 GiB usable), Arduino blog 2026-06-26, effective 2026-07-06
+  const MARIA_PCT = 95.6; // FCC Communications Status Report for Areas Impacted by Hurricane Maria, 2017-09-23 (DOC-346860A1)
+  const MARS_MIN = 22; // maximum one-way delay, McBrayer, Chai, Judd (NASA Langley), ASCEND 2022, NTRS 20220013418
+  title(s, "Why shrink it: AI that works without a network");
+  T(s, "Model size (MB)", LM, 1.25, 6, 0.32, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  hBars(s, ["CONCH + MUSK checkpoints", "Student, fp32", "Student, int8"], [ck, fp, i8].map((v) => +v.toFixed(1)), [BASE, BASE, HEX.accent3], {
+    x: LM, y: 1.55, w: CW, h: 1.4, max: ck * 1.1, series: "Model size (MB)", fmt: "#,##0.0", font: 15, gap: 30, layout: { x: 0.215, y: 0.02, w: 0.775, h: 0.96 },
+    alt: `Model size in MB: CONCH and MUSK checkpoints ${ck.toFixed(0)}, student fp32 ${fp.toFixed(1)}, student int8 ${i8.toFixed(1)}.`,
+  });
+  const bullets = (x, w, head, items) => {
+    T(s, head, x, 3.08, w, 0.42, { fontSize: 20, bold: true, valign: "middle" });
+    T(s, items.flatMap(([lead, rest], i) => [
+      { text: lead + " ", options: { bold: true, bullet: { indent: 16 } } },
+      { text: rest, options: { breakLine: i < items.length - 1 } },
+    ]), x, 3.54, w, 2.75, { fontSize: 17, paraSpaceAfter: 9 });
+  };
+  bullets(LM, 5.8, "Why quantise to int8", [
+    ["Smaller:", `${fp.toFixed(1)} MB down to ${i8.toFixed(1)} MB, ×${(fp / i8).toFixed(1)}`],
+    ["Faster and lighter:", `×${xSpeed.toFixed(1)} faster and ×${xRam.toFixed(1)} less RAM on x86`],
+    ["Small cost:", `${pct2(fpAcc)} to ${pct2(bdAcc)} balanced accuracy; ${pct1(agree)} of calls unchanged`],
+  ]);
+  bullets(6.93, 5.8, "Why run on a small device", [
+    ["Low-access clinics:", "no GPU, server or network"],
+    ["Disaster relief:", `Hurricane Maria knocked out ${MARIA_PCT}% of Puerto Rico\u2019s cell sites`],
+    ["Mars:", `up to ${MARS_MIN} minutes each way to Earth, so decisions must be local`],
+    ["Privacy and cost:", `images stay local; $${PRICE} list price`],
+  ]);
+  source(s, "Checkpoints include text encoders. Speed and RAM: MobileNetV4 backbone, 4 threads, x86; fp32 not timed on the board. Sources: Wilson et al., Lancet 2018; FCC 2017; McBrayer et al., NASA, 2022; Arduino 2026.");
+  s.addNotes(`[1:00] So far this takes two large models and a GPU: over two gigabytes of checkpoints. Distilling gives us one small student. Quantising it to 8-bit integers then makes it ×${(fp / i8).toFixed(1)} smaller, at ${i8.toFixed(0)} megabytes. On x86 it is also about ×${xSpeed.toFixed(1)} faster. The cost is about one point of balanced accuracy, and ${pct1(agree)} of calls do not change.\n\nWhy run on a small device? A clinic with no GPU and no second pathologist. A disaster zone: after Hurricane Maria, ${MARIA_PCT} percent of Puerto Rico's cell sites were down. And an extreme case, not pathology but the same principle: Mars is up to ${MARS_MIN} minutes from Earth each way. You cannot wait for a server, which is why NASA's Perseverance rover already picks some science targets by itself. Local, lightweight AI keeps working when the connection does not.\n\nIf asked: these are reasons to build this way, not deployments. TwinRead has not been field-tested in a clinic or disaster zone, and this board is not space-rated. The Lancet series by Wilson et al. names workforce and infrastructure among the barriers to pathology access in low- and middle-income countries. The ${MARIA_PCT}% is the FCC snapshot of 23 September 2017; some providers had not reported. AEGIS on Perseverance targeted rocks without direction from Earth from May 2022. The speed and RAM numbers are for the MobileNetV4 backbone alone on x86 at 4 threads (${row("fp32").p50_ms.toFixed(2)} vs ${row("int8").p50_ms.toFixed(2)} ms, ${row("fp32").rss_mb.toFixed(0)} vs ${row("int8").rss_mb.toFixed(0)} MB). We did not time fp32 on the UNO Q, so we quote no board speed-up, and we did not measure power. MinMax and Entropy calibration collapsed, so we used percentile calibration. $${PRICE} is the 4 GB list price since 6 July 2026; the 2 GB board is $59.\n\nSources: results/student/model_sizes.json, results/uno_q/backbone_latency_x86_sim.json, results/uno_q/onboard/int8_kernel_check.json, device/uno_q_app.py, FCC report DOC-346860A1, Wilson et al. Lancet 2018, NASA NTRS 20220013418, NASA Science on AEGIS (Sol 442), Arduino blog 26 June 2026.`);
+}
+
+// ---- 11 board --------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   title(s, `A ${Math.round(S.int8_onnx_mb)} MB student runs offline on a USB-powered board`);
@@ -430,7 +467,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] Hold up the board now, if you brought it.\n\nThis is the third part. A student network, ${S.params_pct_of_teacher_vision_towers.toFixed(1)} percent of the parameters of the two teachers' vision towers, exported to a ${S.int8_onnx_mb.toFixed(1)} megabyte int8 model. It runs on this Arduino UNO Q over USB power, with no network.\n\nEverything on this slide was measured on the board: ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds of model inference per tile, and ${pct2(D.cm_int8_bal_acc_board)} balanced accuracy across all ${int(TC.n_test)} test tiles, which took ${Math.round(D.cm_full_loop_seconds)} seconds. That is below every teacher. The value here is small, offline and low-cost, not beating the foundation models.\n\nIf asked: a full app frame takes about ${Math.round(D.app_frame_ms_p50_sum_of_stages)} ms, mostly the numpy tissue check, and the full loop runs at ${D.cm_full_loop_tiles_per_s.toFixed(1)} tiles/s. The x86 int8 score of ${pct2(D.cm_int8_bal_acc_x86)} was an onnxruntime kernel artefact. Backup slide.\n\nSources: results/uno_q/onboard/*.json, results/student/model_sizes.json.`);
 }
 
-// ---- 11 gaps --------------------------------------------------------------------------------------------------------
+// ---- 12 gaps --------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
   title(s, "Three gaps remain, each with a concrete next step");
@@ -456,7 +493,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] What is not solved. The fusion gain is fragile, so next is a full-data run on NCSA Delta with all 100 thousand training tiles. Our Slurm kit is tested locally but has not run there yet. The pre-registered threshold over-flagged the test set, ${pct1(op.flagged_fraction)} of tiles for a 10 percent target, so thresholds must be calibrated per site. And the board's flag tracks the teachers only weakly, kappa ${f.kappa.toFixed(2)}, because its two readers are two heads on one backbone. It has only seen stored tiles, so real camera captures come next.\n\nIf asked: the board flag covers ${pct1(f.fraction)} of tiles and catches ${pct1(f.errors_caught)} of its own errors. The low x86 scores only showed up as an artefact because we ran on the actual board.`);
 }
 
-// ---- 12 why it matters ----------------------------------------------------------------------------------------------
+// ---- 13 why it matters ----------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
   title(s, "Why it matters to pathologists and patients");
@@ -470,12 +507,12 @@ pres.addSection({ title: "Talk" });
     T(s, h, LM + 0.38, y, 5.5, 0.4, { fontSize: 22, bold: true, valign: "middle" });
     T(s, txt, LM + 0.38, y + 0.44, 5.5, 0.95, { fontSize: 18 });
   });
-  s.addImage({ path: A("app_ui.png"), x: 7.0, y: 1.6, w: 5.73, h: 3.7, altText: "The TwinRead app on the UNO Q: a stored tile, both student heads, the fused call and an AGREE verdict" });
-  T(s, "The app on the UNO Q, replaying a stored test tile. Its two heads share one student network.", 7.0, 5.38, 5.73, 0.55, { fontSize: 13, color: MUTED });
+  s.addImage({ path: A("app_ui.png"), x: 7.0, y: 1.6, w: 5.73, h: 3.56, altText: "The TwinRead app on the UNO Q: a stored tile, both student heads, the fused call and an AGREE verdict" });
+  T(s, "The app on the UNO Q, replaying a stored test tile. Its two heads share one student network.", 7.0, 5.24, 5.73, 0.55, { fontSize: 13, color: MUTED });
   s.addNotes(`[0:40] Why it matters. For pathologists: a short list of tiles worth a second look, with each reader's call shown rather than one black-box score. For patients: a low-cost, offline second look could help where no second pathologist is available, pending real-world validation. For the field: a measured, pre-registered finding about why two readers help.\n\nThis is a second-read aid, not a diagnosis, and nothing here is clinically validated.\n\nIf asked about the 53 ms in the screenshot: that timer covers the whole step, meaning frame read, crop, tissue check and network, about ${Math.round(["frame read (PNG decode)", "crop to 224 px", "uint8 -> float NCHW", "int8 student (onnxruntime)", "probes + softmax", "tissue check", "review rule"].reduce((a, k) => a + D.stage_p50_ms[k], 0))} ms by stage medians. ${D.cm_int8_p50_ms_4_threads.toFixed(1)} ms is the network alone at 4 threads.`);
 }
 
-// ---- 13 close -------------------------------------------------------------------------------------------------------
+// ---- 14 close -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CLOSE", sectionTitle: "Talk" });
   title(s, "TwinRead in three numbers");
@@ -491,7 +528,7 @@ pres.addSection({ title: "Talk" });
   T(s, "Thank you. Questions?", LM, 4.55, CW, 0.6, { fontSize: 28, bold: true, color: WHITE, valign: "middle" });
   T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", LM, 5.25, CW, 0.32, { fontSize: 16, color: WHITE });
   T(s, "github.com/iujab/twinread-conch-musk-edge", LM, 5.6, CW, 0.32, { fontSize: 14, color: RULE });
-  s.addNotes(`[0:20] Three numbers to remember: a small fusion gain on one dataset, ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught with 10 percent review, and ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile on a board. Thank you. We would welcome your questions.\n\nLeave this slide up during questions. Backup slides follow the references. Spoken total is about 10:40.`);
+  s.addNotes(`[0:20] Three numbers to remember: a small fusion gain on one dataset, ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught with 10 percent review, and ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile on a board. Thank you. We would welcome your questions.\n\nLeave this slide up during questions. Backup slides follow the references. Spoken total is about 11:40.`);
 }
 
 // ---- references and backup ------------------------------------------------------------------------------------------
@@ -504,6 +541,7 @@ const th = (text, o = {}) => ({ text, options: { bold: true, color: HEX.accent5,
   const refs = [
     "Elmore JG, et al. Diagnostic concordance among pathologists interpreting breast biopsy specimens. JAMA 2015. doi:10.1001/jama.2015.1405",
     "Fleming KA, et al. The Lancet Commission on diagnostics: transforming access to diagnostics. Lancet 2021. doi:10.1016/S0140-6736(21)00673-5",
+    "Wilson ML, et al. Access to pathology and laboratory medicine services: a crucial gap. Lancet 2018. doi:10.1016/S0140-6736(18)30459-8",
     "Lu MY, et al. A visual-language foundation model for computational pathology (CONCH). Nat Med 2024. doi:10.1038/s41591-024-02856-4",
     "Xiang J, et al. A vision–language foundation model for precision oncology (MUSK). Nature 2025. doi:10.1038/s41586-024-08378-w",
     "Ikezogwo WO, et al. Quilt-1M: one million image-text pairs for histopathology (QuiltNet). NeurIPS 2023. arXiv:2306.11207",
@@ -511,8 +549,12 @@ const th = (text, o = {}) => ({ text, options: { bold: true, color: HEX.accent5,
     "Muneer A, et al. Review on multimodal data integration for cancer research. Artif Intell Rev 2026. doi:10.1007/s10462-026-11522-9",
     "Kather JN, et al. NCT-CRC-HE-100K and CRC-VAL-HE-7K (CC-BY-4.0). Bandi P, et al. Camelyon17; Koh PW, et al. WILDS (Camelyon17-WILDS, CC0).",
     "Open models: PathGen-CLIP (CC-BY-4.0), QuiltNet-B-16 (MIT), timm mobilenetv4_conv_small.",
+    "FCC. Communications Status Report for Areas Impacted by Hurricane Maria. 23 September 2017.",
+    "McBrayer KT, Chai PR, Judd EL. Communication Delays, Disruptions, and Blackouts for Crewed Mars Missions. NASA, ASCEND 2022. NTRS 20220013418.",
+    "NASA Science. Perseverance\u2019s SuperCam uses AEGIS for the first time. 2022.",
+    "Arduino. A heads-up on the Arduino UNO Q board pricing. Arduino blog, 26 June 2026.",
   ];
-  T(s, refs.map((t, i) => ({ text: t, options: { breakLine: i < refs.length - 1, paraSpaceAfter: 7 } })), LM, 1.3, CW, 4.95, { fontSize: 15 });
+  T(s, refs.map((t, i) => ({ text: t, options: { breakLine: i < refs.length - 1, paraSpaceAfter: 4 } })), LM, 1.2, CW, 5.05, { fontSize: 13 });
   T(s, "Code, results JSON and this deck’s generator: github.com/iujab/twinread-conch-musk-edge. Every TwinRead number here is read from results/*.json at build time.", LM, 6.3, CW, 0.5, { fontSize: 12, color: MUTED });
   s.addNotes("Not presented. Leave out of the talk unless asked.");
 }
@@ -696,6 +738,26 @@ async function patchCharts(file) {
 }
 function xVals100(rf, i10) { return rf.map((_, i) => (i === i10 ? 100 : 0)); }
 
+// pptxgenjs writes a second <a:pPr> before a later run when a paragraph mixes run options. The schema allows one, first,
+// and it is the first that carries bullets and indents. Applies to slides, layouts and notes.
+async function fixParagraphProps(file) {
+  const zip = await JSZip.loadAsync(fs.readFileSync(file));
+  const names = Object.keys(zip.files).filter((n) => /^ppt\/(slides\/slide|slideLayouts\/slideLayout|notesSlides\/notesSlide)\d+\.xml$/.test(n));
+  for (const n of names) {
+    const xml = await zip.file(n).async("string");
+    const fixed = xml.replace(/<a:p>[\s\S]*?<\/a:p>/g, (p) => {
+      let seen = false;
+      return p.replace(/<a:pPr(?:\s[^>]*)?(?:\/>|>[\s\S]*?<\/a:pPr>)/g, (m) => {
+        if (seen) return "";
+        seen = true;
+        return m;
+      });
+    });
+    if (fixed !== xml) zip.file(n, fixed);
+  }
+  fs.writeFileSync(file, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
+}
+
 async function applyTheme(file) {
   const zip = await JSZip.loadAsync(fs.readFileSync(file));
   const names = Object.keys(zip.files).filter((n) => /^ppt\/theme\/theme\d*\.xml$/.test(n));
@@ -712,6 +774,7 @@ async function applyTheme(file) {
 (async () => {
   await pres.writeFile({ fileName: OUT });
   await patchCharts(OUT);
+  await fixParagraphProps(OUT);
   await applyTheme(OUT);
   console.log("wrote", OUT);
 })();
