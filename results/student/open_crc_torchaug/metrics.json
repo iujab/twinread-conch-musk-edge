@@ -28,7 +28,7 @@
   "weight_decay": 0.01,
   "device": "cuda",
   "amp_fp16": true,
-  "targets_dir": "/home/nanashi-mumei/dev/ashbyhackathonbench/twinread-conch-musk-edge/results/open/OPEN/crc",
+  "targets_dir": "<repo>/results/open/OPEN/crc",
   "targets_sha256": "8bf65eeca0735b07bf7be4c59eb1a409402a1a0719a71db595a8ed16bf26d787",
   "config_hash": "0208b158bce7a3cce4cdad1984f2166056230baff3c87a5a9c7e361f2ad4b82e",
   "n": {
