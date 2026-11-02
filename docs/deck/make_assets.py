@@ -44,6 +44,24 @@ def main():
     (OUT / "blindspots.json").write_text(json.dumps(
         {"n": len(rows), "flagged": sum(r["flagged"] for r in rows), "pairs": pairs, "missed": missed}, indent=1) + "\n")
 
+    # Fusion slide's worked example, chosen by rule so it is typical and not hand-picked: the median (by fused top
+    # probability) of the tumour tiles that exactly one model misses and fusion gets right.
+    TUM = CRC.index("TUM")
+    f = t["pF"].argmax(1)
+    rescued = np.where((y == TUM) & (f == TUM) & ((a == TUM) ^ (b == TUM)))[0]
+    ex = int(rescued[np.argsort(t["pF"][rescued].max(1))][len(rescued) // 2])
+    wrong = int(a[ex] if a[ex] != TUM else b[ex])
+    save_tile(xs[ex], OUT / "fusion_example.jpg")
+    dims = {r: json.loads((ROOT / f"data/emb/crc/{r}_probe_train.json").read_text())["shape"][1] for r in ("conch", "musk")}
+    (OUT / "probe_fusion.json").write_text(json.dumps({
+        "probe_feature_dims": dims, "probe_weights": {r: len(CRC) * (d + 1) for r, d in dims.items()},
+        "example": {"tile": ex, "truth": "TUM", "other": CRC[wrong], "n_rescued": len(rescued),
+                    "n_rescued_flagged": int(t["flag"][rescued].sum()), "flagged": bool(t["flag"][ex]),
+                    "conch": {"TUM": float(t["pA"][ex, TUM]), "other": float(t["pA"][ex, wrong])},
+                    "musk": {"TUM": float(t["pB"][ex, TUM]), "other": float(t["pB"][ex, wrong])},
+                    "fused": {"TUM": float(t["pF"][ex, TUM]), "other": float(t["pF"][ex, wrong])}},
+    }, indent=1) + "\n")
+
     # Board photo (crop only: away from the USB dongle at the lower right) and the app screenshot (banner and threshold line off).
     Image.open(ROOT / "figures/extra/uno_q_photo.jpg").convert("RGB").crop((230, 0, 1450, 968)).save(
         OUT / "uno_q.jpg", quality=90)

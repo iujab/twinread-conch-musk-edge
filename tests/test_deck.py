@@ -34,8 +34,18 @@ def test_paragraphs_have_one_properties_element():
                 assert len(re.findall(r"<a:pPr[ />]", p)) <= 1, name
 
 
+def _in_order(prefix):
+    parts = _parts(prefix)
+    return [parts[n] for n in sorted(parts, key=lambda n: int(re.search(r"(\d+)\.xml$", n)[1]))]
+
+
+def _titles():
+    return [re.sub(r"\s+", " ", _text(re.search(r'<p:sp>(?:(?!</p:sp>).)*?type="title".*?</p:sp>', x, flags=re.S)[0])).strip()
+            for x in _in_order("ppt/slides/slide")]
+
+
 def test_within_limit_with_native_charts_and_notes():
-    assert len(_parts("ppt/slides/slide")) <= 20
+    assert _titles().index("References") <= 20  # the organizers' limit is on main slides
     assert len(_parts("ppt/charts/chart")) >= 5
     assert len(_parts("ppt/notesSlides/notesSlide")) == len(_parts("ppt/slides/slide"))
 
@@ -44,7 +54,7 @@ def test_disclaimer_is_spoken_and_in_the_readme_not_on_slides():
     phrase = "not a diagnostic device"
     for prefix in ("ppt/slides/slide", "ppt/slideLayouts/slideLayout", "ppt/slideMasters/slideMaster"):
         assert not [n for n, x in _parts(prefix).items() if phrase in x.lower()]
-    assert phrase in _text(_parts("ppt/notesSlides/notesSlide")["ppt/notesSlides/notesSlide1.xml"])
+    assert any(phrase in _text(x) for x in _in_order("ppt/notesSlides/notesSlide"))
     assert phrase in (ROOT / "README.md").read_text().lower()
 
 
@@ -95,7 +105,66 @@ def test_why_shrink_slide_matches_results(slides):
     assert "x86" in text and "not timed on the board" in text  # the speed claim stays labelled
     assert text.count("Low-access clinics") == 1 and "Hurricane Maria" in text and "Mars" in text
     assert "FCC 2017" in text and "NASA" in text and "Arduino 2026" in text  # the external facts stay cited
-    assert 'buChar' in _parts("ppt/slides/slide")["ppt/slides/slide10.xml"]
+    assert any("Why quantise" in _text(x) and "buChar" in x for x in _in_order("ppt/slides/slide"))
+
+
+def test_team_hand_edits_survive_a_rebuild(slides):
+    """Their edits in docs/deck/manual_edits/ are carried by the generator, which would otherwise overwrite them."""
+    titles = _titles()
+    for want in ("Why a second opinion matters", "CONCH and MUSK make different mistakes", "System Architecture",
+                 "Implementation on Arduino UNO Q", "Future Directions"):
+        assert want in titles
+    text = " ".join(slides)
+    for want in ("And can we make it run offline on a small device?", "out of the 505 were misclassified by both models",
+                 "Combine Predictions", "Distill", "Student model", "both wrong (&gt;80% confidence)"):
+        assert want in text, want
+    for gone in ("Fixed in advance", "Overcome along the way", "independent readers, and a second look"):
+        assert gone not in text
+
+
+def test_science_comes_before_the_kernels():
+    titles = _titles()
+    at = lambda start: next(i for i, t in enumerate(titles) if t.startswith(start))  # noqa: E731
+    assert at("Linear probes") < at("Fusion: average") < at("Fusion adds") < at("Distillation") < at("Our trained student") < at("CUDA kernels")
+
+
+def test_probe_and_fusion_slides_match_results(slides):
+    r = json.loads((ROOT / "results/cm_local/CM/crc/readers.json").read_text())
+    f = json.loads((ROOT / "results/cm_local/CM/crc/fusion.json").read_text())
+    pf = json.loads((ROOT / "docs/deck/assets/probe_fusion.json").read_text())
+    probe = next(t for t in slides if "Linear probes:" in t)
+    notes = " ".join(_text(x) for x in _in_order("ppt/notesSlides/notesSlide"))  # chart values are not slide text
+    for k, dim in (("A", pf["probe_feature_dims"]["conch"]), ("B", pf["probe_feature_dims"]["musk"])):
+        assert f"{100 * r[k]['zeroshot']['bal_acc']:.1f}" in notes and f"{100 * r[k]['probe']['bal_acc']:.1f}" in notes
+        assert f"{dim:,} numbers" in probe and f"{9 * (dim + 1):,} weights" in probe
+    fusion = next(t for t in slides if "Fusion: average" in t)
+    b, c = f["mcnemar_fused_vs_B"]["b"], f["mcnemar_fused_vs_B"]["c"]
+    assert f"fixes {b} and adds {c}" in fusion and "286 \u2192 239" in fusion and 286 - b + c == 239
+    ex = pf["example"]
+    assert abs((ex["conch"]["TUM"] + ex["musk"]["TUM"]) / 2 - ex["fused"]["TUM"]) < 1e-6  # the average, as the slide says
+    assert ex["flagged"] and f"only {round(100 * ex['fused']['TUM'])}% sure" in fusion
+
+
+def test_student_slide_matches_results(slides):
+    hl = json.loads((ROOT / "results/headline.json").read_text())
+    c, s, d = hl["fusion"]["CM_crc"], hl["student"], hl["device"]["onboard"]
+    text = next(t for t in slides if "Our trained student" in t)
+    fp = s["CM"]["fp32_test_bal_acc"]
+    behind = 100 * (c["bal_acc"]["fused"] - d["cm_int8_bal_acc_board"])
+    assert f"{s['params_pct_of_teacher_vision_towers']:.1f}% of the size, {behind:.1f} points behind" in text
+    assert "not a like-for-like" in text and "not real captures" in text  # the caveats stay on the slide
+    assert fp["clean"] < c["bal_acc"]["B"] and d["cm_int8_bal_acc_board"] < c["bal_acc"]["A"]  # "behind" is true
+
+
+def test_notes_are_a_recitable_script_that_fits():
+    notes = _in_order("ppt/notesSlides/notesSlide")[:_titles().index("References")]
+    seconds = 0
+    for x in notes:
+        m = re.search(r"\[(\d+):(\d\d)\]", _text(x))
+        seconds += 60 * int(m[1]) + int(m[2])
+        assert "buChar" in x and x.count("<a:p>") > 3  # real bullets, one paragraph per line
+    assert seconds <= 13 * 60
+    assert sum("How we built it:" in _text(x) for x in notes) >= 4 and any("How it came together" in _text(x) for x in notes)
 
 
 def test_no_overclaims(slides):

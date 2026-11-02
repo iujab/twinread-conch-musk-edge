@@ -1,6 +1,6 @@
 # TwinRead deck outline (submission Wed Oct 21: at most 20 main slides)
 
-The live deck is `docs/twinread_deck.pptx` (14-slide talk, references, backups), built by `docs/deck/build_deck.js`
+The live deck is `docs/twinread_deck.pptx` (20-slide talk, references, backups), built by `docs/deck/build_deck.js`
 from the results JSON. This outline is the longer reference for the original submission.
 
 Each slide gives a title, the content, the figure and a one-line speaker note. Every number comes from

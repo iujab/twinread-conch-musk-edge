@@ -1,6 +1,8 @@
 // Builds docs/twinread_deck.pptx: editable text, shapes, tables and native charts, with speaker notes.
-// Every TwinRead number is read from results/**/*.json at build time. The only numbers typed by hand are external facts,
-// each cited on its slide: the two literature figures on slide 2, and the disaster, Mars and price figures on slide 10.
+// Every TwinRead number is read from results/**/*.json at build time. The only numbers typed by hand are external facts:
+// the two literature figures on the second-opinion slide (cited in its notes and on References) and the disaster, Mars and
+// price figures on the why-shrink slide (cited on it). A rebuild overwrites edits made directly in the .pptx, so port them
+// here; docs/deck/manual_edits/ keeps the team's hand-edited versions.
 //
 //   cd docs/deck && npm install && node build_deck.js
 //
@@ -26,6 +28,11 @@ const BS = JSON.parse(fs.readFileSync(A("blindspots.json"), "utf8"));
 const KF = JSON.parse(fs.readFileSync(A("kernel_figures.json"), "utf8"));
 const MS = J("results/student/model_sizes.json");
 const X86 = J("results/uno_q/backbone_latency_x86_sim.json");
+const RD = J("results/cm_local/CM/crc/readers.json");
+const FJ = J("results/cm_local/CM/crc/fusion.json");
+const PRE = J("results/cm_local/CM/crc/preregistration.json");
+const DRIFT = J("results/student/cm_crc/int8_drift.json");
+const PF = JSON.parse(fs.readFileSync(A("probe_fusion.json"), "utf8"));
 
 const CC = H.fusion.CM_crc, CA = H.fusion.CM_cam, OC = H.fusion.OPEN_crc, OA = H.fusion.OPEN_cam;
 const K = H.kernels, S = H.student, D = H.device.onboard, FR = H.crc_fusion_fragility;
@@ -94,12 +101,7 @@ pres.defineSlideMaster({
 });
 pres.defineSlideMaster({
   title: "COVER", background: { color: NIGHT },
-  objects: [titlePh({ x: 0.75, y: 1.45, w: 6.6, h: 1.1, fontSize: 60, color: WHITE, valign: "bottom" }), {
-    placeholder: {
-      options: { name: "subtitle", type: "body", x: 0.75, y: 2.72, w: 6.5, h: 1.5, fontSize: 24, color: WHITE, align: "left", valign: "top", margin: 0 },
-      text: "Subtitle",
-    },
-  }],
+  objects: [titlePh({ x: 0.68, y: 3.9, w: 6.6, h: 1.1, fontSize: 60, color: WHITE, valign: "bottom" })],
 });
 pres.defineSlideMaster({
   title: "CLOSE", background: { color: NIGHT }, slideNumber: { ...slideNo, color: RULE },
@@ -134,15 +136,38 @@ function hBars(s, labels, values, colors, o) {
   });
 }
 
+const tableOpts = (o) => ({ fontFace: "Arial", fontSize: 15, color: HEX.dk1, border: { type: "solid", pt: 0.75, color: "E8E6EE" }, valign: "middle", margin: [0.04, 0.1, 0.04, 0.1], ...o });
+const th = (text, o = {}) => ({ text, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, ...o } });
+
+// Speaker notes as a script: bullets to read aloud, then answers for questions. The time tag comes from the word count, so
+// tags and script cannot drift apart. formatNotes() turns the lines into real paragraphs and bullets after the build.
+const WPM = 140;
+let talkSeconds = 0;
+const mmss = (sec) => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+function script(s, { cue, say, built = [], asked = [], sources, after }) {
+  const words = [...say, ...built].join(" ").split(/\s+/).length;
+  const sec = Math.ceil((words / WPM) * 12) * 5; // round up to 5 s
+  talkSeconds += sec;
+  const dot = (x) => `\u2022 ${x}`;
+  const lines = [`[${mmss(sec)}]`];
+  if (cue) lines.push(cue);
+  lines.push(...say.map(dot));
+  if (built.length) lines.push("How we built it:", ...built.map(dot));
+  if (asked.length) lines.push("If asked:", ...asked.map(dot));
+  if (sources) lines.push(`Sources: ${sources}`);
+  if (after) lines.push(after(talkSeconds));
+  s.addNotes(lines.join("\n"));
+}
+
 // ---- 1 cover --------------------------------------------------------------------------------------------------------
 pres.addSection({ title: "Talk" });
 {
   const s = pres.addSlide({ masterName: "COVER", sectionTitle: "Talk" });
   title(s, "TwinRead");
-  s.addText("Two pathology foundation models as two independent readers, and a second look that runs offline", { placeholder: "subtitle" });
-  T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", 0.75, 4.55, 6.5, 0.35, { fontSize: 16, color: WHITE, bold: true });
-  T(s, "University of Illinois Urbana-Champaign", 0.75, 4.93, 6.5, 0.3, { fontSize: 14, color: RULE });
-  T(s, "2026 Ashby Prize in Computational Science Hackathon", 0.75, 5.23, 6.5, 0.3, { fontSize: 14, color: RULE });
+  motif(s, 0.73, 1.82, 1.92);
+  T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", 0.73, 5.25, 6.5, 0.35, { fontSize: 16, color: WHITE, bold: true });
+  T(s, "University of Illinois Urbana-Champaign", 0.73, 5.63, 6.5, 0.3, { fontSize: 14, color: RULE });
+  T(s, "2026 Ashby Prize in Computational Science Hackathon", 0.73, 5.93, 6.5, 0.3, { fontSize: 14, color: RULE });
   const order = ["TUM", "STR", "LYM", "MUS", "NORM", "DEB", "MUC", "ADI", "BACK"];
   const names = { ADI: "adipose", BACK: "background", DEB: "debris", LYM: "lymphocytes", MUC: "mucus", MUS: "smooth muscle", NORM: "normal mucosa", STR: "stroma", TUM: "tumour epithelium" };
   const d = 1.62, g = 0.06, x0_ = 7.85, y0_ = 1.26;
@@ -150,13 +175,19 @@ pres.addSection({ title: "Talk" });
     path: A(`class_${c}.jpg`), x: x0_ + (i % 3) * (d + g), y: y0_ + Math.floor(i / 3) * (d + g), w: d, h: d,
     altText: `H&E tile from the CRC-VAL-HE-7K test set: ${names[c]}`,
   }));
-  s.addNotes(`[0:20] Hello, we are team TwinRead. This is a research prototype, not a diagnostic device. Our question comes straight from the challenge: can foundation models make pathology more precise, more reproducible and more interpretable? These nine tiles are the nine tissue classes in our test set, all real H&E.`);
+  script(s, {
+    say: [
+      "Hello, we are team TwinRead, from the University of Illinois.",
+      "Our question comes from the challenge: can foundation models make pathology more precise, more reproducible and more interpretable?",
+      "These are the nine tissue types in our test set. We call each small square image a tile.",
+    ],
+  });
 }
 
 // ---- 2 problem ------------------------------------------------------------------------------------------------------
 {
-  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  title(s, "Pathology reads vary, and second readers are scarce");
+  const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
+  title(s, "Why a second opinion matters");
   T(s, "75.3%", LM, 1.45, 5.6, 1.05, { fontSize: 66, bold: true });
   T(s, "of individual breast-biopsy reads matched the expert panel, and only 48% for atypia", LM, 2.55, 5.5, 1.1, { fontSize: 20 });
   T(s, "47%", 7.0, 1.45, 5.6, 1.05, { fontSize: 66, bold: true });
@@ -164,22 +195,29 @@ pres.addSection({ title: "Talk" });
   card(s, LM, 4.1, CW, 1.95);
   motif(s, LM + 0.4, 4.6, 0.92);
   T(s, "Can two AI models act as independent readers?", 2.75, 4.5, 9.6, 0.6, { fontSize: 26, bold: true, valign: "middle" });
-  T(s, "And can that second look run offline, on a small board?", 2.75, 5.1, 9.6, 0.5, { fontSize: 20, valign: "middle" });
-  source(s, "Elmore JG et al., JAMA 2015 (115 pathologists, 6,900 interpretations). Fleming KA et al., Lancet Commission on diagnostics, Lancet 2021.");
-  s.addNotes(`[0:50] Pathology has a safety habit for hard cases: a second, independent read. It exists because reads vary. In Elmore's JAMA study, individual reads of breast biopsies matched the expert panel 75 percent of the time, and only 48 percent for atypia. But a second read needs a second expert, and the Lancet Commission estimates almost half the world has little or no access to diagnostics at all.\n\nSo we asked two questions. Can CONCH and MUSK, the two foundation models this hackathon provides, act as two independent readers? And can that second look be made small enough to run offline?\n\nSources: Elmore et al. doi:10.1001/jama.2015.1405. Fleming et al. doi:10.1016/S0140-6736(21)00673-5.`);
+  T(s, "And can we make it run offline on a small device?", 2.75, 5.1, 9.6, 0.5, { fontSize: 20, valign: "middle" });
+  script(s, {
+    say: [
+      "Hard cases in pathology often get a second, independent read, because reads vary.",
+      "In Elmore's JAMA study, individual breast biopsy reads matched the expert panel 75 percent of the time, and only 48 percent for atypia.",
+      "But a second read needs a second expert, and the Lancet Commission estimates almost half the world has little or no access to diagnostics.",
+      "So: can CONCH and MUSK act like two independent readers? And can we make that run offline on a small device?",
+    ],
+    sources: "Elmore et al., JAMA 2015, 115 pathologists, 6,900 interpretations, doi:10.1001/jama.2015.1405. Fleming et al., Lancet 2021, doi:10.1016/S0140-6736(21)00673-5.",
+  });
 }
 
 // ---- 3 different errors ---------------------------------------------------------------------------------------------
 {
-  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  title(s, "Two models, trained differently, miss different tiles");
+  const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
+  title(s, "CONCH and MUSK make different mistakes");
   dot(s, LM, 1.43, 0.24, CONCH, "CONCH marker");
   T(s, "CONCH", LM + 0.36, 1.35, 5, 0.4, { fontSize: 22, bold: true, valign: "middle" });
   T(s, "Contrastive: 1.17 M image–caption pairs", LM + 0.36, 1.77, 5.5, 0.35, { fontSize: 17, color: MUTED });
   dot(s, 7.0, 1.43, 0.24, MUSK, "MUSK marker");
   T(s, "MUSK", 7.36, 1.35, 5, 0.4, { fontSize: 22, bold: true, valign: "middle" });
   T(s, "Masked: 50 M images and 1 B text tokens", 7.36, 1.77, 5.37, 0.35, { fontSize: 17, color: MUTED });
-  T(s, `${OV.either_wrong} of ${int(OV.n)} colorectal test tiles have at least one reader wrong`, LM, 2.62, CW, 0.38, { fontSize: 18, bold: true });
+  T(s, `At least one model was wrong on ${OV.either_wrong} of ${int(OV.n)} test images`, LM, 2.62, CW, 0.38, { fontSize: 18, bold: true });
   const barW = CW, seg = [OV.conch_only_errors, OV.both_wrong, OV.musk_only_errors], tot = OV.either_wrong;
   s.addChart(pres.charts.BAR, [
     { name: "Only CONCH wrong", labels: ["Tiles"], values: [seg[0]] },
@@ -198,18 +236,29 @@ pres.addSection({ title: "Talk" });
     T(s, lab, cx, 4.52, w, 0.35, { fontSize: 16, align: "center" });
     cx += w;
   });
-  T(s, `Only ${OV.both_wrong} tiles fool both. The rest are gaps the other reader can cover.`, LM, 5.3, CW, 0.6, { fontSize: 24, bold: true, valign: "middle" });
-  source(s, "Linear probes on frozen features, CRC-VAL-HE-7K, 9 tissue classes. Lu et al., Nat Med 2024; Xiang et al., Nature 2025.");
-  s.addNotes(`[0:50] Why would two models behave like two readers? Because they learned differently. CONCH was pretrained contrastively on over 1.17 million histology image and caption pairs. MUSK used masked modelling on 50 million image patches and a billion text tokens, unpaired, before its contrastive stage.\n\nHere is the test of that idea. On the ${int(OV.n)} colorectal test tiles, CONCH misses ${OV.conch_errors} and MUSK misses ${OV.musk_errors}, but only ${OV.both_wrong} are missed by both. So each reader gets most of the other's errors right: ${seg[0]} of CONCH's, ${seg[2]} of MUSK's. That is the gap a second reader can cover.\n\nSource: results/cm_local/CM/crc/reader_error_overlap.json.`);
+  T(s, `Only ${OV.both_wrong} out of the ${OV.either_wrong} were misclassified by both models.`, LM, 5.3, CW, 0.6, { fontSize: 24, bold: true, valign: "middle" });
+  script(s, {
+    say: [
+      "Why would two models act like two readers? They learned differently.",
+      "CONCH learned by matching pathology images to captions. MUSK first learned by filling in hidden pieces of images and text.",
+      `On ${int(OV.n)} colorectal test images, CONCH gets ${OV.conch_errors} wrong and MUSK ${OV.musk_errors}, but only ${OV.both_wrong} are wrong for both.`,
+      "So on most of its mistakes, the other model is right. That is the gap a second reader covers.",
+    ],
+    asked: [
+      `Each model here means a linear probe on its frozen features, explained in two slides. ${OV.both_wrong_same_call} of the ${OV.both_wrong} shared errors make the same wrong call.`,
+      "This overlap was measured after the test run, from saved predictions. It describes the result and chose nothing.",
+    ],
+    sources: "results/cm_local/CM/crc/reader_error_overlap.json. Lu et al., Nat Med 2024. Xiang et al., Nature 2025.",
+  });
 }
 
 // ---- 4 system -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  title(s, "Read twice, flag doubt, then shrink to a small board");
+  title(s, "System Architecture");
   const head = (txt, x, y, w) => T(s, txt, x, y, w, 0.35, { fontSize: 16, bold: true, color: MUTED, valign: "middle" });
   head("1  Read twice", 2.75, 1.3, 2.8);
-  head("2  Fuse and flag", 6.0, 1.3, 3);
+  head("2  Combine Predictions", 6.0, 1.65, 3);
   // row 1: centre line y = 2.75
   s.addImage({ path: A("class_TUM.jpg"), x: LM, y: 1.85, w: 1.8, h: 1.8, altText: "An example H&E tile" });
   T(s, "H&E tile", LM, 3.72, 1.8, 0.3, { fontSize: 14, color: MUTED, align: "center" });
@@ -227,10 +276,10 @@ pres.addSection({ title: "Talk" });
     { text: "Least certain tiles go to a pathologist", options: { fontSize: 14, color: MUTED } },
   ], 9.25, 1.95, 3.48, 1.6, TINT, INK);
   // row 2
-  head("3  Distil", 7.4, 3.72, 2);
+  head("3  Distill", 7.4, 3.72, 2);
   arrow(s, 7.27, 3.41, 0, 1.0);
   box(s, [
-    { text: "Student network", options: { bold: true, fontSize: 18, breakLine: true } },
+    { text: "Student model", options: { bold: true, fontSize: 18, breakLine: true } },
     { text: `${S.params_millions.toFixed(2)} M parameters, ${S.int8_onnx_mb.toFixed(1)} MB int8`, options: { fontSize: 14, color: MUTED } },
   ], 5.75, 4.46, 3.05, 1.35, TINT, INK);
   arrow(s, 8.85, 5.13, 0.35, 0);
@@ -238,67 +287,136 @@ pres.addSection({ title: "Talk" });
     { text: "Arduino UNO Q", options: { bold: true, fontSize: 18, breakLine: true } },
     { text: "Offline, no GPU, USB-powered", options: { fontSize: 14, color: MUTED } },
   ], 9.25, 4.46, 3.48, 1.35, TINT, INK);
-  // pre-registration
-  T(s, "Fixed in advance", LM, 4.5, 4.7, 0.38, { fontSize: 18, bold: true });
-  T(s, "Fusion rule and thresholds were pre-registered before any test label was read.", LM, 4.92, 4.7, 0.85, { fontSize: 17 });
   source(s, `Train: ${int(SM.n.train)} NCT-CRC-HE-100K tiles. Test: ${int(TC.n_test)} CRC-VAL-HE-7K tiles (9 classes) and 1,500 Camelyon17 tiles from an unseen hospital.`);
-  s.addNotes(`[1:00] The system has three parts. One: each tile is read twice, by a linear probe on frozen CONCH features and one on frozen MUSK features. Two: the readers are fused into one call, and the fused reader's uncertainty raises a review flag for a pathologist. Three: a small student network learns from both readers and is exported to int8, so it runs on an Arduino UNO Q.\n\nThe key discipline: the fusion rule and the review thresholds were chosen on validation and pre-registered before any test label was read. Every test number you see was computed once, after that.\n\nThe open-model pair, PathGen-CLIP and QuiltNet, went through the same protocol as a negative control.`);
-}
-
-// ---- 5 kernels ------------------------------------------------------------------------------------------------------
-{
-  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  const pre = K.k1_e2e_preprocess_tiles_per_s, aug = K.student_train_aug_images_per_s.CM, step = K.student_train_step_images_per_s.CM;
-  const augX = K.student_train_aug_speedup_k2_vs_torch.CM, stepX = step.k2 / step.torch;
-  title(s, `CUDA kernels: ${x0(K.k1_preprocess_speedup_vs_pil)} preprocessing, ${x1(augX)} augmentation`);
-  const col = (x, big, name, sub, labels, vals, colors, whole, wholeTxt, alt) => {
-    T(s, big, x, 1.4, 1.95, 0.85, { fontSize: 44, bold: true, valign: "middle" });
-    T(s, name, x + 2.0, 1.4, 3.8, 0.4, { fontSize: 18, bold: true, valign: "middle" });
-    T(s, sub, x + 2.0, 1.8, 3.8, 0.72, { fontSize: 14, color: MUTED });
-    hBars(s, labels, vals, colors, { x, y: 2.72, w: 5.8, h: 1.7, max: Math.max(...vals) * 1.38, series: name, alt, font: 15, gap: 35, layout: { x: 0.27, y: 0.03, w: 0.71, h: 0.94 } });
-    card(s, x, 4.6, 5.8, 1.5);
-    T(s, whole, x + 0.25, 4.72, 1.75, 1.26, { fontSize: 32, bold: true, valign: "middle" });
-    T(s, wholeTxt, x + 2.05, 4.72, 3.55, 1.26, { fontSize: 16, valign: "middle" });
-  };
-  col(LM, x0(K.k1_preprocess_speedup_vs_pil), "K1: dual-reader preprocessing", "One tile in, CONCH 448 px and MUSK 384 px out, bit-exact to the official transforms",
-    ["PIL (official)", "K1 kernel"], [pre.pil_reference_cpu, pre.k1_gpu_incl_h2d], [BASE, HEX.accent3], x2(K.k1_e2e_speedup_vs_reference),
-    `whole embedding run: the model forward is ${Math.round(100 * K.model_forward_share_of_reference_e2e)}% of the time`,
-    `Tiles per second inside the embedding run: PIL ${int(pre.pil_reference_cpu)}, K1 ${int(pre.k1_gpu_incl_h2d)}.`);
-  col(6.93, x1(augX), "K2: training augmentation", "Nine dependent stages plus JPEG, each within one grey level of a float64 reference",
-    ["torch GPU", "K2 kernel"], [aug.torch, aug.k2], [BASE, HEX.accent3], x2(stepX),
-    `whole student training step: ${int(step.torch)} to ${int(step.k2)} images/s`,
-    `Augmentation images per second inside student training: torch ${int(aug.torch)}, K2 ${int(aug.k2)}.`);
-  source(s, "RTX 5060; compile-checked for Delta A100 and DeltaAI GH200; compute-sanitizer clean. Tiles/s (K1), images/s (K2). K2 simulates a USB camera filming a screen.");
-  s.addNotes(`[0:45] We wrote two custom CUDA kernels. K1 prepares both readers' inputs from one tile, and its fixed-point math makes the output bit-exact to each model's official transform. It is ${x0(K.k1_preprocess_speedup_vs_pil)} faster than PIL inside the embedding run. We show the honest number next to it: the whole run gains only ${x2(K.k1_e2e_speedup_vs_reference)}, because the model forward dominates in this batched setup.\n\nK2 simulates what a camera filming a screen does to a tile. It augments ${x1(augX)} faster than torch, which makes the full student training step ${x2(stepX)} faster, close to training with no augmentation at all (${int(step.none)} images/s). Next, how they get this fast.\n\nIf asked: the kernel bench with input already on the GPU gives ${int(K.k1_cuda_tiles_per_s_224)} tiles/s, and K2 gives ${int(K.k2_cuda_images_per_s_sev1)} images/s standalone. See the backup slide.\n\nSources: results/kernels/*.json, results/student/*/throughput.json.`);
-}
-
-// ---- 6 dependent kernels: how the speed is achieved. Graphs from make_kernel_figures.py.
-{
-  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  title(s, "Fusing dependent stages avoids DRAM round trips");
-  card(s, LM, 1.12, CW, 0.82);
-  T(s, [
-    { text: "A dependent kernel ", options: { bold: true } }, { text: "chains stages where each one needs the previous stage’s output. " },
-    { text: "Fusing ", options: { bold: true } }, { text: "runs the chain in one launch, with intermediates in on-chip shared memory." },
-  ], LM + 0.22, 1.12, CW - 0.44, 0.82, { fontSize: 17, valign: "middle" });
-  const floorPct = Math.round(100 * (KF.k1_over_floor - 1));
-  [
-    { x: LM, h: "Why fuse", t: `One launch per stage sends every intermediate through DRAM: ×${KF.traffic_ratio.toFixed(1)} the traffic.`, img: "kernel_traffic.png",
-      alt: `Cumulative DRAM traffic along K2's ten stages: ${KF.unfused_gb.toFixed(2)} GB with one launch per stage, ${KF.fused_gb.toFixed(2)} GB fused. Calculated from tensor sizes.` },
-    { x: 4.72, h: "What it accomplishes", t: `K2 takes ${KF.k2_ms.toFixed(1)} ms per batch, less than the unfused chain’s memory traffic alone.`, img: "kernel_k2_time.png",
-      alt: `Measured time per batch: K2 ${KF.k2_ms.toFixed(1)} ms, torch GPU ${KF.torch_ms.toFixed(0)} ms, torch with cheaper noise ${KF.torch_randn_ms.toFixed(0)} ms, numpy over a second. Unfused memory traffic alone would take ${KF.unfused_traffic_ms.toFixed(1)} ms.` },
-    { x: 8.84, h: "Why it’s cool", t: `K1 runs within ${floorPct}% of the memory-bandwidth floor and stays bit-exact.`, img: "kernel_k1_time.png",
-      alt: `Measured time per batch: K1 ${KF.k1_ms.toFixed(2)} ms against a calculated memory floor of ${KF.k1_floor_ms.toFixed(2)} ms; Triton ${KF.k1_triton_ms.toFixed(2)} ms; torch interpolate ${KF.k1_interpolate_ms.toFixed(0)} ms, not bit-exact.` },
-  ].forEach((c) => {
-    T(s, c.h, c.x, 2.05, 3.89, 0.32, { fontSize: 17, bold: true, valign: "middle" });
-    T(s, c.t, c.x, 2.37, 3.89, 0.52, { fontSize: 14 });
-    s.addImage({ path: A(c.img), x: c.x, y: 2.92, w: 3.89, h: 3.45, altText: c.alt });
+  script(s, {
+    say: [
+      "Three steps. One: every tile is read twice, through CONCH and through MUSK.",
+      "Two: we combine the predictions into one call. If that call is unsure, a review flag sends the tile to a pathologist.",
+      "Three: we train our own small student model to copy both, and run it on an Arduino UNO Q.",
+    ],
+    built: [
+      "Before reading any test label, we fixed the fusion rule and thresholds on validation data in a pre-registration file. Every test number was computed once, after that.",
+    ],
+    asked: [
+      "PathGen-CLIP and QuiltNet, an open model pair, went through the same protocol as a negative control.",
+      `The pre-registration file is dated ${PRE.created_utc.slice(0, 10)} and records the candidates, the selection rule and the prompt hashes.`,
+    ],
+    sources: "results/cm_local/CM/crc/preregistration.json, docs/design.md.",
   });
-  source(s, `DRAM traffic and floors are calculated from tensor sizes and the measured memcpy rate (${Math.round(KF.memcpy_gbps)} GB/s), not hardware counters. Times are CUDA events on a shared RTX 5060. No hand-written unfused CUDA version was measured.`);
-  s.addNotes(`[1:15] Here is how they get this fast. K2 is a dependent chain: warp, stain jitter, gamma, colour, moire, glare, defocus, white balance, noise, JPEG. Each stage needs the previous stage's output, so they cannot run as independent jobs. The usual way is one launch per stage, which writes every intermediate to GPU memory and reads it straight back. For one batch that is ${KF.unfused_gb.toFixed(2)} gigabytes of traffic, by calculation.\n\nWe fuse the chain instead. One launch works through 32-by-16 pixel tiles, keeping intermediates in on-chip shared memory, with a halo of extra pixels so the blur can see its neighbours. Barriers between stages keep them in order. Traffic falls to ${KF.fused_gb.toFixed(2)} gigabytes.\n\nThe result: ${KF.k2_ms.toFixed(1)} milliseconds per batch, less than the unfused chain's memory traffic alone would take. Torch GPU ops take ${KF.torch_ms.toFixed(0)}.\n\nThe part we like most: K1 runs within ${floorPct} percent of the floor set by GPU memory bandwidth, and matches the official transforms bit for bit. torch interpolate, the quick alternative, is ${Math.round(KF.k1_interpolate_ms / KF.k1_ms)} times slower and up to ${Math.round(KF.interpolate_max_levels)} grey levels off.\n\nIf asked: fusing alone does not explain the whole ×${Math.round(KF.x_torch)}. We did not measure a hand-written unfused CUDA version. The memory floor shows one would take at least ${KF.unfused_traffic_ms.toFixed(1)} ms plus compute, so fusing is worth at least ×${(KF.unfused_traffic_ms / KF.k2_ms).toFixed(2)}, and the rest is torch overhead. Our Triton version of K1's plan is within ${Math.ceil(100 * (KF.k1_triton_ms / KF.k1_ms - 1))}% of K1, so most of K1's gain comes from the design, not the language. ×${Math.round(KF.x_torch)} is the standalone bench at batch 256 and severity 1.0; ×${K.student_train_aug_speedup_k2_vs_torch.CM.toFixed(1)} on the previous slide is inside the training loop at batch 128 and severity 0.5. K2's launch 1 takes ${KF.k2_launch1_ms.toFixed(2)} ms and JPEG ${KF.k2_launch2_ms.toFixed(2)} ms. compute-sanitizer memcheck, racecheck and synccheck are clean.\n\nSources: results/kernels/k1_bench.json, k1_parity.json, k2_bench.json, k2_sanitizer.json, src/twinread/csrc/k2_camera_aug.cu.`);
 }
 
-// ---- 7 fusion -------------------------------------------------------------------------------------------------------
+// ---- 5 linear probes: what each "read" is -----------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const zs = { A: 100 * RD.A.zeroshot.bal_acc, B: 100 * RD.B.zeroshot.bal_acc }, pr = { A: 100 * RD.A.probe.bal_acc, B: 100 * RD.B.probe.bal_acc };
+  const T_ = MS.teachers, dims = PF.probe_feature_dims, wts = PF.probe_weights;
+  const mp = (v) => `${(v / 1e6).toFixed(1)} M parameters`;
+  title(s, "Linear probes: one simple classifier on each model");
+  const head = (txt, x, w) => T(s, txt, x, 1.2, w, 0.32, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  head("Frozen encoder", 2.65, 2.75); head("Features", 5.75, 1.75); head("Linear probe, trained", 7.85, 2.4); head("Output", 10.6, 2.13);
+  s.addImage({ path: A("class_TUM.jpg"), x: LM, y: 1.55, w: 1.65, h: 1.65, altText: "An example H&E tile" });
+  const rows = [[CONCH, "CONCH", T_.conch.params_vision_tower, dims.conch, wts.conch, 1.55], [MUSK, "MUSK", T_.musk.params_vision_tower, dims.musk, wts.musk, 2.44]];
+  rows.forEach(([col, name, params, d, w, y], i) => {
+    const h = 0.76, c = y + h / 2;
+    i === 0 ? arrow(s, 2.29, c, 0.32, 2.375 - c, { flipV: true }) : arrow(s, 2.29, 2.375, 0.32, c - 2.375);
+    box(s, [{ text: name, options: { bold: true, fontSize: 18, breakLine: true } }, { text: mp(params), options: { fontSize: 14 } }], 2.65, y, 2.75, h, col, WHITE);
+    arrow(s, 5.43, c, 0.29, 0);
+    box(s, `${int(d)} numbers`, 5.75, y, 1.75, h, TINT, INK, { fontSize: 16 });
+    arrow(s, 7.53, c, 0.29, 0);
+    box(s, [{ text: "One layer", options: { bold: true, fontSize: 16, breakLine: true } }, { text: `${int(w)} weights`, options: { fontSize: 14 } }], 7.85, y, 2.4, h, WHITE, INK, { line: { color: col, width: 2.25 } });
+    arrow(s, 10.28, c, 0.29, 0);
+    box(s, "9 tissue probabilities", 10.6, y, 2.13, h, TINT, INK, { fontSize: 15 });
+  });
+  T(s, "Why a linear probe", LM, 3.5, 5.8, 0.42, { fontSize: 20, bold: true, valign: "middle" });
+  T(s, [
+    ["Honest:", "simple enough that it can only use what the features already know"],
+    ["Independent:", "each probe sees one model, so their errors stay different"],
+    ["Cheap:", `${int(SM.n.train)} labelled tiles, fitted on CPU; the big models never change`],
+  ].flatMap(([lead, rest], i, all) => [
+    { text: lead + " ", options: { bold: true, bullet: { indent: 16 } } },
+    { text: rest, options: { breakLine: i < all.length - 1 } },
+  ]), LM, 3.97, 5.8, 2.3, { fontSize: 17, paraSpaceAfter: 9 });
+  T(s, `Probes add ${Math.round(pr.B - zs.B)}–${Math.round(pr.A - zs.A)} points over text prompts`, 6.93, 3.5, 5.8, 0.42, { fontSize: 20, bold: true, valign: "middle" });
+  T(s, "Balanced accuracy on the colorectal test set (%)", 6.93, 3.93, 5.8, 0.3, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  hBars(s, ["CONCH, text prompts", "CONCH, linear probe", "MUSK, text prompts", "MUSK, linear probe"], [zs.A, pr.A, zs.B, pr.B].map((v) => +v.toFixed(1)), [BASE, HEX.accent1, BASE, HEX.accent2], {
+    x: 6.93, y: 4.22, w: 5.8, h: 2.1, max: 118, series: "Balanced accuracy (%)", fmt: "0.0", font: 15, gap: 30, layout: { x: 0.37, y: 0.02, w: 0.61, h: 0.96 },
+    alt: `Balanced accuracy: CONCH ${zs.A.toFixed(1)} with text prompts and ${pr.A.toFixed(1)} with a probe; MUSK ${zs.B.toFixed(1)} with text prompts and ${pr.B.toFixed(1)} with a probe.`,
+  });
+  source(s, `Probe: standardised logistic regression, strength chosen on ${int(SM.n.val)} validation tiles (CONCH C = ${PRE.probe_C.A}, MUSK C = ${PRE.probe_C.B}). Text prompts: zero-shot, no training. Parameters count the vision towers.`);
+  script(s, {
+    say: [
+      "First, what is a read? CONCH and MUSK are huge trained networks, and we never change them. We call that frozen.",
+      `Each turns a tile into a list of numbers, ${int(dims.conch)} for CONCH and ${int(dims.musk)} for MUSK. Those are its features.`,
+      "A linear probe is the simplest classifier on top: it weights those numbers and gives a probability for each of nine tissue types. CONCH has 90 million parameters. Its probe has under five thousand.",
+      "It can only use what the features already know, and each probe sees one model, so their errors stay different.",
+      `With text prompts alone, no training, the models reach ${zs.A.toFixed(1)} and ${zs.B.toFixed(1)} percent balanced accuracy, where rare tissues count as much as common ones. With our probes, ${pr.A.toFixed(1)} and ${pr.B.toFixed(1)}.`,
+    ],
+    built: [
+      "MUSK was the slow step, about 8 tiles a second, so we saved features once and fitted probes on CPU.",
+    ],
+    asked: [
+      `A probe is multinomial logistic regression on standardised features: 9 classes times (features + 1) weights. Strength C was chosen from 0.01, 0.1, 1 and 10 on validation balanced accuracy.`,
+      `Probe features are pre-projection: CONCH ${int(dims.conch)}-d, MUSK ${int(dims.musk)}-d multi-scale. Probes on the text-aligned embeddings score ${pct1(RD.A.aligned_probe.bal_acc)} and ${pct1(RD.B.aligned_probe.bal_acc)}, so we use those as a sensitivity check and as the student's target space.`,
+      "Where is the text? Zero-shot compares each tile with prompt ensembles in the shared image-text space. The prompts are frozen in prompts/ and hashed in the pre-registration. The student learns those text-aligned embeddings.",
+    ],
+    sources: "results/cm_local/CM/crc/readers.json, preregistration.json, src/twinread/probes.py, results/student/model_sizes.json, docs/progress.md.",
+  });
+}
+
+// ---- 6 fusion: how two reads become one, with a real tile --------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const ex = PF.example, CN = { ADI: "Adipose", BACK: "Background", DEB: "Debris", LYM: "Lymphocytes", MUC: "Mucus", MUS: "Muscle", NORM: "Normal", STR: "Stroma" };
+  const other = CN[ex.other], p = (v) => Math.round(100 * v);
+  title(s, "Fusion: average the two models’ probabilities");
+  s.addImage({ path: A("fusion_example.jpg"), x: LM, y: 1.3, w: 1.75, h: 1.75, altText: `Colorectal test tile ${ex.tile}, labelled tumour` });
+  T(s, "Real test tile. Truth: tumour.", LM, 3.1, 1.75, 0.55, { fontSize: 14, color: MUTED });
+  const panel = (x, w, col, name, d, note, bold) => {
+    dot(s, x, 1.34, 0.22, col, name + " marker");
+    T(s, name, x + 0.32, 1.27, w - 0.32, 0.36, { fontSize: 18, bold: true, valign: "middle" });
+    hBars(s, ["Tumour", other], [p(d.TUM), p(d.other)], [col === CONCH ? HEX.accent1 : col === MUSK ? HEX.accent2 : HEX.accent3, col === CONCH ? HEX.accent1 : col === MUSK ? HEX.accent2 : HEX.accent3], {
+      x, y: 1.65, w, h: 1.25, max: 165, series: `${name} probability (%)`, fmt: '0"%"', font: 15, gap: 35, layout: { x: 0.32, y: 0.03, w: 0.66, h: 0.94 },
+      alt: `${name}: tumour ${p(d.TUM)} percent, ${other.toLowerCase()} ${p(d.other)} percent.`,
+    });
+    T(s, note, x, 2.95, w, 0.7, { fontSize: 15, bold: !!bold });
+  };
+  panel(2.65, 2.8, CONCH, "CONCH", ex.conch, "Calls tumour");
+  T(s, "+", 5.47, 1.85, 0.36, 0.6, { fontSize: 32, bold: true, align: "center", valign: "middle" });
+  panel(5.85, 2.8, MUSK, "MUSK", ex.musk, `Calls ${other.toLowerCase()}`);
+  T(s, "=", 8.67, 1.85, 0.36, 0.6, { fontSize: 32, bold: true, align: "center", valign: "middle" });
+  panel(9.05, 3.68, FUSED, "Average", ex.fused, `Calls tumour, correctly, but only ${p(ex.fused.TUM)}% sure, so the review flag fires`, true);
+  const v = FR.val_correct_tiles, d = FR.test_delta_vs_musk_by_candidate;
+  T(s, "Three rules, chosen on validation only", LM, 3.82, 6.9, 0.38, { fontSize: 18, bold: true, valign: "middle" });
+  const rt = (txt) => ({ text: txt, options: { align: "right" } });
+  s.addTable([
+    [th("Rule"), th(`Validation correct, of ${int(FR.n_val)}`, { align: "right" }), th("Test points vs MUSK", { align: "right" })],
+    [{ text: "Average (chosen)", options: { bold: true } }, { text: int(v.average), options: { bold: true, align: "right" } }, { text: pts(100 * d.average), options: { bold: true, align: "right" } }],
+    ["Gated neural network", rt(int(v.gated_mlp)), rt(pts(100 * d.gated_mlp))],
+    ["Logistic regression on joined features", rt(int(v.concat_lr)), rt(pts(100 * d.concat_lr))],
+  ], tableOpts({ x: LM, y: 4.24, w: 6.9, colW: [3.9, 1.55, 1.45], rowH: [0.62, 0.44, 0.44, 0.44] }));
+  card(s, 7.8, 3.9, 4.93, 2.3);
+  T(s, `${OV.musk_errors} → ${OV.fused_errors}`, 8.05, 4.0, 4.43, 0.85, { fontSize: 40, bold: true, valign: "middle" });
+  T(s, `errors, compared with MUSK alone: fusion fixes ${FJ.mcnemar_fused_vs_B.b} and adds ${FJ.mcnemar_fused_vs_B.c}.`, 8.05, 4.88, 4.43, 1.2, { fontSize: 18 });
+  source(s, "Tile chosen by rule: the median, by fused top probability, of the tumour tiles that one model misses and fusion gets right. Test: CRC-VAL-HE-7K.");
+  script(s, {
+    say: [
+      "How do we combine two probes? The simplest way possible: add the probabilities and divide by two. No new parameters.",
+      `Here is a real test tile, truly tumour. CONCH says tumour, ${p(ex.conch.TUM)} percent. MUSK says ${other.toLowerCase()}, ${p(ex.musk.other)} percent. The average says tumour, ${p(ex.fused.TUM)} percent. The more certain model carries the call.`,
+      `And because it is only ${p(ex.fused.TUM)} percent sure, the review flag fires, so a pathologist sees this tile too.`,
+      "We tested three rules on validation, and averaging won by a single tile. On test, the fancier neural network fell below MUSK alone, while the simple rule held up.",
+      `Against MUSK alone, fusion fixes ${FJ.mcnemar_fused_vs_B.b} errors and adds ${FJ.mcnemar_fused_vs_B.c}: net ${OV.musk_errors - OV.fused_errors} fewer.`,
+    ],
+    asked: [
+      "The winning rule went into the pre-registration before any test label was read, so we could not pick the best-looking rule afterwards.",
+      `A one-tile margin means the choice of rule is fragile, and validation is near ceiling at ${pct2(FR.val_fused_bal_acc)}. See the backup slide.`,
+      `Fused versus MUSK: McNemar p = ${FJ.mcnemar_fused_vs_B.p.toFixed(4)}, tile-level and optimistic because there are no slide IDs. All ${ex.n_rescued_flagged} of the ${ex.n_rescued} tumour tiles of this kind were flagged. This tile is the median of that group, not a best case.`,
+      "The review flag: s3 = 1 minus the fused top probability. The pre-registered s4 adds disagreement signals and ranks tiles almost identically.",
+    ],
+    sources: "results/cm_local/CM/crc/fusion.json, reader_error_overlap.json, tile_preds.npz via docs/deck/make_assets.py, src/twinread/fusion.py, results/headline.json.",
+  });
+}
+
+// ---- fusion result -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   title(s, `Fusion adds ${pts(CC.delta_vs_best_single_pts)} points on colorectal tiles only`);
@@ -343,10 +461,22 @@ pres.addSection({ title: "Talk" });
   });
   source(s, `CIs: tile-level on colorectal (anti-conservative, no slide IDs), slide-clustered on Camelyon17. Test sets: ${int(TC.n_test)} and 1,500 tiles.`);
   const dt = FR.per_class_recall_delta_fused_minus_musk_pts;
-  s.addNotes(`[1:00] First result. Fusing CONCH and MUSK gives ${pct2(CC.bal_acc.fused)} balanced accuracy against ${pct2(CC.bal_acc.B)} for MUSK alone, a gain of ${CC.delta_vs_best_single_pts.toFixed(2)} points. Most of the net gain is tumour recall, up ${dt.TUM.toFixed(1)} points. Fusion leaves ${OV.fused_errors} errors, fewer than either reader alone.\n\nBut look at the forest plot. Only the top row clears zero. On Camelyon17, an unseen hospital, fusion gives no gain, and the open control pair gains nothing on either dataset. So the gain is real but small and dataset-dependent.\n\nIf asked: the colorectal CI is tile-level and therefore optimistic because this dataset has no slide IDs. Validation picked the fusion rule by one or two tiles (${FR.val_correct_tiles.average} vs ${FR.val_correct_tiles.gated_mlp} vs ${FR.val_correct_tiles.concat_lr} of ${FR.n_val}). Muscle and stroma recall swing by about 13 points in opposite directions and cancel. Backup slide has the per-class view.\n\nSources: results/cm_local/CM/*/fusion.json, results/open/OPEN/*/fusion.json, results/headline.json.`);
+  script(s, {
+    say: [
+      `Overall, on colorectal tiles: ${pct2(CC.bal_acc.fused)} against ${pct2(CC.bal_acc.B)} for MUSK alone, a gain of ${CC.delta_vs_best_single_pts.toFixed(2)} points, mostly from tumour tiles.`,
+      "In this forest plot, each line is the gain over the best single model, with a 95 percent confidence interval. Crossing zero means no clear gain.",
+      "Only the top row clears zero. On Camelyon17, from an unseen hospital, there is no gain, and our open control pair gains nothing on either dataset.",
+      "So the gain is real, but small and dataset-dependent.",
+    ],
+    asked: [
+      "We ran the open pair through the identical protocol, so a gain that came from the method alone would have shown up there too. It did not. Camelyon17 is lymph node tissue.",
+      `The colorectal CI is tile-level and therefore optimistic, because this dataset has no slide IDs. Muscle and stroma recall swing by about 13 points in opposite directions and cancel. We first misread that swing as the source of the gain, and corrected it once we broke the gain down by class. See the backup slide.`,
+    ],
+    sources: "results/cm_local/CM/*/fusion.json, results/open/OPEN/*/fusion.json, results/headline.json.",
+  });
 }
 
-// ---- 8 triage -------------------------------------------------------------------------------------------------------
+// ---- triage -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   const R = CC.review_caught_at_10pct;
@@ -385,11 +515,24 @@ pres.addSection({ title: "Talk" });
     showLegend: false, showTitle: false,
     altText: `Errors caught against tiles reviewed. At 10% review: fused uncertainty ${pct1(R.s3_fused_uncertainty)}, MUSK ${pct1(R.B_own_confidence_own_errors)}, CONCH ${pct1(R.A_own_confidence_own_errors)}, disagreement ${pct1(R.s1_disagree)}.`,
   });
-  source(s, `CRC-VAL-HE-7K, ${int(TC.n_test)} tiles. Single readers flag their own errors by their own confidence. Disagreement covers only ${pct1(CC.s1_disagree_rate)} of tiles, so the rest of its budget is effectively random.`);
-  s.addNotes(`[1:10] Second result, and the one that surprised us. We expected disagreement between the readers to be the best signal for sending a tile to a pathologist. It is not.\n\nThe chart ranks tiles by each score and sends the top ones for review. At a 10% budget, the fused reader's own uncertainty catches ${pct1(R.s3_fused_uncertainty)} of its errors. MUSK flagging itself catches ${pct1(R.B_own_confidence_own_errors)}, CONCH ${pct1(R.A_own_confidence_own_errors)}. Disagreement alone stalls at ${pct1(R.s1_disagree)}, because the readers disagree on only ${pct1(CC.s1_disagree_rate)} of tiles.\n\nA learned flag that adds disagreement to uncertainty ranks tiles almost identically, Spearman ${FR.s3_s4_spearman.toFixed(4)}, so it adds nothing. Two readers help because they make a better-calibrated reader, not because their disagreement is informative.\n\nIf asked: on Camelyon17 fused uncertainty catches ${pct1(CA.review_caught_at_10pct.s3_fused_uncertainty)}, while the pre-registered flag reaches ${pct1(CA.review_caught_at_10pct.s4_learned)} against CONCH alone at ${pct1(CA.review_caught_at_10pct.A_own_confidence_own_errors)}, and it does not beat CONCH alone on cleared-tile accuracy. Backup slide.\n\nSources: results/cm_local/CM/crc/review.json, triage_curves.json.`);
+  source(s, `CRC-VAL-HE-7K, ${int(TC.n_test)} tiles. Single readers flag their own errors by their own confidence.`);
+  script(s, {
+    say: [
+      "The result that surprised us. We expected disagreement between the models to be the best reason to call a pathologist. It is not.",
+      "We rank tiles by each warning signal, send the top 10 percent to review, and count the errors caught.",
+      `The combined model's own uncertainty catches ${pct1(R.s3_fused_uncertainty)}. MUSK checking itself, ${pct1(R.B_own_confidence_own_errors)}. CONCH, ${pct1(R.A_own_confidence_own_errors)}.`,
+      `Disagreement stalls at ${pct1(R.s1_disagree)}, because the models disagree on only ${pct1(CC.s1_disagree_rate)} of tiles.`,
+      "So two models help by making one reader that knows better when it is unsure.",
+    ],
+    asked: [
+      `We pre-registered a learned flag that adds disagreement to uncertainty. It ranks tiles almost identically to plain uncertainty, Spearman ${FR.s3_s4_spearman.toFixed(4)}, so it adds nothing.`,
+      `On Camelyon17 fused uncertainty catches ${pct1(CA.review_caught_at_10pct.s3_fused_uncertainty)}, while the pre-registered flag reaches ${pct1(CA.review_caught_at_10pct.s4_learned)} against CONCH alone at ${pct1(CA.review_caught_at_10pct.A_own_confidence_own_errors)}, and it does not beat CONCH alone on cleared-tile accuracy. See the backup slide.`,
+    ],
+    sources: "results/cm_local/CM/crc/review.json, triage_curves.json.",
+  });
 }
 
-// ---- 9 blind spots --------------------------------------------------------------------------------------------------
+// ---- blind spots --------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   const miss = BS.missed, nMiss = miss.length, op = CC.prereg_rule_test_operating_point;
@@ -406,16 +549,26 @@ pres.addSection({ title: "Talk" });
   const minConf = Math.min(...miss.flatMap((m) => [m.conch, m.musk]));
   const rx = 7.1, rw = 5.63;
   const stat = (y, n, txt) => { T(s, String(n), rx, y, 1.15, 0.85, { fontSize: 44, bold: true, valign: "middle" }); T(s, txt, rx + 1.2, y, rw - 1.2, 0.85, { fontSize: 16, valign: "middle" }); };
-  stat(1.55, BS.n, `tiles (${pct2(CC.confident_shared_errors.rate)}): both wrong, same call, both at least 0.80 confident`);
+  stat(1.55, BS.n, `tiles (${pct2(CC.confident_shared_errors.rate)}): both wrong (>80% confidence)`);
   stat(2.6, BS.flagged, `caught by the pre-registered flag, which reviews ${pct1(op.flagged_fraction)} of tiles`);
   stat(3.65, nMiss, `escaped it (shown): both readers at least ${(Math.floor(minConf * 100) / 100).toFixed(2)} confident`);
   card(s, rx, 4.8, rw, 1.3);
   T(s, "Two models agreeing is not proof. A pathologist stays in the loop.", rx + 0.25, 4.85, rw - 0.5, 1.2, { fontSize: 20, bold: true, valign: "middle" });
   source(s, `CRC-VAL-HE-7K, truth as labelled in the dataset. ${BS.pairs["STR->MUS"] + BS.pairs["MUS->STR"]} of the ${BS.n} are muscle vs stroma; ${BS.pairs["TUM->NORM"]} are tumour called normal.`);
-  s.addNotes(`[0:50] Now the limit of the whole idea. These are shared blind spots: tiles where both readers make the same wrong call, both with high confidence. There are ${BS.n} on the colorectal test set, ${pct2(CC.confident_shared_errors.rate)} of tiles. Most are muscle versus stroma, but ${BS.pairs["TUM->NORM"]} are tumour called normal.\n\nNo disagreement signal can catch these, because the readers agree. The fused uncertainty flag still catches ${BS.flagged} of them, at the cost of reviewing a quarter of tiles. The ${nMiss} on this slide escaped even that.\n\nPathologists in the room may disagree with some of these labels, and we would welcome that. The point stands: when two models agree, that is not proof.\n\nIf asked: on Camelyon17 the flag catches only ${CA.confident_shared_errors.flagged_by_prereg_rule} of ${CA.confident_shared_errors.n} such tiles.\n\nSources: results/cm_local/CM/crc/review.json, triage_curves.json, tile_preds.npz.`);
+  script(s, {
+    say: [
+      "The limit of the idea: shared blind spots, where both models make the same wrong call and both are at least 80 percent sure.",
+      `There are ${BS.n}. Most are muscle versus stroma, but ${BS.pairs["TUM->NORM"]} are tumour called normal. The flag catches ${BS.flagged}; these ${nMiss} got through.`,
+      "Two models agreeing is not proof, so a pathologist stays in the loop.",
+    ],
+    asked: [
+      `We picked these by a fixed rule, not by hand. On Camelyon17 the flag catches only ${CA.confident_shared_errors.flagged_by_prereg_rule} of ${CA.confident_shared_errors.n} such tiles.`,
+    ],
+    sources: "results/cm_local/CM/crc/review.json, triage_curves.json, tile_preds.npz.",
+  });
 }
 
-// ---- 10 why quantise, why a small device: the reasons, before the board results on slide 11
+// ---- why quantise, why a small device: the reasons, before the board results
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   const ck = MS.ratios.CM.teacher_checkpoint_bytes_sum / 1e6, fp = MS.students.CM.fp32_param_bytes / 1e6, i8 = MS.students.CM.int8_onnx_bytes / 1e6;
@@ -450,13 +603,253 @@ pres.addSection({ title: "Talk" });
     ["Privacy and cost:", `images stay local; $${PRICE} list price`],
   ]);
   source(s, "Checkpoints include text encoders. Speed and RAM: MobileNetV4 backbone, 4 threads, x86; fp32 not timed on the board. Sources: Wilson et al., Lancet 2018; FCC 2017; McBrayer et al., NASA, 2022; Arduino 2026.");
-  s.addNotes(`[1:00] So far this takes two large models and a GPU: over two gigabytes of checkpoints. Distilling gives us one small student. Quantising it to 8-bit integers then makes it ×${(fp / i8).toFixed(1)} smaller, at ${i8.toFixed(0)} megabytes. On x86 it is also about ×${xSpeed.toFixed(1)} faster. The cost is about one point of balanced accuracy, and ${pct1(agree)} of calls do not change.\n\nWhy run on a small device? A clinic with no GPU and no second pathologist. A disaster zone: after Hurricane Maria, ${MARIA_PCT} percent of Puerto Rico's cell sites were down. And an extreme case, not pathology but the same principle: Mars is up to ${MARS_MIN} minutes from Earth each way. You cannot wait for a server, which is why NASA's Perseverance rover already picks some science targets by itself. Local, lightweight AI keeps working when the connection does not.\n\nIf asked: these are reasons to build this way, not deployments. TwinRead has not been field-tested in a clinic or disaster zone, and this board is not space-rated. The Lancet series by Wilson et al. names workforce and infrastructure among the barriers to pathology access in low- and middle-income countries. The ${MARIA_PCT}% is the FCC snapshot of 23 September 2017; some providers had not reported. AEGIS on Perseverance targeted rocks without direction from Earth from May 2022. The speed and RAM numbers are for the MobileNetV4 backbone alone on x86 at 4 threads (${row("fp32").p50_ms.toFixed(2)} vs ${row("int8").p50_ms.toFixed(2)} ms, ${row("fp32").rss_mb.toFixed(0)} vs ${row("int8").rss_mb.toFixed(0)} MB). We did not time fp32 on the UNO Q, so we quote no board speed-up, and we did not measure power. MinMax and Entropy calibration collapsed, so we used percentile calibration. $${PRICE} is the 4 GB list price since 6 July 2026; the 2 GB board is $59.\n\nSources: results/student/model_sizes.json, results/uno_q/backbone_latency_x86_sim.json, results/uno_q/onboard/int8_kernel_check.json, device/uno_q_app.py, FCC report DOC-346860A1, Wilson et al. Lancet 2018, NASA NTRS 20220013418, NASA Science on AEGIS (Sol 442), Arduino blog 26 June 2026.`);
+  script(s, {
+    say: [
+      "Two big models and a GPU means over two gigabytes of checkpoints, which the places with the least access cannot run.",
+      `A small device could serve a clinic with no GPU or second pathologist, or a disaster zone: after Hurricane Maria, ${MARIA_PCT} percent of Puerto Rico's cell sites were down.`,
+      `An extreme case, not pathology but the same principle: Mars is up to ${MARS_MIN} minutes from Earth each way, so a rover cannot wait for a server.`,
+      `Quantising stores each number in 8 bits rather than 32. Our student goes from ${fp.toFixed(1)} to ${i8.toFixed(1)} megabytes, and ${pct1(agree)} of its calls do not change.`,
+    ],
+    asked: [
+      "These are reasons to build this way, not deployments. TwinRead has not been field-tested in a clinic or disaster zone, and this board is not space-rated.",
+      `Wilson et al. name workforce and infrastructure among the barriers to pathology access in low- and middle-income countries. The ${MARIA_PCT}% is the FCC snapshot of 23 September 2017; some providers had not reported. NASA's AEGIS on Perseverance targeted rocks without direction from Earth from May 2022.`,
+      `Speed and RAM are for the MobileNetV4 backbone alone on x86 at 4 threads (${row("fp32").p50_ms.toFixed(2)} vs ${row("int8").p50_ms.toFixed(2)} ms, ${row("fp32").rss_mb.toFixed(0)} vs ${row("int8").rss_mb.toFixed(0)} MB). We did not time fp32 on the UNO Q and did not measure power. $${PRICE} is the 4 GB list price since 6 July 2026; the 2 GB board is $59.`,
+    ],
+    sources: "results/student/model_sizes.json, results/uno_q/backbone_latency_x86_sim.json, results/uno_q/onboard/int8_kernel_check.json, FCC report DOC-346860A1, Wilson et al. Lancet 2018, NASA NTRS 20220013418, NASA Science on AEGIS (Sol 442), Arduino blog 26 June 2026.",
+  });
 }
 
-// ---- 11 board --------------------------------------------------------------------------------------------------------
+// ---- student model: distillation and architecture ---------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
-  title(s, `A ${Math.round(S.int8_onnx_mb)} MB student runs offline on a USB-powered board`);
+  const st = MS.students.CM, wt = SM.loss_weights;
+  title(s, "Distillation: one small student learns from both models");
+  const head = (txt, x, w) => T(s, txt, x, 1.2, w, 0.32, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  head("Input", LM, 2); head("Shared trunk", 3.05, 2.2); head("Four heads", 5.8, 2.9); head("Learns from the teachers", 9.25, 3.48);
+  s.addImage({ path: A("class_TUM.jpg"), x: LM, y: 1.58, w: 1.45, h: 1.45, altText: "An example H&E tile" });
+  T(s, "224 px tile, with camera effects simulated by K2", LM, 3.08, 2.0, 0.75, { fontSize: 14, color: MUTED });
+  arrow(s, 2.62, 2.3, 0.39, 0);
+  box(s, [
+    { text: "MobileNetV4 conv-small", options: { bold: true, fontSize: 18, breakLine: true } },
+    { text: `${(st.params_trunk / 1e6).toFixed(2)} M parameters`, options: { fontSize: 14 } },
+  ], 3.05, 1.58, 2.2, 2.3, FUSED, WHITE);
+  [
+    ["Head A: 512 numbers", "CONCH embedding", CONCH],
+    ["Head B: 1,024 numbers", "MUSK embedding", MUSK],
+    ["Tissue call: 9 classes", "Fused probabilities and true labels", FUSED],
+    ["Review score", "Teacher’s review flag", MUTED],
+  ].forEach(([h, t_, col], i) => {
+    const y = 1.58 + i * 0.59, ht = 0.53, c = y + ht / 2;
+    arrow(s, 5.28, c, 0.48, 0);
+    box(s, h, 5.8, y, 2.9, ht, TINT, INK, { fontSize: 16, bold: true });
+    arrow(s, 8.74, c, 0.47, 0, { line: { color: MUTED, width: 1.75, beginArrowType: "triangle" } });
+    box(s, t_, 9.25, y, 3.48, ht, col, WHITE, { fontSize: 15 });
+  });
+  T(s, "How it trains", LM, 4.15, CW, 0.38, { fontSize: 18, bold: true, valign: "middle" });
+  T(s, [
+    ["Copy the teachers:", "match each teacher’s embedding, the fused soft labels and the review flag"],
+    ["Learn the truth:", "true tissue labels as well, so it is not only imitating"],
+    ["Survive a camera:", "K2 simulates a USB camera filming a screen during training"],
+    ["Run anywhere:", "teachers are needed for training only, never on the board"],
+  ].flatMap(([lead, rest], i, all) => [
+    { text: lead + " ", options: { bold: true, bullet: { indent: 16 } } },
+    { text: rest, options: { breakLine: i < all.length - 1 } },
+  ]), LM, 4.53, CW, 1.8, { fontSize: 17, paraSpaceAfter: 5 });
+  source(s, `Loss weights: embeddings ${wt.cos}, fused soft labels ${wt.kd} (T = ${SM.T}), true labels ${wt.ce}, review ${wt.rev}. ${SM.epochs} epochs, batch ${SM.batch}. Training targets are out-of-fold. Heads A and B share one trunk, so they are far less independent than CONCH and MUSK.`);
+  script(s, {
+    say: [
+      "This is the part we built and trained ourselves, and it is the heart of the project.",
+      "Distillation means a small student model learns to imitate big teacher models. It sees the same tile and is scored on how closely it matches each teacher. The teachers are only needed during training; the board never needs them.",
+      `Our student is a MobileNet, designed for small devices: one shared trunk of ${(st.params_trunk / 1e6).toFixed(1)} million parameters feeding four small heads.`,
+      "Two heads copy the descriptions from CONCH and MUSK. One learns the combined tissue call. One learns when the teachers would send a tile for review.",
+      "So one small network carries both readers, the fusion and the review flag.",
+    ],
+    built: [
+      "We first tried an extra loss term to preserve similarities between tiles. On validation it made the student match its teachers worse, so we turned it off.",
+    ],
+    asked: [
+      `Head A and head B are projection heads, cosine-matched to the text-aligned embeddings. Tissue call: temperature-${SM.T} KL to the fused logits plus cross-entropy. Review score: binary cross-entropy on the teacher flag.`,
+      `Agreement with the fused teacher on clean test tiles is ${pct1(SM.test.clean.agree_with_fused_teacher)}. The trained student is fine-tuned with labels, so it is not a like-for-like test against frozen probes.`,
+      `Training targets are cross-fitted, 5-fold, so the student never copies a teacher that memorised that tile. Best epoch was ${SM.best_epoch} of ${SM.epochs}, chosen on validation.`,
+    ],
+    sources: "results/student/cm_crc/metrics.json, results/student/model_sizes.json, results/headline.json, src/twinread/student.py, docs/progress.md (R26).",
+  });
+}
+
+// ---- what our training achieved -----------------------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const c = S.CM.fp32_test_bal_acc, tc = SM.test.clean, step = K.student_train_step_images_per_s.CM;
+  const behind = 100 * (CC.bal_acc.fused - D.cm_int8_bal_acc_board), pctSize = S.params_pct_of_teacher_vision_towers;
+  title(s, `Our trained student: ${pctSize.toFixed(1)}% of the size, ${behind.toFixed(1)} points behind`);
+  T(s, "Balanced accuracy, colorectal test set (%)", LM, 1.2, 7, 0.32, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  hBars(s, ["CONCH + MUSK fused", "MUSK", "CONCH", "Our student", "Our student, int8 on the board"], [CC.bal_acc.fused, CC.bal_acc.B, CC.bal_acc.A, c.clean, D.cm_int8_bal_acc_board].map((v) => +(100 * v).toFixed(2)), [BASE, BASE, BASE, HEX.accent3, HEX.accent3], {
+    x: LM, y: 1.5, w: 7.2, h: 2.85, max: 118, series: "Balanced accuracy (%)", fmt: "0.00", font: 15, gap: 30, layout: { x: 0.4, y: 0.02, w: 0.58, h: 0.96 },
+    alt: `Balanced accuracy: fused ${pct2(CC.bal_acc.fused)}, MUSK ${pct2(CC.bal_acc.B)}, CONCH ${pct2(CC.bal_acc.A)}, our student ${pct2(c.clean)}, and int8 on the board ${pct2(D.cm_int8_bal_acc_board)}.`,
+  });
+  T(s, "Our student under simulated camera effects (%)", 8.2, 1.2, 4.53, 0.32, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  hBars(s, ["None", "Medium", "Strongest"], [c.clean, c["sev0.5"], c["sev1.0"]].map((v) => +(100 * v).toFixed(2)), [HEX.accent3, HEX.accent3, HEX.accent3], {
+    x: 8.2, y: 1.5, w: 4.53, h: 2.85, max: 125, series: "Balanced accuracy under K2 (%)", fmt: "0.00", font: 15, gap: 45, layout: { x: 0.26, y: 0.02, w: 0.72, h: 0.96 },
+    alt: `Student balanced accuracy: ${pct2(c.clean)} with no camera effects, ${pct2(c["sev0.5"])} at severity 0.5, ${pct2(c["sev1.0"])} at severity 1.0.`,
+  });
+  const stat = (x, w, big, txt) => {
+    T(s, big, x, 4.5, w, 0.75, { fontSize: 36, bold: true, valign: "middle" });
+    T(s, txt, x, 5.27, w, 0.95, { fontSize: 16 });
+  };
+  stat(LM, 3.85, `${SM.epochs} epochs`, `on ${int(SM.n.train)} labelled tiles, on one RTX 5060`);
+  stat(4.75, 3.85, `${int(step.k2)}/s`, "images through a full training step, with K2 camera effects");
+  stat(8.9, 3.83, pct1(tc.agree_with_fused_teacher), "of calls on clean test tiles match the fused teacher");
+  source(s, "The student is fine-tuned with labels, so it is not a like-for-like test of features. Camera effects are the K2 simulation, not real captures; the teachers were not run under them.");
+  script(s, {
+    say: [
+      "Here is what our training achieved, on test tiles it never saw.",
+      `Before quantising, the student scores ${pct2(c.clean)}. That ties CONCH and sits close to MUSK, with ${pctSize.toFixed(1)} percent of their vision parameters.`,
+      `On the board, after quantising, it scores ${pct2(D.cm_int8_bal_acc_board)}: ${behind.toFixed(1)} points behind the combined model. It matches the combined teacher on ${pct1(tc.agree_with_fused_teacher)} of calls.`,
+      `We trained it on simulated camera damage, because a cheap camera filming a screen is what this board would see. At the strongest setting it still reaches ${pct2(c["sev1.0"])}.`,
+      "The honest cost: it is below MUSK and fusion, and two heads share one trunk, so they are not truly independent readers.",
+    ],
+    asked: [
+      "The student's trunk is fine-tuned end to end with labels, while the teachers are frozen features plus probes. So matching them is expected and does not show better features than the foundation models.",
+      `Before quantising, its flag agrees with the teacher flag on ${pct1(tc.device_flag.agreement)} of tiles, kappa ${tc.device_flag.kappa.toFixed(2)}. Its review score has AUROC ${tc.review_auroc.toFixed(2)} against the teacher flag.`,
+      `Quantising costs about a point on the board, from ${pct2(c.clean)} to ${pct2(D.cm_int8_bal_acc_board)}. The same int8 model scored ${pct2(D.cm_int8_bal_acc_x86)} on x86 with default kernels, an onnxruntime artefact.`,
+    ],
+    sources: "results/student/cm_crc/metrics.json, results/student/model_sizes.json, results/student/cm_crc/throughput.json, results/uno_q/onboard/testset_score.json, results/headline.json.",
+  });
+}
+
+// ---- kernels ------------------------------------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const pre = K.k1_e2e_preprocess_tiles_per_s, aug = K.student_train_aug_images_per_s.CM, step = K.student_train_step_images_per_s.CM;
+  const augX = K.student_train_aug_speedup_k2_vs_torch.CM, stepX = step.k2 / step.torch;
+  title(s, `CUDA kernels: ${x0(K.k1_preprocess_speedup_vs_pil)} preprocessing, ${x1(augX)} augmentation`);
+  const col = (x, big, name, sub, labels, vals, colors, whole, wholeTxt, alt) => {
+    T(s, big, x, 1.4, 1.95, 0.85, { fontSize: 44, bold: true, valign: "middle" });
+    T(s, name, x + 2.0, 1.4, 3.8, 0.4, { fontSize: 18, bold: true, valign: "middle" });
+    T(s, sub, x + 2.0, 1.8, 3.8, 0.72, { fontSize: 14, color: MUTED });
+    hBars(s, labels, vals, colors, { x, y: 2.72, w: 5.8, h: 1.7, max: Math.max(...vals) * 1.38, series: name, alt, font: 15, gap: 35, layout: { x: 0.27, y: 0.03, w: 0.71, h: 0.94 } });
+    card(s, x, 4.6, 5.8, 1.5);
+    T(s, whole, x + 0.25, 4.72, 1.75, 1.26, { fontSize: 32, bold: true, valign: "middle" });
+    T(s, wholeTxt, x + 2.05, 4.72, 3.55, 1.26, { fontSize: 16, valign: "middle" });
+  };
+  col(LM, x0(K.k1_preprocess_speedup_vs_pil), "K1: dual-reader preprocessing", "One tile in, CONCH 448 px and MUSK 384 px out, bit-exact to the official transforms",
+    ["PIL (official)", "K1 kernel"], [pre.pil_reference_cpu, pre.k1_gpu_incl_h2d], [BASE, HEX.accent3], x2(K.k1_e2e_speedup_vs_reference),
+    `whole embedding run: the model forward is ${Math.round(100 * K.model_forward_share_of_reference_e2e)}% of the time`,
+    `Tiles per second inside the embedding run: PIL ${int(pre.pil_reference_cpu)}, K1 ${int(pre.k1_gpu_incl_h2d)}.`);
+  col(6.93, x1(augX), "K2: training augmentation", "Nine dependent stages plus JPEG, each within one grey level of a float64 reference",
+    ["torch GPU", "K2 kernel"], [aug.torch, aug.k2], [BASE, HEX.accent3], x2(stepX),
+    `whole student training step: ${int(step.torch)} to ${int(step.k2)} images/s`,
+    `Augmentation images per second inside student training: torch ${int(aug.torch)}, K2 ${int(aug.k2)}.`);
+  source(s, "RTX 5060; compile-checked for Delta A100 and DeltaAI GH200; compute-sanitizer clean. Tiles/s (K1), images/s (K2). K2 simulates a USB camera filming a screen.");
+  script(s, {
+    say: [
+      "Training like that needs heavy image processing, so we wrote two small programs that run directly on the GPU.",
+      `K2, the camera simulator, is ${augX.toFixed(1)} times faster than torch, which makes a full training step ${stepX.toFixed(2)} times faster.`,
+      `K1 prepares tiles for both models, pixel-exact and ${Math.round(K.k1_preprocess_speedup_vs_pil)} times faster. The whole run gains only ${K.k1_e2e_speedup_vs_reference.toFixed(2)} times, because the models take most of the time.`,
+    ],
+    asked: [
+      `With input already on the GPU, K1 reaches ${int(K.k1_cuda_tiles_per_s_224)} tiles per second. K2 reaches ${int(K.k2_cuda_images_per_s_sev1)} images per second standalone. Training with no augmentation at all runs at ${int(step.none)} images per second, so K2 is close to free. See the backup slide.`,
+      "We built K1 because the organizers saw CPU preprocessing as a bottleneck on a hosted per-image server. Our batched run is a different regime: preprocessing was 9.5 percent of it, which is why we quote both numbers.",
+    ],
+    sources: "results/kernels/*.json, results/student/*/throughput.json.",
+  });
+}
+
+// ---- dependent kernels: how the speed is achieved. Graphs from make_kernel_figures.py.
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  title(s, "Fusing dependent stages avoids DRAM round trips");
+  card(s, LM, 1.12, CW, 0.82);
+  T(s, [
+    { text: "A dependent kernel ", options: { bold: true } }, { text: "chains stages where each one needs the previous stage’s output. " },
+    { text: "Fusing ", options: { bold: true } }, { text: "runs the chain in one launch, with intermediates in on-chip shared memory." },
+  ], LM + 0.22, 1.12, CW - 0.44, 0.82, { fontSize: 17, valign: "middle" });
+  const floorPct = Math.round(100 * (KF.k1_over_floor - 1));
+  [
+    { x: LM, h: "Why fuse", t: `One launch per stage sends every intermediate through DRAM: ×${KF.traffic_ratio.toFixed(1)} the traffic.`, img: "kernel_traffic.png",
+      alt: `Cumulative DRAM traffic along K2's ten stages: ${KF.unfused_gb.toFixed(2)} GB with one launch per stage, ${KF.fused_gb.toFixed(2)} GB fused. Calculated from tensor sizes.` },
+    { x: 4.72, h: "What it accomplishes", t: `K2 takes ${KF.k2_ms.toFixed(1)} ms per batch, less than the unfused chain’s memory traffic alone.`, img: "kernel_k2_time.png",
+      alt: `Measured time per batch: K2 ${KF.k2_ms.toFixed(1)} ms, torch GPU ${KF.torch_ms.toFixed(0)} ms, torch with cheaper noise ${KF.torch_randn_ms.toFixed(0)} ms, numpy over a second. Unfused memory traffic alone would take ${KF.unfused_traffic_ms.toFixed(1)} ms.` },
+    { x: 8.84, h: "Why it’s cool", t: `K1 runs within ${floorPct}% of the memory-bandwidth floor and stays bit-exact.`, img: "kernel_k1_time.png",
+      alt: `Measured time per batch: K1 ${KF.k1_ms.toFixed(2)} ms against a calculated memory floor of ${KF.k1_floor_ms.toFixed(2)} ms; Triton ${KF.k1_triton_ms.toFixed(2)} ms; torch interpolate ${KF.k1_interpolate_ms.toFixed(0)} ms, not bit-exact.` },
+  ].forEach((c) => {
+    T(s, c.h, c.x, 2.05, 3.89, 0.32, { fontSize: 17, bold: true, valign: "middle" });
+    T(s, c.t, c.x, 2.37, 3.89, 0.52, { fontSize: 14 });
+    s.addImage({ path: A(c.img), x: c.x, y: 2.92, w: 3.89, h: 3.45, altText: c.alt });
+  });
+  source(s, `DRAM traffic and floors are calculated from tensor sizes and the measured memcpy rate (${Math.round(KF.memcpy_gbps)} GB/s), not hardware counters. Times are CUDA events on a shared RTX 5060. No hand-written unfused CUDA version was measured.`);
+  script(s, {
+    say: [
+      "The idea behind the speed: K2 is a chain of ten steps, each needing the result of the step before.",
+      `Normally every result goes out to GPU memory and back. We run nine steps in one pass using fast on-chip memory, so memory traffic falls ${KF.traffic_ratio.toFixed(1)} times. The graphs are here for questions.`,
+    ],
+    asked: [
+      `Traffic is calculated from tensor sizes: ${KF.unfused_gb.toFixed(2)} GB per batch unfused, ${KF.fused_gb.toFixed(2)} GB fused. K2 takes ${KF.k2_ms.toFixed(1)} ms, less than the unfused traffic alone would take; torch GPU ops take ${KF.torch_ms.toFixed(0)} ms.`,
+      `Fusing alone does not explain the whole ×${Math.round(KF.x_torch)}. We did not measure a hand-written unfused CUDA version. The memory floor shows it would take at least ${KF.unfused_traffic_ms.toFixed(1)} ms plus compute, so fusing is worth at least ×${(KF.unfused_traffic_ms / KF.k2_ms).toFixed(2)}, and the rest is torch overhead.`,
+      `K1 runs within ${floorPct} percent of the floor set by GPU memory bandwidth and matches the official transforms bit for bit. torch interpolate is ${Math.round(KF.k1_interpolate_ms / KF.k1_ms)} times slower and up to ${Math.round(KF.interpolate_max_levels)} grey levels off. Our Triton version of the same plan is within ${Math.ceil(100 * (KF.k1_triton_ms / KF.k1_ms - 1))}% of K1, so most of the gain comes from the design, not the language.`,
+      `×${Math.round(KF.x_torch)} is the standalone bench at batch 256, severity 1.0. ×${K.student_train_aug_speedup_k2_vs_torch.CM.toFixed(1)} on the previous slide is inside the training loop at batch 128, severity 0.5. Every K2 stage is within one grey level of a float64 numpy reference, and compute-sanitizer memcheck, racecheck and synccheck are clean.`,
+    ],
+    sources: "results/kernels/k1_bench.json, k1_parity.json, k2_bench.json, k2_sanitizer.json, src/twinread/csrc/k2_camera_aug.cu.",
+  });
+}
+
+// ---- UNO Q setup: what runs where ---------------------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  const st = D.stage_p50_ms, ms = (v) => `${v.toFixed(1)} ms`;
+  title(s, "UNO Q setup: what runs where");
+  card(s, LM, 1.15, CW, 2.45);
+  T(s, [{ text: "Linux side   ", options: { bold: true } }, { text: `Qualcomm QRB2210, 4× Cortex-A53 at ${D.cpu_max_ghz.toFixed(1)} GHz, ${(D.mem_total_mib / 1024).toFixed(1)} GiB RAM, Debian 13, no GPU` }], LM + 0.25, 1.22, CW - 0.5, 0.42, { fontSize: 17, valign: "middle" });
+  const steps = [
+    ["Frame in", "stored tile; USB camera next", st["frame read (PNG decode)"]],
+    ["Crop, tissue check", "numpy", st["crop to 224 px"] + st["tissue check"]],
+    ["int8 student", "onnxruntime on CPU", D.cm_int8_p50_ms_4_threads, true],
+    ["Probes, review rule", "numpy", st["probes + softmax"] + st["review rule"]],
+    ["Web page", "call and flag, local only", st["tissue fraction again (UI)"] + st["UI frame (box + JPEG)"]],
+  ];
+  const w = 2.1, gap = 0.24, x0 = LM + 0.335;
+  steps.forEach(([h, sub, t_, hi], i) => {
+    const x = x0 + i * (w + gap);
+    box(s, [{ text: h, options: { bold: true, fontSize: 16, breakLine: true } }, { text: sub, options: { fontSize: 13, color: hi ? WHITE : MUTED } }], x, 1.72, w, 1.2, hi ? FUSED : WHITE, hi ? WHITE : INK);
+    if (i < steps.length - 1) arrow(s, x + w + 0.02, 2.32, gap - 0.04, 0);
+    T(s, ms(t_), x, 2.98, w, 0.42, { fontSize: 18, bold: true, align: "center", valign: "middle" });
+  });
+  arrow(s, 5.3, 3.6, 0, 0.3);
+  card(s, LM, 3.9, CW, 1.25);
+  T(s, [{ text: "Microcontroller side", options: { bold: true, breakLine: true } }, { text: "STM32U585, Zephyr" }], LM + 0.25, 3.95, 3.3, 1.15, { fontSize: 17, valign: "middle" });
+  [["Bridge call", `${ms(D.led_bridge_rpc_ms_per_call)} per message`], ["LED sketch", "flashed over USB-C"], ["8×13 LED matrix", "shows the status"]].forEach(([h, sub], i) => {
+    const x = 4.1 + i * 2.95;
+    box(s, [{ text: h, options: { bold: true, fontSize: 16, breakLine: true } }, { text: sub, options: { fontSize: 13, color: MUTED } }], x, 4.05, 2.55, 0.95, WHITE, INK);
+    if (i < 2) arrow(s, x + 2.57, 4.52, 0.36, 0);
+  });
+  [["USB-C", "power; draw not measured"], ["Offline", "the app binds to the board and makes no network calls"], [`About ${Math.round(D.app_frame_ms_p50_sum_of_stages)} ms`, "per app frame; the tissue check costs more than the model"]].forEach(([h, sub], i) => {
+    const x = LM + i * 4.1;
+    T(s, [{ text: h, options: { bold: true, fontSize: 24, breakLine: true } }, { text: sub, options: { fontSize: 15 } }], x, 5.27, 3.85, 1.05);
+  });
+  source(s, `Median stage times on the board at 4 threads. Web page time: second tissue pass plus JPEG. The model alone uses ${D.cm_int8_rss_mb.toFixed(0)} MB of RAM.`);
+  script(s, {
+    cue: "Hold up the board now, if you brought it.",
+    say: [
+      "The Arduino UNO Q is one small board with two computers on it.",
+      "The Linux side has four low-power Arm cores, 3.6 gigabytes of memory and no GPU.",
+      `We crop each frame and check it shows tissue. Our ${S.int8_onnx_mb.toFixed(0)} megabyte student runs in ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds, then the probes and review rule make the call.`,
+      "The microcontroller runs the LED matrix, which shows the status. Power comes over USB-C, and the app makes no network calls.",
+    ],
+    built: [
+      "We timed every stage on the board. The surprise: our simple tissue check costs more time than the neural network.",
+    ],
+    asked: [
+      "No tissue has been filmed through a real camera yet. Today's numbers use stored test tiles; camera robustness so far is the K2 simulation.",
+      `Bridge calls: two per frame, ${ms(st["LED busy (Bridge RPC)"] + st["LED result (Bridge RPC)"])} in total. The sketch compiles for arduino:zephyr:unoq and an unknown method is refused. Bundles are checked against SHA256SUMS before loading.`,
+    ],
+    sources: "results/uno_q/onboard/board_info.json, stage_timing_cm.json, latency.json, results/uno_q/mcu_compile.json, device/uno_q_app.py, device/mcu/twinread_led/twinread_led.ino.",
+  });
+}
+
+// ---- board results --------------------------------------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  title(s, "Implementation on Arduino UNO Q");
   s.addImage({ path: A("uno_q.jpg"), x: LM, y: 1.5, w: 6.05, h: 4.8, altText: "The Arduino UNO Q running TwinRead, powered over USB-C, with its LED matrix lit" });
   const rx = 7.15, rw = 5.58;
   const stat = (y, n, txt) => { T(s, n, rx, y, rw, 0.82, { fontSize: 46, bold: true, valign: "middle" }); T(s, txt, rx, y + 0.84, rw, 0.62, { fontSize: 16, color: INK }); };
@@ -464,13 +857,73 @@ pres.addSection({ title: "Talk" });
   stat(3.05, pct2(D.cm_int8_bal_acc_board), `balanced accuracy on all ${int(TC.n_test)} test tiles, below every teacher (${(100 * CC.bal_acc.A).toFixed(2)}–${pct2(CC.bal_acc.fused)})`);
   stat(4.65, `${S.int8_onnx_mb.toFixed(1)} MB`, `${S.params_millions.toFixed(2)} M parameters: ${S.params_pct_of_teacher_vision_towers.toFixed(1)}% of the two teachers’ vision towers`);
   source(s, `All measured on the Arduino UNO Q: Qualcomm QRB2210, 4× Cortex-A53, 3.6 GiB RAM, onnxruntime on CPU. Stored test tiles; no camera captures yet.`);
-  s.addNotes(`[0:50] Hold up the board now, if you brought it.\n\nThis is the third part. A student network, ${S.params_pct_of_teacher_vision_towers.toFixed(1)} percent of the parameters of the two teachers' vision towers, exported to a ${S.int8_onnx_mb.toFixed(1)} megabyte int8 model. It runs on this Arduino UNO Q over USB power, with no network.\n\nEverything on this slide was measured on the board: ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds of model inference per tile, and ${pct2(D.cm_int8_bal_acc_board)} balanced accuracy across all ${int(TC.n_test)} test tiles, which took ${Math.round(D.cm_full_loop_seconds)} seconds. That is below every teacher. The value here is small, offline and low-cost, not beating the foundation models.\n\nIf asked: a full app frame takes about ${Math.round(D.app_frame_ms_p50_sum_of_stages)} ms, mostly the numpy tissue check, and the full loop runs at ${D.cm_full_loop_tiles_per_s.toFixed(1)} tiles/s. The x86 int8 score of ${pct2(D.cm_int8_bal_acc_x86)} was an onnxruntime kernel artefact. Backup slide.\n\nSources: results/uno_q/onboard/*.json, results/student/model_sizes.json.`);
+  script(s, {
+    say: [
+      `Measured on the board: ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile, and ${pct2(D.cm_int8_bal_acc_board)} across all ${int(TC.n_test)} test tiles, in ${Math.round(D.cm_full_loop_seconds)} seconds.`,
+    ],
+    built: [
+      `Testing on real hardware paid off. On our x86 machine the quantised model scored lower, ${pct2(D.cm_int8_bal_acc_x86)}. We traced that to one onnxruntime kernel. With it off, only ${KC.cm.board_vs_x86_noopt.pred_mismatches} of ${int(TC.n_test)} calls differ.`,
+    ],
+    asked: [
+      `A full app frame takes about ${Math.round(D.app_frame_ms_p50_sum_of_stages)} ms and the full loop runs at ${D.cm_full_loop_tiles_per_s.toFixed(1)} tiles per second. The model uses ${D.cm_int8_rss_mb.toFixed(0)} MB of RAM and takes ${D.cm_int8_p50_ms_1_thread.toFixed(1)} ms on one thread. See the backup slide.`,
+    ],
+    sources: "results/uno_q/onboard/*.json, results/student/model_sizes.json.",
+  });
 }
 
-// ---- 12 gaps --------------------------------------------------------------------------------------------------------
+// ---- how we built it ----------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
-  title(s, "Three gaps remain, each with a concrete next step");
+  const collapse = DRIFT.candidates.minmax.label_agreement, kept = DRIFT.val_drift.label_agreement;
+  title(s, "How we built it");
+  const steps = [
+    ["Plan", "Design, plan and data splits written down before the code"],
+    ["Read", "CONCH and MUSK on one RTX 5060: 20k of 100k training tiles"],
+    ["Freeze", "Rules chosen on validation and pre-registered; test scored once"],
+    ["Train", "Our student distilled from both, with K2 camera effects, then int8"],
+    ["Deploy", "Flashed to the UNO Q; everything re-measured on the board"],
+  ];
+  const w = 2.25, gap = 0.22;
+  steps.forEach(([h, sub], i) => {
+    const x = LM + i * (w + gap);
+    box(s, String(i + 1), x, 1.22, 0.46, 0.46, FUSED, WHITE, { shape: pres.shapes.OVAL, fontSize: 16, bold: true, margin: 0, objectName: "step number" });
+    if (i < steps.length - 1) arrow(s, x + 0.52, 1.45, w + gap - 0.58, 0);
+    T(s, h, x, 1.76, w, 0.38, { fontSize: 20, bold: true, valign: "middle" });
+    T(s, sub, x, 2.15, w - 0.05, 1.2, { fontSize: 15 });
+  });
+  T(s, "What broke", 0.85, 3.4, 5.6, 0.36, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  T(s, "What we did", 7.45, 3.4, 5, 0.36, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
+  [
+    [`Two int8 calibration methods collapsed: only ${Math.round(100 * collapse)}% of calls survived`, `Percentile calibration: ${pct1(kept)} survive on validation`],
+    [`int8 scored lower on x86 (${pct2(KC.cm.bal_acc.x86)}) than on the board (${pct2(KC.cm.bal_acc.board)})`, `Traced to one onnxruntime kernel, by running on real hardware`],
+    ["CONCH and MUSK licences bar sharing their student", "Open control pair, with a shareable bundle"],
+  ].forEach(([gap_, next], i) => {
+    const y = 3.8 + i * 0.86;
+    card(s, LM, y, CW, 0.76);
+    T(s, gap_, 0.85, y, 5.75, 0.76, { fontSize: 16, valign: "middle" });
+    arrow(s, 6.78, y + 0.38, 0.45, 0);
+    T(s, next, 7.45, y, 5.05, 0.76, { fontSize: 16, bold: true, valign: "middle" });
+  });
+  script(s, {
+    say: [
+      "How it came together: we wrote the design and data splits down first, then ran both foundation models on one desktop GPU, on 20 thousand of 100 thousand training tiles.",
+      "We froze our rules on validation and scored test once. Then we trained the student, quantised it, and re-measured everything on the board.",
+      `Things broke. Our first quantisation attempts collapsed: only ${Math.round(100 * collapse)} percent of calls survived. A more careful calibration kept ${pct1(kept)}.`,
+      "Licences on CONCH and MUSK stop us sharing the student, so we also built everything on an open model pair.",
+      "We also misread our own result: we called the fusion gain a muscle and stroma trade. A per-class breakdown showed those cancel and the gain is mostly tumour, so we corrected every write-up.",
+    ],
+    asked: [
+      "Calibration is how quantisation decides the range each 8-bit number covers. One extreme value can stretch that range and waste the precision. Percentile calibration ignores the extremes.",
+      "The local subset keeps this reproducible on one GPU, and its limits are stated. The full-data kit for NCSA Delta is written and tested locally, and has not run there.",
+    ],
+    sources: "docs/design.md, docs/plan.md, docs/rulings.md (R28, R33), docs/progress.md, results/student/cm_crc/int8_drift.json, results/uno_q/onboard/int8_kernel_check.json.",
+  });
+}
+
+// ---- future directions --------------------------------------------------------------------------------------------------------
+{
+  const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
+  title(s, "Future Directions");
   const f = D.cm_board_device_flag, op = CC.prereg_rule_test_operating_point;
   T(s, "What remains", 0.85, 1.42, 5.6, 0.36, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
   T(s, "Next step", 7.45, 1.42, 5, 0.36, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
@@ -485,15 +938,21 @@ pres.addSection({ title: "Talk" });
     arrow(s, 6.78, y + 0.48, 0.45, 0);
     T(s, next, 7.45, y, 5.05, 0.96, { fontSize: 18, bold: true, valign: "middle" });
   });
-  T(s, "Overcome along the way", LM, 5.2, CW, 0.36, { fontSize: 14, bold: true, color: MUTED, valign: "middle" });
-  [["Non-commercial licences", "open control pair, shareable bundle"], ["int8 calibration collapse", "percentile calibration"], ["Low x86 int8 scores", "traced to an onnxruntime kernel"]].forEach(([a, b], i) => {
-    const x = LM + i * 4.1;
-    T(s, [{ text: a, options: { bold: true, fontSize: 16, breakLine: true } }, { text: b, options: { fontSize: 15, color: MUTED } }], x, 5.58, 3.85, 0.7);
+  script(s, {
+    say: [
+      "The fusion gain is fragile, so next is a full run on NCSA Delta with all 100 thousand training tiles. Our job scripts are tested locally but have not run there yet.",
+      `The pre-registered threshold flagged ${pct1(op.flagged_fraction)} of tiles for a 10 percent target, so thresholds need calibrating per site.`,
+      `The board's flag tracks the big models only weakly, kappa ${f.kappa.toFixed(2)}, and it has only seen stored tiles, so real camera captures come next.`,
+    ],
+    asked: [
+      "The board's two readers are two heads on one trunk, which is why its flag tracks the teachers weakly.",
+      `The board flag covers ${pct1(f.fraction)} of tiles and catches ${pct1(f.errors_caught)} of its own errors. Kappa is agreement corrected for chance: 0 is chance, 1 is perfect.`,
+    ],
+    sources: "results/headline.json, ncsa/README.md.",
   });
-  s.addNotes(`[0:50] What is not solved. The fusion gain is fragile, so next is a full-data run on NCSA Delta with all 100 thousand training tiles. Our Slurm kit is tested locally but has not run there yet. The pre-registered threshold over-flagged the test set, ${pct1(op.flagged_fraction)} of tiles for a 10 percent target, so thresholds must be calibrated per site. And the board's flag tracks the teachers only weakly, kappa ${f.kappa.toFixed(2)}, because its two readers are two heads on one backbone. It has only seen stored tiles, so real camera captures come next.\n\nIf asked: the board flag covers ${pct1(f.fraction)} of tiles and catches ${pct1(f.errors_caught)} of its own errors. The low x86 scores only showed up as an artefact because we ran on the actual board.`);
 }
 
-// ---- 13 why it matters ----------------------------------------------------------------------------------------------
+// ---- why it matters ----------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
   title(s, "Why it matters to pathologists and patients");
@@ -509,15 +968,25 @@ pres.addSection({ title: "Talk" });
   });
   s.addImage({ path: A("app_ui.png"), x: 7.0, y: 1.6, w: 5.73, h: 3.56, altText: "The TwinRead app on the UNO Q: a stored tile, both student heads, the fused call and an AGREE verdict" });
   T(s, "The app on the UNO Q, replaying a stored test tile. Its two heads share one student network.", 7.0, 5.24, 5.73, 0.55, { fontSize: 13, color: MUTED });
-  s.addNotes(`[0:40] Why it matters. For pathologists: a short list of tiles worth a second look, with each reader's call shown rather than one black-box score. For patients: a low-cost, offline second look could help where no second pathologist is available, pending real-world validation. For the field: a measured, pre-registered finding about why two readers help.\n\nThis is a second-read aid, not a diagnosis, and nothing here is clinically validated.\n\nIf asked about the 53 ms in the screenshot: that timer covers the whole step, meaning frame read, crop, tissue check and network, about ${Math.round(["frame read (PNG decode)", "crop to 224 px", "uint8 -> float NCHW", "int8 student (onnxruntime)", "probes + softmax", "tissue check", "review rule"].reduce((a, k) => a + D.stage_p50_ms[k], 0))} ms by stage medians. ${D.cm_int8_p50_ms_4_threads.toFixed(1)} ms is the network alone at 4 threads.`);
+  script(s, {
+    say: [
+      "For pathologists: a short list of tiles worth a second look, with each model's call shown.",
+      "For patients: a low-cost, offline second look could help where no second pathologist is available, pending validation.",
+      "For the field: a pre-registered finding about why two readers help.",
+      "To be clear, this is a research prototype, not a diagnostic device, and it is not clinically validated.",
+    ],
+    asked: [
+      `The 53 ms in the screenshot covers the whole step: frame read, crop, tissue check and network, about ${Math.round(["frame read (PNG decode)", "crop to 224 px", "uint8 -> float NCHW", "int8 student (onnxruntime)", "probes + softmax", "tissue check", "review rule"].reduce((a, k) => a + D.stage_p50_ms[k], 0))} ms by stage medians. ${D.cm_int8_p50_ms_4_threads.toFixed(1)} ms is the network alone at 4 threads.`,
+    ],
+  });
 }
 
-// ---- 14 close -------------------------------------------------------------------------------------------------------
+// ---- close -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CLOSE", sectionTitle: "Talk" });
   title(s, "TwinRead in three numbers");
   [
-    [`${pts(CC.delta_vs_best_single_pts)} pts`, "balanced accuracy from fusion on colorectal tiles; no gain on Camelyon17"],
+    [`${pts(CC.delta_vs_best_single_pts)} pts`, "balanced accuracy from fusion on colorectal tiles"],
     [pct1(CC.review_caught_at_10pct.s3_fused_uncertainty), "of errors caught by reviewing the least certain 10% of tiles"],
     [`${D.cm_int8_p50_ms_4_threads.toFixed(1)} ms`, `per tile on an offline board: a ${S.int8_onnx_mb.toFixed(1)} MB model, ${pct2(D.cm_int8_bal_acc_board)} accurate`],
   ].forEach(([n, txt], i) => {
@@ -528,13 +997,17 @@ pres.addSection({ title: "Talk" });
   T(s, "Thank you. Questions?", LM, 4.55, CW, 0.6, { fontSize: 28, bold: true, color: WHITE, valign: "middle" });
   T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", LM, 5.25, CW, 0.32, { fontSize: 16, color: WHITE });
   T(s, "github.com/iujab/twinread-conch-musk-edge", LM, 5.6, CW, 0.32, { fontSize: 14, color: RULE });
-  s.addNotes(`[0:20] Three numbers to remember: a small fusion gain on one dataset, ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught with 10 percent review, and ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile on a board. Thank you. We would welcome your questions.\n\nLeave this slide up during questions. Backup slides follow the references. Spoken total is about 11:40.`);
+  script(s, {
+    say: [
+      `Three numbers. Plus ${CC.delta_vs_best_single_pts.toFixed(2)} points from fusion on colorectal tiles, with no gain on Camelyon17. ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught by reviewing 10 percent of tiles. And ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile, from a ${S.int8_onnx_mb.toFixed(0)} megabyte model we trained ourselves, on an offline board.`,
+      "Thank you. We would welcome your questions.",
+    ],
+    after: (total) => `Leave this slide up during questions. Backup slides follow the references. Spoken total is about ${mmss(total)} at ${WPM} words a minute. To save time, skip the "How we built it" bullets outside the process slide.`,
+  });
 }
 
 // ---- references and backup ------------------------------------------------------------------------------------------
 pres.addSection({ title: "References and backup" });
-const tableOpts = (o) => ({ fontFace: "Arial", fontSize: 15, color: HEX.dk1, border: { type: "solid", pt: 0.75, color: "E8E6EE" }, valign: "middle", margin: [0.04, 0.1, 0.04, 0.1], ...o });
-const th = (text, o = {}) => ({ text, options: { bold: true, color: HEX.accent5, fill: { color: HEX.lt2 }, ...o } });
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "References and backup" });
   title(s, "References");
@@ -758,6 +1231,22 @@ async function fixParagraphProps(file) {
   fs.writeFileSync(file, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
 }
 
+// pptxgenjs writes all notes into one <a:t>, and PowerPoint does not treat a newline there as a paragraph. One paragraph per line.
+async function formatNotes(file) {
+  const zip = await JSZip.loadAsync(fs.readFileSync(file));
+  const names = Object.keys(zip.files).filter((n) => /^ppt\/notesSlides\/notesSlide\d+\.xml$/.test(n));
+  const para = (line) => {
+    const bullet = line.startsWith("\u2022 "), head = /^(\[\d+:\d\d\]|How we built it:|If asked:)$/.test(line), spaced = head || /^(Sources:|Leave this)/.test(line);
+    const pPr = bullet ? `<a:pPr marL="171450" indent="-171450"><a:buFont typeface="Arial"/><a:buChar char="\u2022"/></a:pPr>` : `<a:pPr marL="0" indent="0">${spaced ? `<a:spcBef><a:spcPts val="600"/></a:spcBef>` : ""}<a:buNone/></a:pPr>`;
+    return `<a:p>${pPr}<a:r><a:rPr lang="en-US" dirty="0"${head ? ' b="1"' : ""}/><a:t>${bullet ? line.slice(2) : line}</a:t></a:r></a:p>`;
+  };
+  for (const n of names) {
+    const xml = await zip.file(n).async("string");
+    zip.file(n, xml.replace(/<a:p><a:r><a:rPr[^>]*\/><a:t>([^<]*\n[^<]*)<\/a:t><\/a:r>(?:<a:endParaRPr[^>]*\/>)?<\/a:p>/, (_, body) => body.split("\n").filter((l) => l.trim()).map(para).join("")));
+  }
+  fs.writeFileSync(file, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
+}
+
 async function applyTheme(file) {
   const zip = await JSZip.loadAsync(fs.readFileSync(file));
   const names = Object.keys(zip.files).filter((n) => /^ppt\/theme\/theme\d*\.xml$/.test(n));
@@ -775,6 +1264,7 @@ async function applyTheme(file) {
   await pres.writeFile({ fileName: OUT });
   await patchCharts(OUT);
   await fixParagraphProps(OUT);
+  await formatNotes(OUT);
   await applyTheme(OUT);
   console.log("wrote", OUT);
 })();

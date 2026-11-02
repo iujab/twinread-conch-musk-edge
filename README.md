@@ -5,7 +5,7 @@ Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen · University of Illin
 
 **Research prototype, not a diagnostic device.** Every number here comes from `results/**/*.json`
 (`python -m twinread.headline` collects them into `results/headline.json`). Model numbers are from a local subset on
-one RTX 5060. Device numbers are measured on the Arduino UNO Q. Slides: `docs/twinread_deck.pptx` (14-slide talk with
+one RTX 5060. Device numbers are measured on the Arduino UNO Q. Slides: `docs/twinread_deck.pptx` (20-slide talk with
 speaker notes, then references and backups; PDF copy `docs/twinread_deck.pdf`), built by `docs/deck/build_deck.js`.
 
 ## Abstract
