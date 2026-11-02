@@ -1,0 +1,22 @@
+{
+ "unfused_gb": 2.851602432,
+ "fused_gb": 0.38535168,
+ "traffic_ratio": 7.4,
+ "unfused_traffic_ms": 7.355312582803889,
+ "fused_traffic_ms": 0.9939611598383635,
+ "k2_ms": 5.527343988418579,
+ "k2_launch1_ms": 3.2721,
+ "k2_launch2_ms": 2.1738,
+ "torch_ms": 233.36971282958984,
+ "torch_randn_ms": 105.74339294433594,
+ "x_torch": 42.22094975788886,
+ "x_torch_randn": 19.13095931172361,
+ "memcpy_gbps": 387.69289542728745,
+ "k1_ms": 2.8403199911117554,
+ "k1_floor_ms": 2.2171419340884313,
+ "k1_over_floor": 1.2810726942835715,
+ "k1_triton_ms": 3.1197279691696167,
+ "k1_interpolate_ms": 53.66596794128418,
+ "interpolate_max_levels": 20.918500900268555,
+ "k1_bit_exact_min": 1.0
+}

@@ -4,7 +4,7 @@
 //
 //   cd docs/deck && npm install && node build_deck.js
 //
-// docs/deck/assets/ comes from make_assets.py and is committed, so this script does not need data/.
+// docs/deck/assets/ comes from make_assets.py and make_kernel_figures.py and is committed, so this script does not need data/.
 // PDF copy: export from PowerPoint, or  soffice --headless --convert-to pdf --outdir docs docs/twinread_deck.pptx
 "use strict";
 const fs = require("fs");
@@ -23,6 +23,7 @@ const TC = J("results/cm_local/CM/crc/triage_curves.json");
 const KC = J("results/uno_q/onboard/int8_kernel_check.json");
 const SM = J("results/student/cm_crc/metrics.json");
 const BS = JSON.parse(fs.readFileSync(A("blindspots.json"), "utf8"));
+const KF = JSON.parse(fs.readFileSync(A("kernel_figures.json"), "utf8"));
 
 const CC = H.fusion.CM_crc, CA = H.fusion.CM_cam, OC = H.fusion.OPEN_crc, OA = H.fusion.OPEN_cam;
 const K = H.kernels, S = H.student, D = H.device.onboard, FR = H.crc_fusion_fragility;
@@ -269,10 +270,36 @@ pres.addSection({ title: "Talk" });
     `whole student training step: ${int(step.torch)} to ${int(step.k2)} images/s`,
     `Augmentation images per second inside student training: torch ${int(aug.torch)}, K2 ${int(aug.k2)}.`);
   source(s, "RTX 5060; compile-checked for Delta A100 and DeltaAI GH200; compute-sanitizer clean. Tiles/s (K1), images/s (K2). K2 simulates a USB camera filming a screen.");
-  s.addNotes(`[1:00] We wrote two custom CUDA kernels. Both are fused chains of dependent stages: each stage needs the previous one's output, so instead of a launch and a global-memory round trip per stage, one launch keeps the intermediate in shared memory.\n\nK1 prepares both readers' inputs from one tile, and its fixed-point math makes the output bit-exact to each model's official transform. It is ${x0(K.k1_preprocess_speedup_vs_pil)} faster than PIL inside the embedding run. We also show the honest number next to it: the whole run gains only ${x2(K.k1_e2e_speedup_vs_reference)}, because the model forward dominates in this batched setup.\n\nK2 simulates what a camera filming a screen does to a tile: warp, stain jitter, moire, glare, defocus, noise, JPEG. It augments ${x1(augX)} faster than torch, which makes the full student training step ${x2(stepX)} faster, close to training with no augmentation at all (${int(step.none)} images/s).\n\nIf asked: the kernel bench with input already on the GPU gives ${int(K.k1_cuda_tiles_per_s_224)} tiles/s, and K2 gives ${int(K.k2_cuda_images_per_s_sev1)} images/s standalone. See the backup slide.\n\nSources: results/kernels/*.json, results/student/*/throughput.json.`);
+  s.addNotes(`[0:45] We wrote two custom CUDA kernels. K1 prepares both readers' inputs from one tile, and its fixed-point math makes the output bit-exact to each model's official transform. It is ${x0(K.k1_preprocess_speedup_vs_pil)} faster than PIL inside the embedding run. We show the honest number next to it: the whole run gains only ${x2(K.k1_e2e_speedup_vs_reference)}, because the model forward dominates in this batched setup.\n\nK2 simulates what a camera filming a screen does to a tile. It augments ${x1(augX)} faster than torch, which makes the full student training step ${x2(stepX)} faster, close to training with no augmentation at all (${int(step.none)} images/s). Next, how they get this fast.\n\nIf asked: the kernel bench with input already on the GPU gives ${int(K.k1_cuda_tiles_per_s_224)} tiles/s, and K2 gives ${int(K.k2_cuda_images_per_s_sev1)} images/s standalone. See the backup slide.\n\nSources: results/kernels/*.json, results/student/*/throughput.json.`);
 }
 
-// ---- 6 fusion -------------------------------------------------------------------------------------------------------
+// ---- 6 dependent kernels: how the speed is achieved. Graphs from make_kernel_figures.py.
+{
+  const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
+  title(s, "Fusing dependent stages avoids DRAM round trips");
+  card(s, LM, 1.12, CW, 0.82);
+  T(s, [
+    { text: "A dependent kernel ", options: { bold: true } }, { text: "chains stages where each one needs the previous stage’s output. " },
+    { text: "Fusing ", options: { bold: true } }, { text: "runs the chain in one launch, with intermediates in on-chip shared memory." },
+  ], LM + 0.22, 1.12, CW - 0.44, 0.82, { fontSize: 17, valign: "middle" });
+  const floorPct = Math.round(100 * (KF.k1_over_floor - 1));
+  [
+    { x: LM, h: "Why fuse", t: `One launch per stage sends every intermediate through DRAM: ×${KF.traffic_ratio.toFixed(1)} the traffic.`, img: "kernel_traffic.png",
+      alt: `Cumulative DRAM traffic along K2's ten stages: ${KF.unfused_gb.toFixed(2)} GB with one launch per stage, ${KF.fused_gb.toFixed(2)} GB fused. Calculated from tensor sizes.` },
+    { x: 4.72, h: "What it accomplishes", t: `K2 takes ${KF.k2_ms.toFixed(1)} ms per batch, less than the unfused chain’s memory traffic alone.`, img: "kernel_k2_time.png",
+      alt: `Measured time per batch: K2 ${KF.k2_ms.toFixed(1)} ms, torch GPU ${KF.torch_ms.toFixed(0)} ms, torch with cheaper noise ${KF.torch_randn_ms.toFixed(0)} ms, numpy over a second. Unfused memory traffic alone would take ${KF.unfused_traffic_ms.toFixed(1)} ms.` },
+    { x: 8.84, h: "Why it’s cool", t: `K1 runs within ${floorPct}% of the memory-bandwidth floor and stays bit-exact.`, img: "kernel_k1_time.png",
+      alt: `Measured time per batch: K1 ${KF.k1_ms.toFixed(2)} ms against a calculated memory floor of ${KF.k1_floor_ms.toFixed(2)} ms; Triton ${KF.k1_triton_ms.toFixed(2)} ms; torch interpolate ${KF.k1_interpolate_ms.toFixed(0)} ms, not bit-exact.` },
+  ].forEach((c) => {
+    T(s, c.h, c.x, 2.05, 3.89, 0.32, { fontSize: 17, bold: true, valign: "middle" });
+    T(s, c.t, c.x, 2.37, 3.89, 0.52, { fontSize: 14 });
+    s.addImage({ path: A(c.img), x: c.x, y: 2.92, w: 3.89, h: 3.45, altText: c.alt });
+  });
+  source(s, `DRAM traffic and floors are calculated from tensor sizes and the measured memcpy rate (${Math.round(KF.memcpy_gbps)} GB/s), not hardware counters. Times are CUDA events on a shared RTX 5060. No hand-written unfused CUDA version was measured.`);
+  s.addNotes(`[1:15] Here is how they get this fast. K2 is a dependent chain: warp, stain jitter, gamma, colour, moire, glare, defocus, white balance, noise, JPEG. Each stage needs the previous stage's output, so they cannot run as independent jobs. The usual way is one launch per stage, which writes every intermediate to GPU memory and reads it straight back. For one batch that is ${KF.unfused_gb.toFixed(2)} gigabytes of traffic, by calculation.\n\nWe fuse the chain instead. One launch works through 32-by-16 pixel tiles, keeping intermediates in on-chip shared memory, with a halo of extra pixels so the blur can see its neighbours. Barriers between stages keep them in order. Traffic falls to ${KF.fused_gb.toFixed(2)} gigabytes.\n\nThe result: ${KF.k2_ms.toFixed(1)} milliseconds per batch, less than the unfused chain's memory traffic alone would take. Torch GPU ops take ${KF.torch_ms.toFixed(0)}.\n\nThe part we like most: K1 runs within ${floorPct} percent of the floor set by GPU memory bandwidth, and matches the official transforms bit for bit. torch interpolate, the quick alternative, is ${Math.round(KF.k1_interpolate_ms / KF.k1_ms)} times slower and up to ${Math.round(KF.interpolate_max_levels)} grey levels off.\n\nIf asked: fusing alone does not explain the whole ×${Math.round(KF.x_torch)}. We did not measure a hand-written unfused CUDA version. The memory floor shows one would take at least ${KF.unfused_traffic_ms.toFixed(1)} ms plus compute, so fusing is worth at least ×${(KF.unfused_traffic_ms / KF.k2_ms).toFixed(2)}, and the rest is torch overhead. Our Triton version of K1's plan is within ${Math.ceil(100 * (KF.k1_triton_ms / KF.k1_ms - 1))}% of K1, so most of K1's gain comes from the design, not the language. ×${Math.round(KF.x_torch)} is the standalone bench at batch 256 and severity 1.0; ×${K.student_train_aug_speedup_k2_vs_torch.CM.toFixed(1)} on the previous slide is inside the training loop at batch 128 and severity 0.5. K2's launch 1 takes ${KF.k2_launch1_ms.toFixed(2)} ms and JPEG ${KF.k2_launch2_ms.toFixed(2)} ms. compute-sanitizer memcheck, racecheck and synccheck are clean.\n\nSources: results/kernels/k1_bench.json, k1_parity.json, k2_bench.json, k2_sanitizer.json, src/twinread/csrc/k2_camera_aug.cu.`);
+}
+
+// ---- 7 fusion -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   title(s, `Fusion adds ${pts(CC.delta_vs_best_single_pts)} points on colorectal tiles only`);
@@ -320,7 +347,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[1:00] First result. Fusing CONCH and MUSK gives ${pct2(CC.bal_acc.fused)} balanced accuracy against ${pct2(CC.bal_acc.B)} for MUSK alone, a gain of ${CC.delta_vs_best_single_pts.toFixed(2)} points. Most of the net gain is tumour recall, up ${dt.TUM.toFixed(1)} points. Fusion leaves ${OV.fused_errors} errors, fewer than either reader alone.\n\nBut look at the forest plot. Only the top row clears zero. On Camelyon17, an unseen hospital, fusion gives no gain, and the open control pair gains nothing on either dataset. So the gain is real but small and dataset-dependent.\n\nIf asked: the colorectal CI is tile-level and therefore optimistic because this dataset has no slide IDs. Validation picked the fusion rule by one or two tiles (${FR.val_correct_tiles.average} vs ${FR.val_correct_tiles.gated_mlp} vs ${FR.val_correct_tiles.concat_lr} of ${FR.n_val}). Muscle and stroma recall swing by about 13 points in opposite directions and cancel. Backup slide has the per-class view.\n\nSources: results/cm_local/CM/*/fusion.json, results/open/OPEN/*/fusion.json, results/headline.json.`);
 }
 
-// ---- 7 triage -------------------------------------------------------------------------------------------------------
+// ---- 8 triage -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   const R = CC.review_caught_at_10pct;
@@ -363,7 +390,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[1:10] Second result, and the one that surprised us. We expected disagreement between the readers to be the best signal for sending a tile to a pathologist. It is not.\n\nThe chart ranks tiles by each score and sends the top ones for review. At a 10% budget, the fused reader's own uncertainty catches ${pct1(R.s3_fused_uncertainty)} of its errors. MUSK flagging itself catches ${pct1(R.B_own_confidence_own_errors)}, CONCH ${pct1(R.A_own_confidence_own_errors)}. Disagreement alone stalls at ${pct1(R.s1_disagree)}, because the readers disagree on only ${pct1(CC.s1_disagree_rate)} of tiles.\n\nA learned flag that adds disagreement to uncertainty ranks tiles almost identically, Spearman ${FR.s3_s4_spearman.toFixed(4)}, so it adds nothing. Two readers help because they make a better-calibrated reader, not because their disagreement is informative.\n\nIf asked: on Camelyon17 fused uncertainty catches ${pct1(CA.review_caught_at_10pct.s3_fused_uncertainty)}, while the pre-registered flag reaches ${pct1(CA.review_caught_at_10pct.s4_learned)} against CONCH alone at ${pct1(CA.review_caught_at_10pct.A_own_confidence_own_errors)}, and it does not beat CONCH alone on cleared-tile accuracy. Backup slide.\n\nSources: results/cm_local/CM/crc/review.json, triage_curves.json.`);
 }
 
-// ---- 8 blind spots --------------------------------------------------------------------------------------------------
+// ---- 9 blind spots --------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   const miss = BS.missed, nMiss = miss.length, op = CC.prereg_rule_test_operating_point;
@@ -389,7 +416,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] Now the limit of the whole idea. These are shared blind spots: tiles where both readers make the same wrong call, both with high confidence. There are ${BS.n} on the colorectal test set, ${pct2(CC.confident_shared_errors.rate)} of tiles. Most are muscle versus stroma, but ${BS.pairs["TUM->NORM"]} are tumour called normal.\n\nNo disagreement signal can catch these, because the readers agree. The fused uncertainty flag still catches ${BS.flagged} of them, at the cost of reviewing a quarter of tiles. The ${nMiss} on this slide escaped even that.\n\nPathologists in the room may disagree with some of these labels, and we would welcome that. The point stands: when two models agree, that is not proof.\n\nIf asked: on Camelyon17 the flag catches only ${CA.confident_shared_errors.flagged_by_prereg_rule} of ${CA.confident_shared_errors.n} such tiles.\n\nSources: results/cm_local/CM/crc/review.json, triage_curves.json, tile_preds.npz.`);
 }
 
-// ---- 9 board --------------------------------------------------------------------------------------------------------
+// ---- 10 board --------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Talk" });
   title(s, `A ${Math.round(S.int8_onnx_mb)} MB student runs offline on a USB-powered board`);
@@ -403,7 +430,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] Hold up the board now, if you brought it.\n\nThis is the third part. A student network, ${S.params_pct_of_teacher_vision_towers.toFixed(1)} percent of the parameters of the two teachers' vision towers, exported to a ${S.int8_onnx_mb.toFixed(1)} megabyte int8 model. It runs on this Arduino UNO Q over USB power, with no network.\n\nEverything on this slide was measured on the board: ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds of model inference per tile, and ${pct2(D.cm_int8_bal_acc_board)} balanced accuracy across all ${int(TC.n_test)} test tiles, which took ${Math.round(D.cm_full_loop_seconds)} seconds. That is below every teacher. The value here is small, offline and low-cost, not beating the foundation models.\n\nIf asked: a full app frame takes about ${Math.round(D.app_frame_ms_p50_sum_of_stages)} ms, mostly the numpy tissue check, and the full loop runs at ${D.cm_full_loop_tiles_per_s.toFixed(1)} tiles/s. The x86 int8 score of ${pct2(D.cm_int8_bal_acc_x86)} was an onnxruntime kernel artefact. Backup slide.\n\nSources: results/uno_q/onboard/*.json, results/student/model_sizes.json.`);
 }
 
-// ---- 10 gaps --------------------------------------------------------------------------------------------------------
+// ---- 11 gaps --------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
   title(s, "Three gaps remain, each with a concrete next step");
@@ -429,7 +456,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:50] What is not solved. The fusion gain is fragile, so next is a full-data run on NCSA Delta with all 100 thousand training tiles. Our Slurm kit is tested locally but has not run there yet. The pre-registered threshold over-flagged the test set, ${pct1(op.flagged_fraction)} of tiles for a 10 percent target, so thresholds must be calibrated per site. And the board's flag tracks the teachers only weakly, kappa ${f.kappa.toFixed(2)}, because its two readers are two heads on one backbone. It has only seen stored tiles, so real camera captures come next.\n\nIf asked: the board flag covers ${pct1(f.fraction)} of tiles and catches ${pct1(f.errors_caught)} of its own errors. The low x86 scores only showed up as an artefact because we ran on the actual board.`);
 }
 
-// ---- 11 why it matters ----------------------------------------------------------------------------------------------
+// ---- 12 why it matters ----------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CONTENT_PLAIN", sectionTitle: "Talk" });
   title(s, "Why it matters to pathologists and patients");
@@ -448,7 +475,7 @@ pres.addSection({ title: "Talk" });
   s.addNotes(`[0:40] Why it matters. For pathologists: a short list of tiles worth a second look, with each reader's call shown rather than one black-box score. For patients: a low-cost, offline second look could help where no second pathologist is available, pending real-world validation. For the field: a measured, pre-registered finding about why two readers help.\n\nThis is a second-read aid, not a diagnosis, and nothing here is clinically validated.\n\nIf asked about the 53 ms in the screenshot: that timer covers the whole step, meaning frame read, crop, tissue check and network, about ${Math.round(["frame read (PNG decode)", "crop to 224 px", "uint8 -> float NCHW", "int8 student (onnxruntime)", "probes + softmax", "tissue check", "review rule"].reduce((a, k) => a + D.stage_p50_ms[k], 0))} ms by stage medians. ${D.cm_int8_p50_ms_4_threads.toFixed(1)} ms is the network alone at 4 threads.`);
 }
 
-// ---- 12 close -------------------------------------------------------------------------------------------------------
+// ---- 13 close -------------------------------------------------------------------------------------------------------
 {
   const s = pres.addSlide({ masterName: "CLOSE", sectionTitle: "Talk" });
   title(s, "TwinRead in three numbers");
@@ -464,7 +491,7 @@ pres.addSection({ title: "Talk" });
   T(s, "Thank you. Questions?", LM, 4.55, CW, 0.6, { fontSize: 28, bold: true, color: WHITE, valign: "middle" });
   T(s, "Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen", LM, 5.25, CW, 0.32, { fontSize: 16, color: WHITE });
   T(s, "github.com/iujab/twinread-conch-musk-edge", LM, 5.6, CW, 0.32, { fontSize: 14, color: RULE });
-  s.addNotes(`[0:20] Three numbers to remember: a small fusion gain on one dataset, ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught with 10 percent review, and ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile on a board. Thank you. We would welcome your questions.\n\nLeave this slide up during questions. Backup slides follow the references. Spoken total is about 9:40.`);
+  s.addNotes(`[0:20] Three numbers to remember: a small fusion gain on one dataset, ${pct1(CC.review_caught_at_10pct.s3_fused_uncertainty)} of errors caught with 10 percent review, and ${D.cm_int8_p50_ms_4_threads.toFixed(1)} milliseconds per tile on a board. Thank you. We would welcome your questions.\n\nLeave this slide up during questions. Backup slides follow the references. Spoken total is about 10:40.`);
 }
 
 // ---- references and backup ------------------------------------------------------------------------------------------

@@ -54,6 +54,22 @@ def test_headline_numbers_match_results(slides):
         assert want in text, want
 
 
+def test_dependent_kernel_slide_recomputes_from_results(slides):
+    """One launch per stage: uint8 in and out, 9 float32 intermediates each written and read. Fused: 1 float32 hand-off."""
+    k1 = json.loads((ROOT / "results/kernels/k1_bench.json").read_text())["gpu"]
+    k2 = json.loads((ROOT / "results/kernels/k2_bench.json").read_text())["gpu"]
+    u8 = k2["batch"] * k2["hw"][0] * k2["hw"][1] * 3
+    unfused, fused = 2 * u8 + 18 * (4 * u8), 2 * u8 + 2 * (4 * u8)
+    assert round(fused / 1e6) == 385  # k2_bench.json bytes_note
+    unfused_ms = unfused / (k1["memcpy_d2d"]["GBps_read_plus_write"] * 1e9) * 1e3
+    k2_ms = k2["severity_1.0"]["d_cuda_k2"]["ms"]
+    assert k2_ms < unfused_ms  # the slide's claim
+    over_floor = k1["tiles224"]["cuda_k1"]["ms"] / k1["tiles224"]["two_pass_dram_floor_ms"]
+    text = next(t for t in slides if "Fusing dependent stages" in t)
+    for want in (f"\u00d7{unfused / fused:.1f} the traffic", f"K2 takes {k2_ms:.1f} ms", f"within {round(100 * (over_floor - 1))}%"):
+        assert want in text, want
+
+
 def test_no_overclaims(slides):
     notes = [_text(x) for x in _parts("ppt/notesSlides/notesSlide").values()]
     text = " ".join(slides + notes).lower()
