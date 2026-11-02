@@ -55,10 +55,10 @@
     },
     {
       "path": "figures/ui_device_unoq.png",
-      "caption": "The device app on the UNO Q (host: Arduino SA,Imola): replay mode on a stored CRC-VAL-HE-7K tile, CM bundle, 53 ms single-threaded latency, LED matrix updated. The bars are two heads of one student, not independent readers. Headless-Chromium screenshot."
+      "caption": "The dashboard on the UNO Q: demo slide 6 of 18, a CRC-VAL-HE-7K tile, CM bundle, read as Confident, TUM. The bars are two heads of one student, not independent readers. Chromium screenshot."
     }
   ],
-  "hardware": "Arduino UNO Q (Qualcomm QRB2210, 4x Cortex-A53 at 2.0 GHz, 3.6 GiB, Debian 13; STM32U585 MCU with the 8x13 LED matrix). Running on the board: the offline device app (replay or camera -> crop + tissue check -> int8 student via onnxruntime -> AGREE/REVIEW with reasons) with a local web UI, and the Bridge-RPC LED-matrix sketch (flashed over USB-C with OpenOCD; set_state verified, 8 ms per call). Measured on the board: 18.7 ms per tile at 4 threads, 0.9305 balanced accuracy on the full CRC test set, 25.4 tiles/s for the full loop. Not done: real camera captures (the board has only seen stored tiles; the screen rig in rig/ is ready).",
+  "hardware": "Arduino UNO Q (Qualcomm QRB2210, 4x Cortex-A53 at 2.0 GHz, 3.6 GiB, Debian 13; STM32U585 MCU with the 8x13 LED matrix). Running on the board: the offline device app (replay or camera -> crop + tissue check -> int8 student via onnxruntime -> Confident / Needs review / No tissue with reasons) with an always-on web dashboard, an on-board text explainer (Qwen3-0.6B), and the Bridge-RPC LED-matrix sketch (flashed over USB-C with OpenOCD; set_state verified, 8 ms per call). Measured on the board: 18.7 ms per tile at 4 threads, 0.9305 balanced accuracy on the full CRC test set, 25.4 tiles/s for the full loop. Not done: scored real camera captures (one informal live check on three hand-picked tiles; the screen rig in rig/ is ready).",
   "how_to_run": "cd twinread-conch-musk-edge\nbash run_demo.sh --smoke   # no GPU/network: headline JSON, figures, manifest tests, dashboard check\nbash run_demo.sh           # data -> OPEN embeddings -> analysis -> student -> bundle -> figures -> dashboard http://127.0.0.1:1777\nbash run_demo.sh --with-cm # + CONCH/MUSK local subset (needs HF access)",
   "demo_port": 1777,
   "event_scaleup": "Not run. The kit in ncsa/ runs the same pre-registered pipeline on all 100k CRC training tiles with CONCH and MUSK on Delta: J1 (environment, sm_80 kernel build and tests), J2 (embeddings through K1), a CPU analysis job, J3 (student distillation), <= 10 A100-hours. It would show whether the fragile fusion gain holds with 5x the training data. Another reader pair is one PAIRS entry.",
@@ -70,7 +70,7 @@
     "The review flag's value comes from the fused reader's uncertainty, not disagreement; the pre-registered val-calibrated threshold over-flags CRC test, and on Camelyon17 the twin flag does not beat CONCH alone.",
     "Confident shared errors (0.74% of CRC tiles) cannot be caught by any two-reader disagreement signal.",
     "The int8 student is below every teacher on test; the device's two 'readers' are two heads on one shared backbone, and the board's int8 flag agrees with the teacher flag only at kappa 0.32.",
-    "The board has only run on stored tiles (replay); there are no real camera captures, and camera robustness numbers are the K2 simulation.",
+    "Camera accuracy is not measured: one informal live check on three hand-picked tiles, and camera robustness numbers are the K2 simulation.",
     "Kernel throughput is measured on a shared GPU (estimate); sm_80/sm_90 builds are compile-checked only.",
     "The CONCH/MUSK-derived student is CC-BY-NC-ND and not distributed; only the OPEN bundle is distributable.",
     "Research prototype, not a diagnostic device; no clinical validation."

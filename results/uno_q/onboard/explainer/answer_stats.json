@@ -1,0 +1,209 @@
+{
+ "source": "all_answers.jsonl and final_answers.jsonl, plus journal_explain_events.jsonl for lines they lack",
+ "earlier_code": {
+  "finished_and_checked": 55,
+  "passed": 49,
+  "pass_rate": 0.891,
+  "wilson_95": [
+   0.782,
+   0.949
+  ],
+  "failed": [
+   {
+    "audience": "user",
+    "status": "review",
+    "case": "real_camera_frozen_frame",
+    "failed_checks": [
+     "length_ok"
+    ],
+    "invented_claim": false,
+    "words": 94,
+    "note": "The language model's wording came out too long or too short, so this is the reading itself.",
+    "rejected": "The model looked at one small tile of tissue and read it as background, labelled BACK, with a combined confidence of 90%. The model has two heads that each give their own answer. Both heads picked BACK, Head A with 96% confidence and Head B with 50%. The two heads agree. The tile is flagged for review because the confidence of the two heads differs and the review score of 0.60 shows the review head is unsure. In a tissue image, background means an empty part of the slide with little or no tissue."
+   },
+   {
+    "audience": "user",
+    "status": "review",
+    "case": "sustained",
+    "failed_checks": [
+     "no_wrong_class"
+    ],
+    "invented_claim": true,
+    "words": 83,
+    "note": "The language model's wording named a tissue class that is not in this result, so this is the reading itself.",
+    "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 76%. The model has two heads that each give their own answer. Both heads picked STR, Head A with 79% confidence and Head B with 95%. The two heads agree on this tile. The tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue of cancer."
+   },
+   {
+    "audience": "user",
+    "status": "review",
+    "case": "sustained",
+    "failed_checks": [
+     "numbers_match"
+    ],
+    "invented_claim": false,
+    "words": 68,
+    "note": "The language model's wording got a number wrong, so this is the reading itself.",
+    "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 75%. The model has two heads that each give their own answer. Both heads picked smooth muscle (MUS), but the combined call differs from both of them. The tile is flagged for review because the review head is unsure (score 0.55). In a tissue image, cancer-associated stroma means fibrous tissue around cancer."
+   },
+   {
+    "audience": "doctor",
+    "status": "agree",
+    "case": "sustained",
+    "failed_checks": [
+     "heads_correct",
+     "numbers_match"
+    ],
+    "invented_claim": true,
+    "words": 62,
+    "note": "The language model's wording got a number wrong, so this is the reading itself.",
+    "rejected": "The model read this tile as ADI (adipose tissue) at 100% combined confidence. Head A gives ADI 100% confidence, and Head B gives ADI 95%. The two heads agree on this tile. The tile is not flagged for review. On H&E, ADI means fat cells, seen as large clear round spaces with thin walls. This is the model's reading of one tile."
+   },
+   {
+    "audience": "doctor",
+    "status": "agree",
+    "case": "idle_unload",
+    "failed_checks": [
+     "heads_correct",
+     "numbers_match"
+    ],
+    "invented_claim": true,
+    "words": 63,
+    "note": "The language model's wording got a number wrong, so this is the reading itself.",
+    "rejected": "The model's combined call for this tile is mucus (MUC) at 100%. Head A gives MUC 100% confidence, and Head B gives MUC 90%. The heads picked the same class, so they agree. The model did not flag this tile for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile."
+   },
+   {
+    "audience": "user",
+    "status": "review",
+    "case": "shots_long_answer",
+    "failed_checks": [
+     "no_wrong_class"
+    ],
+    "invented_claim": true,
+    "words": 75,
+    "note": "The language model's wording named a tissue class that is not in this result, so this is the reading itself.",
+    "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 76%. The model has two heads, and each answers on its own. Head A gives STR 79% confidence, and Head B gives STR 95%. The heads agree. The tile is flagged for review because the heads' confidence levels differ and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue of cancer."
+   }
+  ],
+  "by_status_audience": {
+   "agree/doctor": {
+    "n": 24,
+    "passed": 22
+   },
+   "review/doctor": {
+    "n": 10,
+    "passed": 10
+   },
+   "review/user": {
+    "n": 12,
+    "passed": 8
+   },
+   "agree/user": {
+    "n": 7,
+    "passed": 7
+   },
+   "no_tissue/doctor": {
+    "n": 1,
+    "passed": 1
+   },
+   "no_tissue/user": {
+    "n": 1,
+    "passed": 1
+   }
+  },
+  "distinct_decisions_known": 13,
+  "answers_without_a_known_decision": 2,
+  "answers_from_the_three_most_used_decisions": 28,
+  "words": {
+   "min": 37,
+   "median": 66,
+   "max": 94
+  },
+  "done_s": {
+   "min": 22.12,
+   "median": 44.09,
+   "max": 91.67
+  },
+  "gen_tps": {
+   "min": 2.302259304367367,
+   "median": 3.96,
+   "max": 4.084767267942928
+  },
+  "first_word_s_new_prompts": {
+   "median": 13.71,
+   "max": 49.53
+  },
+  "sustained_run": {
+   "n": 7,
+   "passed": 4
+  },
+  "ran_outside_the_service": 4
+ },
+ "final_code": {
+  "finished_and_checked": 6,
+  "passed": 5,
+  "pass_rate": 0.833,
+  "wilson_95": [
+   0.436,
+   0.97
+  ],
+  "failed": [
+   {
+    "audience": "doctor",
+    "status": "agree",
+    "case": "twinread_paused_cold",
+    "failed_checks": [
+     "heads_correct",
+     "numbers_match"
+    ],
+    "invented_claim": true,
+    "words": 67,
+    "note": "The language model's wording got a number wrong, so this is the reading itself.",
+    "rejected": null
+   }
+  ],
+  "by_status_audience": {
+   "agree/doctor": {
+    "n": 4,
+    "passed": 3
+   },
+   "agree/user": {
+    "n": 1,
+    "passed": 1
+   },
+   "review/doctor": {
+    "n": 1,
+    "passed": 1
+   }
+  },
+  "distinct_decisions_known": 3,
+  "answers_without_a_known_decision": 0,
+  "answers_from_the_three_most_used_decisions": 6,
+  "words": {
+   "min": 60,
+   "median": 61.0,
+   "max": 67
+  },
+  "done_s": {
+   "min": 23.16,
+   "median": 45.73,
+   "max": 68.58
+  },
+  "gen_tps": {
+   "min": 3.1559323311519067,
+   "median": 4.01,
+   "max": 4.036448211870088
+  },
+  "first_word_s_new_prompts": {
+   "median": 31.22,
+   "max": 39.33
+  },
+  "sustained_run": {
+   "n": 0,
+   "passed": 0
+  },
+  "ran_outside_the_service": 0
+ },
+ "unknown_jobs": 4,
+ "unknown_jobs_note": "The first four jobs, before all_answers.jsonl and the kept log begin, have no stored record, so the earlier-code count is a lower bound on what ran.",
+ "do_not_compare": "Not comparable with the 0.975 on 200 held-out prompts on x86: these answers are a few repeated decisions, on the board, and were not sampled to be balanced."
+}

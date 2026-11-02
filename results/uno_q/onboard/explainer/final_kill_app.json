@@ -1,0 +1,68 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:17:41 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "windows": [
+  {
+   "name": "kill_app",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 46.8,
+   "start": "2026-11-02 19:16:48 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.1,
+    "mem_available_mb": 3049,
+    "open_connections_to_app": 0
+   },
+   "seconds": 46.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.5,
+    "mem_available_mb": 3108,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "16"
+   }
+  }
+ ],
+ "answers": [],
+ "kill_9_app": {
+  "app_pid": 3604,
+  "llama_pid": 11682,
+  "llama_cgroup": "0::/system.slice/twinread.service",
+  "llama_gone_after_s": 0.95,
+  "page_back_after_s": 4.03,
+  "status_after": "standby",
+  "explainer_after": "off",
+  "job_after": null,
+  "restarts": [
+   "1",
+   "2"
+  ],
+  "llama_left": [],
+  "zombies": "",
+  "page_reconnected": "STANDBY"
+ },
+ "console_errors": [
+  "Failed to load resource: net::ERR_CONNECTION_RESET http://uno-q:8080/state",
+  "Failed to load resource: net::ERR_EMPTY_RESPONSE http://uno-q:8080/state"
+ ],
+ "network_stalls": []
+}

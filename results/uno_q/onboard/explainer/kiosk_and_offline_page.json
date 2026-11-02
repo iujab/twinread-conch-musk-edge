@@ -1,0 +1,52 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:06:22 UTC",
+ "windows": [
+  {
+   "name": "kiosk",
+   "limit_s": 180,
+   "cooled": 47.1,
+   "start": "2026-11-02 18:05:22 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.1,
+    "mem_available_mb": 3029,
+    "open_connections_to_app": 0
+   },
+   "seconds": 52.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.7,
+    "mem_available_mb": 3040,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "19"
+   }
+  }
+ ],
+ "answers": [],
+ "kiosk_controls_visible": {
+  "explain": false,
+  "pause": false
+ },
+ "kiosk_panel_visible_during_answer": true,
+ "kiosk_stop_visible": false,
+ "disconnected_badge": "DISCONNECTED",
+ "console_errors_are_expected_while_disconnected": 3,
+ "network_stalls": []
+}

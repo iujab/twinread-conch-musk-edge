@@ -1,0 +1,47 @@
+{
+ "simulated": false,
+ "when": "2026-11-02 10:44:52 UTC",
+ "killed_pid": 29947,
+ "new_pid": 30790,
+ "before": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 64,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "noticed_down_s": 0.51,
+ "back_after_s": 3.578,
+ "total_s": 11.25,
+ "after": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 0,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "page_served": true,
+ "restarts": [
+  0,
+  1
+ ],
+ "proof": {
+  "top": [
+   "81.8% 1.8% tailsca+",
+   "18.2% 0.0% napi/du+",
+   "18.2% 0.2% sshd-se+",
+   "18.2% 0.1% top",
+   "9.1% 0.0% cat"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "suspended",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "network_stalls": []
+}

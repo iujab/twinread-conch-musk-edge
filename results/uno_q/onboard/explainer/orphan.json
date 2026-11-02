@@ -1,0 +1,54 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:47:37 UTC",
+ "windows": [
+  {
+   "name": "orphan",
+   "limit_s": 180,
+   "cooled": 47.8,
+   "start": "2026-11-02 17:47:19 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.5,
+    "mem_available_mb": 3053,
+    "open_connections_to_app": 0
+   },
+   "seconds": 12.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3041,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "5"
+   }
+  }
+ ],
+ "answers": [],
+ "app_pid": 84663,
+ "llama": [
+  84686
+ ],
+ "llama_parent": "84663",
+ "app_cgroup": "0::/user.slice/user-1000.slice/session-1330.scope",
+ "service_app_pid": "81935",
+ "llama_gone_after_s": 0.49,
+ "llama_left": [],
+ "zombies": "",
+ "network_stalls": []
+}

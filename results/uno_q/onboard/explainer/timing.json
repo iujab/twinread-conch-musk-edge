@@ -1,0 +1,192 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:23:20 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 17:22:37 UTC",
+   "id": 13,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 12,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 58
+   },
+   "text": "The model read this tile as mucus (MUC) at 100% combined confidence. Head A says MUC with 100% confidence; Head B says MUC with 100%. The heads agree, and the tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.6,
+    "first_word_s": 31.54,
+    "words": 58,
+    "tokens": 87,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.973662564522346,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.24529236737337,
+    "done_s": 53.44,
+    "peak_c": 62.3
+   },
+   "slide": 1,
+   "page_marks": {
+    "facts": 0.03,
+    "first_word": 32.24,
+    "finished": 53.85
+   },
+   "case": "twinread_paused_cold"
+  },
+  {
+   "when": "2026-11-02 17:23:12 UTC",
+   "id": 14,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 12,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 92
+   },
+   "text": "The model looked at this small square of tissue and read it as mucus (MUC), with a combined confidence of 100%. The model has two heads that each give their own answer. Head A picked MUC at 100%, while Head B picked MUC at 100%. The two heads agree on this tile. It is not flagged for review. In a tissue image, mucus means pale mucus lying outside the cells.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.55,
+    "words": 70,
+    "tokens": 95,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.961234772752926,
+    "prompt_n": 97,
+    "cache_n": 206,
+    "prompt_tps": 10.196928979335766,
+    "done_s": 33.54,
+    "peak_c": 62.9
+   },
+   "slide": 1,
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.34,
+    "finished": 33.8
+   },
+   "case": "twinread_paused_warm"
+  }
+ ],
+ "windows": [
+  {
+   "name": "timing_paused",
+   "limit_s": 180,
+   "cooled": 47.1,
+   "start": "2026-11-02 17:21:33 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3009,
+    "open_connections_to_app": 0
+   },
+   "seconds": 98.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.9,
+    "mem_available_mb": 3009,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "32"
+   }
+  }
+ ],
+ "held": {
+  "status": "standby",
+  "call": null,
+  "last": {
+   "status": "agree",
+   "label": "MUC",
+   "prob": 0.9999478183768188
+  },
+  "target": "last",
+  "available": true,
+  "button": "Explain last call",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "cold": {
+  "page_marks": {
+   "facts": 0.03,
+   "first_word": 32.24,
+   "finished": 53.85
+  },
+  "server": {
+   "cold": true,
+   "load_s": 3.46,
+   "prepare_s": 18.6,
+   "first_word_s": 31.54,
+   "words": 58,
+   "tokens": 87,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 3.973662564522346,
+   "prompt_n": 97,
+   "cache_n": 203,
+   "prompt_tps": 10.24529236737337,
+   "done_s": 53.44,
+   "peak_c": 62.3
+  }
+ },
+ "warm": {
+  "page_marks": {
+   "facts": 0.02,
+   "first_word": 10.34,
+   "finished": 33.8
+  },
+  "server": {
+   "cold": false,
+   "first_word_s": 9.55,
+   "words": 70,
+   "tokens": 95,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 3.961234772752926,
+   "prompt_n": 97,
+   "cache_n": 206,
+   "prompt_tps": 10.196928979335766,
+   "done_s": 33.54,
+   "peak_c": 62.9
+  }
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

@@ -1,0 +1,338 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 16:59:30 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 16:58:27 UTC",
+   "id": 5,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 348,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 92
+   },
+   "text": "The model called this tile TUM (colorectal adenocarcinoma epithelium), with a combined confidence of 98%. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. The model did not flag this tile for review. On H&E, TUM means irregular glands whose lining cells are crowded and abnormal. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.68,
+    "prepare_s": 29.85,
+    "first_word_s": 49.53,
+    "words": 66,
+    "tokens": 97,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 2.302259304367367,
+    "prompt_n": 103,
+    "cache_n": 203,
+    "prompt_tps": 6.4521738563929025,
+    "done_s": 91.67,
+    "peak_c": 65.7
+   },
+   "case": "worst_cold",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 49.92,
+    "finished": 91.76
+   },
+   "slide_status": "agree"
+  },
+  {
+   "when": "2026-11-02 16:59:22 UTC",
+   "id": 6,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 531,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7575863761380349,
+    "where": "Demo slide 1 of 18",
+    "age_s": 52
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR) at 76% combined confidence. Head A picked STR at 79%, while Head B picked STR at 95%. The heads agree, and the tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). The STR class is fibrous tissue around cancer, with spindle cells and collagen.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 14.02,
+    "words": 65,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 2.3176595659133006,
+    "prompt_n": 90,
+    "cache_n": 223,
+    "prompt_tps": 6.431834206180879,
+    "done_s": 52.43,
+    "peak_c": 67.6
+   },
+   "case": "worst_warm",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 14.43,
+    "finished": 52.69
+   },
+   "slide_status": "review"
+  }
+ ],
+ "windows": [
+  {
+   "name": "worst",
+   "limit_s": 180,
+   "cooled": 49.3,
+   "start": "2026-11-02 16:56:11 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.3,
+    "mem_available_mb": 3023,
+    "open_connections_to_app": 0
+   },
+   "seconds": 190.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 53.8,
+    "mem_available_mb": 3012,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "62"
+   }
+  }
+ ],
+ "baseline_t": [
+  7.21,
+  27.23
+ ],
+ "cold": {
+  "server": {
+   "cold": true,
+   "load_s": 3.68,
+   "prepare_s": 29.85,
+   "first_word_s": 49.53,
+   "words": 66,
+   "tokens": 97,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 2.302259304367367,
+   "prompt_n": 103,
+   "cache_n": 203,
+   "prompt_tps": 6.4521738563929025,
+   "done_s": 91.67,
+   "peak_c": 65.7
+  },
+  "page_marks": {
+   "facts": 0.02,
+   "first_word": 49.92,
+   "finished": 91.76
+  }
+ },
+ "warm": {
+  "server": {
+   "cold": false,
+   "first_word_s": 14.02,
+   "words": 65,
+   "tokens": 89,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 2.3176595659133006,
+   "prompt_n": 90,
+   "cache_n": 223,
+   "prompt_tps": 6.431834206180879,
+   "done_s": 52.43,
+   "peak_c": 67.6
+  },
+  "page_marks": {
+   "facts": 0.02,
+   "first_word": 14.43,
+   "finished": 52.69
+  }
+ },
+ "console_errors": [],
+ "reads_baseline_viewer_no_llm": {
+  "reads_seen": 41,
+  "p50_ms": 122.5,
+  "p95_ms": 134.0,
+  "max_ms": 135.2,
+  "rate_hz": 2.0,
+  "seconds": 20.0
+ },
+ "reads_while_writing": {
+  "reads_seen": 219,
+  "p50_ms": 148.0,
+  "p95_ms": 232.4,
+  "max_ms": 320.1,
+  "rate_hz": 1.99,
+  "seconds": 112.9
+ },
+ "load_baseline_viewer_no_llm": {
+  "temp_c": {
+   "start": 56.6,
+   "peak": 56.9,
+   "end": 53.1
+  },
+  "mhz_min": 1305,
+  "mhz_max": 2016,
+  "min_available_mb": 2979,
+  "swap_used_mb_max": 0,
+  "llama_rss_mb_max": null,
+  "llama_anon_mb_max": null,
+  "app_cpu_pct_of_one_core": 173.0,
+  "llama_cpu_pct_of_one_core": null,
+  "state_ms_p50": 6.2,
+  "state_ms_max": 20.4,
+  "load_max": 2.82
+ },
+ "load_while_writing": {
+  "temp_c": {
+   "start": 64.8,
+   "peak": 67.9,
+   "end": 66.3
+  },
+  "mhz_min": 2016,
+  "mhz_max": 2016,
+  "min_available_mb": 2757,
+  "swap_used_mb_max": 0,
+  "llama_rss_mb_max": 614,
+  "llama_anon_mb_max": 209,
+  "app_cpu_pct_of_one_core": 163.7,
+  "llama_cpu_pct_of_one_core": 146.5,
+  "state_ms_p50": 8.0,
+  "state_ms_max": 49.5,
+  "load_max": 3.99
+ },
+ "load_whole_window": {
+  "temp_c": {
+   "start": 50.9,
+   "peak": 67.9,
+   "end": 61.9
+  },
+  "mhz_min": 614,
+  "mhz_max": 2016,
+  "min_available_mb": 2757,
+  "swap_used_mb_max": 0,
+  "llama_rss_mb_max": 614,
+  "llama_anon_mb_max": 209,
+  "app_cpu_pct_of_one_core": 151.0,
+  "llama_cpu_pct_of_one_core": 153.8,
+  "state_ms_p50": 7.4,
+  "state_ms_max": 69.8,
+  "load_max": 3.99
+ },
+ "camera_fps_while_writing": 29.5,
+ "curve": [
+  {
+   "t": 0,
+   "c": 50.9,
+   "mhz": 2016,
+   "avail_mb": 3013
+  },
+  {
+   "t": 16,
+   "c": 53.8,
+   "mhz": 2016,
+   "avail_mb": 2979
+  },
+  {
+   "t": 31,
+   "c": 48.1,
+   "mhz": 614,
+   "avail_mb": 2975
+  },
+  {
+   "t": 47,
+   "c": 61.3,
+   "mhz": 2016,
+   "avail_mb": 2767
+  },
+  {
+   "t": 62,
+   "c": 63.8,
+   "mhz": 2016,
+   "avail_mb": 2771
+  },
+  {
+   "t": 78,
+   "c": 64.8,
+   "mhz": 2016,
+   "avail_mb": 2765
+  },
+  {
+   "t": 94,
+   "c": 62.9,
+   "mhz": 2016,
+   "avail_mb": 2765
+  },
+  {
+   "t": 109,
+   "c": 66.0,
+   "mhz": 2016,
+   "avail_mb": 2762
+  },
+  {
+   "t": 125,
+   "c": 65.4,
+   "mhz": 2016,
+   "avail_mb": 2765
+  },
+  {
+   "t": 141,
+   "c": 67.0,
+   "mhz": 2016,
+   "avail_mb": 2764
+  },
+  {
+   "t": 156,
+   "c": 63.2,
+   "mhz": 2016,
+   "avail_mb": 2761
+  },
+  {
+   "t": 172,
+   "c": 65.7,
+   "mhz": 2016,
+   "avail_mb": 2757
+  },
+  {
+   "t": 187,
+   "c": 61.9,
+   "mhz": 2016,
+   "avail_mb": 2759
+  }
+ ],
+ "network_stalls": [
+  {
+   "at": "16:57:44",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

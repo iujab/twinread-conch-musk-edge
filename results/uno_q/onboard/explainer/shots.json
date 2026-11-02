@@ -1,0 +1,186 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:05:01 UTC",
+ "windows": [
+  {
+   "name": "shots_plain",
+   "limit_s": 180,
+   "cooled": 48.4,
+   "start": "2026-11-02 18:03:08 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.7,
+    "mem_available_mb": 3033,
+    "open_connections_to_app": 0
+   },
+   "seconds": 27.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.1,
+    "mem_available_mb": 3033,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "11"
+   }
+  },
+  {
+   "name": "shots_answer",
+   "limit_s": 180,
+   "cooled": 47.8,
+   "start": "2026-11-02 18:03:43 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.7,
+    "mem_available_mb": 3033,
+    "open_connections_to_app": 0
+   },
+   "seconds": 69.6,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.0,
+    "mem_available_mb": 3036,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "24"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 18:04:49 UTC",
+   "id": 6,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 10,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7575863761380349,
+    "where": "Demo slide 1 of 18",
+    "age_s": 60
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 76%. The model has two heads that each give their own answer. Both heads chose STR: Head A at 79% and Head B at 95%. The two heads agree, and the tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue found around cancer.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.63,
+    "first_word_s": 32.97,
+    "words": 81,
+    "tokens": 108,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9304569691205464,
+    "prompt_n": 113,
+    "cache_n": 203,
+    "prompt_tps": 10.413268531471108,
+    "done_s": 60.45,
+    "peak_c": 62.6
+   },
+   "case": "shots_long_answer",
+   "slide": 0
+  }
+ ],
+ "confident": {
+  "status": "agree",
+  "badge": "CONFIDENT",
+  "suggest": "Suggests colorectal adenocarcinoma epithelium (TUM)",
+  "reason": "Both heads chose the same tissue and nothing flagged it.",
+  "led": "tile #58 | LED matrix: Confident",
+  "foot": "Thresholds: JS > 0.042, review head > 0.430. Pair: CM."
+ },
+ "needs_review": {
+  "status": "review",
+  "badge": "NEEDS REVIEW",
+  "suggest": "Suggests cancer-associated stroma (STR)",
+  "reason": "Send for a second look: the heads' confidence differs, the review head is unsure.",
+  "led": "tile #60 | LED matrix: Needs review"
+ },
+ "fused_differs": {
+  "badge": "NEEDS REVIEW",
+  "suggest": "Suggests cancer-associated stroma (STR)",
+  "reason": "Send for a second look: the review head is unsure. Both heads chose smooth muscle (MUS); the fused call differs.",
+  "truth": "True label: smooth muscle (MUS). The call was cancer-associated stroma (STR)."
+ },
+ "keyboard_tab_order_to_explain": [
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "thumb",
+  "next",
+  "pace",
+  "BODY",
+  "src-camera",
+  "src-demo",
+  "feed",
+  "model",
+  "ex-doctor",
+  "ex-plain",
+  "ex-go"
+ ],
+ "keyboard_focus_style_on_explain": {
+  "outline": "solid 2px rgb(47, 111, 219)",
+  "visible": true
+ },
+ "keyboard_after_enter": "ex-stop",
+ "keyboard_after_second_enter": {
+  "focus": "ex-close",
+  "phase": "stopped"
+ },
+ "keyboard_after_close": {
+  "focus": "ex-go",
+  "panel": false
+ },
+ "reduced_motion": {
+  "animations_running": 0,
+  "any_transition_or_animation_in_computed_style": 0
+ },
+ "console_errors": [],
+ "longest_words": 81,
+ "network_stalls": []
+}

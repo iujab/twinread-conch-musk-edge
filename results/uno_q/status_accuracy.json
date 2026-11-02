@@ -1,0 +1,28 @@
+{
+ "source": "bundles/cm int8 through EdgeModel on the PC, CRC-VAL-HE-7K; not measured on camera frames",
+ "tiles": 7180,
+ "confident (status agree)": {
+  "tiles": 6308,
+  "share_of_all_tiles": 0.8786,
+  "right": 6129,
+  "wrong": 179,
+  "accuracy": 0.9716
+ },
+ "needs_review (status review)": {
+  "tiles": 863,
+  "share_of_all_tiles": 0.1202,
+  "right": 621,
+  "wrong": 242,
+  "accuracy": 0.7196
+ },
+ "needs_review, heads named different classes": {
+  "tiles": 124,
+  "share_of_all_tiles": 0.0173,
+  "right": 65,
+  "wrong": 59,
+  "accuracy": 0.5242
+ },
+ "no_tissue_tiles": 9,
+ "wrong_calls": 421,
+ "share_of_wrong_calls_flagged_needs_review": 0.5748
+}

@@ -1,0 +1,160 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:30:08 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 17:27:02 UTC",
+   "id": 16,
+   "audience": "doctor",
+   "phase": "fallback",
+   "source": "reading",
+   "checked": false,
+   "note": "The language model's wording got a number wrong, so this is the reading itself.",
+   "about": {
+    "decision": 14,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 60
+   },
+   "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100%. Head B chose MUC at 100%. The heads agree, and the tile is not flagged for review. MUC covers pale mucus outside cells, with few cells in it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.64,
+    "first_word_s": 31.6,
+    "words": 63,
+    "tokens": 93,
+    "finish": "stop",
+    "passed": false,
+    "failed_checks": [
+     "heads_correct",
+     "numbers_match"
+    ],
+    "invented_claim": true,
+    "gen_tps": 3.9635010141448404,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.220856912428752,
+    "done_s": 55.08,
+    "peak_c": 61.6
+   },
+   "case": "idle_unload",
+   "status": "agree"
+  },
+  {
+   "when": "2026-11-02 17:30:00 UTC",
+   "id": 17,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 14,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 238
+   },
+   "text": "The model read this tile as MUC (mucus) at 100% combined confidence. Head A picked MUC at 100%, while Head B picked MUC at 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.65,
+    "first_word_s": 31.53,
+    "words": 61,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.957220226197376,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.317866886327316,
+    "done_s": 54.03,
+    "peak_c": 60.4
+   },
+   "case": "idle_unload_next_click",
+   "status": "agree"
+  }
+ ],
+ "windows": [
+  {
+   "name": "idle_unload",
+   "limit_s": 180,
+   "cooled": 46.5,
+   "start": "2026-11-02 17:25:57 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 3006,
+    "open_connections_to_app": 0
+   },
+   "seconds": 243.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.7,
+    "mem_available_mb": 2997,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "77"
+   }
+  }
+ ],
+ "mem_available_before_mb": 3006,
+ "mem_available_model_off_mb": 3010,
+ "app_threads_before": 14,
+ "llama_pid": [
+  72265
+ ],
+ "mem_available_loaded_mb": 2791,
+ "app_threads_warm": 14,
+ "vital_just_after": "Loaded, off in 118 s",
+ "llama_cpu_ticks_idle_over_30s": "13969 149 / 13969 149",
+ "vital_at_90s": "Loaded, off in 26 s",
+ "process_gone_after_s": 120.7,
+ "vital_after": "Off",
+ "panel_visible_after": false,
+ "mem_available_after_mb": 3002,
+ "app_threads_after": 13,
+ "zombies": "",
+ "after_unload_next_click": {
+  "cold": true,
+  "load_s": 3.46,
+  "prepare_s": 18.65,
+  "first_word_s": 31.53,
+  "words": 61,
+  "tokens": 89,
+  "finish": "stop",
+  "passed": true,
+  "failed_checks": [],
+  "invented_claim": false,
+  "gen_tps": 3.957220226197376,
+  "prompt_n": 97,
+  "cache_n": 203,
+  "prompt_tps": 10.317866886327316,
+  "done_s": 54.03,
+  "peak_c": 60.4
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

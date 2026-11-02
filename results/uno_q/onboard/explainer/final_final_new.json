@@ -1,0 +1,192 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:06:05 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "windows": [
+  {
+   "name": "host_check",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 40.5,
+   "start": "2026-11-02 19:03:30 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 41.2,
+    "mem_available_mb": 3139,
+    "open_connections_to_app": 0
+   },
+   "seconds": 9.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 40.5,
+    "mem_available_mb": 3131,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "5"
+   }
+  },
+  {
+   "name": "result_gone_and_stop",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 41.2,
+   "start": "2026-11-02 19:03:47 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 41.2,
+    "mem_available_mb": 3124,
+    "open_connections_to_app": 0
+   },
+   "seconds": 26.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 41.5,
+    "mem_available_mb": 3098,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "11"
+   }
+  },
+  {
+   "name": "idle_off",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 41.8,
+   "start": "2026-11-02 19:04:21 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 41.8,
+    "mem_available_mb": 3098,
+    "open_connections_to_app": 0
+   },
+   "seconds": 97.3,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 42.7,
+    "mem_available_mb": 3090,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "32"
+   }
+  }
+ ],
+ "answers": [],
+ "host_check": {
+  "foreign_name": 403,
+  "short_name_under_a_foreign_domain": 403,
+  "no_host_header": 403,
+  "foreign_name_on_the_page": 403,
+  "foreign_name_on_the_video": 403,
+  "foreign_name_post": 403,
+  "short_name": 200,
+  "tailnet_name": 200,
+  "tailnet_ip": 200,
+  "on_the_board_itself_127": "200",
+  "on_the_board_itself_localhost": "200",
+  "foreign_post_changed_nothing": true
+ },
+ "kiosk_page": {
+  "badge": "STANDBY",
+  "kiosk_class": true
+ },
+ "tailnet_page": {
+  "badge": "STANDBY",
+  "errors": []
+ },
+ "result_gone": {
+  "notice": "That result has gone from the page. Press Explain again for the one on screen now.",
+  "notice_visible": true,
+  "job": null,
+  "llama": []
+ },
+ "stop_past_a_stalled_command": {
+  "stopped_after_s": 0.18,
+  "phase": "stopped",
+  "model_button": "Unloading model",
+  "model_paused_after_the_stall": true
+ },
+ "console_errors": [
+  "Failed to load resource: the server responded with a status of 400 (Bad Request) http://uno-q:8080/control"
+ ],
+ "idle_off": {
+  "limit_s": 30,
+  "after_40_s_with_a_viewer": {
+   "status": "review",
+   "model_loaded": true,
+   "camera_open": true
+  },
+  "log_line_after_closing_the_tab_s": 31.0,
+  "log_line": {
+   "event": "idle_standby",
+   "no_viewer_for_s": 30,
+   "was": {
+    "mode": "camera",
+    "feed_paused": false,
+    "model_paused": false,
+    "explaining": false
+   }
+  },
+  "camera_holders": "",
+  "cpu_ticks_over_10_s": "1",
+  "returning_viewer": {
+   "status": "standby",
+   "call": null,
+   "last": null,
+   "has_picture": false,
+   "model_loaded": false,
+   "camera_open": false,
+   "explain_available": false,
+   "badge": "STANDBY",
+   "reason": "Nothing is running.",
+   "buttons": [
+    "Start reading",
+    "Run demo slides"
+   ]
+  }
+ },
+ "network_stalls": []
+}

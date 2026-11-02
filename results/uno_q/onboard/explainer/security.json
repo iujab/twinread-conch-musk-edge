@@ -1,0 +1,152 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:45:40 UTC",
+ "windows": [
+  {
+   "name": "security",
+   "limit_s": 180,
+   "cooled": 48.1,
+   "start": "2026-11-02 17:44:29 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.1,
+    "mem_available_mb": 3070,
+    "open_connections_to_app": 0
+   },
+   "seconds": 63.3,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.9,
+    "mem_available_mb": 3046,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "22"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:45:33 UTC",
+   "id": 1,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 2,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 57
+   },
+   "text": "The model read this tile as MUC (mucus) with a combined confidence of 100%. Both heads chose MUC: Head A at 100% and Head B at 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.58,
+    "first_word_s": 31.49,
+    "words": 71,
+    "tokens": 100,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.861268484616224,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.274702105138166,
+    "done_s": 57.4,
+    "peak_c": 62.3
+   },
+   "case": "security",
+   "slide": 1
+  }
+ ],
+ "listening": [
+  "LISTEN 0      5                     127.0.0.1:8080       0.0.0.0:*   ",
+  "LISTEN 0      512                   127.0.0.1:1790       0.0.0.0:*   ",
+  "LISTEN 0      4096   <board-tailnet-ip>%tailscale0:8080       0.0.0.0:*"
+ ],
+ "from_pc_1790_tailnet_ip": "[Errno 111] Connection refused",
+ "llama_command": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server -m /home/arduino/twinread-conch-musk-edge/data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf -c 1024 -t 3 -tb 3 -np 1 --host 127.0.0.1 --port 1790 --no-webui --cache-ram 0 --ctx-checkpoints 0 --reasoning off",
+ "llama_nice_threads_user": "10   12 arduino",
+ "llama_wait_policy": "OMP_WAIT_POLICY=passive",
+ "llama_cgroup": "0::/system.slice/twinread.service",
+ "llama_pdeathsig_parent": "81935",
+ "app_pid": "81935",
+ "service_sandbox": [
+  "CPUQuotaPerSecUSec=infinity",
+  "MemoryMax=infinity",
+  "IPAddressAllow=127.0.0.0/8 ::1/128",
+  "IPAddressDeny=0.0.0.0/0 ::/0",
+  "PrivateTmp=no",
+  "PrivateNetwork=no",
+  "ProtectHome=no",
+  "ProtectSystem=no",
+  "NoNewPrivileges=no",
+  "RestrictAddressFamilies=~"
+ ],
+ "egress_refused_for_the_llama_cgroup_note": "IPAddressDeny=any applies to the whole cgroup, which includes llama-server; loopback is allowed, which is the only network it uses.",
+ "answer_under_the_real_service": {
+  "phase": "done",
+  "stats": {
+   "cold": true,
+   "load_s": 3.46,
+   "prepare_s": 18.58,
+   "first_word_s": 31.49,
+   "words": 71,
+   "tokens": 100,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 3.861268484616224,
+   "prompt_n": 97,
+   "cache_n": 203,
+   "prompt_tps": 10.274702105138166,
+   "done_s": 57.4,
+   "peak_c": 62.3
+  }
+ },
+ "requests": {
+  "text_plain": [
+   415,
+   "{\"error\": \"send application/json\"}"
+  ],
+  "free_text_audience": [
+   400,
+   "{\"error\": \"explain must be one of: doctor, user\"}"
+  ],
+  "extra_field": [
+   400,
+   "{\"error\": \"unknown settings: explain_text\"}"
+  ],
+  "with_another_setting": [
+   400,
+   "{\"error\": \"send one explain command on its own\"}"
+  ],
+  "too_big": [
+   400,
+   "{\"error\": \"body must be 1 to 1024 bytes\"}"
+  ]
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

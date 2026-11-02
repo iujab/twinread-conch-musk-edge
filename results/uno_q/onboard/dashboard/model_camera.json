@@ -1,0 +1,313 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 10:48:49 UTC",
+ "temp_at_start_c": 59.4,
+ "standby_before": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 0,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "steps": {
+  "start_model": {
+   "post_s": 0.772,
+   "state": {
+    "status": "camera_off",
+    "frame_label": "Camera off",
+    "model_loaded": true,
+    "camera_open": false,
+    "call": null,
+    "reads": 0,
+    "camera_fps": null,
+    "latency_ms": null
+   }
+  },
+  "start_camera": {
+   "post_s": 0.013,
+   "first_call_s": 3.103,
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Live",
+    "model_loaded": true,
+    "camera_open": true,
+    "call": "BACK",
+    "reads": 1,
+    "camera_fps": null,
+    "latency_ms": 302.90372099997853
+   }
+  },
+  "both_on": {
+   "window": {
+    "seconds": 20.0,
+    "pid": 1119,
+    "app_cpu_pct_of_one_core": 110.63,
+    "machine_busy_pct_of_all_cores": 29.23,
+    "app_rss_mb": 137.3,
+    "app_threads": 16,
+    "hottest_c_end": 54.1,
+    "hottest_c_peak": 57.5,
+    "load": [
+     "2.35",
+     "1.60",
+     "0.67"
+    ]
+   },
+   "proof": {
+    "top": [
+     "33.3% 3.7% python",
+     "16.7% 0.1% top",
+     "0.0% 0.4% systemd",
+     "0.0% 0.0% kthreadd",
+     "0.0% 0.0% pool_wo+"
+    ],
+    "video_holders": "1119",
+    "usb_runtime_status": "active",
+    "usb_alt_settings": "0 0 0 0"
+   },
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Live",
+    "model_loaded": true,
+    "camera_open": true,
+    "call": "BACK",
+    "reads": 51,
+    "camera_fps": 29.5,
+    "latency_ms": 115.38530500001798
+   }
+  },
+  "pause_model": {
+   "post_s": 0.11,
+   "state": {
+    "status": "model_paused",
+    "frame_label": "Live",
+    "model_loaded": false,
+    "camera_open": true,
+    "call": null,
+    "reads": 52,
+    "camera_fps": 29.5,
+    "latency_ms": null
+   },
+   "call_is_none": true
+  },
+  "model_off_camera_on": {
+   "window": {
+    "seconds": 20.0,
+    "pid": 1119,
+    "app_cpu_pct_of_one_core": 41.19,
+    "machine_busy_pct_of_all_cores": 12.1,
+    "app_rss_mb": 109.0,
+    "app_threads": 14,
+    "hottest_c_end": 46.8,
+    "hottest_c_peak": 51.2,
+    "load": [
+     "1.83",
+     "1.54",
+     "0.67"
+    ]
+   },
+   "proof": {
+    "top": [
+     "58.3% 3.0% python",
+     "33.3% 1.4% tailsca+",
+     "16.7% 0.4% systemd",
+     "16.7% 0.1% dbus-da+",
+     "16.7% 0.3% sshd-se+"
+    ],
+    "video_holders": "1119",
+    "usb_runtime_status": "active",
+    "usb_alt_settings": "0 0 0 0"
+   },
+   "state": {
+    "status": "model_paused",
+    "frame_label": "Live",
+    "model_loaded": false,
+    "camera_open": true,
+    "call": null,
+    "reads": 52,
+    "camera_fps": 30.0,
+    "latency_ms": null
+   }
+  },
+  "resume_model": {
+   "post_s": 0.397,
+   "first_call_s": 0.271,
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Live",
+    "model_loaded": true,
+    "camera_open": true,
+    "call": "BACK",
+    "reads": 53,
+    "camera_fps": 29.9,
+    "latency_ms": 143.19143500000564
+   }
+  },
+  "pause_camera": {
+   "post_s": 0.072,
+   "state": {
+    "status": "reading",
+    "frame_label": "Frozen frame",
+    "model_loaded": true,
+    "camera_open": false,
+    "call": null,
+    "reads": 53,
+    "camera_fps": null,
+    "latency_ms": null
+   },
+   "proof_immediately_after": {
+    "top": [
+     "18.2% 0.1% dbus-da+",
+     "18.2% 0.1% top",
+     "9.1% 0.3% polkitd",
+     "9.1% 0.3% ModemMa+",
+     "9.1% 1.4% tailsca+"
+    ],
+    "video_holders": "",
+    "usb_runtime_status": "active",
+    "usb_alt_settings": "0 0 0 0"
+   }
+  },
+  "camera_off_model_on": {
+   "window": {
+    "seconds": 15.0,
+    "pid": 1119,
+    "app_cpu_pct_of_one_core": 0.0,
+    "machine_busy_pct_of_all_cores": 1.33,
+    "app_rss_mb": 138.1,
+    "app_threads": 16,
+    "hottest_c_end": 45.9,
+    "hottest_c_peak": 49.0,
+    "load": [
+     "1.43",
+     "1.47",
+     "0.67"
+    ]
+   },
+   "proof": {
+    "top": [
+     "8.3% 0.1% top",
+     "0.0% 0.4% systemd",
+     "0.0% 0.0% kthreadd",
+     "0.0% 0.0% pool_wo+",
+     "0.0% 0.0% kworker+"
+    ],
+    "video_holders": "",
+    "usb_runtime_status": "suspended",
+    "usb_alt_settings": "0 0 0 0"
+   },
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Frozen frame",
+    "model_loaded": true,
+    "camera_open": false,
+    "call": "BACK",
+    "reads": 54,
+    "camera_fps": null,
+    "latency_ms": 140.71817999999325
+   },
+   "reads_during_window": 0
+  },
+  "resume_camera": {
+   "post_s": 0.011,
+   "open_s": 2.694,
+   "first_call_s": 0.615,
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Live",
+    "model_loaded": true,
+    "camera_open": true,
+    "call": "BACK",
+    "reads": 55,
+    "camera_fps": null,
+    "latency_ms": 132.60170399999538
+   },
+   "proof": {
+    "top": [
+     "181.8% 3.8% python",
+     "9.1% 0.1% top",
+     "0.0% 0.4% systemd",
+     "0.0% 0.0% kthreadd",
+     "0.0% 0.0% pool_wo+"
+    ],
+    "video_holders": "1119",
+    "usb_runtime_status": "active",
+    "usb_alt_settings": "0 0 0 0"
+   }
+  },
+  "back_to_standby": {
+   "window": {
+    "seconds": 15.0,
+    "pid": 1119,
+    "app_cpu_pct_of_one_core": 0.13,
+    "machine_busy_pct_of_all_cores": 2.4,
+    "app_rss_mb": 103.3,
+    "app_threads": 14,
+    "hottest_c_end": 44.9,
+    "hottest_c_peak": 47.8,
+    "load": [
+     "0.94",
+     "1.35",
+     "0.65"
+    ]
+   },
+   "proof": {
+    "top": [
+     "8.3% 0.1% top",
+     "0.0% 0.4% systemd",
+     "0.0% 0.0% kthreadd",
+     "0.0% 0.0% pool_wo+",
+     "0.0% 0.0% kworker+"
+    ],
+    "video_holders": "",
+    "usb_runtime_status": "suspended",
+    "usb_alt_settings": "0 0 0 0"
+   },
+   "state": {
+    "status": "standby",
+    "frame_label": "Frozen frame",
+    "model_loaded": false,
+    "camera_open": false,
+    "call": null,
+    "reads": 57,
+    "camera_fps": null,
+    "latency_ms": null
+   }
+  }
+ },
+ "temps_c": [
+  54.1,
+  51.9,
+  51.6,
+  46.8,
+  50.6
+ ],
+ "standby_after": {
+  "status": "standby",
+  "frame_label": "Frozen frame",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 57,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "proof_after": {
+  "top": [
+   "15.4% 0.1% top",
+   "0.0% 0.4% systemd",
+   "0.0% 0.0% kthreadd",
+   "0.0% 0.0% pool_wo+",
+   "0.0% 0.0% kworker+"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "suspended",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "temp_at_end_c": 46.5,
+ "network_stalls": []
+}

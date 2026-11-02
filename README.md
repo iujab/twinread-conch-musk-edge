@@ -111,8 +111,18 @@ rule by 1-2 tiles at a near-ceiling 0.9936, and the val-calibrated threshold ove
   of teacher-flagged tiles; the x86 int8 run agrees on 79.5% (kappa 0.34) and recovers 33.3%
   (`results/student/cm_crc/int8_flag_fidelity.json`). On the board the int8 flag agrees on 79.6% (kappa 0.32),
   flags 10.2% of tiles and catches 57.2% of the board model's own errors (x86 int8: 12.1% flagged, 57.6% caught).
-- The LED-matrix sketch is flashed (OpenOCD over USB-C) and each Bridge RPC call to the MCU costs 8 ms. The app has
-  run on the board in replay mode on stored tiles; there are no real camera captures yet.
+- The LED-matrix sketch is flashed (OpenOCD over USB-C) and each Bridge RPC call to the MCU costs 8 ms.
+- The board runs the app as an always-on service with a dashboard on port 8080, from a USB camera or preset demo slides. The camera
+  and model stay off until someone presses Start reading, and go off again after 10 minutes with nobody watching. It works with Wi-Fi off.
+  `device/README.md` has the details.
+- The screen says Confident, Needs review or No tissue. On all 7,180 CRC test tiles (int8 model on x86, no camera), the call was right
+  97.2% of the time under Confident (87.9% of tiles) and 72.0% under Needs review (12.0% of tiles); 57.5% of wrong calls were flagged
+  (`results/uno_q/status_accuracy.json`).
+- The live camera has had one informal check: three hand-picked easy tiles shown on a screen, which the owner reports read well.
+  That is a demo, not an accuracy figure.
+- An Explain button runs a text-only language model on the board (Qwen3-0.6B, fine-tuned on the RTX 5060). On 200 held-out results the
+  fine-tune passed every fact check on 195 against 177 for the plain model (pre-registered, McNemar p = 0.0009), but a rule-based template
+  matched its blind readability. A rejected answer is replaced by the reading itself (`device/llm/README.md`, `results/llm/finetune/`).
 
 ![UNO Q timing](figures/uno_q/fig10_unoq_speed.png)
 
@@ -138,8 +148,8 @@ on-board measurement scripts.
 
 ## Future steps
 
-1. Real camera captures. Film tiles shown on a screen with the USB camera through `rig/` and score them on the
-   board. Camera robustness so far is the K2 simulation.
+1. Score the real camera. Film many tiles shown on a screen with the USB camera through `rig/` and score them on the
+   board. So far there is one informal check on three hand-picked tiles, and camera robustness numbers are the K2 simulation.
 2. Full-data run on NCSA Delta. The kit in `ncsa/` embeds all 100k CRC training tiles with CONCH and MUSK (J1-J3,
    ≤ 10 A100-hours) to test whether the fragile fusion gain holds with 5× the training data.
 3. CRC slide ids for clustered CIs, and per-site threshold calibration.
@@ -153,7 +163,7 @@ on-board measurement scripts.
 - The CRC fusion gain is fragile, and the flag's value is the fused reader's uncertainty, not disagreement.
   0.74% of CRC tiles are confident errors shared by both readers, which no disagreement signal can catch.
 - The int8 student is below every teacher, and its flag matches the teacher flag only at kappa 0.32 on the board.
-- The board has only seen stored tiles. All camera numbers are simulated (K2).
+- Camera accuracy is not measured: one informal check on three hand-picked tiles, and all camera numbers are simulated (K2).
 - Kernel throughput comes from a shared GPU; sm_80 and sm_90 builds are compile-checked only.
 - The CM student derives from CC-BY-NC-ND models and is not distributed. Local downloads (~4.3 GB) exceed the
   bench's ~2 GB guideline and live in `data/`, never in git.

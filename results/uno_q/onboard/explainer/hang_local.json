@@ -1,0 +1,66 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:57:52 UTC",
+ "windows": [
+  {
+   "name": "hang_local",
+   "limit_s": 180,
+   "cooled": 49.0,
+   "start": "2026-11-02 17:56:32 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.0,
+    "mem_available_mb": 3054,
+    "open_connections_to_app": 0
+   },
+   "seconds": 73.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 3038,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "26"
+   }
+  }
+ ],
+ "answers": [],
+ "frozen_server": {
+  "froze": 89640,
+  "fallback_after_s": 30.0,
+  "phase": "fallback",
+  "note": "The language model stopped answering, so this is the reading itself.",
+  "llama_left": [],
+  "zombies": ""
+ },
+ "page_asked_on_the_board": {
+  "answers": 178,
+  "errors": [],
+  "slowest_ms": 81.2
+ },
+ "network_stalls": [
+  {
+   "at": "17:56:58",
+   "error": "<urlopen error timed out>"
+  },
+  {
+   "at": "17:57:31",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

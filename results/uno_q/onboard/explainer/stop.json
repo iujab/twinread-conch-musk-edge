@@ -1,0 +1,148 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:32:22 UTC",
+ "windows": [
+  {
+   "name": "stop",
+   "limit_s": 180,
+   "cooled": 49.0,
+   "start": "2026-11-02 17:30:08 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 2985,
+    "open_connections_to_app": 0
+   },
+   "seconds": 125.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 2997,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "42"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:32:14 UTC",
+   "id": 21,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 16,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 120
+   },
+   "text": "The model read this tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 98%. Head A chose TUM at 100% and Head B chose TUM at 100%. The heads agree, and the tile is not flagged for review. On H&E, TUM means irregular glands whose lining cells are crowded and abnormal. This is the model's reading of one tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 0.3,
+    "words": 61,
+    "tokens": 92,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9664110515938678,
+    "prompt_n": 1,
+    "cache_n": 305,
+    "prompt_tps": 3.693225885081583,
+    "done_s": 23.5,
+    "peak_c": 59.4
+   },
+   "case": "after_stops",
+   "slide": 5
+  }
+ ],
+ "while_preparing": {
+  "stopped_during": "preparing",
+  "page_ms_to_facts": 13.5,
+  "phase": "stopped",
+  "note": "Stopped, so this is the reading itself.",
+  "text_is_facts": true,
+  "server_after": "stopping",
+  "status": "agree",
+  "llama_ticks_in_next_3s": [
+   -1022,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "llama_after_stop_while_preparing": [],
+ "while_writing": {
+  "stopped_during": "writing",
+  "page_ms_to_facts": 20.7,
+  "phase": "stopped",
+  "note": "Stopped, so this is the reading itself.",
+  "text_is_facts": true,
+  "server_after": "ready",
+  "status": "agree",
+  "llama_ticks_in_next_3s": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "while_giving_facts": {
+  "stopped_during": "thinking",
+  "page_ms_to_facts": 27.1,
+  "phase": "stopped",
+  "note": "Stopped, so this is the reading itself.",
+  "text_is_facts": true,
+  "server_after": "ready",
+  "status": "agree",
+  "llama_ticks_in_next_3s": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ "warm_server_kept": "ready",
+ "next_answer": {
+  "cold": false,
+  "first_word_s": 0.3,
+  "words": 61,
+  "tokens": 92,
+  "finish": "stop",
+  "passed": true,
+  "failed_checks": [],
+  "invented_claim": false,
+  "gen_tps": 3.9664110515938678,
+  "prompt_n": 1,
+  "cache_n": 305,
+  "prompt_tps": 3.693225885081583,
+  "done_s": 23.5,
+  "peak_c": 59.4
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

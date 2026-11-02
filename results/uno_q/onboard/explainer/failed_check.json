@@ -1,0 +1,194 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:56:11 UTC",
+ "windows": [
+  {
+   "name": "failed_check",
+   "limit_s": 180,
+   "cooled": 49.0,
+   "start": "2026-11-02 17:53:28 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 3059,
+    "open_connections_to_app": 0
+   },
+   "seconds": 156.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 53.4,
+    "mem_available_mb": 3047,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "50"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "slide": "STR_review",
+   "audience": "user",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": true,
+    "load_s": 3.26,
+    "prepare_s": 16.65,
+    "first_word_s": 29.01,
+    "words": 50,
+    "tokens": 70,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.321258074842793,
+    "prompt_n": 109,
+    "cache_n": 203,
+    "prompt_tps": 12.002101358736972,
+    "done_s": 40.09,
+    "peak_c": 64.1
+   },
+   "text_shown": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 76%. Head A chose STR at 79%, and Head B chose STR at 95%. The heads agree, and the tile is flagged for review because the confidence differs and the review head is unsure (score 0.45).",
+   "status": "review"
+  },
+  {
+   "slide": "DEB_review",
+   "audience": "doctor",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": false,
+    "first_word_s": 8.15,
+    "words": 49,
+    "tokens": 73,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.314570811597082,
+    "prompt_n": 97,
+    "cache_n": 206,
+    "prompt_tps": 11.919909025288149,
+    "done_s": 19.72,
+    "peak_c": 64.8
+   },
+   "text_shown": "The model reads a single H&E image tile as debris (DEB) with a combined confidence of 97%. Head A chose DEB at 100%, while Head B also chose DEB at 100%. The heads agree, and the tile is flagged for review because the review head is unsure (score 0.45).",
+   "status": "review"
+  },
+  {
+   "slide": "fused_differs",
+   "audience": "user",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": false,
+    "first_word_s": 10.18,
+    "words": 57,
+    "tokens": 84,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.316740784345192,
+    "prompt_n": 121,
+    "cache_n": 206,
+    "prompt_tps": 11.916359369035666,
+    "done_s": 23.48,
+    "peak_c": 65.1
+   },
+   "text_shown": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 75%. Head A chose smooth muscle (MUS) at 61%, and Head B chose smooth muscle (MUS) at 53%. The heads agree, but the combined call differs from both, and the tile is flagged for review because the review head is unsure (score 0.55).",
+   "status": "review"
+  },
+  {
+   "slide": "TUM_agree",
+   "audience": "user",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": false,
+    "first_word_s": 6.76,
+    "words": 53,
+    "tokens": 83,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.364149747676797,
+    "prompt_n": 79,
+    "cache_n": 226,
+    "prompt_tps": 11.733461500359207,
+    "done_s": 19.81,
+    "peak_c": 65.7
+   },
+   "text_shown": "The model read this colorectal tissue tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 98%. Head A chose TUM at 100%, while Head B also chose TUM at 100%. The heads agree, and the tile is not flagged for review. TUM covers irregular glands lined by crowded, abnormal epithelial cells.",
+   "status": "agree"
+  },
+  {
+   "slide": "STR_review",
+   "audience": "doctor",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": false,
+    "first_word_s": 7.31,
+    "words": 52,
+    "tokens": 73,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.319285446365324,
+    "prompt_n": 86,
+    "cache_n": 226,
+    "prompt_tps": 11.828409391151881,
+    "done_s": 18.86,
+    "peak_c": 65.7
+   },
+   "text_shown": "The model read this colorectal tissue image as cancer-associated stroma (STR) with a combined confidence of 76%. Head A chose STR at 79%, while Head B chose STR at 95%. The heads agree, and the tile is flagged for review because the confidence differs and the review head is unsure (score 0.45).",
+   "status": "review"
+  },
+  {
+   "slide": "fused_differs",
+   "audience": "doctor",
+   "phase": "done",
+   "note": null,
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.86,
+    "words": 60,
+    "tokens": 87,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 6.294593486832181,
+    "prompt_n": 118,
+    "cache_n": 206,
+    "prompt_tps": 12.007820551059236,
+    "done_s": 23.69,
+    "peak_c": 66.7
+   },
+   "text_shown": "The model reads this tile as cancer-associated stroma (STR) with a combined confidence of 75%. Head A chose smooth muscle (MUS) at 61%, while Head B chose smooth muscle (MUS) at 53%. The heads agree with each other, but the combined call differs from both, and the tile is flagged for review because the review head is unsure (score 0.55).",
+   "status": "review"
+  }
+ ],
+ "note": "A second app on the board using the rejected fallback model, to try to catch a failed check on screen. It passed all 6, so this run shows no fallback. The fallback screenshots come from the shipped model: screenshots/explain_failed_check_real_*.",
+ "console_errors": [],
+ "rejected_texts": [],
+ "network_stalls": []
+}

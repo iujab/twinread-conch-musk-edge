@@ -1,0 +1,217 @@
+{
+ "what": "The owner showed three hand-picked easy tiles (NORM 3775, TUM 3195, ADI 1628) on a screen in front of the real camera and reports it was good. An informal check: no systematic accuracy was measured, and this is not evidence of camera accuracy.",
+ "log_note": "Lines from the board's log for that session. The app logs a camera read only on a status change or every 20th read, so these are not read counts.",
+ "lines_kept": 87,
+ "confident_lines_by_class": {
+  "BACK": 18,
+  "NORM": 2,
+  "TUM": 3,
+  "ADI": 2
+ },
+ "other_lines_by_status": {
+  "review": 61,
+  "no_tissue": 1
+ },
+ "confident_lines": [
+  {
+   "n": 137,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.995,
+   "reasons": [],
+   "latency_ms": 131.1
+  },
+  {
+   "n": 141,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9959,
+   "reasons": [],
+   "latency_ms": 128.7
+  },
+  {
+   "n": 152,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.999,
+   "reasons": [],
+   "latency_ms": 132.7
+  },
+  {
+   "n": 154,
+   "status": "agree",
+   "label": "NORM",
+   "prob": 0.5555,
+   "reasons": [],
+   "latency_ms": 124.8
+  },
+  {
+   "n": 160,
+   "status": "agree",
+   "label": "NORM",
+   "prob": 0.9951,
+   "reasons": [],
+   "latency_ms": 110.0
+  },
+  {
+   "n": 176,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9957,
+   "reasons": [],
+   "latency_ms": 125.0
+  },
+  {
+   "n": 179,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9743,
+   "reasons": [],
+   "latency_ms": 126.6
+  },
+  {
+   "n": 180,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9866,
+   "reasons": [],
+   "latency_ms": 119.3
+  },
+  {
+   "n": 189,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.6482,
+   "reasons": [],
+   "latency_ms": 133.3
+  },
+  {
+   "n": 191,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9821,
+   "reasons": [],
+   "latency_ms": 121.1
+  },
+  {
+   "n": 193,
+   "status": "agree",
+   "label": "TUM",
+   "prob": 0.8383,
+   "reasons": [],
+   "latency_ms": 118.2
+  },
+  {
+   "n": 200,
+   "status": "agree",
+   "label": "TUM",
+   "prob": 0.908,
+   "reasons": [],
+   "latency_ms": 130.1
+  },
+  {
+   "n": 204,
+   "status": "agree",
+   "label": "TUM",
+   "prob": 0.9816,
+   "reasons": [],
+   "latency_ms": 121.9
+  },
+  {
+   "n": 217,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9999,
+   "reasons": [],
+   "latency_ms": 117.9
+  },
+  {
+   "n": 220,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9998,
+   "reasons": [],
+   "latency_ms": 128.3
+  },
+  {
+   "n": 227,
+   "status": "agree",
+   "label": "ADI",
+   "prob": 0.9386,
+   "reasons": [],
+   "latency_ms": 118.9
+  },
+  {
+   "n": 240,
+   "status": "agree",
+   "label": "ADI",
+   "prob": 1.0,
+   "reasons": [],
+   "latency_ms": 126.6
+  },
+  {
+   "n": 255,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9954,
+   "reasons": [],
+   "latency_ms": 135.3
+  },
+  {
+   "n": 260,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.983,
+   "reasons": [],
+   "latency_ms": 115.4
+  },
+  {
+   "n": 264,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9983,
+   "reasons": [],
+   "latency_ms": 118.3
+  },
+  {
+   "n": 267,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9587,
+   "reasons": [],
+   "latency_ms": 130.4
+  },
+  {
+   "n": 269,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9432,
+   "reasons": [],
+   "latency_ms": 127.3
+  },
+  {
+   "n": 271,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9486,
+   "reasons": [],
+   "latency_ms": 151.0
+  },
+  {
+   "n": 274,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9092,
+   "reasons": [],
+   "latency_ms": 119.0
+  },
+  {
+   "n": 278,
+   "status": "agree",
+   "label": "BACK",
+   "prob": 0.9989,
+   "reasons": [],
+   "latency_ms": 121.9
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:06:27 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "windows": [
+  {
+   "name": "start_reading",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 43.4,
+   "start": "2026-11-02 19:06:06 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 43.1,
+    "mem_available_mb": 3090,
+    "open_connections_to_app": 0
+   },
+   "seconds": 14.0,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 43.1,
+    "mem_available_mb": 3092,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "7"
+   }
+  }
+ ],
+ "other_connections_at_start": 0,
+ "before": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "buttons_in_standby": [
+  "Start reading",
+  "Run demo slides"
+ ],
+ "bar_buttons": [
+  "Start camera",
+  "Resume model"
+ ],
+ "first_call_s": 3.88,
+ "posts_sent_by_the_click": [
+  "{\"feed_paused\":false,\"model_paused\":false}"
+ ],
+ "after": {
+  "status": "review",
+  "model_loaded": true,
+  "camera_open": true,
+  "frame_label": "Live",
+  "reads": 6,
+  "video_holders": "3604"
+ },
+ "bar_buttons_after": [
+  "Pause camera",
+  "Pause model"
+ ],
+ "console_errors": [],
+ "network_stalls": []
+}

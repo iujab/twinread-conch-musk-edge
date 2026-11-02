@@ -1,0 +1,112 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 16:52:27 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 16:52:21 UTC",
+   "id": 1,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "status": "review",
+    "label": "STR"
+   },
+   "text": "The model read this tile as STR (cancer-associated stroma) with a combined confidence of 61%. Head A chose smooth muscle (MUS) at 71% and Head B chose STR at 83%. The heads disagree. The tile is flagged for review because the heads chose different classes. The STR class covers fibrous tissue around cancer, with spindle cells and collagen.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.45,
+    "prepare_s": 18.59,
+    "first_word_s": 31.83,
+    "words": 58,
+    "tokens": 80,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.013213706790292,
+    "prompt_n": 102,
+    "cache_n": 203,
+    "prompt_tps": 10.440364331866837,
+    "done_s": 51.78,
+    "peak_c": 59.7
+   },
+   "case": "disagree_synthetic_snapshot_real_model",
+   "facts": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 61%. Head A chose smooth muscle (MUS) at 71%. Head B chose STR at 83%. The heads disagree, and the tile is flagged for review because the heads chose different classes. STR covers fibrous tissue around cancer, with spindle cells and collagen."
+  },
+  {
+   "when": "2026-11-02 16:52:21 UTC",
+   "id": 2,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "status": "review",
+    "label": "STR"
+   },
+   "text": "The model looked at one small tile of tissue and read it as cancer-associated stroma, labelled STR, with a combined confidence of 61%. Two parts of the model, its heads, answer separately. Head A picked smooth muscle (MUS) at 71%, while Head B picked STR at 83%. The heads disagree, and the tile is flagged for review because the heads chose different classes. In a tissue image, cancer-associated stroma means fibrous tissue around cancer.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.81,
+    "words": 74,
+    "tokens": 100,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.007803835315974,
+    "prompt_n": 102,
+    "cache_n": 206,
+    "prompt_tps": 10.43840481525661,
+    "done_s": 34.77,
+    "peak_c": 60.7
+   },
+   "case": "disagree_synthetic_snapshot_real_model",
+   "facts": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 61%. Head A chose smooth muscle (MUS) at 71%. Head B chose STR at 83%. The heads disagree, and the tile is flagged for review because the heads chose different classes. STR covers fibrous tissue around cancer, with spindle cells and collagen."
+  }
+ ],
+ "windows": [
+  {
+   "name": "disagree",
+   "limit_s": 180,
+   "cooled": 46.5,
+   "start": "2026-11-02 16:50:51 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 3036,
+    "open_connections_to_app": 0
+   },
+   "seconds": 90.0,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.0,
+    "mem_available_mb": 3033,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "30"
+   }
+  }
+ ],
+ "synthetic_snapshot": true,
+ "network_stalls": []
+}

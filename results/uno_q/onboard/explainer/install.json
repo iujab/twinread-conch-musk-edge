@@ -1,0 +1,41 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:58:24 UTC",
+ "windows": [],
+ "without": {
+  "code": 0,
+  "output": [
+   "explainer: llama-server or its .gguf is missing, so Explain will show the reading itself; device/README.md says how to add them",
+   "installed: twinread.service active=active; the display changes at next boot"
+  ],
+  "page_after_s": 3.1,
+  "status": "standby",
+  "hint": "The language model's files are not on this board, so Explain shows the reading itself."
+ },
+ "with": {
+  "code": 0,
+  "output": [
+   "explainer: llama-server and its .gguf are in place",
+   "installed: twinread.service active=active; the display changes at next boot"
+  ],
+  "page_after_s": 3.1,
+  "status": "standby",
+  "hint": null
+ },
+ "unit_differs_from_repo": "3",
+ "enabled": "enabled",
+ "after": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false,
+  "explainer": "off",
+  "panel_open": false,
+  "llama_pids": [],
+  "video_holders": "",
+  "temp_c": 47.8,
+  "mem_available_mb": 3068,
+  "open_connections_to_app": 0
+ },
+ "network_stalls": []
+}

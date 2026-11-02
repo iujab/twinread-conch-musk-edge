@@ -1,0 +1,222 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 16:42:58 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 16:41:11 UTC",
+   "id": 5,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 5,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 56
+   },
+   "text": "The model's combined call on this tile is TUM (colorectal adenocarcinoma epithelium), with 98% confidence. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, TUM means crowded, abnormal epithelial cells lining irregular glands. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.26,
+    "prepare_s": 18.56,
+    "first_word_s": 31.82,
+    "words": 62,
+    "tokens": 97,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9710361628753645,
+    "prompt_n": 103,
+    "cache_n": 203,
+    "prompt_tps": 10.316364849560857,
+    "done_s": 56.25,
+    "peak_c": 59.4
+   },
+   "slide": 5,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "TUM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 32.46,
+    "finished": 56.75
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 16:41:30 UTC",
+   "id": 6,
+   "audience": "user",
+   "phase": "stopped",
+   "source": "reading",
+   "checked": null,
+   "note": "Stopped, so this is the reading itself.",
+   "about": {
+    "decision": 5,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 75
+   },
+   "text": "The model read this tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 98%. Head A chose TUM at 100%. Head B chose TUM at 100%. The heads agree, and the tile is not flagged for review. TUM covers irregular glands lined by crowded, abnormal epithelial cells.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 10.06,
+    "done_s": 14.31
+   },
+   "slide": 5,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "TUM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.24,
+    "finished": 14.85
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 16:42:07 UTC",
+   "id": 7,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 7,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7575863761380349,
+    "where": "Demo slide 1 of 18",
+    "age_s": 34
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 76%. Head A chose STR at 79% and Head B chose STR at 95%. The heads agree, and the tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). On H&E, the STR class means fibrous tissue with spindle cells and collagen, around cancer.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 10.54,
+    "words": 69,
+    "tokens": 94,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9740192152284415,
+    "prompt_n": 107,
+    "cache_n": 206,
+    "prompt_tps": 10.19566141256601,
+    "done_s": 34.2,
+    "peak_c": 61.3
+   },
+   "slide": 0,
+   "slide_status": "review",
+   "reasons": [
+    "js",
+    "review_head"
+   ],
+   "truth": "STR",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.86,
+    "finished": 34.41
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 16:42:51 UTC",
+   "id": 8,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 8,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7575863761380349,
+    "where": "Demo slide 1 of 18",
+    "age_s": 40
+   },
+   "text": "The model looked at this small square of tissue and read it as cancer-associated stroma (STR), with a combined confidence of 76%. Two parts of the model, its heads, answer separately. Head A gives STR 79% confidence, and Head B gives STR 95%. The two heads agree, and the tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue found around cancer.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 10.69,
+    "words": 83,
+    "tokens": 112,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9542783738538594,
+    "prompt_n": 110,
+    "cache_n": 206,
+    "prompt_tps": 10.330102171284176,
+    "done_s": 39.02,
+    "peak_c": 61.9
+   },
+   "slide": 0,
+   "slide_status": "review",
+   "reasons": [
+    "js",
+    "review_head"
+   ],
+   "truth": "STR",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.86,
+    "finished": 39.43
+   },
+   "case": "demo_slide"
+  }
+ ],
+ "windows": [
+  {
+   "name": "answers_0",
+   "limit_s": 180,
+   "cooled": 43.4,
+   "start": "2026-11-02 16:40:09 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 44.3,
+    "mem_available_mb": 3052
+   },
+   "seconds": 161.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 3043
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "52"
+   }
+  }
+ ],
+ "console_errors": [],
+ "network_stalls": [
+  {
+   "at": "16:40:35",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

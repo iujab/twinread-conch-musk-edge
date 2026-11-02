@@ -1,0 +1,65 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:44:29 UTC",
+ "windows": [
+  {
+   "name": "kill_app",
+   "limit_s": 180,
+   "cooled": 46.5,
+   "start": "2026-11-02 17:43:35 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 2970,
+    "open_connections_to_app": 0
+   },
+   "seconds": 47.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3069,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "17"
+   }
+  }
+ ],
+ "answers": [],
+ "kill_9_app": {
+  "app_pid": 65162,
+  "llama_pid": 81589,
+  "llama_cgroup": "0::/system.slice/twinread.service",
+  "llama_gone_after_s": 0.89,
+  "page_back_after_s": 4.1,
+  "status_after": "standby",
+  "explainer_after": "off",
+  "job_after": null,
+  "restarts": [
+   "3",
+   "4"
+  ],
+  "llama_left": [],
+  "zombies": "",
+  "page_reconnected": "STANDBY"
+ },
+ "console_errors": [
+  "Failed to load resource: net::ERR_CONNECTION_RESET http://<board-tailnet-ip>:8080/state",
+  "Failed to load resource: net::ERR_CONNECTION_RESET http://<board-tailnet-ip>:8080/state"
+ ],
+ "network_stalls": []
+}

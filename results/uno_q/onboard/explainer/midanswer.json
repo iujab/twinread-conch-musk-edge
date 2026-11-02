@@ -1,0 +1,285 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:39:22 UTC",
+ "windows": [
+  {
+   "name": "pause_and_switch",
+   "limit_s": 180,
+   "cooled": 47.5,
+   "start": "2026-11-02 17:35:32 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 3002,
+    "open_connections_to_app": 0
+   },
+   "seconds": 110.0,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 52.5,
+    "mem_available_mb": 2983,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "36"
+   }
+  },
+  {
+   "name": "slide_change_and_hold",
+   "limit_s": 180,
+   "cooled": 48.4,
+   "start": "2026-11-02 17:37:50 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.0,
+    "mem_available_mb": 2974,
+    "open_connections_to_app": 0
+   },
+   "seconds": 84.2,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 2985,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "29"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:36:34 UTC",
+   "id": 25,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 21,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7575863761380349,
+    "where": "Demo slide 1 of 18",
+    "age_s": 57
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR) at 76% combined confidence. Head A picked STR at 79%, while Head B picked STR at 95%. The two heads agree on this tile. The tile is flagged for review: the confidence of the two heads differs and the review head is unsure (score 0.45). On H&E, the STR class means fibrous tissue with spindle cells and collagen, around cancer.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.47,
+    "prepare_s": 18.69,
+    "first_word_s": 32.78,
+    "words": 69,
+    "tokens": 96,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9428123004079625,
+    "prompt_n": 110,
+    "cache_n": 203,
+    "prompt_tps": 10.369925406298393,
+    "done_s": 57.14,
+    "peak_c": 62.3
+   },
+   "case": "pause_model_mid_answer",
+   "slide": 0
+  },
+  {
+   "when": "2026-11-02 17:37:22 UTC",
+   "id": 26,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 23,
+    "status": "review",
+    "label": "DEB",
+    "prob": 0.9682652414381865,
+    "where": "Demo slide 3 of 18",
+    "age_s": 45
+   },
+   "text": "The model's combined call on this tile is DEB (debris), with 97% confidence. Head A chose DEB at 100% and Head B chose DEB at 100%. The heads agree. The tile is flagged for review because the review head is unsure, with a score of 0.45. On H&E, the DEB class means leftover fragments of dead cells and broken-down tissue.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 8.24,
+    "words": 60,
+    "tokens": 91,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 2.4317085387280852,
+    "prompt_n": 84,
+    "cache_n": 223,
+    "prompt_tps": 10.228778815322322,
+    "done_s": 45.67,
+    "peak_c": 65.4
+   },
+   "case": "switch_source_mid_answer",
+   "slide": 2
+  },
+  {
+   "when": "2026-11-02 17:39:14 UTC",
+   "id": 28,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 96,
+    "status": "agree",
+    "label": "MUS",
+    "prob": 0.999916202807528,
+    "where": "Demo slide 7 of 18",
+    "age_s": 45
+   },
+   "text": "The model read this tile as smooth muscle (MUS) at 100% combined confidence. Head A picked MUS at 100%, while Head B picked MUS at 100%. The heads picked the same class, so they agree. The model did not flag this tile for review. On H&E, MUS means bundles of long thin spindle cells with pink cytoplasm. This is the model's reading of one tile. This describes one tile as the model read it.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 7.72,
+    "words": 74,
+    "tokens": 104,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9694723151443463,
+    "prompt_n": 77,
+    "cache_n": 223,
+    "prompt_tps": 10.031025832627252,
+    "done_s": 33.92,
+    "peak_c": 62.9
+   },
+   "case": "auto_advance_hold"
+  }
+ ],
+ "pause_model": {
+  "call_on_page_after_pause": null,
+  "status_after_pause": "standby",
+  "phase": "done",
+  "about_label": "STR",
+  "about_status": "review",
+  "decision_label": "STR",
+  "current": true,
+  "model_loaded": false,
+  "stats": {
+   "cold": true,
+   "load_s": 3.47,
+   "prepare_s": 18.69,
+   "first_word_s": 32.78,
+   "words": 69,
+   "tokens": 96,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 3.9428123004079625,
+   "prompt_n": 110,
+   "cache_n": 203,
+   "prompt_tps": 10.369925406298393,
+   "done_s": 57.14,
+   "peak_c": 62.3
+  }
+ },
+ "switch_source": {
+  "moved_on_note_visible": true,
+  "phase": "done",
+  "about_label": "DEB",
+  "about_where": "Demo slide 3 of 18",
+  "decision_label": "DEB",
+  "camera_open": true,
+  "live_status": "review",
+  "stats": {
+   "cold": false,
+   "first_word_s": 8.24,
+   "words": 60,
+   "tokens": 91,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 2.4317085387280852,
+   "prompt_n": 84,
+   "cache_n": 223,
+   "prompt_tps": 10.228778815322322,
+   "done_s": 45.67,
+   "peak_c": 65.4
+  }
+ },
+ "console_errors": [],
+ "slide_change": {
+  "panel_visible": false,
+  "job": null,
+  "index": 6,
+  "server": "ready"
+ },
+ "auto_advance": {
+  "pace_s": 2,
+  "indices_during_answer": [
+   6
+  ],
+  "seconds_during_answer": 33.6,
+  "indices_after": [
+   6,
+   6,
+   6,
+   6,
+   7,
+   7,
+   7,
+   7,
+   8,
+   8,
+   8,
+   9,
+   9,
+   9,
+   9,
+   10,
+   10,
+   10,
+   10
+  ],
+  "first_change_after_s": 2.7,
+  "panel_still_open": true,
+  "current": false
+ },
+ "network_stalls": [
+  {
+   "at": "17:38:05",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

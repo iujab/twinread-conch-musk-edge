@@ -1,0 +1,271 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:43:35 UTC",
+ "windows": [
+  {
+   "name": "kill_llama",
+   "limit_s": 180,
+   "cooled": 49.3,
+   "start": "2026-11-02 17:39:24 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.3,
+    "mem_available_mb": 2984,
+    "open_connections_to_app": 0
+   },
+   "seconds": 101.0,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 51.6,
+    "mem_available_mb": 2958,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "34"
+   }
+  },
+  {
+   "name": "hang",
+   "limit_s": 180,
+   "cooled": 48.4,
+   "start": "2026-11-02 17:41:33 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.0,
+    "mem_available_mb": 2956,
+    "open_connections_to_app": 0
+   },
+   "seconds": 74.1,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.5,
+    "mem_available_mb": 2963,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "25"
+   }
+  },
+  {
+   "name": "port_in_use",
+   "limit_s": 180,
+   "cooled": 47.8,
+   "start": "2026-11-02 17:42:53 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 2958,
+    "open_connections_to_app": 0
+   },
+   "seconds": 11.1,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.1,
+    "mem_available_mb": 2967,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "5"
+   }
+  },
+  {
+   "name": "files_missing",
+   "limit_s": 180,
+   "cooled": 47.8,
+   "start": "2026-11-02 17:43:11 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.5,
+    "mem_available_mb": 2966,
+    "open_connections_to_app": 0
+   },
+   "seconds": 16.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 2971,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "8"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:41:02 UTC",
+   "id": 30,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 103,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 92
+   },
+   "text": "The model's combined call on this tile is mucus (MUC), with 100% confidence. Head A picked MUC at 100%, while Head B picked MUC at 100%. Head A and Head B agree on the class. The model did not flag this tile for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.62,
+    "first_word_s": 31.56,
+    "words": 65,
+    "tokens": 95,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.951649283222815,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.255862626420688,
+    "done_s": 55.6,
+    "peak_c": 63.8
+   },
+   "case": "after_kill_9",
+   "slide": 1
+  }
+ ],
+ "kill_9_mid_answer": {
+  "killed": 78632,
+  "fallback_after_s": 0.3,
+  "phase": "fallback",
+  "note": "The language model stopped part way through, so this is the reading itself.",
+  "source": "reading",
+  "llama_left": [],
+  "zombies": "",
+  "server": "off"
+ },
+ "next_click_after_kill": {
+  "cold": true,
+  "load_s": 3.46,
+  "prepare_s": 18.62,
+  "first_word_s": 31.56,
+  "words": 65,
+  "tokens": 95,
+  "finish": "stop",
+  "passed": true,
+  "failed_checks": [],
+  "invented_claim": false,
+  "gen_tps": 3.951649283222815,
+  "prompt_n": 97,
+  "cache_n": 203,
+  "prompt_tps": 10.255862626420688,
+  "done_s": 55.6,
+  "peak_c": 63.8
+ },
+ "kill_9_idle": {
+  "killed": 78939,
+  "off_after_s": 1.0,
+  "zombies": "",
+  "llama_left": []
+ },
+ "console_errors": [],
+ "frozen_server": {
+  "froze": 79802,
+  "fallback_after_s": 30.1,
+  "phase": "fallback",
+  "note": "The language model stopped answering, so this is the reading itself.",
+  "source": "reading",
+  "llama_left": [],
+  "zombies": "",
+  "server": "off"
+ },
+ "port_in_use": {
+  "phase": "fallback",
+  "note": "Port 1790 is already in use, so the language model cannot start and this is the reading itself.",
+  "source": "reading",
+  "llama_started": [],
+  "server": "off",
+  "elapsed_s": 0.01
+ },
+ "binary_missing": {
+  "hint_on_page": "The language model's files are not on this board, so Explain shows the reading itself.",
+  "phase": "fallback",
+  "note": "The language model's files are not on this board (missing llama-server), so this is the reading itself.",
+  "source": "reading",
+  "facts_chars": 243,
+  "llama": []
+ },
+ "model_missing": {
+  "phase": "fallback",
+  "note": "The language model's files are not on this board (missing twinread-explain-qwen3-v1-Q4_0-embQ8.gguf), so this is the reading itself.",
+  "source": "reading",
+  "llama": []
+ },
+ "files_restored": "419245920 data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf\n14891680 device/llm/bin/llama-server",
+ "dashboard_probe": {
+  "answers": 231,
+  "failures": [
+   {
+    "at": "2026-11-02 17:42:37 UTC",
+    "error": "<urlopen error timed out>"
+   }
+  ],
+  "slowest_s": 0.16
+ },
+ "network_stalls": [
+  {
+   "at": "17:39:36",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

@@ -1,0 +1,201 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:08:16 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "answers": [
+  {
+   "when": "2026-11-02 19:07:34 UTC",
+   "id": 2,
+   "audience": "doctor",
+   "phase": "fallback",
+   "source": "reading",
+   "checked": false,
+   "note": "The language model's wording got a number wrong, so this is the reading itself.",
+   "about": {
+    "decision": 10,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 59
+   },
+   "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100%. Head B chose MUC at 100%. The heads agree, and the tile is not flagged for review. MUC covers pale mucus outside cells, with few cells in it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.25,
+    "prepare_s": 18.51,
+    "first_word_s": 31.22,
+    "words": 67,
+    "tokens": 97,
+    "finish": "stop",
+    "passed": false,
+    "failed_checks": [
+     "heads_correct",
+     "numbers_match"
+    ],
+    "invented_claim": true,
+    "gen_tps": 4.036448211870088,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.275188618565506,
+    "done_s": 55.26,
+    "peak_c": 58.2
+   },
+   "slide": 1,
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 31.52,
+    "finished": 55.59
+   },
+   "case": "twinread_paused_cold"
+  },
+  {
+   "when": "2026-11-02 19:08:08 UTC",
+   "id": 3,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 10,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 93
+   },
+   "text": "The model looked at this small square of tissue and read it as mucus (MUC), with a combined confidence of 100%. Two parts of the model, its heads, answer separately. Head A picked MUC at 100%, while Head B picked MUC at 100%. The two heads agree. The tile is not flagged for review. In a tissue image, mucus means pale mucus lying outside the cells.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.51,
+    "words": 66,
+    "tokens": 93,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.028933809816129,
+    "prompt_n": 97,
+    "cache_n": 206,
+    "prompt_tps": 10.237523203293568,
+    "done_s": 32.6,
+    "peak_c": 59.4
+   },
+   "slide": 1,
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 9.53,
+    "finished": 32.87
+   },
+   "case": "twinread_paused_warm"
+  }
+ ],
+ "windows": [
+  {
+   "name": "timing_paused",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 43.1,
+   "start": "2026-11-02 19:06:28 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 43.4,
+    "mem_available_mb": 3092,
+    "open_connections_to_app": 0
+   },
+   "seconds": 99.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3066,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "34"
+   }
+  }
+ ],
+ "held": {
+  "status": "standby",
+  "call": null,
+  "last": {
+   "status": "agree",
+   "label": "MUC",
+   "prob": 0.9999478183768188
+  },
+  "target": "last",
+  "available": true,
+  "button": "Explain last call",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "cold": {
+  "page_marks": {
+   "facts": 0.02,
+   "first_word": 31.52,
+   "finished": 55.59
+  },
+  "server": {
+   "cold": true,
+   "load_s": 3.25,
+   "prepare_s": 18.51,
+   "first_word_s": 31.22,
+   "words": 67,
+   "tokens": 97,
+   "finish": "stop",
+   "passed": false,
+   "failed_checks": [
+    "heads_correct",
+    "numbers_match"
+   ],
+   "invented_claim": true,
+   "gen_tps": 4.036448211870088,
+   "prompt_n": 97,
+   "cache_n": 203,
+   "prompt_tps": 10.275188618565506,
+   "done_s": 55.26,
+   "peak_c": 58.2
+  }
+ },
+ "warm": {
+  "page_marks": {
+   "facts": 0.02,
+   "first_word": 9.53,
+   "finished": 32.87
+  },
+  "server": {
+   "cold": false,
+   "first_word_s": 9.51,
+   "words": 66,
+   "tokens": 93,
+   "finish": "stop",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "gen_tps": 4.028933809816129,
+   "prompt_n": 97,
+   "cache_n": 206,
+   "prompt_tps": 10.237523203293568,
+   "done_s": 32.6,
+   "peak_c": 59.4
+  }
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

@@ -1,0 +1,3279 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:45:06 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "",
+ "network_stalls": {
+  "total": 10,
+  "by_phase": {
+   "answers_0": 1,
+   "answers_0_first_run": 1,
+   "answers_1_2_3": 1,
+   "final_kill_short": 1,
+   "hang_local": 2,
+   "kill": 1,
+   "midanswer": 1,
+   "sustained_300": 1,
+   "worst": 1
+  },
+  "at": {
+   "answers_0": [
+    {
+     "at": "18:02:33",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "answers_0_first_run": [
+    {
+     "at": "16:40:35",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "answers_1_2_3": [
+    {
+     "at": "17:11:57",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "final_kill_short": [
+    {
+     "at": "19:16:32",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "hang_local": [
+    {
+     "at": "17:56:58",
+     "error": "<urlopen error timed out>"
+    },
+    {
+     "at": "17:57:31",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "kill": [
+    {
+     "at": "17:39:36",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "midanswer": [
+    {
+     "at": "17:38:05",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "sustained_300": [
+    {
+     "at": "17:04:21",
+     "error": "<urlopen error timed out>"
+    }
+   ],
+   "worst": [
+    {
+     "at": "16:57:44",
+     "error": "<urlopen error timed out>"
+    }
+   ]
+  },
+  "what_they_mean": "Requests from this PC to the page over the tailnet that got no answer within 5 s, each retried. They show the page could not be reached from the PC at those moments. They do not show whether the app or the tailnet was at fault. When the page was asked on the board itself (samplers in tandem, worst, sustained, hang_local) the slowest answer was under 90 ms and none failed, but no sampler ran at the exact moments of most stalls, so that points to the tailnet without proving it."
+ },
+ "earlier_code": {
+  "timing_from_click": {
+   "twinread_paused": {
+    "cold": {
+     "facts_s": 0.03,
+     "first_word_s": 32.24,
+     "finished_s": 53.85,
+     "server_first_word_s": 31.54,
+     "server_done_s": 53.44,
+     "words": 58,
+     "gen_tps": 3.973662564522346,
+     "peak_c": 62.3,
+     "load_s": 3.46,
+     "prepare_s": 18.6
+    },
+    "warm": {
+     "facts_s": 0.02,
+     "first_word_s": 10.34,
+     "finished_s": 33.8,
+     "server_first_word_s": 9.55,
+     "server_done_s": 33.54,
+     "words": 70,
+     "gen_tps": 3.961234772752926,
+     "peak_c": 62.9,
+     "load_s": null,
+     "prepare_s": null
+    }
+   },
+   "twinread_live_no_viewer": {
+    "cold": {
+     "facts_s": 0.02,
+     "first_word_s": null,
+     "finished_s": null,
+     "server_first_word_s": 39.58,
+     "server_done_s": 69.49,
+     "words": 61,
+     "gen_tps": 3.1431322576888285,
+     "peak_c": 62.9,
+     "load_s": 3.68,
+     "prepare_s": 23.43
+    },
+    "warm": {
+     "facts_s": 0.02,
+     "first_word_s": null,
+     "finished_s": null,
+     "server_first_word_s": 10.14,
+     "server_done_s": 39.89,
+     "words": 65,
+     "gen_tps": 3.160433736581143,
+     "peak_c": 63.5,
+     "load_s": null,
+     "prepare_s": null
+    }
+   },
+   "worst_case_camera_twinread_viewer": {
+    "cold": {
+     "facts_s": 0.02,
+     "first_word_s": 49.92,
+     "finished_s": 91.76,
+     "server_first_word_s": 49.53,
+     "server_done_s": 91.67,
+     "words": 66,
+     "gen_tps": 2.302259304367367,
+     "peak_c": 65.7,
+     "load_s": 3.68,
+     "prepare_s": 29.85
+    },
+    "warm": {
+     "facts_s": 0.02,
+     "first_word_s": 14.43,
+     "finished_s": 52.69,
+     "server_first_word_s": 14.02,
+     "server_done_s": 52.43,
+     "words": 65,
+     "gen_tps": 2.3176595659133006,
+     "peak_c": 67.6,
+     "load_s": null,
+     "prepare_s": null
+    }
+   }
+  },
+  "tandem": {
+   "reads_no_llm": {
+    "reads_seen": 60,
+    "p50_ms": 115.3,
+    "p95_ms": 122.7,
+    "max_ms": 164.9,
+    "rate_hz": 2.0,
+    "seconds": 30.0
+   },
+   "reads_while_preparing": {
+    "reads_seen": 51,
+    "p50_ms": 140.5,
+    "p95_ms": 180.0,
+    "max_ms": 205.1,
+    "rate_hz": 1.99,
+    "seconds": 25.6
+   },
+   "reads_while_writing": {
+    "reads_seen": 162,
+    "p50_ms": 125.0,
+    "p95_ms": 156.2,
+    "max_ms": 206.3,
+    "rate_hz": 1.98,
+    "seconds": 84.9
+   },
+   "load_no_llm": {
+    "temp_c": {
+     "start": 44.9,
+     "peak": 51.2,
+     "end": 51.2
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2968,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 112.1,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.2,
+    "state_ms_max": 14.1,
+    "load_max": 1.9
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 61.0,
+     "peak": 63.5,
+     "end": 62.9
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2761,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 611,
+    "llama_anon_mb_max": 205,
+    "app_cpu_pct_of_one_core": 105.7,
+    "llama_cpu_pct_of_one_core": 192.7,
+    "state_ms_p50": 6.7,
+    "state_ms_max": 28.9,
+    "load_max": 4.66
+   },
+   "other_connections_at_start": 0
+  },
+  "worst_case": {
+   "reads_no_llm_with_viewer": {
+    "reads_seen": 41,
+    "p50_ms": 122.5,
+    "p95_ms": 134.0,
+    "max_ms": 135.2,
+    "rate_hz": 2.0,
+    "seconds": 20.0
+   },
+   "reads_while_writing": {
+    "reads_seen": 219,
+    "p50_ms": 148.0,
+    "p95_ms": 232.4,
+    "max_ms": 320.1,
+    "rate_hz": 1.99,
+    "seconds": 112.9
+   },
+   "load_no_llm_with_viewer": {
+    "temp_c": {
+     "start": 56.6,
+     "peak": 56.9,
+     "end": 53.1
+    },
+    "mhz_min": 1305,
+    "mhz_max": 2016,
+    "min_available_mb": 2979,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 173.0,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.2,
+    "state_ms_max": 20.4,
+    "load_max": 2.82
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 64.8,
+     "peak": 67.9,
+     "end": 66.3
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2757,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 614,
+    "llama_anon_mb_max": 209,
+    "app_cpu_pct_of_one_core": 163.7,
+    "llama_cpu_pct_of_one_core": 146.5,
+    "state_ms_p50": 8.0,
+    "state_ms_max": 49.5,
+    "load_max": 3.99
+   },
+   "load_whole_window": {
+    "temp_c": {
+     "start": 50.9,
+     "peak": 67.9,
+     "end": 61.9
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2757,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 614,
+    "llama_anon_mb_max": 209,
+    "app_cpu_pct_of_one_core": 151.0,
+    "llama_cpu_pct_of_one_core": 153.8,
+    "state_ms_p50": 7.4,
+    "state_ms_max": 69.8,
+    "load_max": 3.99
+   },
+   "camera_fps_while_writing": 29.5,
+   "window_s": 190.4,
+   "answers": 2
+  },
+  "sustained": {
+   "answer_loop_s": 337.2,
+   "aborted_c": null,
+   "curve_30s": [
+    {
+     "t": 0,
+     "c": 54.7,
+     "mhz": 2016,
+     "avail_mb": 2974
+    },
+    {
+     "t": 30,
+     "c": 64.5,
+     "mhz": 2016,
+     "avail_mb": 2759
+    },
+    {
+     "t": 60,
+     "c": 65.1,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 90,
+     "c": 64.5,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 120,
+     "c": 61.0,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 150,
+     "c": 66.7,
+     "mhz": 2016,
+     "avail_mb": 2762
+    },
+    {
+     "t": 180,
+     "c": 64.8,
+     "mhz": 2016,
+     "avail_mb": 2770
+    },
+    {
+     "t": 210,
+     "c": 66.7,
+     "mhz": 2016,
+     "avail_mb": 2767
+    },
+    {
+     "t": 240,
+     "c": 65.4,
+     "mhz": 2016,
+     "avail_mb": 2763
+    },
+    {
+     "t": 270,
+     "c": 67.6,
+     "mhz": 2016,
+     "avail_mb": 2759
+    },
+    {
+     "t": 300,
+     "c": 68.2,
+     "mhz": 2016,
+     "avail_mb": 2750
+    },
+    {
+     "t": 330,
+     "c": 67.6,
+     "mhz": 2016,
+     "avail_mb": 2755
+    }
+   ],
+   "mean_c_by_minute": [
+    63.32,
+    65.03,
+    66.23,
+    66.38,
+    66.9,
+    66.43
+   ],
+   "load": {
+    "temp_c": {
+     "start": 54.7,
+     "peak": 68.5,
+     "end": 59.1
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2750,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 613,
+    "llama_anon_mb_max": 207,
+    "app_cpu_pct_of_one_core": 105.7,
+    "llama_cpu_pct_of_one_core": 197.5,
+    "state_ms_p50": 7.3,
+    "state_ms_max": 76.6,
+    "load_max": 4.13
+   },
+   "reads": {
+    "reads_seen": 659,
+    "p50_ms": 125.7,
+    "p95_ms": 178.5,
+    "max_ms": 265.7,
+    "rate_hz": 2.0,
+    "seconds": 334.0
+   },
+   "cooling_after": [
+    {
+     "t": 338,
+     "c": 57.8,
+     "mhz": 614,
+     "avail_mb": 2993
+    },
+    {
+     "t": 353,
+     "c": 51.6,
+     "mhz": 1017,
+     "avail_mb": 2991
+    },
+    {
+     "t": 369,
+     "c": 49.3,
+     "mhz": 1420,
+     "avail_mb": 2990
+    },
+    {
+     "t": 384,
+     "c": 48.4,
+     "mhz": 614,
+     "avail_mb": 2989
+    },
+    {
+     "t": 400,
+     "c": 47.5,
+     "mhz": 864,
+     "avail_mb": 2997
+    },
+    {
+     "t": 416,
+     "c": 46.8,
+     "mhz": 614,
+     "avail_mb": 2994
+    },
+    {
+     "t": 431,
+     "c": 45.9,
+     "mhz": 614,
+     "avail_mb": 2992
+    }
+   ],
+   "answers": 7,
+   "viewer": false
+  }
+ },
+ "answers": {
+  "source": "all_answers.jsonl and final_answers.jsonl, plus journal_explain_events.jsonl for lines they lack",
+  "earlier_code": {
+   "finished_and_checked": 55,
+   "passed": 49,
+   "pass_rate": 0.891,
+   "wilson_95": [
+    0.782,
+    0.949
+   ],
+   "failed": [
+    {
+     "audience": "user",
+     "status": "review",
+     "case": "real_camera_frozen_frame",
+     "failed_checks": [
+      "length_ok"
+     ],
+     "invented_claim": false,
+     "words": 94,
+     "note": "The language model's wording came out too long or too short, so this is the reading itself.",
+     "rejected": "The model looked at one small tile of tissue and read it as background, labelled BACK, with a combined confidence of 90%. The model has two heads that each give their own answer. Both heads picked BACK, Head A with 96% confidence and Head B with 50%. The two heads agree. The tile is flagged for review because the confidence of the two heads differs and the review score of 0.60 shows the review head is unsure. In a tissue image, background means an empty part of the slide with little or no tissue."
+    },
+    {
+     "audience": "user",
+     "status": "review",
+     "case": "sustained",
+     "failed_checks": [
+      "no_wrong_class"
+     ],
+     "invented_claim": true,
+     "words": 83,
+     "note": "The language model's wording named a tissue class that is not in this result, so this is the reading itself.",
+     "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 76%. The model has two heads that each give their own answer. Both heads picked STR, Head A with 79% confidence and Head B with 95%. The two heads agree on this tile. The tile is flagged for review because the confidence of the two heads differs and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue of cancer."
+    },
+    {
+     "audience": "user",
+     "status": "review",
+     "case": "sustained",
+     "failed_checks": [
+      "numbers_match"
+     ],
+     "invented_claim": false,
+     "words": 68,
+     "note": "The language model's wording got a number wrong, so this is the reading itself.",
+     "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 75%. The model has two heads that each give their own answer. Both heads picked smooth muscle (MUS), but the combined call differs from both of them. The tile is flagged for review because the review head is unsure (score 0.55). In a tissue image, cancer-associated stroma means fibrous tissue around cancer."
+    },
+    {
+     "audience": "doctor",
+     "status": "agree",
+     "case": "sustained",
+     "failed_checks": [
+      "heads_correct",
+      "numbers_match"
+     ],
+     "invented_claim": true,
+     "words": 62,
+     "note": "The language model's wording got a number wrong, so this is the reading itself.",
+     "rejected": "The model read this tile as ADI (adipose tissue) at 100% combined confidence. Head A gives ADI 100% confidence, and Head B gives ADI 95%. The two heads agree on this tile. The tile is not flagged for review. On H&E, ADI means fat cells, seen as large clear round spaces with thin walls. This is the model's reading of one tile."
+    },
+    {
+     "audience": "doctor",
+     "status": "agree",
+     "case": "idle_unload",
+     "failed_checks": [
+      "heads_correct",
+      "numbers_match"
+     ],
+     "invented_claim": true,
+     "words": 63,
+     "note": "The language model's wording got a number wrong, so this is the reading itself.",
+     "rejected": "The model's combined call for this tile is mucus (MUC) at 100%. Head A gives MUC 100% confidence, and Head B gives MUC 90%. The heads picked the same class, so they agree. The model did not flag this tile for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile."
+    },
+    {
+     "audience": "user",
+     "status": "review",
+     "case": "shots_long_answer",
+     "failed_checks": [
+      "no_wrong_class"
+     ],
+     "invented_claim": true,
+     "words": 75,
+     "note": "The language model's wording named a tissue class that is not in this result, so this is the reading itself.",
+     "rejected": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 76%. The model has two heads, and each answers on its own. Head A gives STR 79% confidence, and Head B gives STR 95%. The heads agree. The tile is flagged for review because the heads' confidence levels differ and the review head is unsure (score 0.45). In a tissue image, cancer-associated stroma means the fibrous tissue of cancer."
+    }
+   ],
+   "by_status_audience": {
+    "agree/doctor": {
+     "n": 24,
+     "passed": 22
+    },
+    "review/doctor": {
+     "n": 10,
+     "passed": 10
+    },
+    "review/user": {
+     "n": 12,
+     "passed": 8
+    },
+    "agree/user": {
+     "n": 7,
+     "passed": 7
+    },
+    "no_tissue/doctor": {
+     "n": 1,
+     "passed": 1
+    },
+    "no_tissue/user": {
+     "n": 1,
+     "passed": 1
+    }
+   },
+   "distinct_decisions_known": 13,
+   "answers_without_a_known_decision": 2,
+   "answers_from_the_three_most_used_decisions": 28,
+   "words": {
+    "min": 37,
+    "median": 66,
+    "max": 94
+   },
+   "done_s": {
+    "min": 22.12,
+    "median": 44.09,
+    "max": 91.67
+   },
+   "gen_tps": {
+    "min": 2.302259304367367,
+    "median": 3.96,
+    "max": 4.084767267942928
+   },
+   "first_word_s_new_prompts": {
+    "median": 13.71,
+    "max": 49.53
+   },
+   "sustained_run": {
+    "n": 7,
+    "passed": 4
+   },
+   "ran_outside_the_service": 4
+  },
+  "final_code": {
+   "finished_and_checked": 6,
+   "passed": 5,
+   "pass_rate": 0.833,
+   "wilson_95": [
+    0.436,
+    0.97
+   ],
+   "failed": [
+    {
+     "audience": "doctor",
+     "status": "agree",
+     "case": "twinread_paused_cold",
+     "failed_checks": [
+      "heads_correct",
+      "numbers_match"
+     ],
+     "invented_claim": true,
+     "words": 67,
+     "note": "The language model's wording got a number wrong, so this is the reading itself.",
+     "rejected": null
+    }
+   ],
+   "by_status_audience": {
+    "agree/doctor": {
+     "n": 4,
+     "passed": 3
+    },
+    "agree/user": {
+     "n": 1,
+     "passed": 1
+    },
+    "review/doctor": {
+     "n": 1,
+     "passed": 1
+    }
+   },
+   "distinct_decisions_known": 3,
+   "answers_without_a_known_decision": 0,
+   "answers_from_the_three_most_used_decisions": 6,
+   "words": {
+    "min": 60,
+    "median": 61.0,
+    "max": 67
+   },
+   "done_s": {
+    "min": 23.16,
+    "median": 45.73,
+    "max": 68.58
+   },
+   "gen_tps": {
+    "min": 3.1559323311519067,
+    "median": 4.01,
+    "max": 4.036448211870088
+   },
+   "first_word_s_new_prompts": {
+    "median": 31.22,
+    "max": 39.33
+   },
+   "sustained_run": {
+    "n": 0,
+    "passed": 0
+   },
+   "ran_outside_the_service": 0
+  },
+  "unknown_jobs": 4,
+  "unknown_jobs_note": "The first four jobs, before all_answers.jsonl and the kept log begin, have no stored record, so the earlier-code count is a lower bound on what ran.",
+  "do_not_compare": "Not comparable with the 0.975 on 200 held-out prompts on x86: these answers are a few repeated decisions, on the board, and were not sampled to be balanced."
+ },
+ "final_code": {
+  "timing_from_click": {
+   "twinread_paused": {
+    "cold": {
+     "facts_s": 0.02,
+     "first_word_s": 31.52,
+     "finished_s": 55.59,
+     "server_first_word_s": 31.22,
+     "server_done_s": 55.26,
+     "words": 67,
+     "gen_tps": 4.036448211870088,
+     "peak_c": 58.2,
+     "load_s": 3.25,
+     "prepare_s": 18.51
+    },
+    "warm": {
+     "facts_s": 0.02,
+     "first_word_s": 9.53,
+     "finished_s": 32.87,
+     "server_first_word_s": 9.51,
+     "server_done_s": 32.6,
+     "words": 66,
+     "gen_tps": 4.028933809816129,
+     "peak_c": 59.4,
+     "load_s": null,
+     "prepare_s": null
+    }
+   },
+   "twinread_live_no_viewer": {
+    "cold": {
+     "facts_s": 2.13,
+     "first_word_s": null,
+     "finished_s": null,
+     "server_first_word_s": 39.33,
+     "server_done_s": 68.58,
+     "words": 60,
+     "gen_tps": 3.1800492599888592,
+     "peak_c": 62.9,
+     "load_s": 3.26,
+     "prepare_s": 23.41
+    },
+    "warm": {
+     "facts_s": 0.02,
+     "first_word_s": null,
+     "finished_s": null,
+     "server_first_word_s": 10.19,
+     "server_done_s": 37.77,
+     "words": 60,
+     "gen_tps": 3.1559323311519067,
+     "peak_c": 63.5,
+     "load_s": null,
+     "prepare_s": null
+    }
+   }
+  },
+  "tandem": {
+   "reads_no_llm": {
+    "reads_seen": 61,
+    "p50_ms": 116.1,
+    "p95_ms": 125.8,
+    "max_ms": 141.8,
+    "rate_hz": 2.0,
+    "seconds": 30.0
+   },
+   "reads_while_preparing": {
+    "reads_seen": 46,
+    "p50_ms": 146.4,
+    "p95_ms": 208.8,
+    "max_ms": 216.2,
+    "rate_hz": 1.97,
+    "seconds": 22.8
+   },
+   "reads_while_writing": {
+    "reads_seen": 158,
+    "p50_ms": 124.4,
+    "p95_ms": 153.5,
+    "max_ms": 220.3,
+    "rate_hz": 1.98,
+    "seconds": 82.5
+   },
+   "load_no_llm": {
+    "temp_c": {
+     "start": 47.1,
+     "peak": 53.4,
+     "end": 49.7
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 3025,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 116.7,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.4,
+    "state_ms_max": 33.6,
+    "load_max": 2.17
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 61.0,
+     "peak": 63.8,
+     "end": 63.8
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2796,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 612,
+    "llama_anon_mb_max": 207,
+    "app_cpu_pct_of_one_core": 105.6,
+    "llama_cpu_pct_of_one_core": 191.8,
+    "state_ms_p50": 7.7,
+    "state_ms_max": 27.1,
+    "load_max": 4.07
+   },
+   "other_connections_at_start": 0
+  }
+ },
+ "phases": {
+  "answers_0": {
+   "console_errors": []
+  },
+  "answers_0_first_run": {
+   "console_errors": []
+  },
+  "answers_1_2_3": {
+   "console_errors": []
+  },
+  "camera_scene_frozen_review": {
+   "first_live_status": "review",
+   "frozen_status": "review",
+   "tissue_fraction": 0.6530612244897959,
+   "reasons": [
+    "js",
+    "review_head"
+   ],
+   "camera_open": false,
+   "console_errors": []
+  },
+  "disagree": {
+   "synthetic_snapshot": true
+  },
+  "end": {
+   "boots_before": [
+    "-2 bb975c9fb7b0418aa03f435ae28eab89 Mon 2026-11-02 18:12:09 UTC Mon 2026-11-02 18:17:57 UTC",
+    " -1 5b69cc5c628f41489ee5aec4ff03f589 Mon 2026-11-02 18:17:58 UTC Mon 2026-11-02 18:20:43 UTC",
+    "  0 279a168852494bf59896711da94e3b94 Mon 2026-11-02 18:20:45 UTC Mon 2026-11-02 18:22:14 UTC"
+   ],
+   "reboot_armed": 0,
+   "page_went_away_after_s": 7.2,
+   "page_back_after_reboot_s": 49.2,
+   "proof": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 42.7,
+    "mem_available_mb": 3186,
+    "open_connections_to_app": 0
+   },
+   "state": {
+    "status": "standby",
+    "call": null,
+    "explain": {
+     "server": "off",
+     "start_max_c": 68.0,
+     "stop_max_c": 72.0,
+     "job": null,
+     "available": false,
+     "target": null,
+     "decision": null,
+     "why_not": "Nothing to explain yet. Start the model and give it a picture.",
+     "hint": null
+    },
+    "system": {
+     "uptime_s": 64.43,
+     "load": 2.77,
+     "mem_available_mb": 3186,
+     "temp_c": 41.8
+    }
+   },
+   "page_served": true,
+   "service": {
+    "enabled": "enabled",
+    "active": "active",
+    "restarts": "0"
+   },
+   "kernel": "7.0.0-g122c2c22d838",
+   "boots_after": [
+    "-2 5b69cc5c628f41489ee5aec4ff03f589 Mon 2026-11-02 18:17:58 UTC Mon 2026-11-02 18:20:43 UTC",
+    " -1 279a168852494bf59896711da94e3b94 Mon 2026-11-02 18:20:45 UTC Mon 2026-11-02 18:22:22 UTC",
+    "  0 11a87825226b45a195b343716873237f Mon 2026-11-02 18:22:23 UTC Mon 2026-11-02 18:23:38 UTC"
+   ],
+   "radio": "enabled",
+   "tailscale_serve": [
+    "|-- tcp://<board-tailnet-name>:8080 (tailnet only)",
+    "|-- tcp://<board-tailnet-ip>:8080"
+   ],
+   "left_over_units": "",
+   "app_cpu_in_standby": {
+    "seconds": 20.0,
+    "app_cpu_pct_of_one_core": 0.0
+   },
+   "board_runs_this_code": true,
+   "model_sha256_on_board": "84a1d904388270f0b688e1a76632df3d045c4865218346905dfa8ec8ca118bd3",
+   "models_on_board": [
+    "397808192 /home/arduino/twinread-conch-musk-edge/data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf",
+    "419246784 /home/arduino/twinread-conch-musk-edge/data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf",
+    "419245920 /home/arduino/twinread-conch-musk-edge/data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf"
+   ]
+  },
+  "failed_check": {
+   "note": "A second app on the board using the rejected fallback model, to try to catch a failed check on screen. It passed all 6, so this run shows no fallback. The fallback screenshots come from the shipped model: screenshots/explain_failed_check_real_*.",
+   "console_errors": [],
+   "rejected_texts": []
+  },
+  "final_final_new": {
+   "host_check": {
+    "foreign_name": 403,
+    "short_name_under_a_foreign_domain": 403,
+    "no_host_header": 403,
+    "foreign_name_on_the_page": 403,
+    "foreign_name_on_the_video": 403,
+    "foreign_name_post": 403,
+    "short_name": 200,
+    "tailnet_name": 200,
+    "tailnet_ip": 200,
+    "on_the_board_itself_127": "200",
+    "on_the_board_itself_localhost": "200",
+    "foreign_post_changed_nothing": true
+   },
+   "kiosk_page": {
+    "badge": "STANDBY",
+    "kiosk_class": true
+   },
+   "tailnet_page": {
+    "badge": "STANDBY",
+    "errors": []
+   },
+   "result_gone": {
+    "notice": "That result has gone from the page. Press Explain again for the one on screen now.",
+    "notice_visible": true,
+    "job": null,
+    "llama": []
+   },
+   "stop_past_a_stalled_command": {
+    "stopped_after_s": 0.18,
+    "phase": "stopped",
+    "model_button": "Unloading model",
+    "model_paused_after_the_stall": true
+   },
+   "console_errors": [
+    "Failed to load resource: the server responded with a status of 400 (Bad Request) http://uno-q:8080/control"
+   ],
+   "idle_off": {
+    "limit_s": 30,
+    "after_40_s_with_a_viewer": {
+     "status": "review",
+     "model_loaded": true,
+     "camera_open": true
+    },
+    "log_line_after_closing_the_tab_s": 31.0,
+    "log_line": {
+     "event": "idle_standby",
+     "no_viewer_for_s": 30,
+     "was": {
+      "mode": "camera",
+      "feed_paused": false,
+      "model_paused": false,
+      "explaining": false
+     }
+    },
+    "camera_holders": "",
+    "cpu_ticks_over_10_s": "1",
+    "returning_viewer": {
+     "status": "standby",
+     "call": null,
+     "last": null,
+     "has_picture": false,
+     "model_loaded": false,
+     "camera_open": false,
+     "explain_available": false,
+     "badge": "STANDBY",
+     "reason": "Nothing is running.",
+     "buttons": [
+      "Start reading",
+      "Run demo slides"
+     ]
+    }
+   }
+  },
+  "final_kill_app": {
+   "kill_9_app": {
+    "app_pid": 3604,
+    "llama_pid": 11682,
+    "llama_cgroup": "0::/system.slice/twinread.service",
+    "llama_gone_after_s": 0.95,
+    "page_back_after_s": 4.03,
+    "status_after": "standby",
+    "explainer_after": "off",
+    "job_after": null,
+    "restarts": [
+     "1",
+     "2"
+    ],
+    "llama_left": [],
+    "zombies": "",
+    "page_reconnected": "STANDBY"
+   },
+   "console_errors": [
+    "Failed to load resource: net::ERR_CONNECTION_RESET http://uno-q:8080/state",
+    "Failed to load resource: net::ERR_EMPTY_RESPONSE http://uno-q:8080/state"
+   ]
+  },
+  "final_kill_short": {
+   "kill_9_mid_answer": {
+    "killed": 9667,
+    "fallback_after_s": 0.3,
+    "phase": "fallback",
+    "note": "The language model stopped part way through, so this is the reading itself.",
+    "source": "reading",
+    "llama_left": [],
+    "zombies": "",
+    "server": "off"
+   },
+   "next_click_after_kill": {
+    "cold": true,
+    "load_s": 3.27,
+    "prepare_s": 18.67,
+    "first_word_s": 31.44,
+    "words": 62,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.004368451029746,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.227745532847617,
+    "done_s": 53.68,
+    "peak_c": 61.9
+   },
+   "kill_9_idle": {
+    "killed": 9991,
+    "off_after_s": 1.2,
+    "zombies": "",
+    "llama_left": []
+   },
+   "console_errors": [],
+   "frozen_server": {
+    "froze": 10792,
+    "fallback_after_s": 31.8,
+    "phase": "fallback",
+    "note": "The language model stopped answering, so this is the reading itself.",
+    "source": "reading",
+    "llama_left": [],
+    "zombies": "",
+    "server": "off"
+   },
+   "dashboard_probe": {
+    "answers": 177,
+    "failures": [],
+    "slowest_s": 0.17
+   }
+  },
+  "final_start_reading": {
+   "other_connections_at_start": 0,
+   "buttons_in_standby": [
+    "Start reading",
+    "Run demo slides"
+   ],
+   "bar_buttons": [
+    "Start camera",
+    "Resume model"
+   ],
+   "first_call_s": 3.88,
+   "posts_sent_by_the_click": [
+    "{\"feed_paused\":false,\"model_paused\":false}"
+   ],
+   "bar_buttons_after": [
+    "Pause camera",
+    "Pause model"
+   ],
+   "console_errors": []
+  },
+  "final_stop": {
+   "while_preparing": {
+    "stopped_during": "preparing",
+    "page_ms_to_facts": 16.7,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "stopping",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     -1099,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "llama_after_stop_while_preparing": [],
+   "while_writing": {
+    "stopped_during": "writing",
+    "page_ms_to_facts": 15.5,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "ready",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "while_giving_facts": {
+    "stopped_during": "thinking",
+    "page_ms_to_facts": 15.8,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "ready",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "warm_server_kept": "ready",
+   "next_answer": {
+    "cold": false,
+    "first_word_s": 0.29,
+    "words": 60,
+    "tokens": 92,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.023186498396017,
+    "prompt_n": 1,
+    "cache_n": 305,
+    "prompt_tps": 3.779960915204137,
+    "done_s": 23.16,
+    "peak_c": 59.7
+   },
+   "console_errors": []
+  },
+  "final_tandem": {
+   "baseline_t": [
+    4.4,
+    34.43
+   ],
+   "baseline_status": "review",
+   "cold": {
+    "server": {
+     "cold": true,
+     "load_s": 3.26,
+     "prepare_s": 23.41,
+     "first_word_s": 39.33,
+     "words": 60,
+     "tokens": 93,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.1800492599888592,
+     "prompt_n": 103,
+     "cache_n": 203,
+     "prompt_tps": 8.153210057324983,
+     "done_s": 68.58,
+     "peak_c": 62.9
+    },
+    "page_marks_early": {
+     "facts": 2.13
+    }
+   },
+   "warm": {
+    "server": {
+     "cold": false,
+     "first_word_s": 10.19,
+     "words": 60,
+     "tokens": 87,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.1559323311519067,
+     "prompt_n": 84,
+     "cache_n": 223,
+     "prompt_tps": 8.269357384299877,
+     "done_s": 37.77,
+     "peak_c": 63.5
+    },
+    "page_marks_early": {
+     "facts": 0.02
+    }
+   },
+   "console_errors": [],
+   "reads_baseline_no_llm": {
+    "reads_seen": 61,
+    "p50_ms": 116.1,
+    "p95_ms": 125.8,
+    "max_ms": 141.8,
+    "rate_hz": 2.0,
+    "seconds": 30.0
+   },
+   "reads_while_preparing": {
+    "reads_seen": 46,
+    "p50_ms": 146.4,
+    "p95_ms": 208.8,
+    "max_ms": 216.2,
+    "rate_hz": 1.97,
+    "seconds": 22.8
+   },
+   "reads_while_writing": {
+    "reads_seen": 158,
+    "p50_ms": 124.4,
+    "p95_ms": 153.5,
+    "max_ms": 220.3,
+    "rate_hz": 1.98,
+    "seconds": 82.5
+   },
+   "load_baseline": {
+    "temp_c": {
+     "start": 47.1,
+     "peak": 53.4,
+     "end": 49.7
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 3025,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 116.7,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.4,
+    "state_ms_max": 33.6,
+    "load_max": 2.17
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 61.0,
+     "peak": 63.8,
+     "end": 63.8
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2796,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 612,
+    "llama_anon_mb_max": 207,
+    "app_cpu_pct_of_one_core": 105.6,
+    "llama_cpu_pct_of_one_core": 191.8,
+    "state_ms_p50": 7.7,
+    "state_ms_max": 27.1,
+    "load_max": 4.07
+   },
+   "load_whole_window": {
+    "temp_c": {
+     "start": 49.3,
+     "peak": 63.8,
+     "end": 56.6
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2796,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 612,
+    "llama_anon_mb_max": 207,
+    "app_cpu_pct_of_one_core": 101.3,
+    "llama_cpu_pct_of_one_core": 199.5,
+    "state_ms_p50": 7.3,
+    "state_ms_max": 71.7,
+    "load_max": 4.07
+   },
+   "curve": [
+    {
+     "t": 0,
+     "c": 49.3,
+     "mhz": 2016,
+     "avail_mb": 3047
+    },
+    {
+     "t": 16,
+     "c": 51.2,
+     "mhz": 2016,
+     "avail_mb": 3027
+    },
+    {
+     "t": 31,
+     "c": 47.5,
+     "mhz": 614,
+     "avail_mb": 3025
+    },
+    {
+     "t": 47,
+     "c": 57.5,
+     "mhz": 2016,
+     "avail_mb": 2809
+    },
+    {
+     "t": 62,
+     "c": 61.0,
+     "mhz": 2016,
+     "avail_mb": 2810
+    },
+    {
+     "t": 78,
+     "c": 61.9,
+     "mhz": 2016,
+     "avail_mb": 2805
+    },
+    {
+     "t": 94,
+     "c": 60.4,
+     "mhz": 2016,
+     "avail_mb": 2806
+    },
+    {
+     "t": 109,
+     "c": 61.6,
+     "mhz": 2016,
+     "avail_mb": 2805
+    },
+    {
+     "t": 125,
+     "c": 60.7,
+     "mhz": 2016,
+     "avail_mb": 2798
+    },
+    {
+     "t": 141,
+     "c": 61.9,
+     "mhz": 2016,
+     "avail_mb": 2799
+    }
+   ]
+  },
+  "final_timing": {
+   "held": {
+    "status": "standby",
+    "call": null,
+    "last": {
+     "status": "agree",
+     "label": "MUC",
+     "prob": 0.9999478183768188
+    },
+    "target": "last",
+    "available": true,
+    "button": "Explain last call",
+    "model_loaded": false,
+    "camera_open": false
+   },
+   "cold": {
+    "page_marks": {
+     "facts": 0.02,
+     "first_word": 31.52,
+     "finished": 55.59
+    },
+    "server": {
+     "cold": true,
+     "load_s": 3.25,
+     "prepare_s": 18.51,
+     "first_word_s": 31.22,
+     "words": 67,
+     "tokens": 97,
+     "finish": "stop",
+     "passed": false,
+     "failed_checks": [
+      "heads_correct",
+      "numbers_match"
+     ],
+     "invented_claim": true,
+     "gen_tps": 4.036448211870088,
+     "prompt_n": 97,
+     "cache_n": 203,
+     "prompt_tps": 10.275188618565506,
+     "done_s": 55.26,
+     "peak_c": 58.2
+    }
+   },
+   "warm": {
+    "page_marks": {
+     "facts": 0.02,
+     "first_word": 9.53,
+     "finished": 32.87
+    },
+    "server": {
+     "cold": false,
+     "first_word_s": 9.51,
+     "words": 66,
+     "tokens": 93,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 4.028933809816129,
+     "prompt_n": 97,
+     "cache_n": 206,
+     "prompt_tps": 10.237523203293568,
+     "done_s": 32.6,
+     "peak_c": 59.4
+    }
+   },
+   "console_errors": []
+  },
+  "firefox": {
+   "browser": {
+    "name": "firefox",
+    "version": "158.0.1"
+   },
+   "standby": {
+    "badge": "STANDBY",
+    "go_disabled": "true",
+    "why": "Nothing to explain yet. Start the model and give it a picture.",
+    "font": "system-ui, sans-serif"
+   },
+   "confident": {
+    "badge": "CONFIDENT",
+    "suggest": "Suggests colorectal adenocarcinoma epithelium (TUM)",
+    "stream_painted": 720
+   },
+   "after_click": {
+    "panel": true,
+    "source": "from the reading",
+    "stop_visible": true
+   },
+   "after_answer": {
+    "source": "for a doctor, written by the on-board language model and checked against the reading",
+    "text": "The model called this tile TUM (colorectal adenocarcinoma epithelium), with a combined confidence of 98%. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. The TUM class is irregular glands whose lining cells are crowded and abnormal. The tile is not flagged for review. This describes one tile as the model read it.",
+    "close_visible": true
+   }
+  },
+  "hang_local": {
+   "frozen_server": {
+    "froze": 89640,
+    "fallback_after_s": 30.0,
+    "phase": "fallback",
+    "note": "The language model stopped answering, so this is the reading itself.",
+    "llama_left": [],
+    "zombies": ""
+   },
+   "page_asked_on_the_board": {
+    "answers": 178,
+    "errors": [],
+    "slowest_ms": 81.2
+   }
+  },
+  "heat": {
+   "note": "A second app on the board with a low limit, not the service: real temperature, real model, limits lowered so they fire.",
+   "refuse_hint": "The board is at 46.5 \u00b0C. The language model starts below 30 \u00b0C, so for now Explain shows the reading itself.",
+   "refuse": {
+    "phase": "fallback",
+    "note": "The board is at 46.8 \u00b0C and the language model starts only below 30 \u00b0C, so this is the reading itself.",
+    "source": "reading",
+    "llama": []
+   },
+   "console_errors": [],
+   "stop_limit_used_c": 61,
+   "temp_at_start_c": 47.8,
+   "stop": {
+    "attempt": 0,
+    "phase": "fallback",
+    "note": "The board reached 61.6 \u00b0C, over the 61 \u00b0C limit, so the language model was stopped and this is the reading itself.",
+    "source": "reading",
+    "stats": {
+     "cold": true,
+     "load_s": 3.46,
+     "done_s": 18.39,
+     "peak_c": 61.6
+    },
+    "llama_left": [],
+    "server": "off",
+    "temp_after_c": 49.3
+   }
+  },
+  "idle_unload": {
+   "mem_available_before_mb": 3006,
+   "mem_available_model_off_mb": 3010,
+   "app_threads_before": 14,
+   "llama_pid": [
+    72265
+   ],
+   "mem_available_loaded_mb": 2791,
+   "app_threads_warm": 14,
+   "vital_just_after": "Loaded, off in 118 s",
+   "llama_cpu_ticks_idle_over_30s": "13969 149 / 13969 149",
+   "vital_at_90s": "Loaded, off in 26 s",
+   "process_gone_after_s": 120.7,
+   "vital_after": "Off",
+   "panel_visible_after": false,
+   "mem_available_after_mb": 3002,
+   "app_threads_after": 13,
+   "zombies": "",
+   "after_unload_next_click": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.65,
+    "first_word_s": 31.53,
+    "words": 61,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.957220226197376,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.317866886327316,
+    "done_s": 54.03,
+    "peak_c": 60.4
+   },
+   "console_errors": []
+  },
+  "install": {
+   "without": {
+    "code": 0,
+    "output": [
+     "explainer: llama-server or its .gguf is missing, so Explain will show the reading itself; device/README.md says how to add them",
+     "installed: twinread.service active=active; the display changes at next boot"
+    ],
+    "page_after_s": 3.1,
+    "status": "standby",
+    "hint": "The language model's files are not on this board, so Explain shows the reading itself."
+   },
+   "with": {
+    "code": 0,
+    "output": [
+     "explainer: llama-server and its .gguf are in place",
+     "installed: twinread.service active=active; the display changes at next boot"
+    ],
+    "page_after_s": 3.1,
+    "status": "standby",
+    "hint": null
+   },
+   "unit_differs_from_repo": "3",
+   "enabled": "enabled"
+  },
+  "kill": {
+   "kill_9_mid_answer": {
+    "killed": 78632,
+    "fallback_after_s": 0.3,
+    "phase": "fallback",
+    "note": "The language model stopped part way through, so this is the reading itself.",
+    "source": "reading",
+    "llama_left": [],
+    "zombies": "",
+    "server": "off"
+   },
+   "next_click_after_kill": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.62,
+    "first_word_s": 31.56,
+    "words": 65,
+    "tokens": 95,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.951649283222815,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.255862626420688,
+    "done_s": 55.6,
+    "peak_c": 63.8
+   },
+   "kill_9_idle": {
+    "killed": 78939,
+    "off_after_s": 1.0,
+    "zombies": "",
+    "llama_left": []
+   },
+   "console_errors": [],
+   "frozen_server": {
+    "froze": 79802,
+    "fallback_after_s": 30.1,
+    "phase": "fallback",
+    "note": "The language model stopped answering, so this is the reading itself.",
+    "source": "reading",
+    "llama_left": [],
+    "zombies": "",
+    "server": "off"
+   },
+   "port_in_use": {
+    "phase": "fallback",
+    "note": "Port 1790 is already in use, so the language model cannot start and this is the reading itself.",
+    "source": "reading",
+    "llama_started": [],
+    "server": "off",
+    "elapsed_s": 0.01
+   },
+   "binary_missing": {
+    "hint_on_page": "The language model's files are not on this board, so Explain shows the reading itself.",
+    "phase": "fallback",
+    "note": "The language model's files are not on this board (missing llama-server), so this is the reading itself.",
+    "source": "reading",
+    "facts_chars": 243,
+    "llama": []
+   },
+   "model_missing": {
+    "phase": "fallback",
+    "note": "The language model's files are not on this board (missing twinread-explain-qwen3-v1-Q4_0-embQ8.gguf), so this is the reading itself.",
+    "source": "reading",
+    "llama": []
+   },
+   "files_restored": "419245920 data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf\n14891680 device/llm/bin/llama-server",
+   "dashboard_probe": {
+    "answers": 231,
+    "failures": [
+     {
+      "at": "2026-11-02 17:42:37 UTC",
+      "error": "<urlopen error timed out>"
+     }
+    ],
+    "slowest_s": 0.16
+   }
+  },
+  "kill_app": {
+   "kill_9_app": {
+    "app_pid": 65162,
+    "llama_pid": 81589,
+    "llama_cgroup": "0::/system.slice/twinread.service",
+    "llama_gone_after_s": 0.89,
+    "page_back_after_s": 4.1,
+    "status_after": "standby",
+    "explainer_after": "off",
+    "job_after": null,
+    "restarts": [
+     "3",
+     "4"
+    ],
+    "llama_left": [],
+    "zombies": "",
+    "page_reconnected": "STANDBY"
+   },
+   "console_errors": [
+    "Failed to load resource: net::ERR_CONNECTION_RESET http://<board-tailnet-ip>:8080/state",
+    "Failed to load resource: net::ERR_CONNECTION_RESET http://<board-tailnet-ip>:8080/state"
+   ]
+  },
+  "kiosk_and_offline_page": {
+   "kiosk_controls_visible": {
+    "explain": false,
+    "pause": false
+   },
+   "kiosk_panel_visible_during_answer": true,
+   "kiosk_stop_visible": false,
+   "disconnected_badge": "DISCONNECTED",
+   "console_errors_are_expected_while_disconnected": 3
+  },
+  "midanswer": {
+   "pause_model": {
+    "call_on_page_after_pause": null,
+    "status_after_pause": "standby",
+    "phase": "done",
+    "about_label": "STR",
+    "about_status": "review",
+    "decision_label": "STR",
+    "current": true,
+    "model_loaded": false,
+    "stats": {
+     "cold": true,
+     "load_s": 3.47,
+     "prepare_s": 18.69,
+     "first_word_s": 32.78,
+     "words": 69,
+     "tokens": 96,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.9428123004079625,
+     "prompt_n": 110,
+     "cache_n": 203,
+     "prompt_tps": 10.369925406298393,
+     "done_s": 57.14,
+     "peak_c": 62.3
+    }
+   },
+   "switch_source": {
+    "moved_on_note_visible": true,
+    "phase": "done",
+    "about_label": "DEB",
+    "about_where": "Demo slide 3 of 18",
+    "decision_label": "DEB",
+    "camera_open": true,
+    "live_status": "review",
+    "stats": {
+     "cold": false,
+     "first_word_s": 8.24,
+     "words": 60,
+     "tokens": 91,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 2.4317085387280852,
+     "prompt_n": 84,
+     "cache_n": 223,
+     "prompt_tps": 10.228778815322322,
+     "done_s": 45.67,
+     "peak_c": 65.4
+    }
+   },
+   "console_errors": [],
+   "slide_change": {
+    "panel_visible": false,
+    "job": null,
+    "index": 6,
+    "server": "ready"
+   },
+   "auto_advance": {
+    "pace_s": 2,
+    "indices_during_answer": [
+     6
+    ],
+    "seconds_during_answer": 33.6,
+    "indices_after": [
+     6,
+     6,
+     6,
+     6,
+     7,
+     7,
+     7,
+     7,
+     8,
+     8,
+     8,
+     9,
+     9,
+     9,
+     9,
+     10,
+     10,
+     10,
+     10
+    ],
+    "first_change_after_s": 2.7,
+    "panel_still_open": true,
+    "current": false
+   }
+  },
+  "no_tissue_sim": {
+   "note": "Blank synthetic frame (--mode sim, every 4th frame). Everything after the frame is real.",
+   "page": {
+    "badge": "NO TISSUE",
+    "suggest": "No tissue class suggested",
+    "reason": "Too little tissue in the yellow square. Fill the square with the tile.",
+    "meta": "tile #3 | LED matrix: No tissue"
+   },
+   "console_errors": []
+  },
+  "offline_boot": {
+   "kernel": "7.0.0-g122c2c22d838",
+   "boots_before": [
+    "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+    "  0 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 11:19:40 UTC Mon 2026-11-02 18:11:59 UTC"
+   ],
+   "enable_check": 0,
+   "reboot_started": 0,
+   "tailnet_back_after_s": 225.7,
+   "check_log": {
+    "simulated": false,
+    "mode": "boot",
+    "kernel": "7.0.0-g122c2c22d838",
+    "boot_id": "bb975c9f-b7b0-418a-a03f-435ae28eab89",
+    "uptime_at_start_s": 16.95,
+    "events": [
+     {
+      "uptime_s": 17.49,
+      "what": "network_before",
+      "default_route": "",
+      "wlan0": "",
+      "radio": "disabled",
+      "can_reach_outside": "no",
+      "tailscale_backend": "False"
+     },
+     {
+      "uptime_s": 18.68,
+      "what": "page_answers",
+      "status": "standby",
+      "model_loaded": false,
+      "camera_open": false,
+      "explainer": "off",
+      "after_s": 1.1,
+      "html_has_title": true
+     },
+     {
+      "uptime_s": 19.76,
+      "what": "decision",
+      "status": "agree",
+      "label": "MUC"
+     },
+     {
+      "uptime_s": 19.78,
+      "what": "explain_pressed",
+      "job": {
+       "phase": "starting",
+       "source": "reading"
+      },
+      "error": null
+     },
+     {
+      "uptime_s": 19.8,
+      "what": "phase",
+      "phase": "starting",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 24.87,
+      "what": "phase",
+      "phase": "preparing",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 44.11,
+      "what": "phase",
+      "phase": "thinking",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 53.21,
+      "what": "phase",
+      "phase": "writing",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 77.48,
+      "what": "phase",
+      "phase": "done",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 77.48,
+      "what": "answer",
+      "job": {
+       "id": 1,
+       "phase": "done",
+       "audience": "doctor",
+       "source": "model",
+       "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100% and Head B chose MUC at 100%. The heads agree, and the tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This describes one tile as the model read it. This is the model's reading of one tile.",
+       "note": null,
+       "checked": true,
+       "about": {
+        "decision": 1,
+        "status": "agree",
+        "label": "MUC",
+        "prob": 0.9999478183768188,
+        "where": "Demo slide 2 of 18",
+        "age_s": 57
+       },
+       "elapsed_s": 57,
+       "words": 68,
+       "stats": {
+        "cold": true,
+        "load_s": 4.89,
+        "prepare_s": 18.57,
+        "first_word_s": 32.93,
+        "words": 68,
+        "tokens": 97,
+        "finish": "stop",
+        "passed": true,
+        "failed_checks": [],
+        "invented_claim": false,
+        "gen_tps": 4.039019089653399,
+        "prompt_n": 97,
+        "cache_n": 203,
+        "prompt_tps": 10.25588322926255,
+        "done_s": 56.96,
+        "peak_c": 59.1
+       },
+       "current": true
+      },
+      "seconds": 57.7
+     },
+     {
+      "uptime_s": 77.72,
+      "what": "network_after_answer",
+      "default_route": "",
+      "wlan0": "",
+      "radio": "disabled",
+      "can_reach_outside": "no",
+      "tailscale_backend": "False"
+     },
+     {
+      "uptime_s": 80.95,
+      "what": "standby",
+      "status": "standby",
+      "model_loaded": false,
+      "camera_open": false,
+      "explainer": "off",
+      "llama": ""
+     },
+     {
+      "uptime_s": 80.95,
+      "what": "done"
+     }
+    ],
+    "service": {
+     "active": "active",
+     "enabled": "enabled",
+     "restarts": "0"
+    }
+   },
+   "restore_log": [
+    "radio on at uptime 26708.49, boot 143d9ac9-aac7-43ae-9300-fccf05517630",
+    "radio on at uptime 195.61, boot bb975c9f-b7b0-418a-a03f-435ae28eab89"
+   ],
+   "boots_after": [
+    "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+    " -1 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 11:46:28 UTC Mon 2026-11-02 18:12:08 UTC",
+    "  0 bb975c9fb7b0418aa03f435ae28eab89 Mon 2026-11-02 18:12:09 UTC Mon 2026-11-02 18:15:41 UTC"
+   ],
+   "kernel_after": "7.0.0-g122c2c22d838",
+   "units": "Result=success ExecMainStatus=0 Id=twinread-wifi-restore.service  Result=success ExecMainStatus=0 Id=twinread-offline-boot-check.service",
+   "disable_twinread-wifi-restore.service": 0,
+   "remove_twinread-wifi-restore.service": 0,
+   "disable_twinread-offline-boot-check.service": 0,
+   "remove_twinread-offline-boot-check.service": 0,
+   "reload": 0,
+   "left_over_units": "",
+   "radio": "enabled",
+   "default_route_present": true,
+   "tailscale_online": "True",
+   "service": {
+    "enabled": "enabled",
+    "active": "active"
+   }
+  },
+  "offline_boot_prepare": {
+   "twinread-wifi-restore.service": 0,
+   "twinread-offline-boot-check.service": 0,
+   "reload": 0,
+   "enable_restore": [
+    0,
+    "",
+    "Created symlink '/etc/systemd/system/multi-user.target.wants/twinread-wifi-restore.service' \u2192 '/etc/systemd/system/twinread-wifi-restore.service'."
+   ],
+   "start_for_test": 0,
+   "running": "activating",
+   "after_sleep": {
+    "state": "Result=success ActiveState=inactive SubState=dead",
+    "log": "radio on at uptime 26708.49, boot 143d9ac9-aac7-43ae-9300-fccf05517630",
+    "radio": "enabled"
+   },
+   "enabled": "enabled"
+  },
+  "offline_radio": {
+   "arm_restore": 0,
+   "armed_timer": "Mon 2026-11-02 18:07:58 UTC 1min 29s -         - twinread-wifi-restore-now.timer twinread-wifi-restore-now.service",
+   "started_check": 0,
+   "page_from_pc_5s_after_radio_off": false,
+   "tailnet_back_after_radio_off_s": 100.1,
+   "check_log": {
+    "simulated": false,
+    "mode": "radio-off",
+    "kernel": "7.0.0-g122c2c22d838",
+    "boot_id": "143d9ac9-aac7-43ae-9300-fccf05517630",
+    "uptime_at_start_s": 26401.3,
+    "events": [
+     {
+      "uptime_s": 26401.81,
+      "what": "radio_off_command",
+      "output": "disabled"
+     },
+     {
+      "uptime_s": 26405.05,
+      "what": "network_before",
+      "default_route": "",
+      "wlan0": "",
+      "radio": "disabled",
+      "can_reach_outside": "no",
+      "tailscale_backend": "False"
+     },
+     {
+      "uptime_s": 26405.17,
+      "what": "page_answers",
+      "status": "standby",
+      "model_loaded": false,
+      "camera_open": false,
+      "explainer": "off",
+      "after_s": 0.1,
+      "html_has_title": true
+     },
+     {
+      "uptime_s": 26405.82,
+      "what": "decision",
+      "status": "agree",
+      "label": "MUC"
+     },
+     {
+      "uptime_s": 26405.84,
+      "what": "explain_pressed",
+      "job": {
+       "phase": "starting",
+       "source": "reading"
+      },
+      "error": null
+     },
+     {
+      "uptime_s": 26405.86,
+      "what": "phase",
+      "phase": "starting",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 26409.91,
+      "what": "phase",
+      "phase": "preparing",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 26428.1,
+      "what": "phase",
+      "phase": "thinking",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 26438.22,
+      "what": "phase",
+      "phase": "writing",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 26460.49,
+      "what": "phase",
+      "phase": "done",
+      "default_route": ""
+     },
+     {
+      "uptime_s": 26460.49,
+      "what": "answer",
+      "job": {
+       "id": 8,
+       "phase": "done",
+       "audience": "doctor",
+       "source": "model",
+       "text": "The model read this tile as mucus (MUC) at 100% combined confidence. Head A chose MUC at 100% and Head B chose MUC at 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile.",
+       "note": null,
+       "checked": true,
+       "about": {
+        "decision": 12,
+        "status": "agree",
+        "label": "MUC",
+        "prob": 0.9999478183768188,
+        "where": "Demo slide 2 of 18",
+        "age_s": 54
+       },
+       "elapsed_s": 54,
+       "words": 60,
+       "stats": {
+        "cold": true,
+        "load_s": 3.46,
+        "prepare_s": 18.65,
+        "first_word_s": 31.63,
+        "words": 60,
+        "tokens": 89,
+        "finish": "stop",
+        "passed": true,
+        "failed_checks": [],
+        "invented_claim": false,
+        "gen_tps": 3.9942325077748406,
+        "prompt_n": 97,
+        "cache_n": 203,
+        "prompt_tps": 10.207811038053352,
+        "done_s": 53.91,
+        "peak_c": 61.6
+       },
+       "current": true
+      },
+      "seconds": 54.7
+     },
+     {
+      "uptime_s": 26460.73,
+      "what": "network_after_answer",
+      "default_route": "",
+      "wlan0": "",
+      "radio": "disabled",
+      "can_reach_outside": "no",
+      "tailscale_backend": "False"
+     },
+     {
+      "uptime_s": 26463.94,
+      "what": "standby",
+      "status": "standby",
+      "model_loaded": false,
+      "camera_open": false,
+      "explainer": "off",
+      "llama": ""
+     },
+     {
+      "uptime_s": 26463.95,
+      "what": "done"
+     }
+    ],
+    "service": {
+     "active": "active",
+     "enabled": "enabled",
+     "restarts": "1"
+    }
+   },
+   "radio": "enabled",
+   "active_connection": "wlan0",
+   "default_route_present": true,
+   "tailscale_online": "True"
+  },
+  "orphan": {
+   "app_pid": 84663,
+   "llama": [
+    84686
+   ],
+   "llama_parent": "84663",
+   "app_cgroup": "0::/user.slice/user-1000.slice/session-1330.scope",
+   "service_app_pid": "81935",
+   "llama_gone_after_s": 0.49,
+   "llama_left": [],
+   "zombies": ""
+  },
+  "owner_camera_check_log": {
+   "what": "The owner showed three hand-picked easy tiles (NORM 3775, TUM 3195, ADI 1628) on a screen in front of the real camera and reports it was good. An informal check: no systematic accuracy was measured, and this is not evidence of camera accuracy.",
+   "log_note": "Lines from the board's log for that session. The app logs a camera read only on a status change or every 20th read, so these are not read counts.",
+   "lines_kept": 87,
+   "confident_lines_by_class": {
+    "BACK": 18,
+    "NORM": 2,
+    "TUM": 3,
+    "ADI": 2
+   },
+   "other_lines_by_status": {
+    "review": 61,
+    "no_tissue": 1
+   },
+   "confident_lines": [
+    {
+     "n": 137,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.995,
+     "reasons": [],
+     "latency_ms": 131.1
+    },
+    {
+     "n": 141,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9959,
+     "reasons": [],
+     "latency_ms": 128.7
+    },
+    {
+     "n": 152,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.999,
+     "reasons": [],
+     "latency_ms": 132.7
+    },
+    {
+     "n": 154,
+     "status": "agree",
+     "label": "NORM",
+     "prob": 0.5555,
+     "reasons": [],
+     "latency_ms": 124.8
+    },
+    {
+     "n": 160,
+     "status": "agree",
+     "label": "NORM",
+     "prob": 0.9951,
+     "reasons": [],
+     "latency_ms": 110.0
+    },
+    {
+     "n": 176,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9957,
+     "reasons": [],
+     "latency_ms": 125.0
+    },
+    {
+     "n": 179,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9743,
+     "reasons": [],
+     "latency_ms": 126.6
+    },
+    {
+     "n": 180,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9866,
+     "reasons": [],
+     "latency_ms": 119.3
+    },
+    {
+     "n": 189,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.6482,
+     "reasons": [],
+     "latency_ms": 133.3
+    },
+    {
+     "n": 191,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9821,
+     "reasons": [],
+     "latency_ms": 121.1
+    },
+    {
+     "n": 193,
+     "status": "agree",
+     "label": "TUM",
+     "prob": 0.8383,
+     "reasons": [],
+     "latency_ms": 118.2
+    },
+    {
+     "n": 200,
+     "status": "agree",
+     "label": "TUM",
+     "prob": 0.908,
+     "reasons": [],
+     "latency_ms": 130.1
+    },
+    {
+     "n": 204,
+     "status": "agree",
+     "label": "TUM",
+     "prob": 0.9816,
+     "reasons": [],
+     "latency_ms": 121.9
+    },
+    {
+     "n": 217,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9999,
+     "reasons": [],
+     "latency_ms": 117.9
+    },
+    {
+     "n": 220,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9998,
+     "reasons": [],
+     "latency_ms": 128.3
+    },
+    {
+     "n": 227,
+     "status": "agree",
+     "label": "ADI",
+     "prob": 0.9386,
+     "reasons": [],
+     "latency_ms": 118.9
+    },
+    {
+     "n": 240,
+     "status": "agree",
+     "label": "ADI",
+     "prob": 1.0,
+     "reasons": [],
+     "latency_ms": 126.6
+    },
+    {
+     "n": 255,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9954,
+     "reasons": [],
+     "latency_ms": 135.3
+    },
+    {
+     "n": 260,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.983,
+     "reasons": [],
+     "latency_ms": 115.4
+    },
+    {
+     "n": 264,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9983,
+     "reasons": [],
+     "latency_ms": 118.3
+    },
+    {
+     "n": 267,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9587,
+     "reasons": [],
+     "latency_ms": 130.4
+    },
+    {
+     "n": 269,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9432,
+     "reasons": [],
+     "latency_ms": 127.3
+    },
+    {
+     "n": 271,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9486,
+     "reasons": [],
+     "latency_ms": 151.0
+    },
+    {
+     "n": 274,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9092,
+     "reasons": [],
+     "latency_ms": 119.0
+    },
+    {
+     "n": 278,
+     "status": "agree",
+     "label": "BACK",
+     "prob": 0.9989,
+     "reasons": [],
+     "latency_ms": 121.9
+    }
+   ]
+  },
+  "security": {
+   "listening": [
+    "LISTEN 0      5                     127.0.0.1:8080       0.0.0.0:*   ",
+    "LISTEN 0      512                   127.0.0.1:1790       0.0.0.0:*   ",
+    "LISTEN 0      4096   <board-tailnet-ip>%tailscale0:8080       0.0.0.0:*"
+   ],
+   "from_pc_1790_tailnet_ip": "[Errno 111] Connection refused",
+   "llama_command": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server -m /home/arduino/twinread-conch-musk-edge/data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf -c 1024 -t 3 -tb 3 -np 1 --host 127.0.0.1 --port 1790 --no-webui --cache-ram 0 --ctx-checkpoints 0 --reasoning off",
+   "llama_nice_threads_user": "10   12 arduino",
+   "llama_wait_policy": "OMP_WAIT_POLICY=passive",
+   "llama_cgroup": "0::/system.slice/twinread.service",
+   "llama_pdeathsig_parent": "81935",
+   "app_pid": "81935",
+   "service_sandbox": [
+    "CPUQuotaPerSecUSec=infinity",
+    "MemoryMax=infinity",
+    "IPAddressAllow=127.0.0.0/8 ::1/128",
+    "IPAddressDeny=0.0.0.0/0 ::/0",
+    "PrivateTmp=no",
+    "PrivateNetwork=no",
+    "ProtectHome=no",
+    "ProtectSystem=no",
+    "NoNewPrivileges=no",
+    "RestrictAddressFamilies=~"
+   ],
+   "egress_refused_for_the_llama_cgroup_note": "IPAddressDeny=any applies to the whole cgroup, which includes llama-server; loopback is allowed, which is the only network it uses.",
+   "answer_under_the_real_service": {
+    "phase": "done",
+    "stats": {
+     "cold": true,
+     "load_s": 3.46,
+     "prepare_s": 18.58,
+     "first_word_s": 31.49,
+     "words": 71,
+     "tokens": 100,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.861268484616224,
+     "prompt_n": 97,
+     "cache_n": 203,
+     "prompt_tps": 10.274702105138166,
+     "done_s": 57.4,
+     "peak_c": 62.3
+    }
+   },
+   "requests": {
+    "text_plain": [
+     415,
+     "{\"error\": \"send application/json\"}"
+    ],
+    "free_text_audience": [
+     400,
+     "{\"error\": \"explain must be one of: doctor, user\"}"
+    ],
+    "extra_field": [
+     400,
+     "{\"error\": \"unknown settings: explain_text\"}"
+    ],
+    "with_another_setting": [
+     400,
+     "{\"error\": \"send one explain command on its own\"}"
+    ],
+    "too_big": [
+     400,
+     "{\"error\": \"body must be 1 to 1024 bytes\"}"
+    ]
+   },
+   "console_errors": []
+  },
+  "shots": {
+   "confident": {
+    "status": "agree",
+    "badge": "CONFIDENT",
+    "suggest": "Suggests colorectal adenocarcinoma epithelium (TUM)",
+    "reason": "Both heads chose the same tissue and nothing flagged it.",
+    "led": "tile #58 | LED matrix: Confident",
+    "foot": "Thresholds: JS > 0.042, review head > 0.430. Pair: CM."
+   },
+   "needs_review": {
+    "status": "review",
+    "badge": "NEEDS REVIEW",
+    "suggest": "Suggests cancer-associated stroma (STR)",
+    "reason": "Send for a second look: the heads' confidence differs, the review head is unsure.",
+    "led": "tile #60 | LED matrix: Needs review"
+   },
+   "fused_differs": {
+    "badge": "NEEDS REVIEW",
+    "suggest": "Suggests cancer-associated stroma (STR)",
+    "reason": "Send for a second look: the review head is unsure. Both heads chose smooth muscle (MUS); the fused call differs.",
+    "truth": "True label: smooth muscle (MUS). The call was cancer-associated stroma (STR)."
+   },
+   "keyboard_tab_order_to_explain": [
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "thumb",
+    "next",
+    "pace",
+    "BODY",
+    "src-camera",
+    "src-demo",
+    "feed",
+    "model",
+    "ex-doctor",
+    "ex-plain",
+    "ex-go"
+   ],
+   "keyboard_focus_style_on_explain": {
+    "outline": "solid 2px rgb(47, 111, 219)",
+    "visible": true
+   },
+   "keyboard_after_enter": "ex-stop",
+   "keyboard_after_second_enter": {
+    "focus": "ex-close",
+    "phase": "stopped"
+   },
+   "keyboard_after_close": {
+    "focus": "ex-go",
+    "panel": false
+   },
+   "reduced_motion": {
+    "animations_running": 0,
+    "any_transition_or_animation_in_computed_style": 0
+   },
+   "console_errors": [],
+   "longest_words": 81
+  },
+  "spam": {
+   "job_before": null,
+   "job_ids_seen_by_30_posts": [
+    22
+   ],
+   "audiences": [
+    "doctor"
+   ],
+   "posts_refused": [],
+   "llama_processes": 1,
+   "final_job_id": 22,
+   "explain_jobs_in_journal": [
+    22
+   ],
+   "llama_starts_in_journal": "0",
+   "console_errors": []
+  },
+  "start_reading": {
+   "other_connections_at_start": 0,
+   "buttons_in_standby": [
+    "Start reading",
+    "Run demo slides"
+   ],
+   "bar_buttons": [
+    "Start camera",
+    "Start model"
+   ],
+   "first_call_s": 3.78,
+   "posts_sent_by_the_click": [
+    "{\"feed_paused\":false,\"model_paused\":false}"
+   ],
+   "bar_buttons_after": [
+    "Pause camera",
+    "Pause model"
+   ],
+   "console_errors": []
+  },
+  "stop": {
+   "while_preparing": {
+    "stopped_during": "preparing",
+    "page_ms_to_facts": 13.5,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "stopping",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     -1022,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "llama_after_stop_while_preparing": [],
+   "while_writing": {
+    "stopped_during": "writing",
+    "page_ms_to_facts": 20.7,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "ready",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "while_giving_facts": {
+    "stopped_during": "thinking",
+    "page_ms_to_facts": 27.1,
+    "phase": "stopped",
+    "note": "Stopped, so this is the reading itself.",
+    "text_is_facts": true,
+    "server_after": "ready",
+    "status": "agree",
+    "llama_ticks_in_next_3s": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "warm_server_kept": "ready",
+   "next_answer": {
+    "cold": false,
+    "first_word_s": 0.3,
+    "words": 61,
+    "tokens": 92,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9664110515938678,
+    "prompt_n": 1,
+    "cache_n": 305,
+    "prompt_tps": 3.693225885081583,
+    "done_s": 23.5,
+    "peak_c": 59.4
+   },
+   "console_errors": []
+  },
+  "sustained_300": {
+   "limit_s": 300.0,
+   "abort_c": 72.0,
+   "slides": [],
+   "answer_loop_s": 337.2,
+   "aborted_c": null,
+   "load_during_loop": {
+    "temp_c": {
+     "start": 54.7,
+     "peak": 68.5,
+     "end": 59.1
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2750,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 613,
+    "llama_anon_mb_max": 207,
+    "app_cpu_pct_of_one_core": 105.7,
+    "llama_cpu_pct_of_one_core": 197.5,
+    "state_ms_p50": 7.3,
+    "state_ms_max": 76.6,
+    "load_max": 4.13
+   },
+   "reads_during_loop": {
+    "reads_seen": 659,
+    "p50_ms": 125.7,
+    "p95_ms": 178.5,
+    "max_ms": 265.7,
+    "rate_hz": 2.0,
+    "seconds": 334.0
+   },
+   "curve_30s": [
+    {
+     "t": 0,
+     "c": 54.7,
+     "mhz": 2016,
+     "avail_mb": 2974
+    },
+    {
+     "t": 30,
+     "c": 64.5,
+     "mhz": 2016,
+     "avail_mb": 2759
+    },
+    {
+     "t": 60,
+     "c": 65.1,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 90,
+     "c": 64.5,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 120,
+     "c": 61.0,
+     "mhz": 2016,
+     "avail_mb": 2755
+    },
+    {
+     "t": 150,
+     "c": 66.7,
+     "mhz": 2016,
+     "avail_mb": 2762
+    },
+    {
+     "t": 180,
+     "c": 64.8,
+     "mhz": 2016,
+     "avail_mb": 2770
+    },
+    {
+     "t": 210,
+     "c": 66.7,
+     "mhz": 2016,
+     "avail_mb": 2767
+    },
+    {
+     "t": 240,
+     "c": 65.4,
+     "mhz": 2016,
+     "avail_mb": 2763
+    },
+    {
+     "t": 270,
+     "c": 67.6,
+     "mhz": 2016,
+     "avail_mb": 2759
+    },
+    {
+     "t": 300,
+     "c": 68.2,
+     "mhz": 2016,
+     "avail_mb": 2750
+    },
+    {
+     "t": 330,
+     "c": 67.6,
+     "mhz": 2016,
+     "avail_mb": 2755
+    }
+   ],
+   "cooling_after": [
+    {
+     "t": 338,
+     "c": 57.8,
+     "mhz": 614,
+     "avail_mb": 2993
+    },
+    {
+     "t": 353,
+     "c": 51.6,
+     "mhz": 1017,
+     "avail_mb": 2991
+    },
+    {
+     "t": 369,
+     "c": 49.3,
+     "mhz": 1420,
+     "avail_mb": 2990
+    },
+    {
+     "t": 384,
+     "c": 48.4,
+     "mhz": 614,
+     "avail_mb": 2989
+    },
+    {
+     "t": 400,
+     "c": 47.5,
+     "mhz": 864,
+     "avail_mb": 2997
+    },
+    {
+     "t": 416,
+     "c": 46.8,
+     "mhz": 614,
+     "avail_mb": 2994
+    },
+    {
+     "t": 431,
+     "c": 45.9,
+     "mhz": 614,
+     "avail_mb": 2992
+    }
+   ],
+   "mean_c_by_minute": [
+    63.32,
+    65.03,
+    66.23,
+    66.38,
+    66.9,
+    66.43
+   ]
+  },
+  "tandem": {
+   "baseline_t": [
+    4.4,
+    34.42
+   ],
+   "baseline_status": "review",
+   "cold": {
+    "server": {
+     "cold": true,
+     "load_s": 3.68,
+     "prepare_s": 23.43,
+     "first_word_s": 39.58,
+     "words": 61,
+     "tokens": 94,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.1431322576888285,
+     "prompt_n": 103,
+     "cache_n": 203,
+     "prompt_tps": 8.274052026596499,
+     "done_s": 69.49,
+     "peak_c": 62.9
+    },
+    "page_marks_early": {
+     "facts": 0.02
+    }
+   },
+   "warm": {
+    "server": {
+     "cold": false,
+     "first_word_s": 10.14,
+     "words": 65,
+     "tokens": 94,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.160433736581143,
+     "prompt_n": 84,
+     "cache_n": 223,
+     "prompt_tps": 8.29897491852185,
+     "done_s": 39.89,
+     "peak_c": 63.5
+    },
+    "page_marks_early": {
+     "facts": 0.02
+    }
+   },
+   "console_errors": [],
+   "reads_baseline_no_llm": {
+    "reads_seen": 60,
+    "p50_ms": 115.3,
+    "p95_ms": 122.7,
+    "max_ms": 164.9,
+    "rate_hz": 2.0,
+    "seconds": 30.0
+   },
+   "reads_while_preparing": {
+    "reads_seen": 51,
+    "p50_ms": 140.5,
+    "p95_ms": 180.0,
+    "max_ms": 205.1,
+    "rate_hz": 1.99,
+    "seconds": 25.6
+   },
+   "reads_while_writing": {
+    "reads_seen": 162,
+    "p50_ms": 125.0,
+    "p95_ms": 156.2,
+    "max_ms": 206.3,
+    "rate_hz": 1.98,
+    "seconds": 84.9
+   },
+   "load_baseline": {
+    "temp_c": {
+     "start": 44.9,
+     "peak": 51.2,
+     "end": 51.2
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2968,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 112.1,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.2,
+    "state_ms_max": 14.1,
+    "load_max": 1.9
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 61.0,
+     "peak": 63.5,
+     "end": 62.9
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2761,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 611,
+    "llama_anon_mb_max": 205,
+    "app_cpu_pct_of_one_core": 105.7,
+    "llama_cpu_pct_of_one_core": 192.7,
+    "state_ms_p50": 6.7,
+    "state_ms_max": 28.9,
+    "load_max": 4.66
+   },
+   "load_whole_window": {
+    "temp_c": {
+     "start": 46.2,
+     "peak": 63.5,
+     "end": 62.9
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2761,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 611,
+    "llama_anon_mb_max": 205,
+    "app_cpu_pct_of_one_core": 104.9,
+    "llama_cpu_pct_of_one_core": 201.0,
+    "state_ms_p50": 6.7,
+    "state_ms_max": 70.7,
+    "load_max": 4.66
+   },
+   "curve": [
+    {
+     "t": 0,
+     "c": 46.2,
+     "mhz": 2016,
+     "avail_mb": 3001
+    },
+    {
+     "t": 16,
+     "c": 50.3,
+     "mhz": 2016,
+     "avail_mb": 2976
+    },
+    {
+     "t": 31,
+     "c": 46.8,
+     "mhz": 1612,
+     "avail_mb": 2974
+    },
+    {
+     "t": 47,
+     "c": 59.1,
+     "mhz": 2016,
+     "avail_mb": 2766
+    },
+    {
+     "t": 62,
+     "c": 60.7,
+     "mhz": 2016,
+     "avail_mb": 2764
+    },
+    {
+     "t": 78,
+     "c": 60.0,
+     "mhz": 2016,
+     "avail_mb": 2763
+    },
+    {
+     "t": 94,
+     "c": 62.6,
+     "mhz": 2016,
+     "avail_mb": 2764
+    },
+    {
+     "t": 109,
+     "c": 51.9,
+     "mhz": 1305,
+     "avail_mb": 2769
+    },
+    {
+     "t": 125,
+     "c": 62.9,
+     "mhz": 2016,
+     "avail_mb": 2770
+    },
+    {
+     "t": 141,
+     "c": 63.2,
+     "mhz": 2016,
+     "avail_mb": 2769
+    }
+   ]
+  },
+  "timing": {
+   "held": {
+    "status": "standby",
+    "call": null,
+    "last": {
+     "status": "agree",
+     "label": "MUC",
+     "prob": 0.9999478183768188
+    },
+    "target": "last",
+    "available": true,
+    "button": "Explain last call",
+    "model_loaded": false,
+    "camera_open": false
+   },
+   "cold": {
+    "page_marks": {
+     "facts": 0.03,
+     "first_word": 32.24,
+     "finished": 53.85
+    },
+    "server": {
+     "cold": true,
+     "load_s": 3.46,
+     "prepare_s": 18.6,
+     "first_word_s": 31.54,
+     "words": 58,
+     "tokens": 87,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.973662564522346,
+     "prompt_n": 97,
+     "cache_n": 203,
+     "prompt_tps": 10.24529236737337,
+     "done_s": 53.44,
+     "peak_c": 62.3
+    }
+   },
+   "warm": {
+    "page_marks": {
+     "facts": 0.02,
+     "first_word": 10.34,
+     "finished": 33.8
+    },
+    "server": {
+     "cold": false,
+     "first_word_s": 9.55,
+     "words": 70,
+     "tokens": 95,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 3.961234772752926,
+     "prompt_n": 97,
+     "cache_n": 206,
+     "prompt_tps": 10.196928979335766,
+     "done_s": 33.54,
+     "peak_c": 62.9
+    }
+   },
+   "console_errors": []
+  },
+  "two_viewers": {
+   "second_viewer_saw_panel_without_clicking": true,
+   "while_writing": {
+    "a_words": 13,
+    "b_words": 13,
+    "one_is_prefix_of_the_other": true
+   },
+   "after_second_viewer_stopped": {
+    "a_source": "from the reading",
+    "b_source": "from the reading",
+    "a_close_visible": true,
+    "same_text": true
+   },
+   "after_second_answer": {
+    "same_text": true,
+    "a_words": 63
+   },
+   "console_errors": []
+  },
+  "viewer_cost": {
+   "standby_viewer": {
+    "seconds": 15.0,
+    "app_cpu_pct_of_one_core": 0.4
+   },
+   "held_slide_viewer_no_job": {
+    "seconds": 15.0,
+    "app_cpu_pct_of_one_core": 0.47
+   },
+   "state_bytes_no_job": 1593,
+   "held_slide_viewer_while_writing": {
+    "seconds": 15.0,
+    "app_cpu_pct_of_one_core": 1.13
+   },
+   "state_bytes_with_answer": 2550,
+   "held_slide_viewer_panel_open_warm": {
+    "seconds": 15.0,
+    "app_cpu_pct_of_one_core": 0.4
+   },
+   "no_viewer_warm_server": {
+    "seconds": 15.0,
+    "app_cpu_pct_of_one_core": 0.07
+   }
+  },
+  "worst": {
+   "baseline_t": [
+    7.21,
+    27.23
+   ],
+   "cold": {
+    "server": {
+     "cold": true,
+     "load_s": 3.68,
+     "prepare_s": 29.85,
+     "first_word_s": 49.53,
+     "words": 66,
+     "tokens": 97,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 2.302259304367367,
+     "prompt_n": 103,
+     "cache_n": 203,
+     "prompt_tps": 6.4521738563929025,
+     "done_s": 91.67,
+     "peak_c": 65.7
+    },
+    "page_marks": {
+     "facts": 0.02,
+     "first_word": 49.92,
+     "finished": 91.76
+    }
+   },
+   "warm": {
+    "server": {
+     "cold": false,
+     "first_word_s": 14.02,
+     "words": 65,
+     "tokens": 89,
+     "finish": "stop",
+     "passed": true,
+     "failed_checks": [],
+     "invented_claim": false,
+     "gen_tps": 2.3176595659133006,
+     "prompt_n": 90,
+     "cache_n": 223,
+     "prompt_tps": 6.431834206180879,
+     "done_s": 52.43,
+     "peak_c": 67.6
+    },
+    "page_marks": {
+     "facts": 0.02,
+     "first_word": 14.43,
+     "finished": 52.69
+    }
+   },
+   "console_errors": [],
+   "reads_baseline_viewer_no_llm": {
+    "reads_seen": 41,
+    "p50_ms": 122.5,
+    "p95_ms": 134.0,
+    "max_ms": 135.2,
+    "rate_hz": 2.0,
+    "seconds": 20.0
+   },
+   "reads_while_writing": {
+    "reads_seen": 219,
+    "p50_ms": 148.0,
+    "p95_ms": 232.4,
+    "max_ms": 320.1,
+    "rate_hz": 1.99,
+    "seconds": 112.9
+   },
+   "load_baseline_viewer_no_llm": {
+    "temp_c": {
+     "start": 56.6,
+     "peak": 56.9,
+     "end": 53.1
+    },
+    "mhz_min": 1305,
+    "mhz_max": 2016,
+    "min_available_mb": 2979,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": null,
+    "llama_anon_mb_max": null,
+    "app_cpu_pct_of_one_core": 173.0,
+    "llama_cpu_pct_of_one_core": null,
+    "state_ms_p50": 6.2,
+    "state_ms_max": 20.4,
+    "load_max": 2.82
+   },
+   "load_while_writing": {
+    "temp_c": {
+     "start": 64.8,
+     "peak": 67.9,
+     "end": 66.3
+    },
+    "mhz_min": 2016,
+    "mhz_max": 2016,
+    "min_available_mb": 2757,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 614,
+    "llama_anon_mb_max": 209,
+    "app_cpu_pct_of_one_core": 163.7,
+    "llama_cpu_pct_of_one_core": 146.5,
+    "state_ms_p50": 8.0,
+    "state_ms_max": 49.5,
+    "load_max": 3.99
+   },
+   "load_whole_window": {
+    "temp_c": {
+     "start": 50.9,
+     "peak": 67.9,
+     "end": 61.9
+    },
+    "mhz_min": 614,
+    "mhz_max": 2016,
+    "min_available_mb": 2757,
+    "swap_used_mb_max": 0,
+    "llama_rss_mb_max": 614,
+    "llama_anon_mb_max": 209,
+    "app_cpu_pct_of_one_core": 151.0,
+    "llama_cpu_pct_of_one_core": 153.8,
+    "state_ms_p50": 7.4,
+    "state_ms_max": 69.8,
+    "load_max": 3.99
+   },
+   "camera_fps_while_writing": 29.5,
+   "curve": [
+    {
+     "t": 0,
+     "c": 50.9,
+     "mhz": 2016,
+     "avail_mb": 3013
+    },
+    {
+     "t": 16,
+     "c": 53.8,
+     "mhz": 2016,
+     "avail_mb": 2979
+    },
+    {
+     "t": 31,
+     "c": 48.1,
+     "mhz": 614,
+     "avail_mb": 2975
+    },
+    {
+     "t": 47,
+     "c": 61.3,
+     "mhz": 2016,
+     "avail_mb": 2767
+    },
+    {
+     "t": 62,
+     "c": 63.8,
+     "mhz": 2016,
+     "avail_mb": 2771
+    },
+    {
+     "t": 78,
+     "c": 64.8,
+     "mhz": 2016,
+     "avail_mb": 2765
+    },
+    {
+     "t": 94,
+     "c": 62.9,
+     "mhz": 2016,
+     "avail_mb": 2765
+    },
+    {
+     "t": 109,
+     "c": 66.0,
+     "mhz": 2016,
+     "avail_mb": 2762
+    },
+    {
+     "t": 125,
+     "c": 65.4,
+     "mhz": 2016,
+     "avail_mb": 2765
+    },
+    {
+     "t": 141,
+     "c": 67.0,
+     "mhz": 2016,
+     "avail_mb": 2764
+    },
+    {
+     "t": 156,
+     "c": 63.2,
+     "mhz": 2016,
+     "avail_mb": 2761
+    },
+    {
+     "t": 172,
+     "c": 65.7,
+     "mhz": 2016,
+     "avail_mb": 2757
+    },
+    {
+     "t": 187,
+     "c": 61.9,
+     "mhz": 2016,
+     "avail_mb": 2759
+    }
+   ]
+  }
+ },
+ "evidence_code": {
+  "final_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+  "this_code": [
+   "final_final_new",
+   "final_kill_app",
+   "final_kill_short",
+   "final_start_reading",
+   "final_stop",
+   "final_tandem",
+   "final_timing"
+  ],
+  "earlier_code": [
+   "answers_0",
+   "answers_0_first_run",
+   "answers_1_2_3",
+   "camera_scene_frozen_review",
+   "disagree",
+   "end",
+   "failed_check",
+   "firefox",
+   "hang_local",
+   "heat",
+   "idle_unload",
+   "install",
+   "kill",
+   "kill_app",
+   "kiosk_and_offline_page",
+   "midanswer",
+   "no_tissue_sim",
+   "offline_boot",
+   "offline_boot_prepare",
+   "offline_radio",
+   "orphan",
+   "owner_camera_check_log",
+   "security",
+   "shots",
+   "spam",
+   "start_reading",
+   "stop",
+   "sustained_300",
+   "tandem",
+   "timing",
+   "two_viewers",
+   "viewer_cost",
+   "worst"
+  ]
+ }
+}

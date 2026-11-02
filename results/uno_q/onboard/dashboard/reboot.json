@@ -1,0 +1,110 @@
+{
+ "simulated": false,
+ "when": "2026-11-02 10:46:15 UTC",
+ "boots_before": [
+  "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+  " -3 c7439ee57162496fab1e72addc6cdaae Mon 2026-11-02 09:14:30 UTC Mon 2026-11-02 09:27:07 UTC",
+  " -2 32cc03109dfc446892e09da2092f0a66 Mon 2026-11-02 09:27:09 UTC Mon 2026-11-02 09:39:14 UTC",
+  " -1 9d8fca0e3a3b45db8ec94583e752902e Mon 2026-11-02 09:38:17 UTC Mon 2026-11-02 09:42:00 UTC",
+  "  0 a14267bafa1f4a4f92912d2a96272a71 Mon 2026-11-02 09:41:26 UTC Mon 2026-11-02 10:46:15 UTC"
+ ],
+ "state_before": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 0,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "went_down_s": 2.519,
+ "dashboard_up_after_reboot_s": 48.4,
+ "state_first_answer": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 0,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "page_served": true,
+ "model_error": null,
+ "led": true,
+ "led_state": "idle",
+ "system": {
+  "uptime_s": 35.28,
+  "load": 4.55,
+  "mem_available_mb": 3166,
+  "temp_c": 48.4
+ },
+ "window": {
+  "seconds": 30.0,
+  "pid": 1119,
+  "app_cpu_pct_of_one_core": 0.03,
+  "machine_busy_pct_of_all_cores": 2.02,
+  "app_rss_mb": 57.4,
+  "app_threads": 8,
+  "hottest_c_end": 44.9,
+  "hottest_c_peak": 48.1,
+  "load": [
+   "3.26",
+   "1.22",
+   "0.44"
+  ]
+ },
+ "proof": {
+  "top": [
+   "14.3% 0.1% top",
+   "0.0% 0.4% systemd",
+   "0.0% 0.0% kthreadd",
+   "0.0% 0.0% pool_wo+",
+   "0.0% 0.0% kworker+"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "suspended",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "state": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 0,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "enabled": "enabled",
+ "active": "active",
+ "nrestarts": "0",
+ "boots_after": [
+  "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+  " -4 c7439ee57162496fab1e72addc6cdaae Mon 2026-11-02 09:14:30 UTC Mon 2026-11-02 09:27:07 UTC",
+  " -3 32cc03109dfc446892e09da2092f0a66 Mon 2026-11-02 09:27:09 UTC Mon 2026-11-02 09:39:14 UTC",
+  " -2 9d8fca0e3a3b45db8ec94583e752902e Mon 2026-11-02 09:38:17 UTC Mon 2026-11-02 09:42:00 UTC",
+  " -1 a14267bafa1f4a4f92912d2a96272a71 Mon 2026-11-02 09:41:26 UTC Mon 2026-11-02 10:46:20 UTC",
+  "  0 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 10:46:21 UTC Mon 2026-11-02 10:47:27 UTC"
+ ],
+ "chromium_procs": "0",
+ "connectors": [
+  "disconnected"
+ ],
+ "tailscale_serve": [
+  "|-- tcp://<board-tailnet-name>:8080 (tailnet only)",
+  "|-- tcp://<board-tailnet-ip>:8080",
+  "|-- tcp://[<board-tailnet-ipv6>]:8080",
+  "|--> tcp://127.0.0.1:8080"
+ ],
+ "journal": [
+  "Info : [stm32u5.cpu] starting gdb server on 3333",
+  "Info : Listening on port 3333 for gdb connections",
+  "shutdown command invoked",
+  "Started twinread.service - TwinRead device app and dashboard (offline).",
+  "{\"event\": \"standby\", \"reason\": null}{\"event\": \"serving\", \"url\": \"http://127.0.0.1:8080/\", \"mode\": \"camera\", \"standby\": true, \"reason\": null, \"model_error\": null, \"demo_slides\": 18}"
+ ],
+ "network_stalls": [],
+ "note": "A manual 'systemctl restart twinread' (a deploy from another shell of this same session) landed at 10:46:50 UTC, during this test. The first app after boot was already serving locally at 10:46:32 (journal, python[688]); the tailnet path was reachable by SSH shortly before 10:46:50. So dashboard_up_after_reboot_s may be up to about 3 s longer than a clean boot, and the 30 s window below is from the restarted app (pid 1119). NRestarts counts only automatic restarts, so it stays 0."
+}

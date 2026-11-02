@@ -1,0 +1,105 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:25:56 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 17:25:14 UTC",
+   "id": 15,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 13,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 73
+   },
+   "text": "The model read this tile as MUC (mucus) with a combined confidence of 100%. Head A says MUC with 100% confidence; Head B says MUC with 100%. Head A and Head B agree on the class. The tile is not flagged for review. The MUC class is pale mucus outside cells, with few cells in it. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.47,
+    "prepare_s": 18.55,
+    "first_word_s": 31.52,
+    "words": 65,
+    "tokens": 91,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9519623773181682,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.235277371268436,
+    "done_s": 54.55,
+    "peak_c": 61.9
+   },
+   "case": "viewer_cost",
+   "status": "agree"
+  }
+ ],
+ "windows": [
+  {
+   "name": "viewer_cost",
+   "limit_s": 180,
+   "cooled": 47.5,
+   "start": "2026-11-02 17:23:41 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 2995,
+    "open_connections_to_app": 0
+   },
+   "seconds": 126.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 3006,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "42"
+   }
+  }
+ ],
+ "standby_viewer": {
+  "seconds": 15.0,
+  "app_cpu_pct_of_one_core": 0.4
+ },
+ "held_slide_viewer_no_job": {
+  "seconds": 15.0,
+  "app_cpu_pct_of_one_core": 0.47
+ },
+ "state_bytes_no_job": 1593,
+ "held_slide_viewer_while_writing": {
+  "seconds": 15.0,
+  "app_cpu_pct_of_one_core": 1.13
+ },
+ "state_bytes_with_answer": 2550,
+ "held_slide_viewer_panel_open_warm": {
+  "seconds": 15.0,
+  "app_cpu_pct_of_one_core": 0.4
+ },
+ "no_viewer_warm_server": {
+  "seconds": 15.0,
+  "app_cpu_pct_of_one_core": 0.07
+ },
+ "network_stalls": []
+}

@@ -1,0 +1,105 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:47:01 UTC",
+ "windows": [
+  {
+   "name": "heat_refuse",
+   "limit_s": 180,
+   "cooled": 47.5,
+   "start": "2026-11-02 17:46:01 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3050,
+    "open_connections_to_app": 0
+   },
+   "seconds": 13.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.1,
+    "mem_available_mb": 3049,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "7"
+   }
+  },
+  {
+   "name": "heat_stop",
+   "limit_s": 180,
+   "cooled": 47.5,
+   "start": "2026-11-02 17:46:22 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3055,
+    "open_connections_to_app": 0
+   },
+   "seconds": 32.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.1,
+    "mem_available_mb": 3064,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "12"
+   }
+  }
+ ],
+ "answers": [],
+ "note": "A second app on the board with a low limit, not the service: real temperature, real model, limits lowered so they fire.",
+ "refuse_hint": "The board is at 46.5 \u00b0C. The language model starts below 30 \u00b0C, so for now Explain shows the reading itself.",
+ "refuse": {
+  "phase": "fallback",
+  "note": "The board is at 46.8 \u00b0C and the language model starts only below 30 \u00b0C, so this is the reading itself.",
+  "source": "reading",
+  "llama": []
+ },
+ "console_errors": [],
+ "stop_limit_used_c": 61,
+ "temp_at_start_c": 47.8,
+ "stop": {
+  "attempt": 0,
+  "phase": "fallback",
+  "note": "The board reached 61.6 \u00b0C, over the 61 \u00b0C limit, so the language model was stopped and this is the reading itself.",
+  "source": "reading",
+  "stats": {
+   "cold": true,
+   "load_s": 3.46,
+   "done_s": 18.39,
+   "peak_c": 61.6
+  },
+  "llama_left": [],
+  "server": "off",
+  "temp_after_c": 49.3
+ },
+ "network_stalls": []
+}

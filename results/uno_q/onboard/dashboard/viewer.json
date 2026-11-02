@@ -1,0 +1,275 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 10:43:16 UTC",
+ "shots": [
+  {
+   "file": "screenshots/standby_1920x1080.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "",
+   "img": 0,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/standby_1280x720.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "",
+   "img": 0,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/standby_1024x600.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "",
+   "img": 0,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/standby_390x844.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "",
+   "img": 0,
+   "overflow": true
+  },
+  {
+   "file": "screenshots/live_1920x1080.png",
+   "band": "No tissue",
+   "call": "Nothing to read",
+   "source": "Live",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/live_1280x720.png",
+   "band": "No tissue",
+   "call": "Nothing to read",
+   "source": "Live",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/live_1024x600.png",
+   "band": "No tissue",
+   "call": "Nothing to read",
+   "source": "Live",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/live_390x844.png",
+   "band": "No tissue",
+   "call": "Nothing to read",
+   "source": "Live",
+   "img": 960,
+   "overflow": true
+  },
+  {
+   "file": "screenshots/model_paused_1280x720.png",
+   "band": "Model off",
+   "call": "Not reading",
+   "source": "Live",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/frozen_1280x720.png",
+   "band": "No tissue",
+   "call": "Nothing to read",
+   "source": "Frozen frame",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/held_standby_1280x720.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "Frozen frame",
+   "img": 960,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_review_1920x1080.png",
+   "band": "Review",
+   "call": "Tumour stroma",
+   "source": "Demo slide 1 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_review_1280x720.png",
+   "band": "Review",
+   "call": "Tumour stroma",
+   "source": "Demo slide 1 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_review_1024x600.png",
+   "band": "Review",
+   "call": "Tumour stroma",
+   "source": "Demo slide 1 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_review_390x844.png",
+   "band": "Review",
+   "call": "Tumour stroma",
+   "source": "Demo slide 1 of 18",
+   "img": 720,
+   "overflow": true
+  },
+  {
+   "file": "screenshots/demo_agree_1920x1080.png",
+   "band": "Agree",
+   "call": "Mucus",
+   "source": "Demo slide 2 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_agree_1280x720.png",
+   "band": "Agree",
+   "call": "Mucus",
+   "source": "Demo slide 2 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_agree_1024x600.png",
+   "band": "Agree",
+   "call": "Mucus",
+   "source": "Demo slide 2 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/demo_agree_390x844.png",
+   "band": "Agree",
+   "call": "Mucus",
+   "source": "Demo slide 2 of 18",
+   "img": 720,
+   "overflow": true
+  },
+  {
+   "file": "screenshots/demo_mismatch_1280x720.png",
+   "band": "Review",
+   "call": "Tumour stroma",
+   "source": "Demo slide 11 of 18",
+   "img": 720,
+   "overflow": false
+  },
+  {
+   "file": "screenshots/standby_after_window_1280x720.png",
+   "band": "Standby",
+   "call": "Camera and model are off",
+   "source": "",
+   "img": 0,
+   "overflow": false
+  }
+ ],
+ "viewer": {
+  "standby": {
+   "seconds": 15.0,
+   "pid": 29947,
+   "app_cpu_pct_of_one_core": 0.4,
+   "machine_busy_pct_of_all_cores": 1.69,
+   "app_rss_mb": 57.9,
+   "app_threads": 8,
+   "hottest_c_end": 45.6,
+   "hottest_c_peak": 49.0,
+   "load": [
+    "1.76",
+    "1.77",
+    "1.67"
+   ]
+  },
+  "both_on": {
+   "seconds": 15.0,
+   "pid": 29947,
+   "app_cpu_pct_of_one_core": 169.08,
+   "machine_busy_pct_of_all_cores": 45.98,
+   "app_rss_mb": 137.8,
+   "app_threads": 17,
+   "hottest_c_end": 51.6,
+   "hottest_c_peak": 52.8,
+   "load": [
+    "2.45",
+    "1.92",
+    "1.72"
+   ],
+   "state": {
+    "status": "no_tissue",
+    "frame_label": "Live",
+    "model_loaded": true,
+    "camera_open": true,
+    "call": "BACK",
+    "reads": 41,
+    "camera_fps": 30.1,
+    "latency_ms": 132.24408999985826
+   }
+  },
+  "model_off_camera_on": {
+   "seconds": 10.0,
+   "pid": 29947,
+   "app_cpu_pct_of_one_core": 120.29,
+   "machine_busy_pct_of_all_cores": 34.14,
+   "app_rss_mb": 109.4,
+   "app_threads": 15,
+   "hottest_c_end": 47.5,
+   "hottest_c_peak": 51.6,
+   "load": [
+    "2.25",
+    "1.90",
+    "1.72"
+   ]
+  }
+ },
+ "temp_at_start_c": 49.7,
+ "temps_c": [
+  52.8,
+  47.1,
+  48.4
+ ],
+ "frozen_proof": {
+  "top": [
+   "25.0% 0.1% top",
+   "0.0% 0.4% systemd",
+   "0.0% 0.0% kthreadd",
+   "0.0% 0.0% pool_wo+",
+   "0.0% 0.0% kworker+"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "active",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "console_errors": [],
+ "standby_after": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 64,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "proof_after": {
+  "top": [
+   "8.3% 0.1% top",
+   "0.0% 0.4% systemd",
+   "0.0% 0.0% kthreadd",
+   "0.0% 0.0% pool_wo+",
+   "0.0% 0.0% kworker+"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "suspended",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "temp_at_end_c": 46.8,
+ "network_stalls": []
+}

@@ -1,0 +1,137 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:21:12 UTC",
+ "windows": [
+  {
+   "name": "no_tissue_sim",
+   "limit_s": 180,
+   "cooled": 49.0,
+   "start": "2026-11-02 17:19:27 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.0,
+    "mem_available_mb": 3010,
+    "open_connections_to_app": 0
+   },
+   "seconds": 98.1,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.3,
+    "mem_available_mb": 3014,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "32"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:20:32 UTC",
+   "id": 1,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 3,
+    "status": "no_tissue",
+    "label": "BACK",
+    "prob": 0.9994999725967698,
+    "where": "Simulated frame",
+    "age_s": 43
+   },
+   "text": "The model found too little tissue in this frame to read it. Stained tissue covers 0% of pixels, and the model needs 10%. So no class was given. The frame may be blank, dark or off target.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.47,
+    "prepare_s": 18.82,
+    "first_word_s": 29.81,
+    "words": 37,
+    "tokens": 48,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.0147397825499835,
+    "prompt_n": 74,
+    "cache_n": 203,
+    "prompt_tps": 9.864271621516963,
+    "done_s": 41.77,
+    "peak_c": 62.9
+   },
+   "case": "no_tissue_blank_sim_frame",
+   "status": "no_tissue",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 30.15,
+    "finished": 42.14
+   }
+  },
+  {
+   "when": "2026-11-02 17:21:03 UTC",
+   "id": 2,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 11,
+    "status": "no_tissue",
+    "label": "BACK",
+    "prob": 0.9994999725967698,
+    "where": "Simulated frame",
+    "age_s": 23
+   },
+   "text": "The model found too little tissue in this picture to read it. Just 0% of the picture looks like stained tissue, below the 10% it needs. So it gave no class. The picture may be blank, dark or off target, so there is nothing to classify.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 7.59,
+    "words": 46,
+    "tokens": 58,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.992672482246547,
+    "prompt_n": 74,
+    "cache_n": 206,
+    "prompt_tps": 9.774640382394498,
+    "done_s": 22.12,
+    "peak_c": 62.6
+   },
+   "case": "no_tissue_blank_sim_frame",
+   "status": "no_tissue",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 7.91,
+    "finished": 22.26
+   }
+  }
+ ],
+ "note": "Blank synthetic frame (--mode sim, every 4th frame). Everything after the frame is real.",
+ "page": {
+  "badge": "NO TISSUE",
+  "suggest": "No tissue class suggested",
+  "reason": "Too little tissue in the yellow square. Fill the square with the tile.",
+  "meta": "tile #3 | LED matrix: No tissue"
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

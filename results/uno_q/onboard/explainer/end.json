@@ -1,0 +1,76 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:24:04 UTC",
+ "boots_before": [
+  "-2 bb975c9fb7b0418aa03f435ae28eab89 Mon 2026-11-02 18:12:09 UTC Mon 2026-11-02 18:17:57 UTC",
+  " -1 5b69cc5c628f41489ee5aec4ff03f589 Mon 2026-11-02 18:17:58 UTC Mon 2026-11-02 18:20:43 UTC",
+  "  0 279a168852494bf59896711da94e3b94 Mon 2026-11-02 18:20:45 UTC Mon 2026-11-02 18:22:14 UTC"
+ ],
+ "reboot_armed": 0,
+ "page_went_away_after_s": 7.2,
+ "page_back_after_reboot_s": 49.2,
+ "proof": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false,
+  "explainer": "off",
+  "panel_open": false,
+  "llama_pids": [],
+  "video_holders": "",
+  "temp_c": 42.7,
+  "mem_available_mb": 3186,
+  "open_connections_to_app": 0
+ },
+ "state": {
+  "status": "standby",
+  "call": null,
+  "explain": {
+   "server": "off",
+   "start_max_c": 68.0,
+   "stop_max_c": 72.0,
+   "job": null,
+   "available": false,
+   "target": null,
+   "decision": null,
+   "why_not": "Nothing to explain yet. Start the model and give it a picture.",
+   "hint": null
+  },
+  "system": {
+   "uptime_s": 64.43,
+   "load": 2.77,
+   "mem_available_mb": 3186,
+   "temp_c": 41.8
+  }
+ },
+ "page_served": true,
+ "service": {
+  "enabled": "enabled",
+  "active": "active",
+  "restarts": "0"
+ },
+ "kernel": "7.0.0-g122c2c22d838",
+ "boots_after": [
+  "-2 5b69cc5c628f41489ee5aec4ff03f589 Mon 2026-11-02 18:17:58 UTC Mon 2026-11-02 18:20:43 UTC",
+  " -1 279a168852494bf59896711da94e3b94 Mon 2026-11-02 18:20:45 UTC Mon 2026-11-02 18:22:22 UTC",
+  "  0 11a87825226b45a195b343716873237f Mon 2026-11-02 18:22:23 UTC Mon 2026-11-02 18:23:38 UTC"
+ ],
+ "radio": "enabled",
+ "tailscale_serve": [
+  "|-- tcp://<board-tailnet-name>:8080 (tailnet only)",
+  "|-- tcp://<board-tailnet-ip>:8080"
+ ],
+ "left_over_units": "",
+ "app_cpu_in_standby": {
+  "seconds": 20.0,
+  "app_cpu_pct_of_one_core": 0.0
+ },
+ "board_runs_this_code": true,
+ "model_sha256_on_board": "84a1d904388270f0b688e1a76632df3d045c4865218346905dfa8ec8ca118bd3",
+ "models_on_board": [
+  "397808192 /home/arduino/twinread-conch-musk-edge/data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf",
+  "419246784 /home/arduino/twinread-conch-musk-edge/data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf",
+  "419245920 /home/arduino/twinread-conch-musk-edge/data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf"
+ ],
+ "network_stalls": []
+}

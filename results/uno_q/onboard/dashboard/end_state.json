@@ -1,0 +1,63 @@
+{
+ "app_cpu_pct_of_one_core_30s": 0.0,
+ "app_rss_mb": 57.4,
+ "threads": 8,
+ "enabled": "enabled",
+ "active": "active",
+ "stopgap": "inactive",
+ "exec_args": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conch-musk-edge/device/uno_q_app.py --bundle /home/arduino/twinread-conch-musk-edge/device/../bundles/cm --mode camera --device auto --camera-loss wait --threads 3 --interval 0.5 --port 8080 --standby",
+ "etc_default": "# Extra arguments for uno_q_app.py. --standby: dashboard up, camera closed, model unloaded.\nTWINREAD_ARGS=--standby",
+ "video_holders": "",
+ "camera_nodes": [
+  "video0 OBSBOT Meet 2: OBSBOT Meet 2 St",
+  "video1 OBSBOT Meet 2: OBSBOT Meet 2 St",
+  "video2 qcom-venus-encoder",
+  "video3 qcom-venus-decoder"
+ ],
+ "usb_runtime_status": "suspended",
+ "chromium_procs": "0",
+ "connectors": [
+  "disconnected"
+ ],
+ "temps_c_hottest": 48.4,
+ "top": [
+  "top - 10:55:01 up 8 min,  2 users,  load average: 1.88, 1.80, 1.01",
+  "Tasks: 178 total,   1 running, 177 sleeping,   0 stopped,   0 zombie",
+  "%Cpu(s):  2.2 us,  6.5 sy,  0.0 ni, 91.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st ",
+  "MiB Mem :   3667.2 total,   2036.2 free,    538.4 used,   1259.6 buff/cache     ",
+  "    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND",
+  "   4235 arduino   20   0   10140   4808   2808 R  25.0   0.1   0:00.04 top",
+  "      1 root      20   0   25728  15020  10060 S   0.0   0.4   0:12.59 systemd",
+  "      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd",
+  "      3 root      20   0       0      0      0 S   0.0   0.0   0:00.00 pool_wo+",
+  "      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker+"
+ ],
+ "app_in_top": "4087 arduino   20   0  605552  58768  30888 S   0.0   1.6   0:01.54 python",
+ "boots": [
+  "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+  " -4 c7439ee57162496fab1e72addc6cdaae Mon 2026-11-02 09:14:30 UTC Mon 2026-11-02 09:27:07 UTC",
+  " -3 32cc03109dfc446892e09da2092f0a66 Mon 2026-11-02 09:27:09 UTC Mon 2026-11-02 09:39:14 UTC",
+  " -2 9d8fca0e3a3b45db8ec94583e752902e Mon 2026-11-02 09:38:17 UTC Mon 2026-11-02 09:42:00 UTC",
+  " -1 a14267bafa1f4a4f92912d2a96272a71 Mon 2026-11-02 09:41:26 UTC Mon 2026-11-02 10:46:20 UTC",
+  "  0 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 10:46:21 UTC Mon 2026-11-02 10:54:59 UTC"
+ ],
+ "uptime": "10:55:01 up 8 min,  2 users,  load average: 1.88, 1.80, 1.01",
+ "over_the_tailnet": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "controls": {
+   "source": "camera",
+   "model_paused": true,
+   "feed_paused": true,
+   "model_loaded": false,
+   "camera_open": false,
+   "model_started": false,
+   "camera_started": false,
+   "demo_available": true,
+   "demo_error": null
+  },
+  "led": true,
+  "led_state": "idle",
+  "model_error": null
+ }
+}

@@ -1,0 +1,74 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:20:33 UTC",
+ "windows": [
+  {
+   "name": "start_reading",
+   "limit_s": 180,
+   "cooled": 43.1,
+   "start": "2026-11-02 18:20:12 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 43.1,
+    "mem_available_mb": 3171,
+    "open_connections_to_app": 0
+   },
+   "seconds": 13.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 43.4,
+    "mem_available_mb": 3121,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "7"
+   }
+  }
+ ],
+ "other_connections_at_start": 0,
+ "before": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "buttons_in_standby": [
+  "Start reading",
+  "Run demo slides"
+ ],
+ "bar_buttons": [
+  "Start camera",
+  "Start model"
+ ],
+ "first_call_s": 3.78,
+ "posts_sent_by_the_click": [
+  "{\"feed_paused\":false,\"model_paused\":false}"
+ ],
+ "after": {
+  "status": "review",
+  "model_loaded": true,
+  "camera_open": true,
+  "frame_label": "Live",
+  "reads": 3,
+  "video_holders": "1649"
+ },
+ "bar_buttons_after": [
+  "Pause camera",
+  "Pause model"
+ ],
+ "console_errors": [],
+ "network_stalls": []
+}

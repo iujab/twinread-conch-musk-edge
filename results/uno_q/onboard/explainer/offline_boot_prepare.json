@@ -1,0 +1,22 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:11:47 UTC",
+ "twinread-wifi-restore.service": 0,
+ "twinread-offline-boot-check.service": 0,
+ "reload": 0,
+ "enable_restore": [
+  0,
+  "",
+  "Created symlink '/etc/systemd/system/multi-user.target.wants/twinread-wifi-restore.service' \u2192 '/etc/systemd/system/twinread-wifi-restore.service'."
+ ],
+ "start_for_test": 0,
+ "running": "activating",
+ "after_sleep": {
+  "state": "Result=success ActiveState=inactive SubState=dead",
+  "log": "radio on at uptime 26708.49, boot 143d9ac9-aac7-43ae-9300-fccf05517630",
+  "radio": "enabled"
+ },
+ "enabled": "enabled",
+ "network_stalls": []
+}

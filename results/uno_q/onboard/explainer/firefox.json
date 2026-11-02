@@ -1,0 +1,107 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:48:57 UTC",
+ "windows": [
+  {
+   "name": "firefox",
+   "limit_s": 180,
+   "cooled": 47.1,
+   "start": "2026-11-02 17:47:39 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.5,
+    "mem_available_mb": 3040,
+    "open_connections_to_app": 0
+   },
+   "seconds": 69.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 3031,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "24"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:48:49 UTC",
+   "id": 2,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 3,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 58
+   },
+   "text": "The model called this tile TUM (colorectal adenocarcinoma epithelium), with a combined confidence of 98%. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. The TUM class is irregular glands whose lining cells are crowded and abnormal. The tile is not flagged for review. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.57,
+    "first_word_s": 32.0,
+    "words": 64,
+    "tokens": 93,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9550098492503345,
+    "prompt_n": 103,
+    "cache_n": 203,
+    "prompt_tps": 10.352487109645905,
+    "done_s": 55.52,
+    "peak_c": 61.6
+   },
+   "case": "firefox"
+  }
+ ],
+ "browser": {
+  "name": "firefox",
+  "version": "158.0.1"
+ },
+ "standby": {
+  "badge": "STANDBY",
+  "go_disabled": "true",
+  "why": "Nothing to explain yet. Start the model and give it a picture.",
+  "font": "system-ui, sans-serif"
+ },
+ "confident": {
+  "badge": "CONFIDENT",
+  "suggest": "Suggests colorectal adenocarcinoma epithelium (TUM)",
+  "stream_painted": 720
+ },
+ "after_click": {
+  "panel": true,
+  "source": "from the reading",
+  "stop_visible": true
+ },
+ "after_answer": {
+  "source": "for a doctor, written by the on-board language model and checked against the reading",
+  "text": "The model called this tile TUM (colorectal adenocarcinoma epithelium), with a combined confidence of 98%. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. The TUM class is irregular glands whose lining cells are crowded and abnormal. The tile is not flagged for review. This describes one tile as the model read it.",
+  "close_visible": true
+ },
+ "network_stalls": []
+}

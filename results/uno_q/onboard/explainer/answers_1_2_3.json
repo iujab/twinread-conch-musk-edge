@@ -1,0 +1,663 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:19:06 UTC",
+ "answers": [
+  {
+   "when": "2026-11-02 17:10:26 UTC",
+   "id": 1,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 2,
+    "status": "review",
+    "label": "DEB",
+    "prob": 0.9682652414381865,
+    "where": "Demo slide 3 of 18",
+    "age_s": 57
+   },
+   "text": "The model read this tile as DEB (debris) with a combined confidence of 97%. Head A picked DEB at 100%, while Head B picked DEB at 100%. The two heads agree on this tile. It is flagged for review because the review head is unsure, with a score of 0.45. The DEB class is fragments of dead cells and broken-down tissue. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.6,
+    "first_word_s": 32.2,
+    "words": 70,
+    "tokens": 98,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.957066155241439,
+    "prompt_n": 104,
+    "cache_n": 203,
+    "prompt_tps": 10.2755020175553,
+    "done_s": 56.97,
+    "peak_c": 59.7
+   },
+   "slide": 2,
+   "slide_status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "truth": "DEB",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 32.89,
+    "finished": 57.65
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:11:04 UTC",
+   "id": 2,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 2,
+    "status": "review",
+    "label": "DEB",
+    "prob": 0.9682652414381865,
+    "where": "Demo slide 3 of 18",
+    "age_s": 95
+   },
+   "text": "The model read this tile as debris (DEB). Its combined confidence in that call is 97%. The model has two heads that each give their own answer. Head A gives DEB 100% confidence, and Head B gives DEB 100%. The heads agree. The tile is flagged for review: the review score of 0.45 shows the review head is unsure. In a tissue image, debris means broken-down tissue and bits of dead cells.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 10.17,
+    "words": 72,
+    "tokens": 100,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.948755421394396,
+    "prompt_n": 104,
+    "cache_n": 206,
+    "prompt_tps": 10.263657572802886,
+    "done_s": 35.5,
+    "peak_c": 61.3
+   },
+   "slide": 2,
+   "slide_status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "truth": "DEB",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.38,
+    "finished": 36.07
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:11:46 UTC",
+   "id": 3,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 3,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7522918779627106,
+    "where": "Demo slide 11 of 18",
+    "age_s": 39
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR) with a combined confidence of 75%. Head A gives smooth muscle (MUS) 61% confidence, and Head B gives smooth muscle (MUS) 53%. The heads agree with each other, but the combined call differs from both, and the tile is flagged for review because the review head is unsure (score 0.55). On H&E, the STR class means fibrous tissue around cancer, with spindle cells and collagen.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 11.78,
+    "words": 74,
+    "tokens": 107,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.93728921243839,
+    "prompt_n": 122,
+    "cache_n": 206,
+    "prompt_tps": 10.396297486473523,
+    "done_s": 38.96,
+    "peak_c": 62.6
+   },
+   "slide": 10,
+   "slide_status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "truth": "MUS",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 11.97,
+    "finished": 39.42
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:12:29 UTC",
+   "id": 4,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 3,
+    "status": "review",
+    "label": "STR",
+    "prob": 0.7522918779627106,
+    "where": "Demo slide 11 of 18",
+    "age_s": 82
+   },
+   "text": "The model read this tile as cancer-associated stroma (STR). Its combined confidence in that call is 75%. The model has two heads, and each answers on its own. Head A picked smooth muscle (MUS) at 61%, while Head B picked smooth muscle (MUS) at 53%. The heads agree with each other, but the combined call differs from both, and the tile is flagged for review because the review head is unsure (score 0.55). Cancer-associated stroma means the fibrous tissue found around cancer.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 12.0,
+    "words": 82,
+    "tokens": 115,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9330464170272044,
+    "prompt_n": 125,
+    "cache_n": 206,
+    "prompt_tps": 10.455973284235428,
+    "done_s": 41.25,
+    "peak_c": 63.2
+   },
+   "slide": 10,
+   "slide_status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "truth": "MUS",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 12.5,
+    "finished": 41.68
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:13:56 UTC",
+   "id": 5,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 5,
+    "status": "agree",
+    "label": "BACK",
+    "prob": 0.9999673206782739,
+    "where": "Demo slide 9 of 18",
+    "age_s": 52
+   },
+   "text": "The model read this tile as background (BACK) at 100% combined confidence. Head A picked BACK at 100%, while Head B picked BACK at 100%. The heads picked the same class, so they agree. The tile is not flagged for review. The BACK class is an area of the slide with little or no tissue. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.53,
+    "first_word_s": 30.64,
+    "words": 64,
+    "tokens": 84,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.010456022747689,
+    "prompt_n": 90,
+    "cache_n": 203,
+    "prompt_tps": 10.431200322857242,
+    "done_s": 51.59,
+    "peak_c": 62.9
+   },
+   "slide": 8,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "BACK",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 31.34,
+    "finished": 51.62
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:14:28 UTC",
+   "id": 6,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 5,
+    "status": "agree",
+    "label": "BACK",
+    "prob": 0.9999673206782739,
+    "where": "Demo slide 9 of 18",
+    "age_s": 83
+   },
+   "text": "The model read this tile as background (BACK). Its combined confidence in that call is 100%. The model has two heads that each give their own answer. Head A picked BACK at 100%, while Head B picked BACK at 100%. The two heads agree on this tile. BACK covers an empty part of the body with little or no tissue. No review flag was raised for this tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 8.66,
+    "words": 68,
+    "tokens": 86,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.079327358763132,
+    "prompt_n": 90,
+    "cache_n": 206,
+    "prompt_tps": 10.437540539697387,
+    "done_s": 29.75,
+    "peak_c": 63.2
+   },
+   "slide": 8,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "BACK",
+   "page_marks": {
+    "facts": 0.03,
+    "first_word": 9.41,
+    "finished": 30.2
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:15:02 UTC",
+   "id": 7,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 6,
+    "status": "agree",
+    "label": "LYM",
+    "prob": 0.9999953992615911,
+    "where": "Demo slide 5 of 18",
+    "age_s": 32
+   },
+   "text": "The model read this tile as lymphocytes (LYM) with a combined confidence of 100%. Head A chose LYM at 100% and Head B chose LYM at 100%. Head A and Head B agree on the class. The tile is not flagged for review. On H&E, LYM means dense groups of small round immune cells with dark nuclei. This is the model's reading of one tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 8.95,
+    "words": 65,
+    "tokens": 91,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9882293764824106,
+    "prompt_n": 93,
+    "cache_n": 206,
+    "prompt_tps": 10.445614403176904,
+    "done_s": 31.77,
+    "peak_c": 64.1
+   },
+   "slide": 4,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "LYM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 9.52,
+    "finished": 32.06
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:15:36 UTC",
+   "id": 8,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 6,
+    "status": "agree",
+    "label": "LYM",
+    "prob": 0.9999953992615911,
+    "where": "Demo slide 5 of 18",
+    "age_s": 66
+   },
+   "text": "The model read this tile as lymphocytes (LYM). Its combined confidence in that call is 100%. The model has two heads that each give their own answer. Head A chose LYM at 100% and Head B chose LYM at 100%. The two heads agree on this tile. It is not flagged for review. In a tissue image, lymphocytes means groups of small round immune cells.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.16,
+    "words": 65,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9812973858264558,
+    "prompt_n": 96,
+    "cache_n": 206,
+    "prompt_tps": 10.526868680931816,
+    "done_s": 31.52,
+    "peak_c": 64.1
+   },
+   "slide": 4,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "LYM",
+   "page_marks": {
+    "facts": 0.04,
+    "first_word": 9.63,
+    "finished": 32.15
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:17:11 UTC",
+   "id": 9,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 8,
+    "status": "agree",
+    "label": "TUM",
+    "prob": 0.9790725436541972,
+    "where": "Demo slide 6 of 18",
+    "age_s": 59
+   },
+   "text": "The model read this tile as colorectal adenocarcinoma epithelium (TUM). Its combined confidence in that call is 98%. The model has two heads that each give their own answer. Head A picked TUM at 100%, while Head B picked TUM at 100%. The two heads agree on this tile. It is not flagged for review. In a tissue image, colorectal adenocarcinoma epithelium means irregular glands made of crowded, abnormal cells.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.46,
+    "prepare_s": 18.65,
+    "first_word_s": 32.29,
+    "words": 70,
+    "tokens": 106,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9519396418021557,
+    "prompt_n": 106,
+    "cache_n": 203,
+    "prompt_tps": 10.424729030805075,
+    "done_s": 59.12,
+    "peak_c": 63.2
+   },
+   "slide": 5,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "TUM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 32.36,
+    "finished": 59.49
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:17:47 UTC",
+   "id": 10,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 9,
+    "status": "agree",
+    "label": "NORM",
+    "prob": 0.9999577324550128,
+    "where": "Demo slide 8 of 18",
+    "age_s": 33
+   },
+   "text": "The model called this tile normal colon mucosa (NORM), with a combined confidence of 100%. Head A picked NORM at 100%, while Head B picked NORM at 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, NORM means regular glands whose lining is orderly epithelium with goblet cells. This is the model's reading of one tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.55,
+    "words": 64,
+    "tokens": 93,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9669973123379934,
+    "prompt_n": 97,
+    "cache_n": 206,
+    "prompt_tps": 10.200293810524808,
+    "done_s": 33.0,
+    "peak_c": 63.2
+   },
+   "slide": 7,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "NORM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 11.89,
+    "finished": 33.08
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:18:23 UTC",
+   "id": 11,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 9,
+    "status": "agree",
+    "label": "NORM",
+    "prob": 0.9999577324550128,
+    "where": "Demo slide 8 of 18",
+    "age_s": 69
+   },
+   "text": "The model looked at this small square of tissue and read it as normal colon mucosa (NORM), with a combined confidence of 100%. The model has two heads that each give their own answer. Both heads picked NORM, Head A with 100% confidence and Head B with 100%. The two heads agree on this tile. NORM covers the orderly glands of the colon lining. No review flag was raised for this tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 9.78,
+    "words": 72,
+    "tokens": 95,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.9612169342107335,
+    "prompt_n": 100,
+    "cache_n": 206,
+    "prompt_tps": 10.26718290062291,
+    "done_s": 33.77,
+    "peak_c": 64.8
+   },
+   "slide": 7,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "NORM",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 10.45,
+    "finished": 34.41
+   },
+   "case": "demo_slide"
+  },
+  {
+   "when": "2026-11-02 17:18:58 UTC",
+   "id": 12,
+   "audience": "user",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 10,
+    "status": "agree",
+    "label": "MUS",
+    "prob": 0.999916202807528,
+    "where": "Demo slide 7 of 18",
+    "age_s": 33
+   },
+   "text": "The model looked at one small tile of tissue and read it as smooth muscle, labelled MUS, with a combined confidence of 100%. Two parts of the model, its heads, answer separately. Head A picked MUS at 100%, while Head B picked MUS at 100%. The two heads agree on this tile. The model did not flag this tile for review. In a tissue image, smooth muscle means long thin cells packed into bundles.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 7.71,
+    "words": 74,
+    "tokens": 98,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 3.971398152602838,
+    "prompt_n": 77,
+    "cache_n": 226,
+    "prompt_tps": 10.03769349446656,
+    "done_s": 32.39,
+    "peak_c": 64.8
+   },
+   "slide": 6,
+   "slide_status": "agree",
+   "reasons": [],
+   "truth": "MUS",
+   "page_marks": {
+    "facts": 0.02,
+    "first_word": 7.99,
+    "finished": 32.77
+   },
+   "case": "demo_slide"
+  }
+ ],
+ "windows": [
+  {
+   "name": "answers_1",
+   "limit_s": 180,
+   "cooled": 44.0,
+   "start": "2026-11-02 17:09:23 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 44.6,
+    "mem_available_mb": 3082,
+    "open_connections_to_app": 0
+   },
+   "seconds": 186.8,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.9,
+    "mem_available_mb": 3034,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "60"
+   }
+  },
+  {
+   "name": "answers_2",
+   "limit_s": 180,
+   "cooled": 47.5,
+   "start": "2026-11-02 17:12:58 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.1,
+    "mem_available_mb": 3031,
+    "open_connections_to_app": 0
+   },
+   "seconds": 158.5,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 51.9,
+    "mem_available_mb": 3018,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "51"
+   }
+  },
+  {
+   "name": "answers_3",
+   "limit_s": 180,
+   "cooled": 48.4,
+   "start": "2026-11-02 17:16:06 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 48.4,
+    "mem_available_mb": 3017,
+    "open_connections_to_app": 0
+   },
+   "seconds": 172.9,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 52.2,
+    "mem_available_mb": 3014,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "55"
+   }
+  }
+ ],
+ "console_errors": [],
+ "network_stalls": [
+  {
+   "at": "17:11:57",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

@@ -1,0 +1,421 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 10:50:54 UTC",
+ "temp_at_start_c": 50.9,
+ "standby_before": {
+  "status": "standby",
+  "frame_label": "Frozen frame",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 57,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "start_post_s": 0.403,
+ "slides": [
+  {
+   "index": 0,
+   "file": "00_STR_2260.png",
+   "truth": "STR",
+   "label": "STR",
+   "match": true,
+   "status": "review",
+   "reasons": [
+    "js",
+    "review_head"
+   ],
+   "prob": 0.7576,
+   "labelA": "STR",
+   "labelB": "STR",
+   "latency_ms": 53.8,
+   "led": true,
+   "led_state": "review"
+  },
+  {
+   "index": 1,
+   "file": "01_MUC_0024.png",
+   "truth": "MUC",
+   "label": "MUC",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9999,
+   "labelA": "MUC",
+   "labelB": "MUC",
+   "latency_ms": 52.9,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 2,
+   "file": "02_DEB_1714.png",
+   "truth": "DEB",
+   "label": "DEB",
+   "match": true,
+   "status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "prob": 0.9683,
+   "labelA": "DEB",
+   "labelB": "DEB",
+   "latency_ms": 63.6,
+   "led": true,
+   "led_state": "review"
+  },
+  {
+   "index": 3,
+   "file": "03_ADI_6793.png",
+   "truth": "ADI",
+   "label": "ADI",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "ADI",
+   "labelB": "ADI",
+   "latency_ms": 54.5,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 4,
+   "file": "04_LYM_2091.png",
+   "truth": "LYM",
+   "label": "LYM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "LYM",
+   "labelB": "LYM",
+   "latency_ms": 55.9,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 5,
+   "file": "05_TUM_5151.png",
+   "truth": "TUM",
+   "label": "TUM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9791,
+   "labelA": "TUM",
+   "labelB": "TUM",
+   "latency_ms": 52.3,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 6,
+   "file": "06_MUS_6019.png",
+   "truth": "MUS",
+   "label": "MUS",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9999,
+   "labelA": "MUS",
+   "labelB": "MUS",
+   "latency_ms": 53.8,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 7,
+   "file": "07_NORM_0823.png",
+   "truth": "NORM",
+   "label": "NORM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "NORM",
+   "labelB": "NORM",
+   "latency_ms": 55.5,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 8,
+   "file": "08_BACK_6413.png",
+   "truth": "BACK",
+   "label": "BACK",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "BACK",
+   "labelB": "BACK",
+   "latency_ms": 55.9,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 9,
+   "file": "09_ADI_4611.png",
+   "truth": "ADI",
+   "label": "ADI",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "ADI",
+   "labelB": "ADI",
+   "latency_ms": 53.3,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 10,
+   "file": "10_MUS_0964.png",
+   "truth": "MUS",
+   "label": "STR",
+   "match": false,
+   "status": "review",
+   "reasons": [
+    "review_head"
+   ],
+   "prob": 0.7523,
+   "labelA": "MUS",
+   "labelB": "MUS",
+   "latency_ms": 53.0,
+   "led": true,
+   "led_state": "review"
+  },
+  {
+   "index": 11,
+   "file": "11_DEB_6097.png",
+   "truth": "DEB",
+   "label": "DEB",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9957,
+   "labelA": "DEB",
+   "labelB": "DEB",
+   "latency_ms": 52.5,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 12,
+   "file": "12_MUC_6629.png",
+   "truth": "MUC",
+   "label": "MUC",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9957,
+   "labelA": "MUC",
+   "labelB": "MUC",
+   "latency_ms": 51.8,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 13,
+   "file": "13_TUM_1807.png",
+   "truth": "TUM",
+   "label": "TUM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9999,
+   "labelA": "TUM",
+   "labelB": "TUM",
+   "latency_ms": 51.8,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 14,
+   "file": "14_NORM_3456.png",
+   "truth": "NORM",
+   "label": "NORM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "NORM",
+   "labelB": "NORM",
+   "latency_ms": 51.4,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 15,
+   "file": "15_STR_1999.png",
+   "truth": "STR",
+   "label": "STR",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 0.9852,
+   "labelA": "STR",
+   "labelB": "STR",
+   "latency_ms": 52.9,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 16,
+   "file": "16_BACK_4107.png",
+   "truth": "BACK",
+   "label": "BACK",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "BACK",
+   "labelB": "BACK",
+   "latency_ms": 52.2,
+   "led": true,
+   "led_state": "agree"
+  },
+  {
+   "index": 17,
+   "file": "17_LYM_2037.png",
+   "truth": "LYM",
+   "label": "LYM",
+   "match": true,
+   "status": "agree",
+   "reasons": [],
+   "prob": 1.0,
+   "labelA": "LYM",
+   "labelB": "LYM",
+   "latency_ms": 54.0,
+   "led": true,
+   "led_state": "agree"
+  }
+ ],
+ "summary": {
+  "slides": 18,
+  "match_true_label": 17,
+  "agree": 15,
+  "review": 3,
+  "no_tissue": 0,
+  "review_and_wrong": 1,
+  "agree_and_wrong": 0,
+  "latency_ms_median": 53.3,
+  "selection": "fixed seed, not filtered by model output (data/demo_slides/manifest.json)"
+ },
+ "temps_c": [
+  53.8,
+  49.3,
+  45.9
+ ],
+ "held_slide_reads_in_5s": 0,
+ "auto_advance_2s": [
+  {
+   "t": 0.01,
+   "index": 16
+  },
+  {
+   "t": 2.03,
+   "index": 17
+  },
+  {
+   "t": 4.08,
+   "index": 0
+  },
+  {
+   "t": 6.12,
+   "index": 1
+  }
+ ],
+ "running_4s_pace": {
+  "window": {
+   "seconds": 20.0,
+   "pid": 1119,
+   "app_cpu_pct_of_one_core": 8.5,
+   "machine_busy_pct_of_all_cores": 3.96,
+   "app_rss_mb": 134.0,
+   "app_threads": 16,
+   "hottest_c_end": 44.9,
+   "hottest_c_peak": 48.4,
+   "load": [
+    "0.98",
+    "1.30",
+    "0.68"
+   ]
+  },
+  "proof": {
+   "top": [
+    "8.3% 1.6% tailsca+",
+    "8.3% 0.1% top",
+    "0.0% 0.4% systemd",
+    "0.0% 0.0% kthreadd",
+    "0.0% 0.0% pool_wo+"
+   ],
+   "video_holders": "",
+   "usb_runtime_status": "suspended",
+   "usb_alt_settings": "0 0 0 0"
+  },
+  "state": {
+   "status": "agree",
+   "frame_label": "Demo slide",
+   "model_loaded": true,
+   "camera_open": false,
+   "call": "NORM",
+   "reads": 85,
+   "camera_fps": null,
+   "latency_ms": 50.09956499998225
+  }
+ },
+ "running_model_off": {
+  "window": {
+   "seconds": 10.0,
+   "pid": 1119,
+   "app_cpu_pct_of_one_core": 0.1,
+   "machine_busy_pct_of_all_cores": 1.1,
+   "app_rss_mb": 112.6,
+   "app_threads": 14,
+   "hottest_c_end": 44.3,
+   "hottest_c_peak": 47.1,
+   "load": [
+    "0.90",
+    "1.27",
+    "0.68"
+   ]
+  },
+  "state": {
+   "status": "model_paused",
+   "frame_label": "Demo slide",
+   "model_loaded": false,
+   "camera_open": false,
+   "call": null,
+   "reads": 85,
+   "camera_fps": null,
+   "latency_ms": null
+  }
+ },
+ "standby_after": {
+  "status": "standby",
+  "frame_label": "Camera off",
+  "model_loaded": false,
+  "camera_open": false,
+  "call": null,
+  "reads": 85,
+  "camera_fps": null,
+  "latency_ms": null
+ },
+ "proof_after": {
+  "top": [
+   "8.3% 0.1% top",
+   "0.0% 0.4% systemd",
+   "0.0% 0.0% kthreadd",
+   "0.0% 0.0% pool_wo+",
+   "0.0% 0.0% kworker+"
+  ],
+  "video_holders": "",
+  "usb_runtime_status": "suspended",
+  "usb_alt_settings": "0 0 0 0"
+ },
+ "temp_at_end_c": 45.3,
+ "network_stalls": []
+}

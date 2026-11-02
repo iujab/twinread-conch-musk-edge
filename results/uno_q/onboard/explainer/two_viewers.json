@@ -1,0 +1,98 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 17:35:11 UTC",
+ "windows": [
+  {
+   "name": "two_viewers",
+   "limit_s": 180,
+   "cooled": 46.5,
+   "start": "2026-11-02 17:33:53 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.1,
+    "mem_available_mb": 2999,
+    "open_connections_to_app": 0
+   },
+   "seconds": 70.0,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 50.0,
+    "mem_available_mb": 3001,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "24"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 17:35:03 UTC",
+   "id": 24,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 19,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 62
+   },
+   "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100% and Head B chose MUC at 100%. The heads picked the same class, so they agree. It is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile.",
+   "stats": {
+    "cold": false,
+    "first_word_s": 0.3,
+    "words": 63,
+    "tokens": 92,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.084767267942928,
+    "prompt_n": 1,
+    "cache_n": 299,
+    "prompt_tps": 3.79982520804043,
+    "done_s": 22.83,
+    "peak_c": 61.9
+   },
+   "case": "two_viewers",
+   "slide": 1
+  }
+ ],
+ "second_viewer_saw_panel_without_clicking": true,
+ "while_writing": {
+  "a_words": 13,
+  "b_words": 13,
+  "one_is_prefix_of_the_other": true
+ },
+ "after_second_viewer_stopped": {
+  "a_source": "from the reading",
+  "b_source": "from the reading",
+  "a_close_visible": true,
+  "same_text": true
+ },
+ "after_second_answer": {
+  "same_text": true,
+  "a_words": 63
+ },
+ "console_errors": [],
+ "network_stalls": []
+}

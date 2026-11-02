@@ -1,0 +1,206 @@
+{
+ "simulated": false,
+ "url": "http://<board-tailnet-ip>:8080",
+ "when": "2026-11-02 18:16:16 UTC",
+ "windows": [],
+ "before": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false,
+  "explainer": "off",
+  "panel_open": false,
+  "llama_pids": [],
+  "video_holders": "",
+  "temp_c": 42.4,
+  "mem_available_mb": 3020,
+  "open_connections_to_app": 0
+ },
+ "kernel": "7.0.0-g122c2c22d838",
+ "boots_before": [
+  "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+  "  0 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 11:19:40 UTC Mon 2026-11-02 18:11:59 UTC"
+ ],
+ "enable_check": 0,
+ "reboot_started": 0,
+ "tailnet_back_after_s": 225.7,
+ "check_log": {
+  "simulated": false,
+  "mode": "boot",
+  "kernel": "7.0.0-g122c2c22d838",
+  "boot_id": "bb975c9f-b7b0-418a-a03f-435ae28eab89",
+  "uptime_at_start_s": 16.95,
+  "events": [
+   {
+    "uptime_s": 17.49,
+    "what": "network_before",
+    "default_route": "",
+    "wlan0": "",
+    "radio": "disabled",
+    "can_reach_outside": "no",
+    "tailscale_backend": "False"
+   },
+   {
+    "uptime_s": 18.68,
+    "what": "page_answers",
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "after_s": 1.1,
+    "html_has_title": true
+   },
+   {
+    "uptime_s": 19.76,
+    "what": "decision",
+    "status": "agree",
+    "label": "MUC"
+   },
+   {
+    "uptime_s": 19.78,
+    "what": "explain_pressed",
+    "job": {
+     "phase": "starting",
+     "source": "reading"
+    },
+    "error": null
+   },
+   {
+    "uptime_s": 19.8,
+    "what": "phase",
+    "phase": "starting",
+    "default_route": ""
+   },
+   {
+    "uptime_s": 24.87,
+    "what": "phase",
+    "phase": "preparing",
+    "default_route": ""
+   },
+   {
+    "uptime_s": 44.11,
+    "what": "phase",
+    "phase": "thinking",
+    "default_route": ""
+   },
+   {
+    "uptime_s": 53.21,
+    "what": "phase",
+    "phase": "writing",
+    "default_route": ""
+   },
+   {
+    "uptime_s": 77.48,
+    "what": "phase",
+    "phase": "done",
+    "default_route": ""
+   },
+   {
+    "uptime_s": 77.48,
+    "what": "answer",
+    "job": {
+     "id": 1,
+     "phase": "done",
+     "audience": "doctor",
+     "source": "model",
+     "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100% and Head B chose MUC at 100%. The heads agree, and the tile is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This describes one tile as the model read it. This is the model's reading of one tile.",
+     "note": null,
+     "checked": true,
+     "about": {
+      "decision": 1,
+      "status": "agree",
+      "label": "MUC",
+      "prob": 0.9999478183768188,
+      "where": "Demo slide 2 of 18",
+      "age_s": 57
+     },
+     "elapsed_s": 57,
+     "words": 68,
+     "stats": {
+      "cold": true,
+      "load_s": 4.89,
+      "prepare_s": 18.57,
+      "first_word_s": 32.93,
+      "words": 68,
+      "tokens": 97,
+      "finish": "stop",
+      "passed": true,
+      "failed_checks": [],
+      "invented_claim": false,
+      "gen_tps": 4.039019089653399,
+      "prompt_n": 97,
+      "cache_n": 203,
+      "prompt_tps": 10.25588322926255,
+      "done_s": 56.96,
+      "peak_c": 59.1
+     },
+     "current": true
+    },
+    "seconds": 57.7
+   },
+   {
+    "uptime_s": 77.72,
+    "what": "network_after_answer",
+    "default_route": "",
+    "wlan0": "",
+    "radio": "disabled",
+    "can_reach_outside": "no",
+    "tailscale_backend": "False"
+   },
+   {
+    "uptime_s": 80.95,
+    "what": "standby",
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "llama": ""
+   },
+   {
+    "uptime_s": 80.95,
+    "what": "done"
+   }
+  ],
+  "service": {
+   "active": "active",
+   "enabled": "enabled",
+   "restarts": "0"
+  }
+ },
+ "restore_log": [
+  "radio on at uptime 26708.49, boot 143d9ac9-aac7-43ae-9300-fccf05517630",
+  "radio on at uptime 195.61, boot bb975c9f-b7b0-418a-a03f-435ae28eab89"
+ ],
+ "boots_after": [
+  "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY",
+  " -1 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 11:46:28 UTC Mon 2026-11-02 18:12:08 UTC",
+  "  0 bb975c9fb7b0418aa03f435ae28eab89 Mon 2026-11-02 18:12:09 UTC Mon 2026-11-02 18:15:41 UTC"
+ ],
+ "kernel_after": "7.0.0-g122c2c22d838",
+ "units": "Result=success ExecMainStatus=0 Id=twinread-wifi-restore.service  Result=success ExecMainStatus=0 Id=twinread-offline-boot-check.service",
+ "disable_twinread-wifi-restore.service": 0,
+ "remove_twinread-wifi-restore.service": 0,
+ "disable_twinread-offline-boot-check.service": 0,
+ "remove_twinread-offline-boot-check.service": 0,
+ "reload": 0,
+ "left_over_units": "",
+ "after": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false,
+  "explainer": "off",
+  "panel_open": false,
+  "llama_pids": [],
+  "video_holders": "",
+  "temp_c": 44.9,
+  "mem_available_mb": 3128,
+  "open_connections_to_app": 0
+ },
+ "radio": "enabled",
+ "default_route_present": true,
+ "tailscale_online": "True",
+ "service": {
+  "enabled": "enabled",
+  "active": "active"
+ },
+ "network_stalls": []
+}

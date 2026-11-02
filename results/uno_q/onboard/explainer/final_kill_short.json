@@ -1,0 +1,177 @@
+{
+ "simulated": false,
+ "url": "http://uno-q:8080",
+ "when": "2026-11-02 19:16:46 UTC",
+ "device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "board_device_code_sha256": "76a4b39124076db8e4b0080116fb67414656468032bb24aaf72debb4e8479ccf",
+ "windows": [
+  {
+   "name": "kill_llama",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 48.1,
+   "start": "2026-11-02 19:13:38 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 47.8,
+    "mem_available_mb": 3062,
+    "open_connections_to_app": 0
+   },
+   "seconds": 98.1,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 3034,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "32"
+   }
+  },
+  {
+   "name": "hang",
+   "limit_s": 180,
+   "others_seen_before_start": [],
+   "cooled": 49.7,
+   "start": "2026-11-02 19:15:24 UTC",
+   "before": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 49.7,
+    "mem_available_mb": 3030,
+    "open_connections_to_app": 0
+   },
+   "seconds": 75.4,
+   "after": {
+    "status": "standby",
+    "model_loaded": false,
+    "camera_open": false,
+    "explainer": "off",
+    "panel_open": false,
+    "llama_pids": [],
+    "video_holders": "",
+    "temp_c": 46.8,
+    "mem_available_mb": 3050,
+    "open_connections_to_app": 0
+   },
+   "background": {
+    "fwupd_refresh": "0",
+    "router_serial_failures": "25"
+   }
+  }
+ ],
+ "answers": [
+  {
+   "when": "2026-11-02 19:15:13 UTC",
+   "id": 11,
+   "audience": "doctor",
+   "phase": "done",
+   "source": "model",
+   "checked": true,
+   "note": null,
+   "about": {
+    "decision": 291,
+    "status": "agree",
+    "label": "MUC",
+    "prob": 0.9999478183768188,
+    "where": "Demo slide 2 of 18",
+    "age_s": 89
+   },
+   "text": "The model read this tile as mucus (MUC) with a combined confidence of 100%. Head A chose MUC at 100% and Head B chose MUC at 100%. The two heads agree on this tile. It is not flagged for review. On H&E, MUC means pale mucus outside cells, with few cells in it. This describes one tile as the model read it.",
+   "stats": {
+    "cold": true,
+    "load_s": 3.27,
+    "prepare_s": 18.67,
+    "first_word_s": 31.44,
+    "words": 62,
+    "tokens": 89,
+    "finish": "stop",
+    "passed": true,
+    "failed_checks": [],
+    "invented_claim": false,
+    "gen_tps": 4.004368451029746,
+    "prompt_n": 97,
+    "cache_n": 203,
+    "prompt_tps": 10.227745532847617,
+    "done_s": 53.68,
+    "peak_c": 61.9
+   },
+   "case": "after_kill_9",
+   "slide": 1
+  }
+ ],
+ "kill_9_mid_answer": {
+  "killed": 9667,
+  "fallback_after_s": 0.3,
+  "phase": "fallback",
+  "note": "The language model stopped part way through, so this is the reading itself.",
+  "source": "reading",
+  "llama_left": [],
+  "zombies": "",
+  "server": "off"
+ },
+ "next_click_after_kill": {
+  "cold": true,
+  "load_s": 3.27,
+  "prepare_s": 18.67,
+  "first_word_s": 31.44,
+  "words": 62,
+  "tokens": 89,
+  "finish": "stop",
+  "passed": true,
+  "failed_checks": [],
+  "invented_claim": false,
+  "gen_tps": 4.004368451029746,
+  "prompt_n": 97,
+  "cache_n": 203,
+  "prompt_tps": 10.227745532847617,
+  "done_s": 53.68,
+  "peak_c": 61.9
+ },
+ "kill_9_idle": {
+  "killed": 9991,
+  "off_after_s": 1.2,
+  "zombies": "",
+  "llama_left": []
+ },
+ "console_errors": [],
+ "frozen_server": {
+  "froze": 10792,
+  "fallback_after_s": 31.8,
+  "phase": "fallback",
+  "note": "The language model stopped answering, so this is the reading itself.",
+  "source": "reading",
+  "llama_left": [],
+  "zombies": "",
+  "server": "off"
+ },
+ "dashboard_probe": {
+  "answers": 177,
+  "failures": [],
+  "slowest_s": 0.17
+ },
+ "network_stalls": [
+  {
+   "at": "19:16:32",
+   "error": "<urlopen error timed out>"
+  }
+ ]
+}

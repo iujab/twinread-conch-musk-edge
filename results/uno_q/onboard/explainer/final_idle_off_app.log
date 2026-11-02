@@ -1,0 +1,26 @@
+{"event": "standby", "reason": null}
+{"event": "serving", "url": "http://127.0.0.1:8092/", "mode": "camera", "standby": true, "reason": null, "model_error": null, "demo_slides": 18}
+{"event": "camera_starting", "reason": null}
+{"event": "tile", "n": 6, "mode": "camera", "status": "no_tissue", "label": "BACK", "prob": 0.9987, "reasons": ["no_tissue"], "tissue_fraction": 0.0, "latency_ms": 250.5, "led": true}
+{"event": "tile", "n": 7, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9529, "reasons": ["review_head"], "tissue_fraction": 0.949, "latency_ms": 124.2, "led": true}
+{"event": "tile", "n": 20, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9737, "reasons": ["review_head"], "tissue_fraction": 0.944, "latency_ms": 129.9, "led": true}
+{"event": "tile", "n": 23, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9615, "reasons": [], "tissue_fraction": 0.947, "latency_ms": 131.6, "led": true}
+{"event": "tile", "n": 24, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.96, "reasons": ["review_head"], "tissue_fraction": 0.951, "latency_ms": 120.8, "led": true}
+{"event": "tile", "n": 25, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9721, "reasons": [], "tissue_fraction": 0.948, "latency_ms": 137.1, "led": true}
+{"event": "tile", "n": 26, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.971, "reasons": ["review_head"], "tissue_fraction": 0.949, "latency_ms": 134.8, "led": true}
+{"event": "tile", "n": 40, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9721, "reasons": ["review_head"], "tissue_fraction": 0.948, "latency_ms": 133.1, "led": true}
+{"event": "tile", "n": 50, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9672, "reasons": [], "tissue_fraction": 0.946, "latency_ms": 115.1, "led": true}
+{"event": "tile", "n": 51, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9675, "reasons": ["review_head"], "tissue_fraction": 0.945, "latency_ms": 139.9, "led": true}
+{"event": "tile", "n": 60, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9516, "reasons": ["review_head"], "tissue_fraction": 0.947, "latency_ms": 137.2, "led": true}
+{"event": "tile", "n": 62, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9686, "reasons": [], "tissue_fraction": 0.944, "latency_ms": 167.0, "led": true}
+{"event": "tile", "n": 63, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9696, "reasons": ["review_head"], "tissue_fraction": 0.946, "latency_ms": 126.7, "led": true}
+{"event": "tile", "n": 80, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9665, "reasons": ["review_head"], "tissue_fraction": 0.949, "latency_ms": 119.2, "led": true}
+{"event": "tile", "n": 93, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9748, "reasons": [], "tissue_fraction": 0.954, "latency_ms": 114.6, "led": true}
+{"event": "tile", "n": 94, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9739, "reasons": ["review_head"], "tissue_fraction": 0.954, "latency_ms": 115.0, "led": true}
+{"event": "tile", "n": 100, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9673, "reasons": ["review_head"], "tissue_fraction": 0.955, "latency_ms": 117.4, "led": true}
+{"event": "tile", "n": 120, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9645, "reasons": ["review_head"], "tissue_fraction": 0.954, "latency_ms": 117.6, "led": true}
+{"event": "tile", "n": 138, "mode": "camera", "status": "agree", "label": "BACK", "prob": 0.9778, "reasons": [], "tissue_fraction": 0.954, "latency_ms": 114.7, "led": true}
+{"event": "tile", "n": 139, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9744, "reasons": ["review_head"], "tissue_fraction": 0.953, "latency_ms": 116.9, "led": true}
+{"event": "tile", "n": 140, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.9784, "reasons": ["review_head"], "tissue_fraction": 0.953, "latency_ms": 114.1, "led": true}
+{"event": "idle_standby", "no_viewer_for_s": 30, "was": {"mode": "camera", "feed_paused": false, "model_paused": false, "explaining": false}}
+{"event": "standby", "reason": null}
