@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=TwinRead kiosk
+Comment=Full-screen TwinRead device app
+Exec=/usr/local/bin/twinread-kiosk
+Type=Application

@@ -10,9 +10,12 @@ Bundle format (ruling R24), all files in one directory:
 """
 from __future__ import annotations
 
+import ctypes
+import gc
 import hashlib
 import json
 import math
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -163,23 +166,64 @@ def crop_from_frame(frame: np.ndarray, mode="center") -> np.ndarray:
     return _center_crop(frame)
 
 
+class ModelNotLoaded(RuntimeError):
+    """infer() was called while the session is unloaded."""
+
+
+def _return_freed_memory():
+    """Hand freed heap back to the kernel; without this glibc keeps it, and an unloaded model would not show in RSS."""
+    try:
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except (OSError, AttributeError):  # not glibc
+        pass
+
+
 class EdgeModel:
-    def __init__(self, bundle_dir, threads: int = 4):
-        d = Path(bundle_dir)
-        if not verify_bundle_dir(d):
-            raise ValueError(f"bundle {d} failed checksum verification (missing/tampered SHA256SUMS); refusing to load")
-        import onnxruntime as ort
-        so = ort.SessionOptions()
-        so.intra_op_num_threads = int(threads)
-        so.inter_op_num_threads = 1
-        self.sess = ort.InferenceSession(str(d / "model.onnx"), so, providers=["CPUExecutionProvider"])
+    """cfg, classes, thr and probes stay available at all times; the ONNX session comes and goes with load() and unload().
+    load=False verifies the bundle and reads its config without importing onnxruntime."""
+
+    def __init__(self, bundle_dir, threads: int = 4, load: bool = True):
+        self.bundle_dir, self.threads = Path(bundle_dir), int(threads)
+        self.sess = None
+        self._lock = threading.Lock()  # an unload waits for a read in progress, and a read never meets half a session
+        self._verify()
+        d = self.bundle_dir
         self.cfg = json.loads((d / "config.json").read_text())
         self.classes = list(self.cfg["classes"])
         self.thr = {"js": float(self.cfg["thresholds"]["js"]), "review": float(self.cfg["thresholds"]["review"])}
         z = np.load(d / "probes.npz", allow_pickle=False)
         self.probes = {r: {k: z[f"{r}_{k}"].astype(np.float32) for k in ("coef", "intercept", "mean", "scale")}
                        for r in ("A", "B")}
-        self.bundle_dir = d
+        if load:
+            self.load()
+
+    def _verify(self):
+        if not verify_bundle_dir(self.bundle_dir):
+            raise ValueError(f"bundle {self.bundle_dir} failed checksum verification "
+                             "(missing/tampered SHA256SUMS); refusing to load")
+
+    @property
+    def loaded(self) -> bool:
+        return self.sess is not None
+
+    def load(self):
+        """Create the session if there is none. The bundle is verified again: it may have changed while unloaded."""
+        with self._lock:
+            if self.sess is not None:
+                return
+            self._verify()
+            import onnxruntime as ort
+            so = ort.SessionOptions()
+            so.intra_op_num_threads = self.threads
+            so.inter_op_num_threads = 1
+            self.sess = ort.InferenceSession(str(self.bundle_dir / "model.onnx"), so, providers=["CPUExecutionProvider"])
+
+    def unload(self):
+        """Drop the session, which frees its weights and stops its thread pool. onnxruntime itself stays imported."""
+        with self._lock:
+            self.sess = None
+        gc.collect()
+        _return_freed_memory()
 
     def _probe(self, r: str, h: np.ndarray) -> np.ndarray:
         p = self.probes[r]
@@ -192,7 +236,10 @@ class EdgeModel:
         if len(x) == 0:
             return []
         xin = np.ascontiguousarray(x.transpose(0, 3, 1, 2), dtype=np.float32) / 255.0
-        hA, hB, logits, rl = self.sess.run(["hA", "hB", "logits", "review_logit"], {"x": xin})
+        with self._lock:
+            if self.sess is None:
+                raise ModelNotLoaded("the model is unloaded")
+            hA, hB, logits, rl = self.sess.run(["hA", "hB", "logits", "review_logit"], {"x": xin})
         pA, pB, pF = self._probe("A", hA), self._probe("B", hB), _softmax(logits.astype(np.float64))
         out = []
         for i in range(len(x)):

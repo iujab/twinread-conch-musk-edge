@@ -1,0 +1,28 @@
+[Unit]
+Description=TwinRead device app and dashboard (offline)
+# Deliberately no network dependency: the app must start with Wi-Fi off.
+After=local-fs.target arduino-router.service
+Wants=arduino-router.service
+StartLimitIntervalSec=0
+
+[Service]
+User=@USER@
+WorkingDirectory=@DEVICE_DIR@
+Environment=PYTHONUNBUFFERED=1
+# The dashboard is always up; the camera and the model start from its buttons. /etc/default/twinread can change this, and
+# the leading - means the unit runs the same without that file.
+Environment=TWINREAD_ARGS=--standby
+EnvironmentFile=-/etc/default/twinread
+# The MCU boots ~15 s before the router and its Bridge.begin() then waits forever on a request nobody received. Resetting
+# it once the router is up lets the LED sketch register set_state. The leading - keeps the app running if this fails, and the
+# time limit keeps a hung reset from holding the dashboard down.
+ExecStartPre=-/usr/bin/timeout 10 /usr/local/bin/arduino-reset
+ExecStart=@DEVICE_DIR@/.venv/bin/python @DEVICE_DIR@/uno_q_app.py --bundle @BUNDLE_DIR@ --mode camera --device auto --camera-loss wait --threads 3 --interval 0.5 --port 8080 $TWINREAD_ARGS
+Restart=always
+RestartSec=2
+# The kernel refuses this service any network other than the local UI, so "offline" holds by construction.
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

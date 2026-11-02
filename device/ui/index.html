@@ -1,19 +1,103 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TwinRead device</title><link rel="stylesheet" href="style.css"></head>
-<body>
-<div id="banner" class="banner">Research prototype - not a diagnostic device</div>
-<div id="modebar" class="modebar"></div>
+<title>TwinRead</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css"></head>
+<body data-status="starting" data-picture="off" data-source="camera" data-explain="closed">
+<div class="modebar">
+  <span id="modetext" class="modetext"></span>
+  <div class="actions">
+    <div class="seg" role="group" aria-label="Picture source">
+      <button id="src-camera" type="button" aria-pressed="true">Live camera</button>
+      <button id="src-demo" type="button" aria-pressed="false">Demo slides</button>
+    </div>
+    <button id="feed" class="btn" type="button" aria-pressed="false">Pause camera</button>
+    <button id="model" class="btn" type="button" aria-pressed="false">Pause model</button>
+  </div>
+</div>
+
 <main>
-  <section class="card cam"><h2><span id="framelabel">Frame</span> <span class="sub">yellow box = region read by the model</span></h2>
-    <img id="frame" alt="latest camera frame with crop box"><div id="meta" class="meta"></div></section>
-  <section class="card">
-    <div id="badge" class="badge idle">...</div>
-    <div id="reasons" class="reasons"></div>
-    <h2>Student heads <span id="headsnote" class="sub"></span></h2>
-    <div id="bars"></div>
-    <div id="stats" class="stats"></div>
+  <section class="card cam" aria-label="Picture">
+    <h2><span id="framelabel">Frame</span> <span class="sub">yellow box = region read by the model</span></h2>
+    <div class="pic"><img id="frame" alt=""><p id="fieldnote" class="fieldnote"></p></div>
+    <div id="meta" class="meta"></div>
+  </section>
+
+  <section class="card verdict" aria-label="Result">
+    <div id="badge" class="badge idle" role="status">STARTING</div>
+    <p id="call" class="suggest"></p>
+    <p id="reason" class="reasons"></p>
+    <p id="truth" class="truth" data-match="none" hidden><span id="truth-label"></span> <span id="truth-match"></span></p>
+    <p id="notice" class="notice" role="alert" hidden></p>
+    <div id="starts" class="starts" hidden>
+      <button id="start-reading" class="btn primary" type="button">Start reading</button>
+      <button id="start-demo" class="btn primary" type="button">Run demo slides</button>
+    </div>
+    <div id="readout" class="readout" hidden>
+      <div id="bars">
+        <div class="row a"><span id="head-a">Head A</span><div class="track"><div id="fill-a" class="fill"></div></div><span id="call-a" class="barcall"></span></div>
+        <div class="row b"><span id="head-b">Head B</span><div class="track"><div id="fill-b" class="fill"></div></div><span id="call-b" class="barcall"></span></div>
+        <div class="row f"><span>Fused</span><div class="track"><div id="fill-f" class="fill"></div></div><span id="call-f" class="barcall"></span></div>
+      </div>
+      <div class="stats">
+        <div class="stat">Tissue fraction<b id="st-tissue"></b></div>
+        <div class="stat"><span id="st-time-label">Latency</span><b id="st-time"></b></div>
+        <div id="tile-call" class="stat">Fused call<b id="st-call"></b></div>
+        <div id="tile-score" class="stat">Review score<b id="st-score"></b></div>
+      </div>
+    </div>
+    <div class="explain">
+      <article id="ex-panel" class="ex-panel" hidden aria-label="Explanation">
+        <h2>Explanation <span id="ex-source" class="sub"></span></h2>
+        <div class="ex-about">
+          <img id="ex-pic" alt="">
+          <p><b id="ex-status"></b> <span id="ex-class"></span><br><span id="ex-where" class="sub-line"></span></p>
+        </div>
+        <p id="ex-moved" class="ex-moved" hidden>The view has moved on. This explanation stays with the picture above.</p>
+        <p id="ex-text" class="ex-text" aria-live="off"></p>
+        <p id="ex-note" class="ex-note" hidden></p>
+      </article>
+      <div class="ex-controls">
+        <div id="ex-audience" class="seg" role="group" aria-label="Who the explanation is for">
+          <button id="ex-doctor" type="button" aria-pressed="true">For a doctor</button>
+          <button id="ex-plain" type="button" aria-pressed="false">In plain words</button>
+        </div>
+        <button id="ex-go" class="btn primary" type="button" aria-disabled="true" aria-describedby="ex-why">Explain this result</button>
+        <p class="ex-progress"><span id="ex-progress" role="status"></span> <span id="ex-count"></span></p>
+        <button id="ex-stop" class="btn" type="button" hidden>Stop this answer</button>
+        <button id="ex-close" class="btn" type="button" hidden>Close</button>
+        <p id="ex-why" class="ex-why" hidden></p>
+      </div>
+    </div>
   </section>
 </main>
-<footer id="foot"></footer>
+
+<section id="tray" class="tray" aria-label="Demo slides" hidden>
+  <button id="prev" class="btn" type="button">Previous</button>
+  <div id="thumbs" class="thumbs"></div>
+  <button id="next" class="btn" type="button">Next</button>
+  <label class="pace">Pace
+    <select id="pace">
+      <option value="2">2 seconds</option>
+      <option value="4" selected>4 seconds</option>
+      <option value="8">8 seconds</option>
+      <option value="15">15 seconds</option>
+      <option value="30">30 seconds</option>
+    </select>
+  </label>
+</section>
+
+<footer class="foot">
+  <p id="foot" class="thresholds"></p>
+  <dl class="vitals">
+    <div><dt>Host</dt><dd id="v-host"></dd></div>
+    <div><dt>Uptime</dt><dd id="v-up"></dd></div>
+    <div><dt>Temperature</dt><dd id="v-temp"></dd></div>
+    <div><dt>Load</dt><dd id="v-load"></dd></div>
+    <div><dt>Free memory</dt><dd id="v-mem"></dd></div>
+    <div><dt>Camera fps</dt><dd id="v-fps"></dd></div>
+    <div><dt>Reads</dt><dd id="v-reads"></dd></div>
+    <div><dt>Model</dt><dd id="v-model"></dd></div>
+    <div><dt>Camera</dt><dd id="v-camera"></dd></div>
+    <div><dt>Explainer</dt><dd id="v-explain"></dd></div>
+  </dl>
+</footer>
 <script src="app.js"></script></body></html>

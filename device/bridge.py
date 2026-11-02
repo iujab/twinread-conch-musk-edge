@@ -17,13 +17,18 @@ STATES = ("idle", "busy", "agree", "review", "no_tissue", "error")
 METHOD = "set_state"
 ROUTER_SOCK = os.environ.get("ARDUINO_ROUTER_SOCK", "/var/run/arduino-router.sock")
 _last_state = None
+_no_app_lab = False
 
 
 def _app_utils_bridge():
+    global _no_app_lab
+    if _no_app_lab:  # a failing import searches the whole path, and the LED is retried for as long as the MCU is away
+        return None
     try:
         from arduino.app_utils import Bridge  # only exists inside App Lab on the board
         return Bridge
     except Exception:
+        _no_app_lab = True
         return None
 
 
@@ -57,7 +62,12 @@ def send_status(state) -> bool:
                 s.settimeout(1.0)
                 s.connect(ROUTER_SOCK)
                 s.sendall(_mp_request(1, METHOD, state))
-                resp = s.recv(256)  # [1, msgid, error, result]; error nil (0xc0) means success
+                resp = b""  # [1, msgid, error, result]; error nil (0xc0) means success. The router may split its reply.
+                while len(resp) < 4:
+                    chunk = s.recv(256)
+                    if not chunk:
+                        break
+                    resp += chunk
                 ok = len(resp) >= 4 and resp[0] == 0x94 and resp[1] == 0x01 and resp[2] == 1 and resp[3] == 0xC0
                 _last_state = state if ok else _last_state
                 return bool(ok)
