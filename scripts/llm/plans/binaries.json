@@ -1,0 +1,6 @@
+{"defaults": {"requests": "0,1", "idle_s": 3, "max_tokens": 120, "max_seconds": 170, "threads": 3, "no_think": true, "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"},
+ "runs": [
+  {"name": "bin_official_b11960_t3", "args": {"bin": "device/llm/bin/official-b11960/llama-server"}},
+  {"name": "bin_noomp_t3", "args": {"bin": "device/llm/bin/llama-server-noomp"}},
+  {"name": "bin_noomp_poll0_t3", "args": {"bin": "device/llm/bin/llama-server-noomp", "server_args": "--poll 0"}}
+ ]}

@@ -1,0 +1,29 @@
+{
+ "qwen3": {
+  "generation_prompt": "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nUSR<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "training_render": "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nUSR<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nANSWER<|im_end|>\n",
+  "training_equals_prompt_plus_answer_plus_eos": true,
+  "eos_token": "<|im_end|>",
+  "eos_id": 151645,
+  "pad_token": "<|endoftext|>",
+  "pad_id": 151643,
+  "think_ids": {
+   "<think>": 151667,
+   "</think>": 151668
+  },
+  "tokenizer_class": "Qwen2Tokenizer",
+  "vocab_size": 151669
+ },
+ "qwen25": {
+  "generation_prompt": "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nUSR<|im_end|>\n<|im_start|>assistant\n",
+  "training_render": "<|im_start|>system\nSYS<|im_end|>\n<|im_start|>user\nUSR<|im_end|>\n<|im_start|>assistant\nANSWER<|im_end|>\n",
+  "training_equals_prompt_plus_answer_plus_eos": true,
+  "eos_token": "<|im_end|>",
+  "eos_id": 151645,
+  "pad_token": "<|endoftext|>",
+  "pad_id": 151643,
+  "think_ids": null,
+  "tokenizer_class": "Qwen2Tokenizer",
+  "vocab_size": 151665
+ }
+}

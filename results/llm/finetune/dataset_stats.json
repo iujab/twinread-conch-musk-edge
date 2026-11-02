@@ -1,0 +1,32 @@
+{
+ "seed": 20261102,
+ "train_rows": 8000,
+ "val_rows": 400,
+ "train_by_situation": {
+  "agree": 2000,
+  "review": 2000,
+  "no_tissue": 2000,
+  "disagree": 2000
+ },
+ "train_tiles": 2999,
+ "train_tiles_by_situation": {
+  "agree": 2000,
+  "review": 623,
+  "disagree": 57,
+  "no_tissue": 319
+ },
+ "distinct_user_turns_train": 1487,
+ "distinct_targets_train": 6671,
+ "target_words_min_median_max": [
+  32,
+  66,
+  85
+ ],
+ "held_out_user_turns_both_audiences": 252,
+ "held_out_user_turns_also_in_train": 63,
+ "prompt_version": 1,
+ "system_sha256": "942c155874cc10e9dbde9e4d11965c613bdb4a45c316251ecdde47d9177fff8c",
+ "explain_prompt_sha256": "1e6eef20da557e9d9028b30df9e47b779e075e9cd429010b108595f42beedf86",
+ "explain_check_sha256": "10dbb733579f303c558c812d88be4e00eb9bfae3692ea040fbf24ddea979f5e1",
+ "composer_sha256": "4fff151adea19c7e8d2c97dd2806230aed793a320e93fc9e71a3141e661fb05f"
+}

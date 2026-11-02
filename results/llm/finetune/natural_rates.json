@@ -1,0 +1,46 @@
+{
+ "source": "bundles/cm int8 through device/twinread_runtime.py EdgeModel on host CPU, CRC-VAL-HE-7K",
+ "n_tiles": 7180,
+ "situation_counts": {
+  "review": 739,
+  "agree": 6308,
+  "disagree": 124,
+  "no_tissue": 9
+ },
+ "situation_rates": {
+  "review": 0.10292,
+  "agree": 0.87855,
+  "disagree": 0.01727,
+  "no_tissue": 0.00125
+ },
+ "reason_combinations": {
+  "(none)": 6308,
+  "review_head": 534,
+  "js+review_head": 146,
+  "disagree+js+review_head": 89,
+  "js": 59,
+  "disagree+js": 27,
+  "review_head+no_tissue": 5,
+  "disagree+review_head": 4,
+  "disagree": 4,
+  "no_tissue": 3,
+  "disagree+js+review_head+no_tissue": 1
+ },
+ "fused_special_cases": {
+  "both_heads_same_but_fused_differs": 36,
+  "heads_differ_and_fused_is_neither": 4
+ },
+ "thresholds": {
+  "js": 0.04168356591417004,
+  "review": 0.4298337586868884
+ },
+ "constructed_no_tissue_frames": {
+  "dark/no_tissue": 70,
+  "dimmed_real_tile/no_tissue": 70,
+  "grey_screen/no_tissue": 70,
+  "partial_real_tile/no_tissue": 120,
+  "uniform_pink/agree": 40,
+  "white_glass/no_tissue": 70
+ },
+ "note": "Constructed frames are not natural data and are not part of these rates. They were built on this PC, not captured by the board camera."
+}

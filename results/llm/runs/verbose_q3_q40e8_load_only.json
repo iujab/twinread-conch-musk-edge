@@ -1,0 +1,323 @@
+{
+ "name": "verbose_q3_q40e8_load_only",
+ "args": {
+  "name": "verbose_q3_q40e8_load_only",
+  "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf",
+  "bin": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server-omp",
+  "threads": 3,
+  "ctx": 1024,
+  "nice": 0,
+  "no_think": true,
+  "examples_file": "/home/arduino/twinread-conch-musk-edge/results/llm/example_results.json",
+  "requests": "",
+  "repeat_until_s": 0.0,
+  "max_tokens": 120,
+  "temperature": 0.3,
+  "top_p": 0.9,
+  "repeat_penalty": 1.0,
+  "seed": 42,
+  "idle_s": 10.0,
+  "post_idle_s": 0.0,
+  "prewarm": false,
+  "cold": false,
+  "vision": "none",
+  "vision_threads": 3,
+  "vision_hz": 2.0,
+  "vision_baseline_s": 15.0,
+  "vision_python": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python",
+  "env": "",
+  "server_args": "-lv 4",
+  "temp_start_max": 60.0,
+  "temp_abort": 72.0,
+  "max_seconds": 170.0,
+  "out_dir": "/home/arduino/twinread-conch-musk-edge/data/llm/run_logs"
+ },
+ "aborted": null,
+ "requests": [],
+ "start_hot_c": 47.1,
+ "baseline": {
+  "seconds": 5.0,
+  "system_busy_pct_of_4_cores": 2.0,
+  "mem_available_mb": 3100,
+  "mem_total_mb": 3667,
+  "swap_used_mb": 0,
+  "loadavg": [
+   "0.79",
+   "1.36",
+   "1.60"
+  ],
+  "hottest_c": 46.5,
+  "top_cpu": [
+   {
+    "pid": 553,
+    "comm": "containerd",
+    "cpu_pct": 1.4,
+    "rss_mb": 41.7,
+    "cmd": "/usr/bin/containerd ",
+    "is_app": false
+   },
+   {
+    "pid": 1,
+    "comm": "systemd",
+    "cpu_pct": 1.2,
+    "rss_mb": 14.7,
+    "cmd": "/sbin/init ",
+    "is_app": false
+   },
+   {
+    "pid": 866,
+    "comm": "arduino-app-cli",
+    "cpu_pct": 1.0,
+    "rss_mb": 60.1,
+    "cmd": "/usr/bin/arduino-app-cli daemon --port 8800 --log-level error ",
+    "is_app": false
+   },
+   {
+    "pid": 445,
+    "comm": "dbus-daemon",
+    "cpu_pct": 0.6,
+    "rss_mb": 5.5,
+    "cmd": "/usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation",
+    "is_app": false
+   },
+   {
+    "pid": 13236,
+    "comm": "python3",
+    "cpu_pct": 0.4,
+    "rss_mb": 19.4,
+    "cmd": "python3 -I scripts/llm/bench_on_board.py --name verbose_q3_q40e8_load_only --requests  --i",
+    "is_app": false
+   }
+  ],
+  "top_rss": [
+   {
+    "pid": 713,
+    "comm": "Xorg",
+    "cpu_pct": 0.0,
+    "rss_mb": 90.1,
+    "cmd": "/usr/lib/xorg/Xorg :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtsw",
+    "is_app": false
+   },
+   {
+    "pid": 636,
+    "comm": "dockerd",
+    "cpu_pct": 0.0,
+    "rss_mb": 74.2,
+    "cmd": "/usr/sbin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock ",
+    "is_app": false
+   },
+   {
+    "pid": 866,
+    "comm": "arduino-app-cli",
+    "cpu_pct": 1.0,
+    "rss_mb": 60.1,
+    "cmd": "/usr/bin/arduino-app-cli daemon --port 8800 --log-level error ",
+    "is_app": false
+   },
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   },
+   {
+    "pid": 548,
+    "comm": "tailscaled",
+    "cpu_pct": 0.2,
+    "rss_mb": 57.5,
+    "cmd": "/usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/t",
+    "is_app": false
+   },
+   {
+    "pid": 7952,
+    "comm": "fwupd",
+    "cpu_pct": 0.0,
+    "rss_mb": 53.8,
+    "cmd": "/usr/libexec/fwupd/fwupd ",
+    "is_app": false
+   }
+  ],
+  "twinread_app": [
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   }
+  ],
+  "boot_id": "143d9ac9-aac7-43ae-9300-fccf05517630"
+ },
+ "t_vision_alone_end": 3146.418468613,
+ "cmd": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server-omp -m data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf -c 1024 -t 3 -tb 3 -np 1 --host 127.0.0.1 --port 1790 --no-webui --cache-ram 0 --ctx-checkpoints 0 --seed 42 -lv 4",
+ "load_s": 3.3021587230000478,
+ "t_loaded": 3149.721120721,
+ "rss_after_load": {
+  "VmHWM": 619360,
+  "VmRSS": 619360,
+  "RssAnon": 204268,
+  "RssFile": 415092,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 12
+ },
+ "idle_cpu": {
+  "seconds": 10.0,
+  "server_cpu_pct_of_one_core": 0.0,
+  "system_busy_pct_of_4_cores": 1.4,
+  "hot_c": 44.3
+ },
+ "t_idle_end": 3159.730506777,
+ "rss_peak": {
+  "VmHWM": 619360,
+  "VmRSS": 619360,
+  "RssAnon": 204268,
+  "RssFile": 415092,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 12
+ },
+ "window_s": 13.312773529999959,
+ "peak_hot_c": 53.1,
+ "end_hot_c": 44.6,
+ "min_avail_mb": 2899,
+ "max_swap_used_mb": 0,
+ "peak_server_rss_mb": 604.8,
+ "peak_server_anon_mb": 199.5,
+ "peak_vision_rss_mb": 0,
+ "min_mhz_seen_under_load": null,
+ "samples": [
+  {
+   "t": 0.0,
+   "phase": "llm_load",
+   "hot_c": 46.8,
+   "busy_pct": 50.0,
+   "avail_mb": 3099
+  },
+  {
+   "t": 1.0,
+   "phase": "llm_load",
+   "hot_c": 46.8,
+   "busy_pct": 26.2,
+   "avail_mb": 3035
+  },
+  {
+   "t": 2.0,
+   "phase": "llm_load",
+   "hot_c": 46.8,
+   "busy_pct": 25.8,
+   "avail_mb": 3049
+  },
+  {
+   "t": 3.0,
+   "phase": "llm_load",
+   "hot_c": 53.1,
+   "busy_pct": 43.3,
+   "avail_mb": 2903
+  },
+  {
+   "t": 4.0,
+   "phase": "idle",
+   "hot_c": 46.2,
+   "busy_pct": 16.5,
+   "avail_mb": 2903
+  },
+  {
+   "t": 5.0,
+   "phase": "idle",
+   "hot_c": 45.6,
+   "busy_pct": 1.5,
+   "avail_mb": 2902
+  },
+  {
+   "t": 6.1,
+   "phase": "idle",
+   "hot_c": 45.3,
+   "busy_pct": 2.7,
+   "avail_mb": 2900
+  },
+  {
+   "t": 7.1,
+   "phase": "idle",
+   "hot_c": 44.9,
+   "busy_pct": 0.7,
+   "avail_mb": 2900
+  },
+  {
+   "t": 8.1,
+   "phase": "idle",
+   "hot_c": 44.9,
+   "busy_pct": 0.2,
+   "avail_mb": 2900
+  },
+  {
+   "t": 9.1,
+   "phase": "idle",
+   "hot_c": 44.9,
+   "busy_pct": 2.7,
+   "avail_mb": 2900
+  },
+  {
+   "t": 10.1,
+   "phase": "idle",
+   "hot_c": 44.6,
+   "busy_pct": 1.7,
+   "avail_mb": 2899
+  },
+  {
+   "t": 11.1,
+   "phase": "idle",
+   "hot_c": 44.6,
+   "busy_pct": 0.2,
+   "avail_mb": 2899
+  },
+  {
+   "t": 12.1,
+   "phase": "idle",
+   "hot_c": 44.3,
+   "busy_pct": 0.7,
+   "avail_mb": 2899
+  },
+  {
+   "t": 13.1,
+   "phase": "idle",
+   "hot_c": 44.6,
+   "busy_pct": 3.0,
+   "avail_mb": 2899
+  }
+ ],
+ "server_log_extract": [
+  "0.00.011.617 I cmn  common_param: system_info: n_threads = 3 (n_threads_batch = 3) / 4 | CPU : NEON = 1 | ARM_FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+  "0.01.686.418 I print_info: file type   = Q4_0",
+  "0.01.686.422 I print_info: file size   = 394.15 MiB (5.55 BPW) ",
+  "0.02.530.719 I print_info: arch                  = qwen3",
+  "0.02.530.857 I print_info: model type            = 0.6B",
+  "0.02.614.617 I load_tensors:   CPU_Mapped model buffer size =   394.15 MiB",
+  "0.02.633.081 I llama_context: n_ctx                 = 1024",
+  "0.02.633.082 I llama_context: n_ctx_seq             = 1024",
+  "0.02.633.113 I llama_context: n_ctx_seq (1024) < n_ctx_train (40960) -- the full capacity of the model will not be utilized",
+  "0.02.659.230 I llama_kv_cache:        CPU KV buffer size =   112.00 MiB",
+  "0.02.685.200 I sched_reserve:        CPU compute buffer size =    29.02 MiB",
+  "0.03.195.663 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 1024"
+ ],
+ "repack_seen": false,
+ "left_running": [],
+ "boot_id_end": "143d9ac9-aac7-43ae-9300-fccf05517630",
+ "driver": {
+  "cooldown_before": [
+   {
+    "t": 0,
+    "hot_c": 46.5
+   }
+  ],
+  "boot_id_before": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "boot_id_after": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "lock_held_s": 19.6,
+  "ssh_rc": 0,
+  "stdout": "{\"name\": \"verbose_q3_q40e8_load_only\", \"aborted\": null, \"error\": null, \"peak_hot_c\": 53.1, \"window_s\": 13.3, \"load_s\": 3.3021587230000478, \"out\": \"/home/arduino/twinread-conch-musk-edge/data/llm/run_logs/verbose_q3_q40e8_load_only.json\"}\n",
+  "stderr": ""
+ }
+}

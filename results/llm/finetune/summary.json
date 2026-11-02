@@ -1,0 +1,894 @@
+{
+ "decision": "The fine-tuned GGUF ships by the pre-registered rule. Read `comparison_with_template` before treating that as the last word.",
+ "chosen_gguf": {
+  "local": "data/llm/finetune/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf",
+  "on_board": "~/twinread-conch-musk-edge/data/llm/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf",
+  "bytes": 419245920,
+  "sha256": "84a1d904388270f0b688e1a76632df3d045c4865218346905dfa8ec8ca118bd3"
+ },
+ "registered_primary": {
+  "metric": "share of held-out answers passing every check",
+  "base": 0.885,
+  "finetuned": 0.975,
+  "mcnemar_base_vs_finetuned": {
+   "n": 200,
+   "first_only": 5,
+   "second_only": 23,
+   "both": 172,
+   "neither": 0,
+   "p_exact_two_sided": 0.000912
+  },
+  "finetuned_higher": true,
+  "significant_at_0.05": true,
+  "invented_not_raised": true,
+  "ship_finetuned_by_rule": true
+ },
+ "arms_registered": {
+  "base_seed1": {
+   "n": 200,
+   "passed": 177,
+   "pass_rate": 0.885,
+   "pass_ci95": [
+    0.8334,
+    0.9221
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "natural_mix_pass_rate": 0.8911,
+   "natural_mix_invented_rate": 0.0879,
+   "words_median": 55,
+   "words_min_max": [
+    33,
+    73
+   ],
+   "by_situation": {
+    "agree": 0.88,
+    "review": 0.98,
+    "disagree": 0.94,
+    "no_tissue": 0.74
+   },
+   "failures_by_check": {
+    "class_correct": 1,
+    "status_correct": 10,
+    "heads_correct": 2,
+    "numbers_match": 10,
+    "no_forbidden": 5,
+    "length_ok": 2
+   },
+   "forbidden_by_category": {
+    "image_claim": 5
+   }
+  },
+  "base_seed1001": {
+   "n": 200,
+   "passed": 183,
+   "pass_rate": 0.915,
+   "pass_ci95": [
+    0.8681,
+    0.9463
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "natural_mix_pass_rate": 0.8238,
+   "natural_mix_invented_rate": 0.0879,
+   "words_median": 55,
+   "words_min_max": [
+    31,
+    71
+   ],
+   "by_situation": {
+    "agree": 0.8,
+    "review": 1.0,
+    "disagree": 0.98,
+    "no_tissue": 0.88
+   },
+   "failures_by_check": {
+    "class_correct": 1,
+    "status_correct": 11,
+    "numbers_match": 5,
+    "no_forbidden": 5,
+    "length_ok": 7
+   },
+   "forbidden_by_category": {
+    "image_claim": 5
+   }
+  },
+  "base_seed2001": {
+   "n": 200,
+   "passed": 183,
+   "pass_rate": 0.915,
+   "pass_ci95": [
+    0.8681,
+    0.9463
+   ],
+   "invented_claims": 7,
+   "invented_rate": 0.035,
+   "natural_mix_pass_rate": 0.8551,
+   "natural_mix_invented_rate": 0.123,
+   "words_median": 55,
+   "words_min_max": [
+    27,
+    74
+   ],
+   "by_situation": {
+    "agree": 0.84,
+    "review": 0.96,
+    "disagree": 1.0,
+    "no_tissue": 0.86
+   },
+   "failures_by_check": {
+    "status_correct": 11,
+    "numbers_match": 5,
+    "no_forbidden": 7,
+    "no_wrong_class": 1,
+    "length_ok": 5
+   },
+   "forbidden_by_category": {
+    "image_claim": 7
+   }
+  },
+  "composer_seed1": {
+   "n": 200,
+   "passed": 200,
+   "pass_rate": 1.0,
+   "pass_ci95": [
+    0.9812,
+    1.0
+   ],
+   "invented_claims": 0,
+   "invented_rate": 0.0,
+   "natural_mix_pass_rate": 1.0,
+   "natural_mix_invented_rate": 0.0,
+   "words_median": 66,
+   "words_min_max": [
+    34,
+    80
+   ],
+   "by_situation": {
+    "agree": 1.0,
+    "review": 1.0,
+    "disagree": 1.0,
+    "no_tissue": 1.0
+   },
+   "failures_by_check": {},
+   "forbidden_by_category": {}
+  },
+  "finetuned_seed1": {
+   "n": 200,
+   "passed": 195,
+   "pass_rate": 0.975,
+   "pass_ci95": [
+    0.9428,
+    0.9893
+   ],
+   "invented_claims": 4,
+   "invented_rate": 0.02,
+   "natural_mix_pass_rate": 0.9759,
+   "natural_mix_invented_rate": 0.0237,
+   "words_median": 66,
+   "words_min_max": [
+    32,
+    85
+   ],
+   "by_situation": {
+    "agree": 0.98,
+    "review": 0.94,
+    "disagree": 0.98,
+    "no_tissue": 1.0
+   },
+   "failures_by_check": {
+    "numbers_match": 1,
+    "no_forbidden": 4
+   },
+   "forbidden_by_category": {
+    "diagnosis": 4
+   }
+  },
+  "finetuned_seed1001": {
+   "n": 200,
+   "passed": 192,
+   "pass_rate": 0.96,
+   "pass_ci95": [
+    0.9231,
+    0.9796
+   ],
+   "invented_claims": 6,
+   "invented_rate": 0.03,
+   "natural_mix_pass_rate": 0.9421,
+   "natural_mix_invented_rate": 0.0572,
+   "words_median": 66,
+   "words_min_max": [
+    34,
+    89
+   ],
+   "by_situation": {
+    "agree": 0.94,
+    "review": 0.96,
+    "disagree": 0.94,
+    "no_tissue": 1.0
+   },
+   "failures_by_check": {
+    "heads_correct": 2,
+    "numbers_match": 4,
+    "no_forbidden": 4
+   },
+   "forbidden_by_category": {
+    "diagnosis": 4
+   }
+  },
+  "finetuned_seed2001": {
+   "n": 200,
+   "passed": 199,
+   "pass_rate": 0.995,
+   "pass_ci95": [
+    0.9722,
+    0.9991
+   ],
+   "invented_claims": 1,
+   "invented_rate": 0.005,
+   "natural_mix_pass_rate": 0.9824,
+   "natural_mix_invented_rate": 0.0176,
+   "words_median": 67,
+   "words_min_max": [
+    36,
+    86
+   ],
+   "by_situation": {
+    "agree": 0.98,
+    "review": 1.0,
+    "disagree": 1.0,
+    "no_tissue": 1.0
+   },
+   "failures_by_check": {
+    "heads_correct": 1,
+    "numbers_match": 1
+   },
+   "forbidden_by_category": {}
+  },
+  "realbase_seed1": {
+   "n": 200,
+   "passed": 151,
+   "pass_rate": 0.755,
+   "pass_ci95": [
+    0.691,
+    0.8094
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "natural_mix_pass_rate": 0.9225,
+   "natural_mix_invented_rate": 0.0723,
+   "words_median": 57,
+   "words_min_max": [
+    29,
+    74
+   ],
+   "by_situation": {
+    "agree": 0.92,
+    "review": 0.94,
+    "disagree": 1.0,
+    "no_tissue": 0.16
+   },
+   "failures_by_check": {
+    "status_correct": 30,
+    "numbers_match": 32,
+    "no_forbidden": 3,
+    "no_wrong_class": 1
+   },
+   "forbidden_by_category": {
+    "image_claim": 3
+   }
+  }
+ },
+ "other_seeds_registered": {
+  "seed1": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 5,
+    "second_only": 23,
+    "both": 172,
+    "neither": 0,
+    "p_exact_two_sided": 0.000912
+   },
+   "base": 0.885,
+   "finetuned": 0.975
+  },
+  "seed1001": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 8,
+    "second_only": 17,
+    "both": 175,
+    "neither": 0,
+    "p_exact_two_sided": 0.107752
+   },
+   "base": 0.915,
+   "finetuned": 0.96
+  },
+  "seed2001": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 1,
+    "second_only": 17,
+    "both": 182,
+    "neither": 0,
+    "p_exact_two_sided": 0.000145
+   },
+   "base": 0.915,
+   "finetuned": 0.995
+  },
+  "all_seeds_signflip_p": 5e-05,
+  "all_seeds_mean_difference": 0.0717
+ },
+ "novel_prompts_registered": {
+  "n": 95,
+  "of": 200,
+  "base_pass": 91,
+  "finetuned_pass": 92,
+  "mcnemar": {
+   "n": 95,
+   "first_only": 3,
+   "second_only": 4,
+   "both": 88,
+   "neither": 0,
+   "p_exact_two_sided": 1.0
+  }
+ },
+ "edge_set": {
+  "base": {
+   "n": 11,
+   "passed_registered_checker": 7,
+   "invented": 1
+  },
+  "finetuned": {
+   "n": 11,
+   "passed_registered_checker": 10,
+   "invented": 0
+  },
+  "composer": {
+   "n": 11,
+   "passed_registered_checker": 11,
+   "invented": 0
+  }
+ },
+ "exploratory": {
+  "per_situation_registered_checker": {
+   "agree": {
+    "n_items": 50,
+    "base_pass_by_seed": [
+     0.88,
+     0.8,
+     0.84
+    ],
+    "finetuned_pass_by_seed": [
+     0.98,
+     0.94,
+     0.98
+    ],
+    "mean_difference_all_seeds": 0.1267,
+    "signflip_p_all_seeds": 0.0022,
+    "distinct_prompts": 27,
+    "prompts_also_in_training": 47
+   },
+   "review": {
+    "n_items": 50,
+    "base_pass_by_seed": [
+     0.98,
+     1.0,
+     0.96
+    ],
+    "finetuned_pass_by_seed": [
+     0.94,
+     0.96,
+     1.0
+    ],
+    "mean_difference_all_seeds": -0.0133,
+    "signflip_p_all_seeds": 0.68097,
+    "distinct_prompts": 49,
+    "prompts_also_in_training": 8
+   },
+   "disagree": {
+    "n_items": 50,
+    "base_pass_by_seed": [
+     0.94,
+     0.98,
+     1.0
+    ],
+    "finetuned_pass_by_seed": [
+     0.98,
+     0.94,
+     1.0
+    ],
+    "mean_difference_all_seeds": 0.0,
+    "signflip_p_all_seeds": 1.0,
+    "distinct_prompts": 50,
+    "prompts_also_in_training": 0
+   },
+   "no_tissue": {
+    "n_items": 50,
+    "base_pass_by_seed": [
+     0.74,
+     0.88,
+     0.86
+    ],
+    "finetuned_pass_by_seed": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "mean_difference_all_seeds": 0.1733,
+    "signflip_p_all_seeds": 5e-05,
+    "distinct_prompts": 12,
+    "prompts_also_in_training": 50
+   }
+  },
+  "without_no_tissue_seed1": {
+   "n": 150,
+   "base_passed": 140,
+   "finetuned_passed": 145,
+   "base_only": 5,
+   "finetuned_only": 10,
+   "p_exact": 0.301758
+  },
+  "without_no_tissue_all_seeds": {
+   "mean_difference": 0.0378,
+   "signflip_p": 0.0296
+  },
+  "prompts_also_in_training_seed1": {
+   "n": 105,
+   "base_passed": 86,
+   "finetuned_passed": 103,
+   "base_only": 2,
+   "finetuned_only": 19,
+   "p_exact": 0.000221
+  },
+  "corrected_checker_tests": {
+   "seed1": {
+    "n": 200,
+    "base_passed": 180,
+    "finetuned_passed": 199,
+    "base_only": 1,
+    "finetuned_only": 20,
+    "p_exact": 2.1e-05
+   },
+   "seed1001": {
+    "n": 200,
+    "base_passed": 184,
+    "finetuned_passed": 196,
+    "base_only": 4,
+    "finetuned_only": 16,
+    "p_exact": 0.011818
+   },
+   "seed2001": {
+    "n": 200,
+    "base_passed": 185,
+    "finetuned_passed": 199,
+    "base_only": 1,
+    "finetuned_only": 15,
+    "p_exact": 0.000519
+   }
+  },
+  "error_kinds_all_runs_corrected_checker": {
+   "base": {
+    "answers": 600,
+    "wrong_number": 0,
+    "number_left_out": 20,
+    "number_or_class_on_wrong_head": 1,
+    "says_what_image_shows": 17,
+    "flag_status_wrong_or_missing": 25,
+    "class_wrong": 3,
+    "wrong_number_examples": []
+   },
+   "finetuned": {
+    "answers": 600,
+    "wrong_number": 3,
+    "number_left_out": 3,
+    "number_or_class_on_wrong_head": 3,
+    "says_what_image_shows": 0,
+    "flag_status_wrong_or_missing": 0,
+    "class_wrong": 0,
+    "wrong_number_examples": [
+     {
+      "text": "The model read this tile as MUC (mucus) at 100% combined confidence. Head A gives MUC 100% confidence, and Head B gives MUC 70%. The heads agree. This tile is not flagged, so no second look is requested. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile."
+     },
+     {
+      "text": "The model looked at this small square of tissue and read it as lymphocytes (LYM), with a combined confidence of 100%. The model has two heads, and each answers on its own. Head A gives LYM 100% confidence, and Head B gives LYM 95%. The two heads agree, and the tile is not flagged for review. In a tissue image, lymphocytes means groups of small round immune cells."
+     },
+     {
+      "text": "The model read this tile as smooth muscle (MUS) at 100% combined confidence. Head A gives MUS 100% confidence, and Head B gives MUS 70%. The two heads agree on this tile. The tile is not flagged for review. On H&E, MUS means bundles of long spindle-shaped cells with pink cytoplasm. This describes one tile as the model read it."
+     }
+    ]
+   },
+   "composer": {
+    "answers": 200,
+    "wrong_number": 0,
+    "number_left_out": 0,
+    "number_or_class_on_wrong_head": 0,
+    "says_what_image_shows": 0,
+    "flag_status_wrong_or_missing": 0,
+    "class_wrong": 0,
+    "wrong_number_examples": []
+   }
+  },
+  "second_flag_reason_dropped": {
+   "base_seed1": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 36
+   },
+   "base_seed1001": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 39
+   },
+   "base_seed2001": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 33
+   },
+   "finetuned_seed1": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 0
+   },
+   "finetuned_seed1001": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 0
+   },
+   "finetuned_seed2001": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 0
+   },
+   "composer_seed1": {
+    "answers_with_two_flag_reasons": 47,
+    "review_head_reason_dropped": 0
+   }
+  },
+  "corrected_checker_totals": {
+   "base_seed1": {
+    "registered_passed": 177,
+    "corrected_passed": 180,
+    "corrected_pass_rate": 0.9,
+    "registered_invented": 5,
+    "corrected_invented": 5,
+    "corrected_natural_mix": 0.8912
+   },
+   "base_seed1001": {
+    "registered_passed": 183,
+    "corrected_passed": 184,
+    "corrected_pass_rate": 0.92,
+    "registered_invented": 5,
+    "corrected_invented": 5,
+    "corrected_natural_mix": 0.8238
+   },
+   "base_seed2001": {
+    "registered_passed": 183,
+    "corrected_passed": 185,
+    "corrected_pass_rate": 0.925,
+    "registered_invented": 7,
+    "corrected_invented": 7,
+    "corrected_natural_mix": 0.8552
+   },
+   "finetuned_seed1": {
+    "registered_passed": 195,
+    "corrected_passed": 199,
+    "corrected_pass_rate": 0.995,
+    "registered_invented": 4,
+    "corrected_invented": 0,
+    "corrected_natural_mix": 0.9996
+   },
+   "finetuned_seed1001": {
+    "registered_passed": 192,
+    "corrected_passed": 196,
+    "corrected_pass_rate": 0.98,
+    "registered_invented": 6,
+    "corrected_invented": 2,
+    "corrected_natural_mix": 0.9642
+   },
+   "finetuned_seed2001": {
+    "registered_passed": 199,
+    "corrected_passed": 199,
+    "corrected_pass_rate": 0.995,
+    "registered_invented": 1,
+    "corrected_invented": 1,
+    "corrected_natural_mix": 0.9824
+   },
+   "composer_seed1": {
+    "registered_passed": 200,
+    "corrected_passed": 200,
+    "corrected_pass_rate": 1.0,
+    "registered_invented": 0,
+    "corrected_invented": 0,
+    "corrected_natural_mix": 1.0
+   },
+   "realbase_seed1": {
+    "registered_passed": 151,
+    "corrected_passed": 160,
+    "corrected_pass_rate": 0.8,
+    "registered_invented": 5,
+    "corrected_invented": 5,
+    "corrected_natural_mix": 0.9227
+   }
+  }
+ },
+ "comparison_with_template": {
+  "judge": {
+   "base_seed1": {
+    "readability_mean": 3.65,
+    "usefulness_mean": 3.3,
+    "judge_accurate": 35,
+    "judge_accurate_rate": 0.5833,
+    "checker_pass_judge_says_wrong": 20
+   },
+   "composer_seed1": {
+    "readability_mean": 4.1,
+    "usefulness_mean": 4.1,
+    "judge_accurate": 53,
+    "judge_accurate_rate": 0.8833,
+    "checker_pass_judge_says_wrong": 7
+   },
+   "finetuned_seed1": {
+    "readability_mean": 4.25,
+    "usefulness_mean": 4.183,
+    "judge_accurate": 49,
+    "judge_accurate_rate": 0.8167,
+    "checker_pass_judge_says_wrong": 10
+   }
+  },
+  "judge_best_counts": {
+   "finetuned_seed1": 25,
+   "composer_seed1": 25,
+   "base_seed1": 10
+  },
+  "judge_pairwise": {
+   "base_seed1__vs__composer_seed1": {
+    "readability": {
+     "mean_b_minus_a": 0.45,
+     "b_higher": 31,
+     "a_higher": 16,
+     "signflip_p": 0.0143
+    },
+    "usefulness": {
+     "mean_b_minus_a": 0.8,
+     "b_higher": 37,
+     "a_higher": 10,
+     "signflip_p": 5e-05
+    },
+    "judge_accurate_mcnemar": {
+     "a_only": 4,
+     "b_only": 22,
+     "p_exact": 0.000534
+    }
+   },
+   "base_seed1__vs__finetuned_seed1": {
+    "readability": {
+     "mean_b_minus_a": 0.6,
+     "b_higher": 38,
+     "a_higher": 11,
+     "signflip_p": 0.00025
+    },
+    "usefulness": {
+     "mean_b_minus_a": 0.883,
+     "b_higher": 40,
+     "a_higher": 7,
+     "signflip_p": 5e-05
+    },
+    "judge_accurate_mcnemar": {
+     "a_only": 5,
+     "b_only": 19,
+     "p_exact": 0.006611
+    }
+   },
+   "composer_seed1__vs__finetuned_seed1": {
+    "readability": {
+     "mean_b_minus_a": 0.15,
+     "b_higher": 23,
+     "a_higher": 19,
+     "signflip_p": 0.35303
+    },
+    "usefulness": {
+     "mean_b_minus_a": 0.083,
+     "b_higher": 17,
+     "a_higher": 11,
+     "signflip_p": 0.51087
+    },
+    "judge_accurate_mcnemar": {
+     "a_only": 6,
+     "b_only": 2,
+     "p_exact": 0.289062
+    }
+   }
+  },
+  "items": 60,
+  "blinding": "Per-item random order, letters A/B/C, no arm names; judge not told a template or fine-tune exists. Sonnet via claude -p.",
+  "hand_read": {
+   "base_seed1": {
+    "n": 20,
+    "hand_correct": 17,
+    "checker_passed": 16,
+    "checker_pass_hand_wrong": 1,
+    "checker_fail_hand_right": 2
+   },
+   "finetuned_seed1": {
+    "n": 20,
+    "hand_correct": 20,
+    "checker_passed": 20,
+    "checker_pass_hand_wrong": 0,
+    "checker_fail_hand_right": 0
+   },
+   "composer_seed1": {
+    "n": 20,
+    "hand_correct": 20,
+    "checker_passed": 20,
+    "checker_pass_hand_wrong": 0,
+    "checker_fail_hand_right": 0
+   }
+  }
+ },
+ "board_check": {
+  "load_s": 3.36,
+  "prewarm_s": 18.47,
+  "prewarm_prompt_n": 212,
+  "window_s": 124.3,
+  "peak_c": 60.4,
+  "start_c": 42.1,
+  "end_c": 52.2,
+  "hot_after_c": 50.9,
+  "aborted": null,
+  "state_before": {
+   "status": "standby",
+   "model_loaded": false,
+   "camera_open": false
+  },
+  "state_after": {
+   "status": "standby",
+   "model_loaded": false,
+   "camera_open": false
+  },
+  "llm_processes_after": "llm/bench processes on board: none",
+  "service_active": "active",
+  "boot_same": true,
+  "t2_reference": {
+   "run": "final2_t3_alone in results/llm/report_tables.md",
+   "gen_tps": 3.99,
+   "peak_c": 62.3,
+   "tandem_vision_2hz_gen_tps": 3.48
+  },
+  "not_tested": "Vision model at 2 Hz was not running in this window, so the 3.48 t/s tandem figure is T2's, on T2's prompt.",
+  "requests": [
+   {
+    "id": "held_out_0000",
+    "situation": "agree",
+    "audience": "doctor",
+    "ttft_s": 9.17,
+    "total_s": 30.77,
+    "gen_tps": 4.03,
+    "gen_n": 88,
+    "prompt_n": 95,
+    "cache_n": 203,
+    "words": 64,
+    "passed": true,
+    "same_text_as_host_same_seed": true
+   },
+   {
+    "id": "held_out_0101",
+    "situation": "disagree",
+    "audience": "user",
+    "ttft_s": 10.1,
+    "total_s": 34.2,
+    "gen_tps": 4.07,
+    "gen_n": 99,
+    "prompt_n": 104,
+    "cache_n": 206,
+    "words": 72,
+    "passed": true,
+    "same_text_as_host_same_seed": false
+   },
+   {
+    "id": "held_out_0050",
+    "situation": "review",
+    "audience": "doctor",
+    "ttft_s": 10.73,
+    "total_s": 37.25,
+    "gen_tps": 4.0,
+    "gen_n": 107,
+    "prompt_n": 112,
+    "cache_n": 206,
+    "words": 69,
+    "passed": true,
+    "same_text_as_host_same_seed": true
+   }
+  ]
+ },
+ "conversion": {
+  "t2_file_vs_real_conversion": {
+   "tensors": [
+    310,
+    310
+   ],
+   "same_names": true,
+   "same_type": 310,
+   "same_shape": 310,
+   "byte_identical": 113,
+   "not_identical_examples": [
+    "token_embd.weight",
+    "blk.0.attn_k.weight",
+    "blk.0.attn_output.weight",
+    "blk.0.attn_q.weight",
+    "blk.0.attn_v.weight",
+    "blk.0.ffn_down.weight"
+   ],
+   "no_output_tensor": [
+    true,
+    true
+   ],
+   "chat_template_identical": false
+  },
+  "pytorch_agreement_realbase": {
+   "agree": 1252,
+   "total": 1384,
+   "rate": 0.9046,
+   "whole_sequences_identical": 0
+  },
+  "pytorch_agreement_t2_file": {
+   "agree": 1252,
+   "total": 1378,
+   "rate": 0.9086,
+   "whole_sequences_identical": 1
+  },
+  "pytorch_agreement_finetuned": {
+   "agree": 855,
+   "total": 889,
+   "rate": 0.9618,
+   "whole_sequences_identical": 2
+  }
+ },
+ "render_check_finetuned": {
+  "all_same_text": true,
+  "all_same_ids": true,
+  "all_counts_match": true,
+  "training_text_is_prompt_plus_answer_plus_eos": true,
+  "n": 32,
+  "system_tokens": 195,
+  "cached_prefix_tokens": 200,
+  "prompt_tokens_min_max": [
+   277,
+   323
+  ],
+  "system_sha256": "942c155874cc10e9dbde9e4d11965c613bdb4a45c316251ecdde47d9177fff8c"
+ },
+ "dataset": {
+  "train_rows": 8000,
+  "val_rows": 400,
+  "train_by_situation": {
+   "agree": 2000,
+   "review": 2000,
+   "no_tissue": 2000,
+   "disagree": 2000
+  },
+  "train_tiles": 2999,
+  "train_tiles_by_situation": {
+   "agree": 2000,
+   "review": 623,
+   "disagree": 57,
+   "no_tissue": 319
+  },
+  "distinct_user_turns_train": 1487,
+  "distinct_targets_train": 6671,
+  "target_words_min_median_max": [
+   32,
+   66,
+   85
+  ],
+  "held_out_user_turns_both_audiences": 252,
+  "held_out_user_turns_also_in_train": 63
+ },
+ "natural_rates": {
+  "review": 0.10292,
+  "agree": 0.87855,
+  "disagree": 0.01727,
+  "no_tissue": 0.00125
+ },
+ "split_seed": 20261102,
+ "files_changed_after_registration": [
+  "device/explain_check.py (false positive on class cards; no-tissue wordings)",
+  "device/explain_prompt.py (tissue 9.5 to 9.99 % no longer rounds to 10 %; facts_text helper; comment). SYSTEM bytes unchanged."
+ ],
+ "system_prompt_sha256": "942c155874cc10e9dbde9e4d11965c613bdb4a45c316251ecdde47d9177fff8c",
+ "composer_ms_per_answer_host": 0.66
+}

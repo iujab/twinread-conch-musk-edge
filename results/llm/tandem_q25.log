@@ -1,0 +1,13 @@
+  removed Qwen2.5-0.5B-Q4_0-speedonly.gguf from the board to make room
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: 200/398 MB, 7.2 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: 398/398 MB, 7.0 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: verified sha256 6eb923e7d26e9cea…
+== tv_q25_t3_idle (hot 47.1 C)
+  tv_q25_t3_idle | load 3.3s | [279+0c tok 10.7 pp/s, ttft 26.1s, 81 tok 6.13 t/s, 58w, 39s] | [76+210c tok 10.2 pp/s, ttft 7.5s, 120 tok 6.09 t/s, 82w, 27s] | rss 493.5 anon 108.5MB avail>=2945MB | peak 64.5C window 79s
+== tl_q25_t3_n10 (hot 47.1 C)
+  tl_q25_t3_n10 | load 3.4s | [279+0c tok 9.2 pp/s, ttft 30.2s, 81 tok 4.48 t/s, 58w, 48s] | [76+210c tok 8.6 pp/s, ttft 8.8s, 120 tok 4.42 t/s, 82w, 36s] | rss 494.3 anon 109.3MB avail>=2936MB | peak 64.5C window 111s
+== tl_q25_t3_n0 (hot 47.8 C)
+  tl_q25_t3_n0 | load 3.3s | [279+0c tok 9.6 pp/s, ttft 29.0s, 81 tok 4.34 t/s, 58w, 47s] | [76+210c tok 9.2 pp/s, ttft 8.3s, 120 tok 4.44 t/s, 82w, 35s] | rss 492.2 anon 107.1MB avail>=2942MB | peak 66.0C window 110s
+== tl_q25_t2_n10 (hot 47.8 C)
+  tl_q25_t2_n10 | load 3.4s | [279+0c tok 7.1 pp/s, ttft 39.2s, 89 tok 4.17 t/s, 61w, 60s] | [76+210c tok 6.9 pp/s, ttft 11.0s, 120 tok 4.17 t/s, 89w, 40s] | rss 492.7 anon 107.6MB avail>=2930MB | peak 63.2C window 128s
+plan finished

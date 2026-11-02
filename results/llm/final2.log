@@ -1,0 +1,20 @@
+skip bin_gcc14a53_t3: already measured
+== final2_t3_vision2hz_a (hot 47.5 C)
+  final2_t3_vision2hz_a | load 3.4s | [82+201c tok 8.9 pp/s, ttft 9.3s, 90 tok 3.52 t/s, 67w, 35s] | [80+210c tok 8.8 pp/s, ttft 9.1s, 105 tok 3.44 t/s, 68w, 39s] | rss 612.4 anon 206.6MB avail>=2839MB | peak 63.5C window 121s
+== final2_t3_vision2hz_b (hot 47.1 C)
+  final2_t3_vision2hz_b | load 3.3s | [90+201c tok 9.2 pp/s, ttft 9.8s, 125 tok 3.43 t/s, 77w, 46s] | rss 611.1 anon 205.4MB avail>=2840MB | peak 62.9C window 85s
+== final2_t3_alone (hot 46.5 C)
+  final2_t3_alone | load 3.3s | [82+201c tok 10.3 pp/s, ttft 8.0s, 90 tok 3.99 t/s, 67w, 30s] | [80+210c tok 10.2 pp/s, ttft 7.8s, 105 tok 4.02 t/s, 68w, 34s] | [81+210c tok 10.3 pp/s, ttft 7.9s, 125 tok 3.95 t/s, 77w, 39s] | rss 613.5 anon 207.8MB avail>=2889MB | peak 62.3C window 136s
+== final2_t3_cold_no_prewarm_vision_idle (hot 46.8 C)
+  final2_t3_cold_no_prewarm_vision_idle | load 4.5s | [290+0c tok 11.4 pp/s, ttft 25.4s, 105 tok 3.96 t/s, 68w, 52s] | rss 612.2 anon 206.5MB avail>=2841MB | peak 61.0C window 72s
+== final2_heat_t3_vision2hz_repeat (hot 45.9 C)
+  final2_heat_t3_vision2hz_repeat | load 3.4s | [290+0c tok 9.9 pp/s, ttft 29.3s, 105 tok 3.50 t/s, 68w, 59s] | [81+210c tok 8.9 pp/s, ttft 9.1s, 125 tok 3.44 t/s, 77w, 45s] | [80+210c tok 8.9 pp/s, ttft 9.0s, 105 tok 3.45 t/s, 68w, 39s] | rss 613.1 anon 207.4MB avail>=2832MB | peak 64.5C window 156s
+== final2_heat_t4_vision2hz_repeat (hot 47.5 C)
+  final2_heat_t4_vision2hz_repeat | load 3.2s | [290+0c tok 12.4 pp/s, ttft 23.4s, 122 tok 4.32 t/s, 83w, 51s] | [81+210c tok 11.1 pp/s, ttft 7.3s, 140 tok 4.31 t/s, 87w, 40s] | [80+210c tok 11.1 pp/s, ttft 7.2s, 122 tok 4.32 t/s, 83w, 35s] | rss 614.9 anon 209.2MB avail>=2830MB | peak 69.2C window 176s | ABORTED {'reason': 'max_seconds', 'hot_c': 67.0, 't': 175.5, 'phase': 'r3_heads_disagree:gen'}
+== final2_t4_vision2hz (hot 49.7 C)
+  final2_t4_vision2hz | load 3.3s | [82+201c tok 11.0 pp/s, ttft 7.4s, 129 tok 4.29 t/s, 95w, 37s] | [80+210c tok 10.9 pp/s, ttft 7.3s, 122 tok 4.26 t/s, 83w, 36s] | rss 612.2 anon 206.5MB avail>=2833MB | peak 68.2C window 107s
+== final2_fallback_q25_t3_vision2hz (hot 49.0 C)
+  final2_fallback_q25_t3_vision2hz | load 3.3s | [78+201c tok 10.3 pp/s, ttft 7.6s, 79 tok 5.27 t/s, 54w, 22s] | [76+210c tok 10.2 pp/s, ttft 7.5s, 152 tok 5.31 t/s, 105w, 36s] | [77+210c tok 10.2 pp/s, ttft 7.5s, 148 tok 5.30 t/s, 111w, 35s] | rss 491.1 anon 105.7MB avail>=2937MB | peak 66.0C window 130s
+== final2_fallback_q25_t3_alone (hot 48.7 C)
+  final2_fallback_q25_t3_alone | load 3.2s | [78+201c tok 11.9 pp/s, ttft 6.6s, 79 tok 6.21 t/s, 54w, 19s] | [76+210c tok 11.8 pp/s, ttft 6.5s, 152 tok 6.19 t/s, 105w, 31s] | [77+210c tok 11.8 pp/s, ttft 6.5s, 148 tok 6.20 t/s, 111w, 30s] | rss 492.0 anon 106.6MB avail>=2985MB | peak 65.7C window 103s
+plan finished

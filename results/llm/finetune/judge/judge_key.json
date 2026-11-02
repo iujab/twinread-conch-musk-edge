@@ -1,0 +1,302 @@
+{
+ "held_out_0036": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0004": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0024": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0040": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0041": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0010": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0007": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0026": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0002": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0012": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0025": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0033": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0029": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0046": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0011": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0145": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0135": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0126": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0136": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0128": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0137": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0120": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0112": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0134": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0132": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0103": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0105": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0106": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0104": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0133": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0199": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0193": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0184": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0150": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0151": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0179": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0172": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0186": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0197": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0154": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0177": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0188": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0157": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0164": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0182": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0088": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0056": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0068": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0086": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0083": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0084": {
+  "A": "finetuned_seed1",
+  "B": "base_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0077": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0057": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0097": {
+  "A": "base_seed1",
+  "B": "composer_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0090": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0096": {
+  "A": "composer_seed1",
+  "B": "base_seed1",
+  "C": "finetuned_seed1"
+ },
+ "held_out_0060": {
+  "A": "base_seed1",
+  "B": "finetuned_seed1",
+  "C": "composer_seed1"
+ },
+ "held_out_0067": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0070": {
+  "A": "composer_seed1",
+  "B": "finetuned_seed1",
+  "C": "base_seed1"
+ },
+ "held_out_0092": {
+  "A": "finetuned_seed1",
+  "B": "composer_seed1",
+  "C": "base_seed1"
+ }
+}

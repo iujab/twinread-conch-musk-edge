@@ -1,0 +1,6 @@
+{"defaults": {"requests": "0,1,2", "idle_s": 2, "max_tokens": 200, "max_seconds": 175, "threads": 3, "repeat_penalty": 1.1},
+ "runs": [
+  {"name": "ql2_q25_q4km_t3_rp11", "args": {"model": "data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf"}},
+  {"name": "ql2_q25_q4_0_speedonly_t3_rp11", "args": {"model": "data/llm/Qwen2.5-0.5B-Q4_0-speedonly.gguf"}},
+  {"name": "ql2_q3_q40e8_t3_rp11", "args": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf", "no_think": true}}
+ ]}

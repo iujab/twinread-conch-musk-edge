@@ -1,0 +1,1149 @@
+{
+ "checked_utc": "2026-11-02T10:02:42+00:00",
+ "token": null,
+ "gguf_repos": [
+  {
+   "repo": "Qwen/Qwen2.5-0.5B-Instruct-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "9217f5db79a29953eb74d5343926648285ec7e67",
+   "last_modified": "2024-09-20 06:20:24+00:00",
+   "downloads": 401008,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "qwen2.5-0.5b-instruct-q2_k.gguf",
+     "bytes": 415182688,
+     "sha256": "9ee36184e616dfc76df4f5dd66f908dbde6979524ae36e6cefb67f532f798cb8",
+     "quant": "q2_k"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q4_0.gguf",
+     "bytes": 428730208,
+     "sha256": "7671c0c304e6ce5a7fc577bcb12aba01e2c155cc2efd29b2213c95b18edaf6ed",
+     "quant": "q4_0"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q3_k_m.gguf",
+     "bytes": 432041824,
+     "sha256": "590d2479d401db206fe12a4562294d2de6211e06338a6e34fbad64b32f1469d0",
+     "quant": "q3_k_m"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q5_0.gguf",
+     "bytes": 490475360,
+     "sha256": "925946ab27801fea3eead42933f857b6449c6d299f062e374cee2ac48426f2a5",
+     "quant": "q5_0"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q4_k_m.gguf",
+     "bytes": 491400032,
+     "sha256": "74a4da8c9fdbcd15bd1f6d01d621410d31c6fc00986f5eb687824e7b93d7a9db",
+     "quant": "q4_k_m"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q5_k_m.gguf",
+     "bytes": 522186592,
+     "sha256": "041474553fcabfc2a2d67903f9d2c2e50bd92528e670da4f33b5d0ce6e59fd55",
+     "quant": "q5_k_m"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q6_k.gguf",
+     "bytes": 650379104,
+     "sha256": "2f82233630c349ccf6b8daccf48f9a7865713d9f08a2eadfa456cebe9b97c7f5",
+     "quant": "q6_k"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-q8_0.gguf",
+     "bytes": 675710816,
+     "sha256": "ca59ca7f13d0e15a8cfa77bd17e65d24f6844b554a7b6c12e07a5f89ff76844e",
+     "quant": "q8_0"
+    },
+    {
+     "file": "qwen2.5-0.5b-instruct-fp16.gguf",
+     "bytes": 1266425696,
+     "sha256": "8e0ae26000627ed62de0e78e41860af70094558b9d2913385c842a6aa06cf3fc",
+     "quant": null
+    }
+   ]
+  },
+  {
+   "repo": "bartowski/Qwen2.5-0.5B-Instruct-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "41ba88dbac95fed2528c92514c131d73eb5a174b",
+   "last_modified": "2024-09-19 17:51:30+00:00",
+   "downloads": 98240,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen2.5-0.5B-Instruct-IQ2_M.gguf",
+     "bytes": 328597408,
+     "sha256": "2fc237e65e1f963310e9c961d8e71e932734a72f90e3216a972d83edd1feb756",
+     "quant": "Q2_M"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q3_K_S.gguf",
+     "bytes": 338263456,
+     "sha256": "468787b643ef9081a75c6e7bd98da987f46583250248e0a0a7aca173308e8d34",
+     "quant": "Q3_K_S"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-IQ3_XS.gguf",
+     "bytes": 338607520,
+     "sha256": "c010afa79cb0607545b5b1f2af7e0a3a0311b28d33dadd92a9895f383f51a8e0",
+     "quant": "Q3_XS"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q2_K.gguf",
+     "bytes": 338607520,
+     "sha256": "c929ba8be98f584d0872923e373bda0da8a261eae05dd362590c9792adfc76d2",
+     "quant": "Q2_K"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q2_K_L.gguf",
+     "bytes": 338607520,
+     "sha256": "c929ba8be98f584d0872923e373bda0da8a261eae05dd362590c9792adfc76d2",
+     "quant": "Q2_K_L"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-IQ3_M.gguf",
+     "bytes": 342752576,
+     "sha256": "0b2e17471ccc784dfd7b042a81e34289a3accb75ccda7347598a329e0a932099",
+     "quant": "Q3_M"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-IQ4_XS.gguf",
+     "bytes": 349402688,
+     "sha256": "df178ccd68e24ce0c74f957765c00e8f5eec5c51216a1acd4444202e58df6cc1",
+     "quant": "Q4_XS"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_0_4_4.gguf",
+     "bytes": 352155200,
+     "sha256": "9f2c0af1a4a2a1f1b4ad51d2aa3fb09913ba8821f3aef71541fef56b3c7da8d0",
+     "quant": "Q4_0_4_4"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_0_4_8.gguf",
+     "bytes": 352155200,
+     "sha256": "23b29ad0785bc79f3d10e1bc4d1dae8a40599f60d7abb7bdfde6bc0ad71642f6",
+     "quant": "Q4_0_4_8"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_0_8_8.gguf",
+     "bytes": 352155200,
+     "sha256": "af7a55e4493e2cba03f7b217f24abfd962e516eb3ea1a2a89073aca0c1403a3d",
+     "quant": "Q4_0_8_8"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_0.gguf",
+     "bytes": 352972352,
+     "sha256": "c8cd5f37dd1235fb010c45316d4ff8af875e1a4e0ff368b4bf6cacb9053d4919",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q3_K_M.gguf",
+     "bytes": 355466656,
+     "sha256": "e14591771b0a3070c50ff11ee6055ffbb25f0bf50b6f9474ec4a16ff4ace8df6",
+     "quant": "Q3_K_M"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q3_K_L.gguf",
+     "bytes": 369358400,
+     "sha256": "68fefa7a768b6227c7847901ae97f1c422d09a6227fb0c244282f6f40b438ea9",
+     "quant": "Q3_K_L"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q3_K_XL.gguf",
+     "bytes": 369358400,
+     "sha256": "68fefa7a768b6227c7847901ae97f1c422d09a6227fb0c244282f6f40b438ea9",
+     "quant": "Q3_K_XL"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_K_S.gguf",
+     "bytes": 385472064,
+     "sha256": "988083e5e5f2b6060d32f349b7e2d9e253f352e9cd3ead40fab6889041654249",
+     "quant": "Q4_K_S"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_K_L.gguf",
+     "bytes": 397808192,
+     "sha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+     "quant": "Q4_K_L"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q4_K_M.gguf",
+     "bytes": 397808192,
+     "sha256": "6eb923e7d26e9cea28811e1a8e852009b21242fb157b26149d3b188f3a8c8653",
+     "quant": "Q4_K_M"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q5_K_S.gguf",
+     "bytes": 412710464,
+     "sha256": "4da812ecc1301181e03c7deb6d747d699bc7dd7cc95f7333335ddb6a70ddbd85",
+     "quant": "Q5_K_S"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q5_K_L.gguf",
+     "bytes": 420086336,
+     "sha256": "a0a413dcbb4676f21d4c951b98a393324694edb1a20a4f9547d1de8d2919ff3b",
+     "quant": "Q5_K_L"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q5_K_M.gguf",
+     "bytes": 420086336,
+     "sha256": "a0a413dcbb4676f21d4c951b98a393324694edb1a20a4f9547d1de8d2919ff3b",
+     "quant": "Q5_K_M"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q6_K.gguf",
+     "bytes": 505736768,
+     "sha256": "32c14c29a44712c02e29d5c2605593ece92ccb7a4358f56016a42b151434c842",
+     "quant": "Q6_K"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q6_K_L.gguf",
+     "bytes": 505736768,
+     "sha256": "32c14c29a44712c02e29d5c2605593ece92ccb7a4358f56016a42b151434c842",
+     "quant": "Q6_K_L"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-Q8_0.gguf",
+     "bytes": 531068480,
+     "sha256": "25130a98aa782284a7dabea0c23245b2fd371ed47244e79d78b8ec23245fdf96",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen2.5-0.5B-Instruct-f16.gguf",
+     "bytes": 994156864,
+     "sha256": "f1ad9d1174ce6ab47b584d522634c47e411b75bffdffd9a4e106e21e882392e5",
+     "quant": "f16"
+    }
+   ]
+  },
+  {
+   "repo": "unsloth/Qwen2.5-0.5B-Instruct-GGUF",
+   "exists": false,
+   "error": "RepositoryNotFoundError"
+  },
+  {
+   "repo": "Qwen/Qwen3-0.6B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "23749fefcc72300e3a2ad315e1317431b06b590a",
+   "last_modified": "2025-05-09 07:15:43+00:00",
+   "downloads": 217694,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen3-0.6B-Q8_0.gguf",
+     "bytes": 639446688,
+     "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+     "quant": "Q8_0"
+    }
+   ]
+  },
+  {
+   "repo": "unsloth/Qwen3-0.6B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "50968a4468ef4233ed78cd7c3de230dd1d61a56b",
+   "last_modified": "2025-06-23 00:26:15+00:00",
+   "downloads": 155484,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen3-0.6B-UD-IQ1_S.gguf",
+     "bytes": 214643392,
+     "sha256": "fcb165efedaee2cfbdefe02bd3bbf22c80cfdb728915fbbe54fa809a8556710a",
+     "quant": "Q1_S"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-IQ1_M.gguf",
+     "bytes": 220754624,
+     "sha256": "7b3e7f1ba1b743d9f97c4c8fe926cf92b0ac1902cb4a99309fe58b3bdd30d33b",
+     "quant": "Q1_M"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-IQ2_XXS.gguf",
+     "bytes": 234074816,
+     "sha256": "55e0d0b88ae021edf15d2f0cec5ab2c47552b6a5f388dfab869f1e67240263c3",
+     "quant": "Q2_XXS"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-IQ2_M.gguf",
+     "bytes": 268702400,
+     "sha256": "2c473f73f162dae9e09de4cec78eb6569ac7e78aa65dfcd71e40939e52fcf69b",
+     "quant": "Q2_M"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-IQ3_XXS.gguf",
+     "bytes": 282088128,
+     "sha256": "0ed6dab036349ba8198324c70002a15397e8bdeb06748eee5c631f872e1eaf2f",
+     "quant": "Q3_XXS"
+    },
+    {
+     "file": "Qwen3-0.6B-Q2_K.gguf",
+     "bytes": 296238784,
+     "sha256": "26d035ea15c4a2853e8d20ffc56a76f6164e17dbb6c9e532c5766700c404519d",
+     "quant": "Q2_K"
+    },
+    {
+     "file": "Qwen3-0.6B-Q2_K_L.gguf",
+     "bytes": 296238784,
+     "sha256": "26d035ea15c4a2853e8d20ffc56a76f6164e17dbb6c9e532c5766700c404519d",
+     "quant": "Q2_K_L"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q2_K_XL.gguf",
+     "bytes": 301727424,
+     "sha256": "93a7ae9c1ddbebc9d754d855aa623c8109dad5ac2952de71300160122c1044b0",
+     "quant": "Q2_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-Q3_K_S.gguf",
+     "bytes": 323075776,
+     "sha256": "1d61e10a443e3e335a979eecde30bab6c2489a1e876632e22e0695178d368b67",
+     "quant": "Q3_K_S"
+    },
+    {
+     "file": "Qwen3-0.6B-Q3_K_M.gguf",
+     "bytes": 347127488,
+     "sha256": "30bb9f9222cf58c076277879881a24e7127a10be32076d76d8c70f8defc01f5d",
+     "quant": "Q3_K_M"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q3_K_XL.gguf",
+     "bytes": 356622016,
+     "sha256": "401c23cd33883cb9403f14a941c0cb04b8d5bdbc240f0f9008b574a5dcb75b5e",
+     "quant": "Q3_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-IQ4_XS.gguf",
+     "bytes": 367804096,
+     "sha256": "dacc1fe1dc6f4799f366ac3385299f71c7e02c58b8702448a174f14d91b1c64d",
+     "quant": "Q4_XS"
+    },
+    {
+     "file": "Qwen3-0.6B-IQ4_NL.gguf",
+     "bytes": 381566656,
+     "sha256": "f1b14e28a6de64f21672ddf2c8f24736c389da4c64ebf024b1204f4f43a4fd71",
+     "quant": "Q4_NL"
+    },
+    {
+     "file": "Qwen3-0.6B-Q4_0.gguf",
+     "bytes": 382156480,
+     "sha256": "33bcc57074ec7b6eada5a90651ee546ec0c2b271002c22baf9f1b2dd1e8f75cb",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen3-0.6B-Q4_K_S.gguf",
+     "bytes": 383270592,
+     "sha256": "3e5495288a45c7891d32afeb4e7a1ed58a9a22fab83f8903b561204a89aae363",
+     "quant": "Q4_K_S"
+    },
+    {
+     "file": "Qwen3-0.6B-Q4_K_M.gguf",
+     "bytes": 396705472,
+     "sha256": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+     "quant": "Q4_K_M"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q4_K_XL.gguf",
+     "bytes": 405372608,
+     "sha256": "ed2dd561f8aa5651cfb198be583269779e26ca6e28c40dba94fc2da4432bde2a",
+     "quant": "Q4_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-Q4_1.gguf",
+     "bytes": 409091776,
+     "sha256": "ddaf05402c668540464a91efc607d732f41f108401533fe69de874bfc9653688",
+     "quant": "Q4_1"
+    },
+    {
+     "file": "Qwen3-0.6B-Q5_K_S.gguf",
+     "bytes": 436616896,
+     "sha256": "222acaa0376ffd371c5673a98ff896d7aa82428a4fab92e4b858e7eb281467ad",
+     "quant": "Q5_K_S"
+    },
+    {
+     "file": "Qwen3-0.6B-Q5_K_M.gguf",
+     "bytes": 444415680,
+     "sha256": "03c6e2127d155b89c21a512954010486b1e00e1a9eebdfad650d03b53ab4c74a",
+     "quant": "Q5_K_M"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q5_K_XL.gguf",
+     "bytes": 446381760,
+     "sha256": "23604893990250423a7f1a08e9a8d16da71eaeb560352020f533c9e62e14badd",
+     "quant": "Q5_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-Q6_K.gguf",
+     "bytes": 495107776,
+     "sha256": "1c15a88244c9e852516e5ba0e394fc97f2182f1f2757413fb99fe6a9214c033b",
+     "quant": "Q6_K"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q6_K_XL.gguf",
+     "bytes": 576467648,
+     "sha256": "d7df206be8dfac0267b24b97b6f062b31a8655ef770a74e82a38c262efb570ba",
+     "quant": "Q6_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-Q8_0.gguf",
+     "bytes": 639447744,
+     "sha256": "e150ed544dfe6016930c026a93913a5e3184181ebfe6ab2223ae01dd0491784c",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen3-0.6B-UD-Q8_K_XL.gguf",
+     "bytes": 844288704,
+     "sha256": "523982b2bb2ce75857aa0de6763c41e46ef2be5f79c26867f73be143f2ba8bad",
+     "quant": "Q8_K_XL"
+    },
+    {
+     "file": "Qwen3-0.6B-BF16.gguf",
+     "bytes": 1198182848,
+     "sha256": "f9c9f1d3c1e21755b82d4e165f88dbbbd4355646d632fb5d6cef7c66ed4ee04e",
+     "quant": "BF16"
+    }
+   ]
+  },
+  {
+   "repo": "bartowski/Qwen_Qwen3-0.6B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": null,
+   "sha": "60b85c0e3d8fe0f6474f406922a26d12aca4550d",
+   "last_modified": "2025-04-28 17:26:40+00:00",
+   "downloads": 137793,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ2_M.gguf",
+     "bytes": 331761056,
+     "sha256": "d129244d6f5285594084390f05ca5c3f7d194fd82f9d63f76c47e64725cf3b07",
+     "quant": "Q2_M"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ3_XXS.gguf",
+     "bytes": 345867680,
+     "sha256": "4553e20544d2667785db4e48b5556d02e70989234be5853b8bf200d65381d701",
+     "quant": "Q3_XXS"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q2_K.gguf",
+     "bytes": 347288992,
+     "sha256": "a1960f01d2aa0d8c7d4e5cb13026e4c3dc85c899c0851bddb2cabbbde18ac52b",
+     "quant": "Q2_K"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ3_XS.gguf",
+     "bytes": 379605408,
+     "sha256": "0906dcf62aa4f005887e855731376f0bf3be8f5ffa61f547df71e6154ea748d9",
+     "quant": "Q3_XS"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q3_K_S.gguf",
+     "bytes": 389927328,
+     "sha256": "c6552632340ff82d8ea6f519c384eede4dd37933b200a05890a65dabae612327",
+     "quant": "Q3_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ3_M.gguf",
+     "bytes": 402878880,
+     "sha256": "b4efdacce21a52b1ca0018d7850f67562c59c27a1507d485cc1142bef1a09f44",
+     "quant": "Q3_M"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q3_K_M.gguf",
+     "bytes": 413979040,
+     "sha256": "81771904092305dcf02980cb7705111c7ec0c8b8cffd497a7d05964d3373a45e",
+     "quant": "Q3_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q3_K_L.gguf",
+     "bytes": 435343776,
+     "sha256": "0793e0df451c226d5229fb9728624c5359d539ffaab3f6a0d28935eb09f8e016",
+     "quant": "Q3_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ4_XS.gguf",
+     "bytes": 450456992,
+     "sha256": "87c112e51ae42471c51081e9ea35c7ec57d6b93d72d857affbc84790eda31341",
+     "quant": "Q4_XS"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-IQ4_NL.gguf",
+     "bytes": 469081504,
+     "sha256": "96c4d65dc596b294d7e74a5c849532836d009bc68ce763b80acb4995b4d30d09",
+     "quant": "Q4_NL"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q4_0.gguf",
+     "bytes": 469671328,
+     "sha256": "4b78d8e3c61976cebb78ef5affe19d0eca75b1b47ec66f613a5a3245484758d5",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q4_K_S.gguf",
+     "bytes": 470785440,
+     "sha256": "64d751138caefeb5a6c8d8839598ce66916b16a47b9be54b12b2ad78a3f6b4ef",
+     "quant": "Q4_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q4_K_M.gguf",
+     "bytes": 484220320,
+     "sha256": "9acfc1e001311f34b4252001b626f2e466d592a42065f66571bff3790d4e1b14",
+     "quant": "Q4_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q2_K_L.gguf",
+     "bytes": 499224992,
+     "sha256": "6e2c3e043d29a52dad50003fde24f201cf4006b3e5dd7e45dcde270cd180d9d2",
+     "quant": "Q2_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q4_1.gguf",
+     "bytes": 506330528,
+     "sha256": "459dad8b75080ce0c96ba2ed7514887f942bd9739c40aad0923ba324c34fb25e",
+     "quant": "Q4_1"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q5_K_S.gguf",
+     "bytes": 543579552,
+     "sha256": "43c5efb14850c6aa2f4c70384fe6e8079d9cf5a9f457e68f9a25c9a1aaa6a04b",
+     "quant": "Q5_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q5_K_M.gguf",
+     "bytes": 551378336,
+     "sha256": "2df7894c99ee7716f0ed3c7d454c2386a7ae976c4b0ad0e716d55399c1360648",
+     "quant": "Q5_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q3_K_XL.gguf",
+     "bytes": 571478432,
+     "sha256": "03f95d27a9d8374b1298d80bef80a5b33f93cd943e7806139239d99d6e2be092",
+     "quant": "Q3_K_XL"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q4_K_L.gguf",
+     "bytes": 599691680,
+     "sha256": "109aa91357a258782343e60edf46b83e1403652af1b91635b4f1c91b4a69ddc6",
+     "quant": "Q4_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q6_K.gguf",
+     "bytes": 622733728,
+     "sha256": "21e95febea68b223089e2382378e8c3155e587f5a6618ae3595e3d00c6885575",
+     "quant": "Q6_K"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q5_K_L.gguf",
+     "bytes": 647401888,
+     "sha256": "74e71eae7916b4c007e5c48f8ae477292f067c69060a4202dfc25d85b23baf91",
+     "quant": "Q5_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q6_K_L.gguf",
+     "bytes": 698093984,
+     "sha256": "f3356ceb1dc0916ceb45022b50351cc7341aeaa3b15ec89e71fc4194f603b538",
+     "quant": "Q6_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-Q8_0.gguf",
+     "bytes": 804753824,
+     "sha256": "c159d1518f16bc42533d9a09f034eb598b670341adc2b08b9a9751614aea71eb",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen_Qwen3-0.6B-bf16.gguf",
+     "bytes": 1509347488,
+     "sha256": "6bbe7c978ab2dab9f4e70c040ef4ad53928cacf3d24bc5dc7252aff93be92386",
+     "quant": "bf16"
+    }
+   ]
+  },
+  {
+   "repo": "ggml-org/Qwen3-0.6B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "13ac06624948e4d8589cb4b6f90100837342fcb8",
+   "last_modified": "2026-10-19 15:35:25+00:00",
+   "downloads": 50132,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen3-0.6B-Q4_0.gguf",
+     "bytes": 428970080,
+     "sha256": "da2572f16c06133561ce56accaa822216f2391ef4d37fba427801cd6736417d4",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen3-0.6B-Q8_0.gguf",
+     "bytes": 804753632,
+     "sha256": "361cc68159042c36ebff7715dc5a2e4612153e88f3e9c9c234820849d6dc9e1d",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen3-0.6B-f16.gguf",
+     "bytes": 1509347424,
+     "sha256": "ab9004daf660cd6a6ba1c07556e74fcceb2b756063ccce3f9c69d3a637b361cc",
+     "quant": "f16"
+    },
+    {
+     "file": "Qwen3-0.6B-BF16.gguf",
+     "bytes": 1509347552,
+     "sha256": "65a16246f5814dc0587acadcf0328186b17febf6dcaeb1b13efa9243b551d38e",
+     "quant": "BF16"
+    }
+   ]
+  },
+  {
+   "repo": "unsloth/Qwen3.5-0.8B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "6ab461498e2023f6e3c1baea90a8f0fe38ab64d0",
+   "last_modified": "2026-03-02 14:08:04+00:00",
+   "downloads": 302763,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "mmproj-F16.gguf",
+     "bytes": 204987232,
+     "sha256": "56e4c6cfe73b0c82e3e82bc518d7591997e61d81f723fc41a586f4fa69ea2453",
+     "quant": "F16"
+    },
+    {
+     "file": "mmproj-BF16.gguf",
+     "bytes": 207346528,
+     "sha256": "d312c4d02fd46eea7a16e4f3bbb58840e6222209322ca1e33ca03247ad8935d6",
+     "quant": "BF16"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-IQ2_XXS.gguf",
+     "bytes": 338227456,
+     "sha256": "a369165c8ec45a92d55cbad98b5377e2c32ca8dfc824c899d9d05b33b6b53e54",
+     "quant": "Q2_XXS"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-IQ2_M.gguf",
+     "bytes": 371933440,
+     "sha256": "e31519c0ffb8e5bec09f34d7783731c39f9eaee13c0ec5a0f14b191761bb5134",
+     "quant": "Q2_M"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-IQ3_XXS.gguf",
+     "bytes": 398237952,
+     "sha256": "3dc1f2217751ca270d41f6fc3084160c386465fe09bf4596576dccd7a4565b8a",
+     "quant": "Q3_XXS"
+    },
+    {
+     "file": "mmproj-F32.gguf",
+     "bytes": 402381664,
+     "sha256": "2b167b9d9a96bf18c31ece6de70aedca4034d936bd9aba21bd485b9a6dc78da5",
+     "quant": "F32"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q2_K_XL.gguf",
+     "bytes": 417718528,
+     "sha256": "8d992fef3b0bd269eb4ef2ed492b2b02f9027a055d6a764b700f4092593c9909",
+     "quant": "Q2_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q3_K_S.gguf",
+     "bytes": 440750336,
+     "sha256": "4649ee78ff7cbad4e9fe4c0bab3b73a7c70096b51e36ef299469b08989a93c39",
+     "quant": "Q3_K_S"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q3_K_M.gguf",
+     "bytes": 470167808,
+     "sha256": "c49ad509cd0a3f8584c4eff50d84202336bf9475b8a724c89f4061687c1fb510",
+     "quant": "Q3_K_M"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q3_K_XL.gguf",
+     "bytes": 492216576,
+     "sha256": "30a1353e67c9795e375dac8a19d25429ace0ec2b6ca55436406ee02d2603a218",
+     "quant": "Q3_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-IQ4_XS.gguf",
+     "bytes": 492605696,
+     "sha256": "619917ae92f61eb6515a7070e944a0a7c2b198a2cf6536386f475485188a36ff",
+     "quant": "Q4_XS"
+    },
+    {
+     "file": "Qwen3.5-0.8B-IQ4_NL.gguf",
+     "bytes": 506859776,
+     "sha256": "de9f7f28a4155c1678cbdae54c61ae63aa6326f7fffd2cdacfb765cfeab21670",
+     "quant": "Q4_NL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q4_0.gguf",
+     "bytes": 507154688,
+     "sha256": "444406ddd926550c724ec18d5120a9d40ded44908a063b0e66e9a7e5464c652c",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q4_K_S.gguf",
+     "bytes": 508104960,
+     "sha256": "5f7ccfa6e9df0d9ebbaff9ee095b18202bec1e0ac313ca688d2c57c9c80a6bc9",
+     "quant": "Q4_K_S"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q4_K_M.gguf",
+     "bytes": 532517120,
+     "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+     "quant": "Q4_K_M"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q4_1.gguf",
+     "bytes": 535171328,
+     "sha256": "e5926ccfef0c54aebf5d8bda01b2fb6c12ceff4f02a490bc108c5fabf60b334e",
+     "quant": "Q4_1"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q4_K_XL.gguf",
+     "bytes": 558772480,
+     "sha256": "3177ebd67afe4438374da19e690bc1b98756f7e0fea9240e1be404336156a7b5",
+     "quant": "Q4_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q5_K_S.gguf",
+     "bytes": 568889600,
+     "sha256": "a201a5899049a7f7845f910ad803574787b4474c3daffc0d33e8688f9114880f",
+     "quant": "Q5_K_S"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q5_K_M.gguf",
+     "bytes": 590057728,
+     "sha256": "c3ef5827b322c4be08a3a26ce424460d8b37daf593356c2cc1f4e40a7ab0581b",
+     "quant": "Q5_K_M"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q5_K_XL.gguf",
+     "bytes": 606585088,
+     "sha256": "299824f81e5a1d84bf49db6b603b1c002a4e910c6e9f242a504ddc51e758ee0e",
+     "quant": "Q5_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q6_K.gguf",
+     "bytes": 639029504,
+     "sha256": "8408c5c222111cec253682b49eece2a02ed641ded68490001ec4ee160e71098e",
+     "quant": "Q6_K"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q6_K_XL.gguf",
+     "bytes": 771092736,
+     "sha256": "8f0cb1e8e058e45c7d9676fcd4da2f08eb62ff537da747a6ffc7157c1f6a5684",
+     "quant": "Q6_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q8_0.gguf",
+     "bytes": 811843840,
+     "sha256": "0ad885ffd4bb022fc4f0d33a3308fa108ef8613159d3b3a67e23abca056b7a6c",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen3.5-0.8B-UD-Q8_K_XL.gguf",
+     "bytes": 1186443520,
+     "sha256": "167183aecc0735359970e977c21a88c7d69112be06aa5d2df27c0d2a23662805",
+     "quant": "Q8_K_XL"
+    },
+    {
+     "file": "Qwen3.5-0.8B-BF16.gguf",
+     "bytes": 1516744736,
+     "sha256": "cedf89af31c9041b601fa58303285bc46d99c51baee1b13f5e919626ca526ee5",
+     "quant": "BF16"
+    }
+   ]
+  },
+  {
+   "repo": "ggml-org/Qwen3.5-0.8B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "807dfd9a6fadbf703207aac3bfb0b2b3040d077c",
+   "last_modified": "2026-10-19 15:35:39+00:00",
+   "downloads": 62107,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen3.5-0.8B-Q4_0.gguf",
+     "bytes": 563036064,
+     "sha256": "57d1997790d1744fba5b40a7317df71ea5e2acee28c47e78f0cce39c0703f8cf",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen3.5-0.8B-Q8_0.gguf",
+     "bytes": 833592096,
+     "sha256": "37ae482d336108d23516fa35e8e0c4126688d81018b87178a18d752a1357814f",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen3.5-0.8B-BF16.gguf",
+     "bytes": 1557662496,
+     "sha256": "9a7bed4041b7975e0f71fa34670d1e9025213bc92905ac0db75d36c4fa3fa623",
+     "quant": "BF16"
+    }
+   ]
+  },
+  {
+   "repo": "bartowski/Qwen_Qwen3.5-0.8B-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "f36b1ea49a332ede8fe5f389bbf5b3575ef71f48",
+   "last_modified": "2026-05-19 19:08:35+00:00",
+   "downloads": 32456,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "Qwen_Qwen3.5-0.8B-imatrix.gguf",
+     "bytes": 1134720,
+     "sha256": "e79b46b28c107fcdc0e39711075099f64738c00721120b11f30fc9a3d65322df",
+     "quant": null
+    },
+    {
+     "file": "mmproj-Qwen_Qwen3.5-0.8B-f16.gguf",
+     "bytes": 204987104,
+     "sha256": "1dc1351c82e41b48edb55fd6ddfa7ca60fb5a16b3d5abf3ce7054880dd022847",
+     "quant": "f16"
+    },
+    {
+     "file": "mmproj-Qwen_Qwen3.5-0.8B-bf16.gguf",
+     "bytes": 207346400,
+     "sha256": "bc03706f1efeb7c7b819cbbe4d9f07a2c86980e697ea92c4f4b00a3c130b2a70",
+     "quant": "bf16"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ2_M.gguf",
+     "bytes": 398560352,
+     "sha256": "1319d5a780f2b1aa74a58480549f79022398687721db2536d3f1256b665e80bb",
+     "quant": "Q2_M"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ3_XXS.gguf",
+     "bytes": 454306912,
+     "sha256": "6c72d205240d96e9b8cff0126fd3f6394b2bc082b17977851afde08c4bf59b06",
+     "quant": "Q3_XXS"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q2_K.gguf",
+     "bytes": 464231520,
+     "sha256": "0117c1dca3a5462364e0cabd44c57a1d7a15876023eb2d1f2ae356df37a918e1",
+     "quant": "Q2_K"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ3_XS.gguf",
+     "bytes": 497859680,
+     "sha256": "0b71ce6d787db7223527dbcffc720098eb4d9153fa9d9bcd54c58b01d3f7b7d6",
+     "quant": "Q3_XS"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q3_K_S.gguf",
+     "bytes": 503635040,
+     "sha256": "a730443c74a80dea0c38464d26a0f0dd35d603d1aa308c477667491d8bcde853",
+     "quant": "Q3_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ3_M.gguf",
+     "bytes": 507579488,
+     "sha256": "7b34be84da7a76a74f9319515cffc556a6f3db0992a4d87f0260c33ae060ff26",
+     "quant": "Q3_M"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q3_K_M.gguf",
+     "bytes": 518012000,
+     "sha256": "b481a9cf9c3c3e5094b2b939c0d934d1bb6791cdaa29d5bfccc344842c53ec67",
+     "quant": "Q3_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ4_XS.gguf",
+     "bytes": 523058272,
+     "sha256": "0208d8c9491848f83fdd9b125fdcdb7495f4656314f323e5c78da8ae6c5d9426",
+     "quant": "Q4_XS"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q2_K_L.gguf",
+     "bytes": 525814880,
+     "sha256": "2a3250503bfaf79c1d576f6a43e9fcbd9de2b986c028cc51cbc674700a0d8988",
+     "quant": "Q2_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q3_K_L.gguf",
+     "bytes": 528825440,
+     "sha256": "13a563773029414306364d083fc1d13ab207781dd0a341e06bf7e89849cae594",
+     "quant": "Q3_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q4_0.gguf",
+     "bytes": 537517152,
+     "sha256": "407c9dec5a813ebe4ed381e26b9b04f62b9041ea96f1a054ff9aa67c2fe46b36",
+     "quant": "Q4_0"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-IQ4_NL.gguf",
+     "bytes": 537640032,
+     "sha256": "5b83cb0d0ccc8bebe91799426dbb857df3074224072d81ccfbda1db014cd0ef7",
+     "quant": "Q4_NL"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q4_K_S.gguf",
+     "bytes": 552492128,
+     "sha256": "493ad2c57f291778b0d1911bcf6832891da1385918860ac47f5296dd5bf167a9",
+     "quant": "Q4_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q4_1.gguf",
+     "bytes": 566189152,
+     "sha256": "86d8c909a8d8333a57f2e3ae4a5c49b26db3dbc60bcd3b8ccf213841758be56f",
+     "quant": "Q4_1"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q4_K_M.gguf",
+     "bytes": 579615840,
+     "sha256": "fb044e93939a70469c905781334f5de1e6c8b608ced6cbc8c9249bd4127d9526",
+     "quant": "Q4_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q3_K_XL.gguf",
+     "bytes": 590408800,
+     "sha256": "4b5a9e1fd72fedfa917fa88a6d8cd62c09585691e8ef6cdf7d7355fcbc79f97b",
+     "quant": "Q3_K_XL"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q5_K_S.gguf",
+     "bytes": 610589792,
+     "sha256": "e37d6d0a7dcc1cc4c24af450efb6d71e8cc2b62fd0d8c3dc0509eab35d08d59f",
+     "quant": "Q5_K_S"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q4_K_L.gguf",
+     "bytes": 641199200,
+     "sha256": "648d23dfa036eee8dede4cf915e2ea14b3edba8a21d1216636e097228fd78afd",
+     "quant": "Q4_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q5_K_M.gguf",
+     "bytes": 646093920,
+     "sha256": "7f5b4185c9a3fd54daae8925927377c80e16e3afa094ea9444b3c0a9077136ab",
+     "quant": "Q5_K_M"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q6_K.gguf",
+     "bytes": 691461216,
+     "sha256": "976220309a81b4eb26462657a77570bc6e7d936e8425161c54d6d85488567f95",
+     "quant": "Q6_K"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q5_K_L.gguf",
+     "bytes": 707677280,
+     "sha256": "1bca2b87703aef885f549c2ba72ad84ed0fc40e8416eccc601f528d309263cb7",
+     "quant": "Q5_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q6_K_L.gguf",
+     "bytes": 753044576,
+     "sha256": "1bee96f8a40506ff2a6d49e88067377ce86d263e7c9bd8d2ad4cbc8b3ece9923",
+     "quant": "Q6_K_L"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-Q8_0.gguf",
+     "bytes": 835325024,
+     "sha256": "7182e2362766bb9569209bbc24cf1a4cdfbb8ab161babdb2080c84fa62c08c2f",
+     "quant": "Q8_0"
+    },
+    {
+     "file": "Qwen_Qwen3.5-0.8B-bf16.gguf",
+     "bytes": 1557662528,
+     "sha256": "ad1549eedc613064971dcbbbfab6c9b7990984d1c9ab38f792c6f2ec1207bbc2",
+     "quant": "bf16"
+    }
+   ]
+  },
+  {
+   "repo": "Qwen/Qwen2-0.5B-Instruct-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "198f08841147e5196a6a69bd0053690fb1fd3857",
+   "last_modified": "2024-08-21 10:29:53+00:00",
+   "downloads": 12606,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "qwen2-0_5b-instruct-q2_k.gguf",
+     "bytes": 338604736,
+     "sha256": "12f42f2362052e4811b25bf251185be0a753ff382d83460c15064696df52f206",
+     "quant": "q2_k"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q4_0.gguf",
+     "bytes": 352969408,
+     "sha256": "aca679832ded61145239ce7f5c5ebddb1c57ada786c9c23733899c3888e0596f",
+     "quant": "q4_0"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q3_k_m.gguf",
+     "bytes": 355463872,
+     "sha256": "fd2d897ea4af94d2b4fdbd09be67dc079ebd02162c80fa54cdfb2b278f4e1e92",
+     "quant": "q3_k_m"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q5_0.gguf",
+     "bytes": 397697728,
+     "sha256": "3629e7b5f99609a4d28d07d3932fde45e03b393979adcf5249270d985aba8099",
+     "quant": "q5_0"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q4_k_m.gguf",
+     "bytes": 397805248,
+     "sha256": "f0a42bb979ca62b5e61f3bf924ab4b6a40aa091825ee7dcb4039949980ab81a8",
+     "quant": "q4_k_m"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q5_k_m.gguf",
+     "bytes": 420083392,
+     "sha256": "06ab0dc113ec3004e17cc0b2ec28ea953c2f02505c17f35b24f0b594a455d500",
+     "quant": "q5_k_m"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q6_k.gguf",
+     "bytes": 505733824,
+     "sha256": "251317191d3338dfbc43b0a8c06a789b302cf875c8a815507f1c9f06cf5e1766",
+     "quant": "q6_k"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-q8_0.gguf",
+     "bytes": 531065536,
+     "sha256": "834f4115ad5a836c9f17716b1577290fda96de3deb881ba45a4d5476fd202e96",
+     "quant": "q8_0"
+    },
+    {
+     "file": "qwen2-0_5b-instruct-fp16.gguf",
+     "bytes": 994153920,
+     "sha256": "5cee958765bfd13139d671338bfbe24cae8b631608cd720051bba426302affc1",
+     "quant": null
+    }
+   ]
+  },
+  {
+   "repo": "Qwen/Qwen1.5-0.5B-Chat-GGUF",
+   "exists": true,
+   "gated": false,
+   "license": "other",
+   "sha": "cfab082d2fef4a8736ef384dc764c2fb6887f387",
+   "last_modified": "2024-04-09 16:48:58+00:00",
+   "downloads": 11580,
+   "safetensors_bytes": 0,
+   "gguf": [
+    {
+     "file": "qwen1_5-0_5b-chat-q2_k.gguf",
+     "bytes": 298412896,
+     "sha256": "dafa51a44e4e9e3a96be7ad9232e3cc5bf819f90cc9b9f5ac5a848886977ecc1",
+     "quant": "q2_k"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q3_k_m.gguf",
+     "bytes": 349882208,
+     "sha256": "032824f48602cf1067d114f0bda299f76a535b4a17a86e7fa423bf79ebe44a0d",
+     "quant": "q3_k_m"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q4_0.gguf",
+     "bytes": 394990432,
+     "sha256": "46a9de8316739892e2721fdc49f8353155e4c1bcfa0b17867cb590d2dfdf1d99",
+     "quant": "q4_0"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q4_k_m.gguf",
+     "bytes": 407155552,
+     "sha256": "92916b71d32f5afea48fb7383e3b48c5b1c111f5a59f0b83c764ea1d07fe1a3a",
+     "quant": "q4_k_m"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q5_0.gguf",
+     "bytes": 452973408,
+     "sha256": "04eb3a585f0d332a3e50ae0481c660bafb5d4b4acd48d3eb20538893d0d043c7",
+     "quant": "q5_0"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q5_k_m.gguf",
+     "bytes": 459240288,
+     "sha256": "6cb21dcd237471452d1c4616155e7f857c88d6388afadaccf50599ad3521aa83",
+     "quant": "q5_k_m"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q6_k.gguf",
+     "bytes": 514580320,
+     "sha256": "d6407b67a3ac39e271fdee038e0f374c420083431c1ba77586a8d53423e6111e",
+     "quant": "q6_k"
+    },
+    {
+     "file": "qwen1_5-0_5b-chat-q8_0.gguf",
+     "bytes": 664602464,
+     "sha256": "af1878fcc3a949789b1ae6185852c242557b876a626f546e85c0bf719ff397d8",
+     "quant": "q8_0"
+    }
+   ]
+  }
+ ],
+ "base_repos": [
+  {
+   "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "7ae557604adf67be50417f59c2c2f167def9a775",
+   "last_modified": "2024-09-25 12:32:56+00:00",
+   "downloads": 4872509,
+   "safetensors_bytes": 988097824,
+   "gguf": []
+  },
+  {
+   "repo": "Qwen/Qwen3-0.6B",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "c1899de289a04d12100db370d81485cdf75e47ca",
+   "last_modified": "2025-07-26 03:46:27+00:00",
+   "downloads": 23175586,
+   "safetensors_bytes": 1503300328,
+   "gguf": []
+  },
+  {
+   "repo": "Qwen/Qwen3.5-0.8B",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "2fc06364715b967f1860aea9cf38778875588b17",
+   "last_modified": "2026-03-02 11:26:58+00:00",
+   "downloads": 3693505,
+   "safetensors_bytes": 1746942600,
+   "gguf": []
+  },
+  {
+   "repo": "Qwen/Qwen2-0.5B-Instruct",
+   "exists": true,
+   "gated": false,
+   "license": "apache-2.0",
+   "sha": "c540970f9e29518b1d8f06ab8b24cba66ad77b6d",
+   "last_modified": "2024-08-21 10:23:36+00:00",
+   "downloads": 244795,
+   "safetensors_bytes": 988097824,
+   "gguf": []
+  }
+ ]
+}

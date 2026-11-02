@@ -1,0 +1,65 @@
+{
+ "Qwen3-0.6B-Q4_0-embQ8.gguf": {
+  "chat_template_identical_to_base_repo": false,
+  "gguf_template_chars": 4905,
+  "base_template_chars": 4168,
+  "eos": 151645,
+  "pad": 151654,
+  "bos": null,
+  "params_total": 596049920,
+  "params_by_type": {
+   "F32": 65536,
+   "Q8_0": 155582464,
+   "Q4_0": 440401920
+  },
+  "tensor_type_counts": {
+   "F32": 113,
+   "Q8_0": 1,
+   "Q4_0": 196
+  },
+  "token_embd": {
+   "type": "Q8_0",
+   "shape": [
+    1024,
+    151936
+   ],
+   "bytes": 165306368
+  },
+  "separate_output_tensor": false,
+  "first_difference_at": 932,
+  "gguf_context": "tool=true, last_query_index=messages|length - 1) %}\n{%- for forward_message in messages %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- set message = messages",
+  "base_context": "tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool an"
+ },
+ "Qwen2.5-0.5B-Instruct-Q4_K_M.gguf": {
+  "chat_template_identical_to_base_repo": true,
+  "gguf_template_chars": 2507,
+  "base_template_chars": 2507,
+  "eos": 151645,
+  "pad": 151643,
+  "bos": 151643,
+  "params_total": 494032768,
+  "params_by_type": {
+   "Q8_0": 137510912,
+   "F32": 71552,
+   "Q6_K": 52297728,
+   "Q5_0": 251854848,
+   "Q4_K": 52297728
+  },
+  "tensor_type_counts": {
+   "Q8_0": 13,
+   "F32": 121,
+   "Q6_K": 12,
+   "Q5_0": 132,
+   "Q4_K": 12
+  },
+  "token_embd": {
+   "type": "Q8_0",
+   "shape": [
+    896,
+    151936
+   ],
+   "bytes": 144643072
+  },
+  "separate_output_tensor": false
+ }
+}

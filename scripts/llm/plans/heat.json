@@ -1,0 +1,6 @@
+{"defaults": {"requests": "1,2", "idle_s": 2, "max_tokens": 120, "max_seconds": 175, "repeat_until_s": 150, "no_think": true, "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"},
+ "runs": [
+  {"name": "heat_q3_q40e8_t3_repeat", "args": {"threads": 3}},
+  {"name": "heat_q3_q40e8_t4_repeat", "args": {"threads": 4}},
+  {"name": "heat_q3_q40e8_t2_repeat", "args": {"threads": 2}}
+ ]}

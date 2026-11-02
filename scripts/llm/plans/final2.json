@@ -1,0 +1,13 @@
+{"defaults": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf", "bin": "device/llm/bin/llama-server-gcc14a53", "repeat_penalty": 1.1, "temperature": 0.3, "max_tokens": 170, "idle_s": 3, "max_seconds": 175, "threads": 3, "nice": 10, "env": "OMP_WAIT_POLICY=passive", "server_args": "--reasoning off"},
+ "runs": [
+  {"name": "bin_gcc14a53_t3", "args": {"bin": "device/llm/bin/llama-server-gcc14a53", "nice": 0, "env": "", "server_args": "", "no_think": true, "repeat_penalty": 1.0, "max_tokens": 120, "requests": "0,1", "max_seconds": 170}},
+  {"name": "final2_t3_vision2hz_a", "args": {"vision": "loop", "vision_baseline_s": 10, "prewarm": true, "requests": "0,1", "post_idle_s": 8}},
+  {"name": "final2_t3_vision2hz_b", "args": {"vision": "loop", "vision_baseline_s": 10, "prewarm": true, "requests": "2"}},
+  {"name": "final2_t3_alone", "args": {"prewarm": true, "requests": "0,1,2", "post_idle_s": 8}},
+  {"name": "final2_t3_cold_no_prewarm_vision_idle", "args": {"vision": "idle", "requests": "1", "cold": true, "idle_s": 15}},
+  {"name": "final2_heat_t3_vision2hz_repeat", "args": {"vision": "loop", "vision_baseline_s": 5, "requests": "1,2", "repeat_until_s": 150}},
+  {"name": "final2_heat_t4_vision2hz_repeat", "args": {"threads": 4, "vision": "loop", "vision_baseline_s": 5, "requests": "1,2", "repeat_until_s": 150}},
+  {"name": "final2_t4_vision2hz", "args": {"threads": 4, "vision": "loop", "vision_baseline_s": 10, "prewarm": true, "requests": "0,1"}},
+  {"name": "final2_fallback_q25_t3_vision2hz", "args": {"model": "data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf", "vision": "loop", "vision_baseline_s": 10, "prewarm": true, "requests": "0,1,2"}},
+  {"name": "final2_fallback_q25_t3_alone", "args": {"model": "data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf", "server_args": "", "prewarm": true, "requests": "0,1,2"}}
+ ]}

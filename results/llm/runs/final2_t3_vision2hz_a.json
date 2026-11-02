@@ -1,0 +1,1235 @@
+{
+ "name": "final2_t3_vision2hz_a",
+ "args": {
+  "name": "final2_t3_vision2hz_a",
+  "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf",
+  "bin": "device/llm/bin/llama-server-gcc14a53",
+  "threads": 3,
+  "ctx": 1024,
+  "nice": 10,
+  "no_think": false,
+  "examples_file": "/home/arduino/twinread-conch-musk-edge/results/llm/example_results.json",
+  "requests": "0,1",
+  "repeat_until_s": 0.0,
+  "max_tokens": 170,
+  "temperature": 0.3,
+  "top_p": 0.9,
+  "repeat_penalty": 1.1,
+  "seed": 42,
+  "idle_s": 3.0,
+  "post_idle_s": 8.0,
+  "prewarm": true,
+  "cold": false,
+  "vision": "loop",
+  "vision_threads": 3,
+  "vision_hz": 2.0,
+  "vision_baseline_s": 10.0,
+  "vision_python": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python",
+  "env": "OMP_WAIT_POLICY=passive",
+  "server_args": "--reasoning off",
+  "temp_start_max": 60.0,
+  "temp_abort": 72.0,
+  "max_seconds": 175.0,
+  "out_dir": "/home/arduino/twinread-conch-musk-edge/data/llm/run_logs"
+ },
+ "aborted": null,
+ "requests": [
+  {
+   "label": "r0_agree_confident",
+   "t_start": 11014.139256077,
+   "t_end": 11048.710756625,
+   "ttft_s": 9.254461058999368,
+   "total_s": 34.571500547999676,
+   "t_100_words_s": null,
+   "words": 67,
+   "finish_reason": "stop",
+   "text": "The result indicates that the tile was classified as \"TUM\" (colorectal adenocarcinoma epithelium) with a fused confidence of 1.0 from both reader A and B. Both heads agreed on this classification, and no review score was flagged for review. Since the tile was not flagged for review and the review score is low, it appears to be a valid result without requiring further action by a pathologist.",
+   "reasoning_chars": 0,
+   "think_tag_in_text": false,
+   "usage": {
+    "completion_tokens": 90,
+    "prompt_tokens": 283,
+    "total_tokens": 373,
+    "prompt_tokens_details": {
+     "cached_tokens": 201
+    }
+   },
+   "timings": {
+    "cache_n": 201,
+    "prompt_n": 82,
+    "prompt_ms": 9238.73,
+    "prompt_per_token_ms": 112.66743902439023,
+    "prompt_per_second": 8.875678800008227,
+    "predicted_n": 90,
+    "predicted_ms": 25316.254,
+    "predicted_per_token_ms": 284.45229213483145,
+    "predicted_per_second": 3.5155280082116414
+   },
+   "temp_start_c": 60.4,
+   "temp_end_c": 61.3,
+   "prompt_n": 82,
+   "cache_n": 201,
+   "prompt_ms": 9238.73,
+   "prompt_tps": 8.875678800008227,
+   "gen_n": 90,
+   "gen_ms": 25316.254,
+   "gen_tps": 3.5155280082116414,
+   "tokens_per_word": 1.3432835820895523,
+   "est_100_words_s": 47.44873939124602,
+   "example": "agree_confident",
+   "hot_c_peak_so_far": 61.9
+  },
+  {
+   "label": "r1_flagged_review_head",
+   "t_start": 11048.717405623,
+   "t_end": 11088.017328771,
+   "ttft_s": 9.062210969999796,
+   "total_s": 39.299923148000744,
+   "t_100_words_s": null,
+   "words": 68,
+   "finish_reason": "stop",
+   "text": "The tile, titled \"crc_test_186,\" was classified as MUS (smooth muscle) with a fused confidence of 0.951. Reader A and Reader B both gave high confidence (1.0 and 0.986 respectively), but the fused value indicates disagreement. The flagged for review is true, and the review score is 0.447, which suggests that a pathologist should look at this tile to determine if it is indeed a smooth muscle or not.",
+   "reasoning_chars": 0,
+   "think_tag_in_text": false,
+   "usage": {
+    "completion_tokens": 105,
+    "prompt_tokens": 290,
+    "total_tokens": 395,
+    "prompt_tokens_details": {
+     "cached_tokens": 210
+    }
+   },
+   "timings": {
+    "cache_n": 210,
+    "prompt_n": 80,
+    "prompt_ms": 9046.644,
+    "prompt_per_token_ms": 113.08305,
+    "prompt_per_second": 8.843058265584453,
+    "predicted_n": 105,
+    "predicted_ms": 30237.348,
+    "predicted_per_token_ms": 290.7437307692308,
+    "predicted_per_second": 3.439455073903968
+   },
+   "temp_start_c": 60.4,
+   "temp_end_c": 60.0,
+   "prompt_n": 80,
+   "cache_n": 210,
+   "prompt_ms": 9046.644,
+   "prompt_tps": 8.843058265584453,
+   "gen_n": 105,
+   "gen_ms": 30237.348,
+   "gen_tps": 3.439455073903968,
+   "tokens_per_word": 1.5441176470588236,
+   "est_100_words_s": 53.94089654524887,
+   "example": "flagged_review_head",
+   "hot_c_peak_so_far": 63.5
+  }
+ ],
+ "start_hot_c": 48.1,
+ "baseline": {
+  "seconds": 5.0,
+  "system_busy_pct_of_4_cores": 1.5,
+  "mem_available_mb": 3107,
+  "mem_total_mb": 3667,
+  "swap_used_mb": 0,
+  "loadavg": [
+   "1.41",
+   "1.61",
+   "1.77"
+  ],
+  "hottest_c": 47.1,
+  "top_cpu": [
+   {
+    "pid": 1,
+    "comm": "systemd",
+    "cpu_pct": 1.4,
+    "rss_mb": 14.7,
+    "cmd": "/sbin/init ",
+    "is_app": false
+   },
+   {
+    "pid": 445,
+    "comm": "dbus-daemon",
+    "cpu_pct": 0.6,
+    "rss_mb": 5.5,
+    "cmd": "/usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation",
+    "is_app": false
+   },
+   {
+    "pid": 548,
+    "comm": "tailscaled",
+    "cpu_pct": 0.4,
+    "rss_mb": 58.2,
+    "cmd": "/usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/t",
+    "is_app": false
+   },
+   {
+    "pid": 33553,
+    "comm": "python3",
+    "cpu_pct": 0.4,
+    "rss_mb": 19.4,
+    "cmd": "python3 -I scripts/llm/bench_on_board.py --name final2_t3_vision2hz_a --model=data/llm/Qwe",
+    "is_app": false
+   },
+   {
+    "pid": 163,
+    "comm": "irq/98-1b8e300.pmu",
+    "cpu_pct": 0.2,
+    "rss_mb": 0.0,
+    "cmd": "",
+    "is_app": false
+   }
+  ],
+  "top_rss": [
+   {
+    "pid": 713,
+    "comm": "Xorg",
+    "cpu_pct": 0.0,
+    "rss_mb": 90.1,
+    "cmd": "/usr/lib/xorg/Xorg :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtsw",
+    "is_app": false
+   },
+   {
+    "pid": 636,
+    "comm": "dockerd",
+    "cpu_pct": 0.0,
+    "rss_mb": 74.3,
+    "cmd": "/usr/sbin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock ",
+    "is_app": false
+   },
+   {
+    "pid": 866,
+    "comm": "arduino-app-cli",
+    "cpu_pct": 0.0,
+    "rss_mb": 60.1,
+    "cmd": "/usr/bin/arduino-app-cli daemon --port 8800 --log-level error ",
+    "is_app": false
+   },
+   {
+    "pid": 548,
+    "comm": "tailscaled",
+    "cpu_pct": 0.4,
+    "rss_mb": 58.2,
+    "cmd": "/usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/t",
+    "is_app": false
+   },
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   },
+   {
+    "pid": 7952,
+    "comm": "fwupd",
+    "cpu_pct": 0.0,
+    "rss_mb": 53.8,
+    "cmd": "/usr/libexec/fwupd/fwupd ",
+    "is_app": false
+   }
+  ],
+  "twinread_app": [
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   }
+  ],
+  "boot_id": "143d9ac9-aac7-43ae-9300-fccf05517630"
+ },
+ "vision_ready": {
+  "event": "ready",
+  "t": 10976.546234186,
+  "load_s": 0.5554017859994929,
+  "frame_shape": [
+   224,
+   224,
+   3
+  ],
+  "threads": 3,
+  "mode": "loop"
+ },
+ "t_vision_alone_end": 10986.623166491,
+ "cmd": "nice -n 10 device/llm/bin/llama-server-gcc14a53 -m data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf -c 1024 -t 3 -tb 3 -np 1 --host 127.0.0.1 --port 1790 --no-webui --cache-ram 0 --ctx-checkpoints 0 --seed 42 --reasoning off",
+ "load_s": 3.4457579939989955,
+ "t_loaded": 10990.069668916,
+ "rss_after_load": {
+  "VmHWM": 614684,
+  "VmRSS": 614684,
+  "RssAnon": 199264,
+  "RssFile": 415420,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 12
+ },
+ "idle_cpu": {
+  "seconds": 3.0,
+  "server_cpu_pct_of_one_core": 0.0,
+  "system_busy_pct_of_4_cores": 17.3,
+  "hot_c": 49.7
+ },
+ "t_idle_end": 10993.075305077,
+ "rendered_prompt": "<|im_start|>system\nYou explain one result from TwinRead, a research prototype that classifies a colorectal H&E tissue tile. It is not a diagnostic device. Two model heads, reader A and reader B, each give a class and a confidence from 0 to 1. The fused value is the combined call. Classes: ADI adipose tissue; BACK background; DEB debris; LYM lymphocytes; MUC mucus; MUS smooth muscle; NORM normal colon mucosa; STR cancer-associated stroma; TUM colorectal adenocarcinoma epithelium. A tile is flagged for review when the heads disagree or when the review score is high. Write one short paragraph of about 100 words for a doctor. Say what the tile was called, how confident each head was, whether they agree, and whether a pathologist should look at it and why. Use only the numbers given. Do not give a diagnosis or treatment.<|im_end|>\n<|im_start|>user\nResult: {\"tile\":\"crc_test_10\",\"fused\":{\"class\":\"TUM\",\"confidence\":1.0},\"reader_A\":{\"class\":\"TUM\",\"confidence\":1.0},\"reader_B\":{\"class\":\"TUM\",\"confidence\":1.0},\"flagged_for_review\":false,\"review_score\":0.015,\"reasons\":[]}<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "rendered_prompt_tokens": 283,
+ "prewarm": {
+  "label": "prewarm",
+  "t_start": 10993.094821807,
+  "t_end": 11014.136868511,
+  "ttft_s": 21.04091107199929,
+  "total_s": 21.042046703998494,
+  "t_100_words_s": null,
+  "words": 1,
+  "finish_reason": "length",
+  "text": "The",
+  "reasoning_chars": 0,
+  "think_tag_in_text": false,
+  "usage": {
+   "completion_tokens": 1,
+   "prompt_tokens": 210,
+   "total_tokens": 211,
+   "prompt_tokens_details": {
+    "cached_tokens": 0
+   }
+  },
+  "timings": {
+   "cache_n": 0,
+   "prompt_n": 210,
+   "prompt_ms": 21024.128,
+   "prompt_per_token_ms": 100.11489523809524,
+   "prompt_per_second": 9.988523661956396,
+   "predicted_n": 1,
+   "predicted_ms": 0.001,
+   "predicted_per_token_ms": 0.0,
+   "predicted_per_second": 0.0
+  },
+  "temp_start_c": 51.2,
+  "temp_end_c": 60.4,
+  "prompt_n": 210,
+  "cache_n": 0,
+  "prompt_ms": 21024.128,
+  "prompt_tps": 9.988523661956396,
+  "gen_n": 1,
+  "gen_ms": 0.001,
+  "gen_tps": 0.0,
+  "tokens_per_word": 1.0,
+  "est_100_words_s": 100000000021.02412
+ },
+ "post_idle_cpu": {
+  "seconds": 8.0,
+  "server_cpu_pct_of_one_core": 0.0,
+  "system_busy_pct_of_4_cores": 16.8,
+  "hot_c": 50.3
+ },
+ "rss_peak": {
+  "VmHWM": 627088,
+  "VmRSS": 627088,
+  "RssAnon": 211604,
+  "RssFile": 415484,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 12
+ },
+ "window_s": 120.62313763999919,
+ "peak_hot_c": 63.5,
+ "end_hot_c": 50.3,
+ "min_avail_mb": 2839,
+ "max_swap_used_mb": 0,
+ "peak_server_rss_mb": 612.4,
+ "peak_server_anon_mb": 206.6,
+ "peak_vision_rss_mb": 85.1,
+ "min_mhz_seen_under_load": null,
+ "samples": [
+  {
+   "t": 0.0,
+   "phase": "vision_load",
+   "hot_c": 47.5,
+   "busy_pct": 75.0,
+   "avail_mb": 3107
+  },
+  {
+   "t": 1.0,
+   "phase": "vision_load",
+   "hot_c": 48.4,
+   "busy_pct": 39.2,
+   "avail_mb": 3073
+  },
+  {
+   "t": 2.0,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 22.2,
+   "avail_mb": 3063
+  },
+  {
+   "t": 3.0,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 15.9,
+   "avail_mb": 3063
+  },
+  {
+   "t": 4.0,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.3,
+   "avail_mb": 3063
+  },
+  {
+   "t": 5.1,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.0,
+   "avail_mb": 3063
+  },
+  {
+   "t": 6.1,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 17.3,
+   "avail_mb": 3063
+  },
+  {
+   "t": 7.1,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.4,
+   "avail_mb": 3063
+  },
+  {
+   "t": 8.1,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.3,
+   "avail_mb": 3063
+  },
+  {
+   "t": 9.1,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 18.4,
+   "avail_mb": 3063
+  },
+  {
+   "t": 10.1,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 18.6,
+   "avail_mb": 3063
+  },
+  {
+   "t": 11.1,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.5,
+   "avail_mb": 3063
+  },
+  {
+   "t": 12.1,
+   "phase": "llm_load",
+   "hot_c": 48.4,
+   "busy_pct": 42.1,
+   "avail_mb": 2999
+  },
+  {
+   "t": 13.1,
+   "phase": "llm_load",
+   "hot_c": 51.9,
+   "busy_pct": 59.6,
+   "avail_mb": 2992
+  },
+  {
+   "t": 14.2,
+   "phase": "llm_load",
+   "hot_c": 55.3,
+   "busy_pct": 59.2,
+   "avail_mb": 2857
+  },
+  {
+   "t": 15.2,
+   "phase": "idle",
+   "hot_c": 51.6,
+   "busy_pct": 46.9,
+   "avail_mb": 2855
+  },
+  {
+   "t": 16.2,
+   "phase": "idle",
+   "hot_c": 51.2,
+   "busy_pct": 15.8,
+   "avail_mb": 2856
+  },
+  {
+   "t": 17.2,
+   "phase": "idle",
+   "hot_c": 50.3,
+   "busy_pct": 17.4,
+   "avail_mb": 2857
+  },
+  {
+   "t": 18.2,
+   "phase": "prewarm:prompt",
+   "hot_c": 55.6,
+   "busy_pct": 49.0,
+   "avail_mb": 2853
+  },
+  {
+   "t": 19.2,
+   "phase": "prewarm:prompt",
+   "hot_c": 57.8,
+   "busy_pct": 82.1,
+   "avail_mb": 2850
+  },
+  {
+   "t": 20.2,
+   "phase": "prewarm:prompt",
+   "hot_c": 58.2,
+   "busy_pct": 81.5,
+   "avail_mb": 2850
+  },
+  {
+   "t": 21.2,
+   "phase": "prewarm:prompt",
+   "hot_c": 59.1,
+   "busy_pct": 81.6,
+   "avail_mb": 2850
+  },
+  {
+   "t": 22.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 83.2,
+   "avail_mb": 2850
+  },
+  {
+   "t": 23.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 59.1,
+   "busy_pct": 81.5,
+   "avail_mb": 2850
+  },
+  {
+   "t": 24.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 81.4,
+   "avail_mb": 2850
+  },
+  {
+   "t": 25.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.7,
+   "busy_pct": 82.3,
+   "avail_mb": 2850
+  },
+  {
+   "t": 26.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 80.9,
+   "avail_mb": 2850
+  },
+  {
+   "t": 27.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 81.2,
+   "avail_mb": 2850
+  },
+  {
+   "t": 28.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.4,
+   "busy_pct": 83.3,
+   "avail_mb": 2850
+  },
+  {
+   "t": 29.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 81.5,
+   "avail_mb": 2850
+  },
+  {
+   "t": 30.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.7,
+   "busy_pct": 81.9,
+   "avail_mb": 2850
+  },
+  {
+   "t": 31.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 61.0,
+   "busy_pct": 83.6,
+   "avail_mb": 2850
+  },
+  {
+   "t": 32.3,
+   "phase": "prewarm:prompt",
+   "hot_c": 61.0,
+   "busy_pct": 82.5,
+   "avail_mb": 2850
+  },
+  {
+   "t": 33.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 61.0,
+   "busy_pct": 80.7,
+   "avail_mb": 2850
+  },
+  {
+   "t": 34.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 81.4,
+   "avail_mb": 2850
+  },
+  {
+   "t": 35.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.4,
+   "busy_pct": 83.9,
+   "avail_mb": 2849
+  },
+  {
+   "t": 36.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 61.3,
+   "busy_pct": 80.8,
+   "avail_mb": 2849
+  },
+  {
+   "t": 37.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 82.3,
+   "avail_mb": 2849
+  },
+  {
+   "t": 38.4,
+   "phase": "prewarm:prompt",
+   "hot_c": 61.3,
+   "busy_pct": 81.5,
+   "avail_mb": 2849
+  },
+  {
+   "t": 39.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 61.3,
+   "busy_pct": 80.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 40.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 61.3,
+   "busy_pct": 80.6,
+   "avail_mb": 2849
+  },
+  {
+   "t": 41.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 61.3,
+   "busy_pct": 82.4,
+   "avail_mb": 2849
+  },
+  {
+   "t": 42.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 59.7,
+   "busy_pct": 81.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 43.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 60.0,
+   "busy_pct": 82.8,
+   "avail_mb": 2849
+  },
+  {
+   "t": 44.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 59.7,
+   "busy_pct": 80.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 45.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 59.4,
+   "busy_pct": 80.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 46.4,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 59.7,
+   "busy_pct": 80.3,
+   "avail_mb": 2849
+  },
+  {
+   "t": 47.5,
+   "phase": "r0_agree_confident:prompt",
+   "hot_c": 61.9,
+   "busy_pct": 81.5,
+   "avail_mb": 2849
+  },
+  {
+   "t": 48.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.8,
+   "busy_pct": 74.4,
+   "avail_mb": 2848
+  },
+  {
+   "t": 49.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.5,
+   "busy_pct": 66.6,
+   "avail_mb": 2848
+  },
+  {
+   "t": 50.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.2,
+   "busy_pct": 68.7,
+   "avail_mb": 2848
+  },
+  {
+   "t": 51.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.8,
+   "busy_pct": 68.3,
+   "avail_mb": 2848
+  },
+  {
+   "t": 52.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.8,
+   "busy_pct": 68.6,
+   "avail_mb": 2848
+  },
+  {
+   "t": 53.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.7,
+   "busy_pct": 69.1,
+   "avail_mb": 2848
+  },
+  {
+   "t": 54.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.5,
+   "busy_pct": 69.2,
+   "avail_mb": 2848
+  },
+  {
+   "t": 55.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.1,
+   "busy_pct": 68.4,
+   "avail_mb": 2848
+  },
+  {
+   "t": 56.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.1,
+   "busy_pct": 68.2,
+   "avail_mb": 2848
+  },
+  {
+   "t": 57.5,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.8,
+   "busy_pct": 69.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 58.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.5,
+   "busy_pct": 69.0,
+   "avail_mb": 2849
+  },
+  {
+   "t": 59.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.1,
+   "busy_pct": 70.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 60.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 58.8,
+   "busy_pct": 70.1,
+   "avail_mb": 2849
+  },
+  {
+   "t": 61.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.4,
+   "busy_pct": 70.1,
+   "avail_mb": 2849
+  },
+  {
+   "t": 62.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.1,
+   "busy_pct": 69.5,
+   "avail_mb": 2848
+  },
+  {
+   "t": 63.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.4,
+   "busy_pct": 71.1,
+   "avail_mb": 2848
+  },
+  {
+   "t": 64.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 60.0,
+   "busy_pct": 70.3,
+   "avail_mb": 2849
+  },
+  {
+   "t": 65.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.4,
+   "busy_pct": 69.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 66.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 59.7,
+   "busy_pct": 71.0,
+   "avail_mb": 2849
+  },
+  {
+   "t": 67.6,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 60.7,
+   "busy_pct": 71.1,
+   "avail_mb": 2849
+  },
+  {
+   "t": 68.7,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 60.4,
+   "busy_pct": 70.5,
+   "avail_mb": 2849
+  },
+  {
+   "t": 69.7,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 61.3,
+   "busy_pct": 69.8,
+   "avail_mb": 2849
+  },
+  {
+   "t": 70.7,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 61.6,
+   "busy_pct": 71.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 71.7,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 72.7,
+   "phase": "r0_agree_confident:gen",
+   "hot_c": 61.6,
+   "busy_pct": 70.6,
+   "avail_mb": 2849
+  },
+  {
+   "t": 73.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.2,
+   "busy_pct": 75.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 74.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.5,
+   "busy_pct": 81.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 75.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.5,
+   "busy_pct": 80.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 76.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 62.6,
+   "busy_pct": 80.3,
+   "avail_mb": 2849
+  },
+  {
+   "t": 77.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.2,
+   "busy_pct": 81.9,
+   "avail_mb": 2849
+  },
+  {
+   "t": 78.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.2,
+   "busy_pct": 80.8,
+   "avail_mb": 2849
+  },
+  {
+   "t": 79.7,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.5,
+   "busy_pct": 80.2,
+   "avail_mb": 2849
+  },
+  {
+   "t": 80.8,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 63.5,
+   "busy_pct": 83.1,
+   "avail_mb": 2849
+  },
+  {
+   "t": 81.8,
+   "phase": "r1_flagged_review_head:prompt",
+   "hot_c": 62.9,
+   "busy_pct": 83.7,
+   "avail_mb": 2849
+  },
+  {
+   "t": 82.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.9,
+   "busy_pct": 75.9,
+   "avail_mb": 2849
+  },
+  {
+   "t": 83.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 62.9,
+   "busy_pct": 67.3,
+   "avail_mb": 2849
+  },
+  {
+   "t": 84.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.9,
+   "busy_pct": 69.6,
+   "avail_mb": 2849
+  },
+  {
+   "t": 85.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.6,
+   "busy_pct": 68.6,
+   "avail_mb": 2848
+  },
+  {
+   "t": 86.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 70.3,
+   "avail_mb": 2850
+  },
+  {
+   "t": 87.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 68.1,
+   "avail_mb": 2850
+  },
+  {
+   "t": 88.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.0,
+   "busy_pct": 70.3,
+   "avail_mb": 2843
+  },
+  {
+   "t": 89.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 68.1,
+   "avail_mb": 2843
+  },
+  {
+   "t": 90.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.4,
+   "busy_pct": 68.2,
+   "avail_mb": 2843
+  },
+  {
+   "t": 91.8,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 69.9,
+   "avail_mb": 2843
+  },
+  {
+   "t": 92.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 69.1,
+   "avail_mb": 2843
+  },
+  {
+   "t": 93.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 73.7,
+   "avail_mb": 2843
+  },
+  {
+   "t": 94.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 69.0,
+   "avail_mb": 2843
+  },
+  {
+   "t": 95.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 69.3,
+   "avail_mb": 2843
+  },
+  {
+   "t": 96.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 70.8,
+   "avail_mb": 2843
+  },
+  {
+   "t": 97.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.2,
+   "avail_mb": 2843
+  },
+  {
+   "t": 98.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 59.7,
+   "busy_pct": 70.3,
+   "avail_mb": 2843
+  },
+  {
+   "t": 99.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 71.8,
+   "avail_mb": 2843
+  },
+  {
+   "t": 100.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 71.5,
+   "avail_mb": 2843
+  },
+  {
+   "t": 101.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.4,
+   "busy_pct": 70.1,
+   "avail_mb": 2843
+  },
+  {
+   "t": 102.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 72.0,
+   "avail_mb": 2843
+  },
+  {
+   "t": 103.9,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.2,
+   "avail_mb": 2843
+  },
+  {
+   "t": 105.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 62.3,
+   "busy_pct": 71.1,
+   "avail_mb": 2843
+  },
+  {
+   "t": 106.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.2,
+   "avail_mb": 2843
+  },
+  {
+   "t": 107.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 60.7,
+   "busy_pct": 72.3,
+   "avail_mb": 2843
+  },
+  {
+   "t": 108.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.5,
+   "avail_mb": 2843
+  },
+  {
+   "t": 109.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 71.4,
+   "avail_mb": 2840
+  },
+  {
+   "t": 110.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.3,
+   "busy_pct": 71.4,
+   "avail_mb": 2840
+  },
+  {
+   "t": 111.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.0,
+   "busy_pct": 70.6,
+   "avail_mb": 2840
+  },
+  {
+   "t": 112.0,
+   "phase": "r1_flagged_review_head:gen",
+   "hot_c": 61.9,
+   "busy_pct": 71.9,
+   "avail_mb": 2840
+  },
+  {
+   "t": 113.0,
+   "phase": "post_idle",
+   "hot_c": 54.4,
+   "busy_pct": 49.8,
+   "avail_mb": 2840
+  },
+  {
+   "t": 114.0,
+   "phase": "post_idle",
+   "hot_c": 52.8,
+   "busy_pct": 16.2,
+   "avail_mb": 2840
+  },
+  {
+   "t": 115.1,
+   "phase": "post_idle",
+   "hot_c": 52.2,
+   "busy_pct": 15.6,
+   "avail_mb": 2840
+  },
+  {
+   "t": 116.1,
+   "phase": "post_idle",
+   "hot_c": 51.6,
+   "busy_pct": 17.5,
+   "avail_mb": 2840
+  },
+  {
+   "t": 117.1,
+   "phase": "post_idle",
+   "hot_c": 51.2,
+   "busy_pct": 16.6,
+   "avail_mb": 2840
+  },
+  {
+   "t": 118.1,
+   "phase": "post_idle",
+   "hot_c": 50.9,
+   "busy_pct": 15.9,
+   "avail_mb": 2840
+  },
+  {
+   "t": 119.1,
+   "phase": "post_idle",
+   "hot_c": 50.6,
+   "busy_pct": 19.0,
+   "avail_mb": 2839
+  },
+  {
+   "t": 120.1,
+   "phase": "post_idle",
+   "hot_c": 50.3,
+   "busy_pct": 15.9,
+   "avail_mb": 2839
+  }
+ ],
+ "vision_read_latency": {
+  "alone_no_llm": {
+   "n": 21,
+   "p50_ms": 48.8,
+   "p95_ms": 49.4,
+   "max_ms": 52.5,
+   "mean_ms": 49.0,
+   "late_over_100ms": 0,
+   "over_500ms": 0
+  },
+  "llm_loaded_idle": {
+   "n": 6,
+   "p50_ms": 48.7,
+   "p95_ms": 49.9,
+   "max_ms": 49.9,
+   "mean_ms": 49.0,
+   "late_over_100ms": 0,
+   "over_500ms": 0
+  },
+  "llm_busy": {
+   "n": 147,
+   "p50_ms": 51.8,
+   "p95_ms": 104.2,
+   "max_ms": 136.5,
+   "mean_ms": 60.2,
+   "late_over_100ms": 0,
+   "over_500ms": 0
+  }
+ },
+ "server_log_extract": [],
+ "repack_seen": false,
+ "left_running": [],
+ "boot_id_end": "143d9ac9-aac7-43ae-9300-fccf05517630",
+ "driver": {
+  "cooldown_before": [
+   {
+    "t": 0,
+    "hot_c": 47.5
+   }
+  ],
+  "boot_id_before": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "boot_id_after": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "lock_held_s": 127.0,
+  "ssh_rc": 0,
+  "stdout": "{\"name\": \"final2_t3_vision2hz_a\", \"aborted\": null, \"error\": null, \"peak_hot_c\": 63.5, \"window_s\": 120.6, \"load_s\": 3.4457579939989955, \"out\": \"/home/arduino/twinread-conch-musk-edge/data/llm/run_logs/final2_t3_vision2hz_a.json\"}\n",
+  "stderr": ""
+ }
+}

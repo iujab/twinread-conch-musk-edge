@@ -1,0 +1,855 @@
+{
+ "items_rated": 60,
+ "errors": [],
+ "blinding": "Per-item random order, letters A/B/C, no arm names; judge not told a template or fine-tune exists. Sonnet via claude -p.",
+ "arms": {
+  "base_seed1": {
+   "readability_mean": 3.65,
+   "usefulness_mean": 3.3,
+   "judge_accurate": 35,
+   "judge_accurate_rate": 0.5833,
+   "checker_pass_on_these_items": 55,
+   "checker_vs_judge_disagree": 20,
+   "checker_pass_judge_says_wrong": 20,
+   "checker_fail_judge_says_right": 0,
+   "disagreement_rows": [
+    {
+     "id": "held_out_0010",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0036",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0041",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0057",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0067",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0068",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0070",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0077",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0083",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0084",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0088",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0090",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0092",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0096",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0103",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0120",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0132",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0133",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0135",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0137",
+     "checker_pass": true,
+     "judge_accurate": false
+    }
+   ]
+  },
+  "composer_seed1": {
+   "readability_mean": 4.1,
+   "usefulness_mean": 4.1,
+   "judge_accurate": 53,
+   "judge_accurate_rate": 0.8833,
+   "checker_pass_on_these_items": 60,
+   "checker_vs_judge_disagree": 7,
+   "checker_pass_judge_says_wrong": 7,
+   "checker_fail_judge_says_right": 0,
+   "disagreement_rows": [
+    {
+     "id": "held_out_0007",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0010",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0012",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0056",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0083",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0090",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0150",
+     "checker_pass": true,
+     "judge_accurate": false
+    }
+   ]
+  },
+  "finetuned_seed1": {
+   "readability_mean": 4.25,
+   "usefulness_mean": 4.183,
+   "judge_accurate": 49,
+   "judge_accurate_rate": 0.8167,
+   "checker_pass_on_these_items": 59,
+   "checker_vs_judge_disagree": 10,
+   "checker_pass_judge_says_wrong": 10,
+   "checker_fail_judge_says_right": 0,
+   "disagreement_rows": [
+    {
+     "id": "held_out_0007",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0010",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0012",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0025",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0083",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0088",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0096",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0133",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0150",
+     "checker_pass": true,
+     "judge_accurate": false
+    },
+    {
+     "id": "held_out_0182",
+     "checker_pass": true,
+     "judge_accurate": false
+    }
+   ]
+  }
+ },
+ "best_counts": {
+  "finetuned_seed1": 25,
+  "composer_seed1": 25,
+  "base_seed1": 10
+ },
+ "best_by_group": {
+  "doctor": {
+   "finetuned_seed1": 15,
+   "composer_seed1": 12,
+   "base_seed1": 9
+  },
+  "agree": {
+   "finetuned_seed1": 4,
+   "composer_seed1": 6,
+   "base_seed1": 5
+  },
+  "user": {
+   "composer_seed1": 13,
+   "base_seed1": 1,
+   "finetuned_seed1": 10
+  },
+  "disagree": {
+   "composer_seed1": 6,
+   "base_seed1": 2,
+   "finetuned_seed1": 7
+  },
+  "no_tissue": {
+   "finetuned_seed1": 5,
+   "composer_seed1": 7,
+   "base_seed1": 3
+  },
+  "review": {
+   "composer_seed1": 6,
+   "finetuned_seed1": 9
+  }
+ },
+ "pairwise": {
+  "base_seed1__vs__composer_seed1": {
+   "readability": {
+    "mean_b_minus_a": 0.45,
+    "b_higher": 31,
+    "a_higher": 16,
+    "signflip_p": 0.0143
+   },
+   "usefulness": {
+    "mean_b_minus_a": 0.8,
+    "b_higher": 37,
+    "a_higher": 10,
+    "signflip_p": 5e-05
+   },
+   "judge_accurate_mcnemar": {
+    "a_only": 4,
+    "b_only": 22,
+    "p_exact": 0.000534
+   }
+  },
+  "base_seed1__vs__finetuned_seed1": {
+   "readability": {
+    "mean_b_minus_a": 0.6,
+    "b_higher": 38,
+    "a_higher": 11,
+    "signflip_p": 0.00025
+   },
+   "usefulness": {
+    "mean_b_minus_a": 0.883,
+    "b_higher": 40,
+    "a_higher": 7,
+    "signflip_p": 5e-05
+   },
+   "judge_accurate_mcnemar": {
+    "a_only": 5,
+    "b_only": 19,
+    "p_exact": 0.006611
+   }
+  },
+  "composer_seed1__vs__finetuned_seed1": {
+   "readability": {
+    "mean_b_minus_a": 0.15,
+    "b_higher": 23,
+    "a_higher": 19,
+    "signflip_p": 0.35303
+   },
+   "usefulness": {
+    "mean_b_minus_a": 0.083,
+    "b_higher": 17,
+    "a_higher": 11,
+    "signflip_p": 0.51087
+   },
+   "judge_accurate_mcnemar": {
+    "a_only": 6,
+    "b_only": 2,
+    "p_exact": 0.289062
+   }
+  }
+ },
+ "problem_notes": {
+  "base_seed1": [
+   {
+    "id": "held_out_0036",
+    "problem": "Does not state that the heads agree; it only implies it by saying both chose BACK."
+   },
+   {
+    "id": "held_out_0004",
+    "problem": "Says 'H&E image tile', a minor addition not in the facts, though harmless."
+   },
+   {
+    "id": "held_out_0024",
+    "problem": "Says 'confirmed', which implies a verification step not in the facts; slightly repetitive and mechanical."
+   },
+   {
+    "id": "held_out_0041",
+    "problem": "Uses jargon (\"H&E\", \"spindle cells\", \"collagen\") that is not explained for a lay audience. It also does not explain what a head is. \"H&E image tile\" is a detail not in the facts."
+   },
+   {
+    "id": "held_out_0010",
+    "problem": "Says 'H&E image tile', which is not in the facts. The facts do not name the stain, though the task framing does. Also 'confirmed' implies a verification step the facts do not state."
+   },
+   {
+    "id": "held_out_0007",
+    "problem": "Accurate and clear but terse; does not explain what 'heads' are for a lay reader, and does not state that the heads agree explicitly."
+   },
+   {
+    "id": "held_out_0026",
+    "problem": "Says 'H&E image tile', which is harmless; otherwise faithful and complete."
+   },
+   {
+    "id": "held_out_0025",
+    "problem": "Uses jargon ('H&E image tile', 'heads') without explaining it; says 'a 100% confidence' awkwardly; omits that the heads agree explicitly and the combined confidence is only implied as the model's confidence."
+   },
+   {
+    "id": "held_out_0033",
+    "problem": "Terse and uses 'MUC' and 'heads' without plain-word explanation; 'Head A and Head B both chose MUC' does not say the heads agree explicitly."
+   },
+   {
+    "id": "held_out_0029",
+    "problem": "Uses jargon (H&E, heads, LYM) without plain explanation; 'dense groups... dark nuclei' is technical for a lay reader."
+   },
+   {
+    "id": "held_out_0011",
+    "problem": "Uses jargon like 'H&E image tile' and 'epithelial cells' without explanation, and does not explain what the two heads are. It also says 'the H&E image tile', which is a small unneeded addition."
+   },
+   {
+    "id": "held_out_0145",
+    "problem": "Uses 'heads' with no explanation for a lay reader, and the flag sentence is a bit clunky. Facts are all correct."
+   },
+   {
+    "id": "held_out_0135",
+    "problem": "Omits that the review head is unsure (score 0.84), which is required for why it is flagged."
+   },
+   {
+    "id": "held_out_0126",
+    "problem": "Says Head A chose STR at 51%, which misattributes Head B's result to Head A; Head A chose only DEB at 75%, and the 75% figure is dropped as Head A's confidence on DEB in a confusing way."
+   },
+   {
+    "id": "held_out_0136",
+    "problem": "Adds 'H&E image tile', which is not in the facts. Switches to past tense. 'Because the classes were different' is slightly vague."
+   },
+   {
+    "id": "held_out_0137",
+    "problem": "Leaves out the review head's uncertainty (score 0.57) as a reason for the flag. Uses jargon (H&E, heads) without explanation."
+   },
+   {
+    "id": "held_out_0120",
+    "problem": "Omits the review head's unsure status and score 0.48, which is the stated reason for flagging; says 'H&E image tile', which is a mild addition."
+   },
+   {
+    "id": "held_out_0132",
+    "problem": "Omits that the review head is unsure (score 0.54); the flag reason is incomplete."
+   },
+   {
+    "id": "held_out_0103",
+    "problem": "Leaves out that the review head is unsure (score 0.84), which is part of why the tile was flagged. It also never explains what a 'head' is."
+   },
+   {
+    "id": "held_out_0105",
+    "problem": "Correct, but 'heads' is never explained for a lay reader and the wording is a bit stiff."
+   },
+   {
+    "id": "held_out_0106",
+    "problem": "Closely mirrors the facts. It says 'H&E image tile', which the facts don't state, but that is harmless."
+   },
+   {
+    "id": "held_out_0104",
+    "problem": "Says 'normal colon mucosa' without NORM label clarity is fine; slightly redundant 'H&E image tile'; no explicit statement that heads disagree beyond past-tense mention"
+   },
+   {
+    "id": "held_out_0133",
+    "problem": "Omits the review head being unsure (score 0.84); adds 'H&E image tile'; does not explain what 'heads' are for a lay reader."
+   },
+   {
+    "id": "held_out_0193",
+    "problem": "Uses 'frame', 'pixels' and 'off target', which are less plain for a non-medical reader."
+   },
+   {
+    "id": "held_out_0179",
+    "problem": "Uses 'classify' and 'class' wording slightly more technical; 'frame' is less plain than 'picture'."
+   },
+   {
+    "id": "held_out_0186",
+    "problem": "Says 'no class was detected', which implies detection failed rather than the model declining to classify; wording is redundant and 'threshold for classification' omits the 10% figure."
+   },
+   {
+    "id": "held_out_0197",
+    "problem": "Uses jargon like 'frame', 'pixels' and 'class' without plain-word explanation; reads like a technical readout."
+   },
+   {
+    "id": "held_out_0154",
+    "problem": "Omits the 0% tissue figure; only says 'below the 10% threshold', so a required fact is missing. Wording is also vaguer ('insufficient tissue', 'no classifiable tissue') and somewhat redundant."
+   },
+   {
+    "id": "held_out_0177",
+    "problem": "Omits the 0% figure; says only 'below the 10% needed'"
+   },
+   {
+    "id": "held_out_0188",
+    "problem": "Awkward and redundant ending ('leaving no class to classify'); 'the threshold' is vague and does not state the 10% figure."
+   },
+   {
+    "id": "held_out_0157",
+    "problem": "Uses 'threshold', 'classify', 'off-target' - slightly technical for a lay audience; says 'frame' rather than picture"
+   },
+   {
+    "id": "held_out_0164",
+    "problem": "Omits the 0% tissue figure and the 10% threshold; 'below the threshold' is vague. Redundant wording ('no class... no identifiable class'). Says the frame 'appears' blank rather than 'may be', and doesn't state that there is nothing to classify."
+   },
+   {
+    "id": "held_out_0182",
+    "problem": "Omits the 0% tissue figure and the 10% threshold. It also says 'no tissue was present' as a definite claim, where the facts say the frame 'may be' blank, dark or off target, so it overstates."
+   },
+   {
+    "id": "held_out_0088",
+    "problem": "Adds 'H&E image tile', a claim about what the image is, not in the facts"
+   },
+   {
+    "id": "held_out_0068",
+    "problem": "Omits that the review head is unsure (score 0.71); says 'H&E image tile', which adds a claim about the image."
+   },
+   {
+    "id": "held_out_0086",
+    "problem": "Mentions H&E, which is not in the facts. Wording is a bit stiff, but the content is correct."
+   },
+   {
+    "id": "held_out_0083",
+    "problem": "Leaves out the review head's score (0.54). Uses jargon like 'H&E image tile' and 'spindle cells and collagen' without explaining them. Says 'confidence levels differed' without making clear the review head is a separate head."
+   },
+   {
+    "id": "held_out_0084",
+    "problem": "Says the review head had a score of 0.84 but omits that it is unsure, so the reason for flagging is incomplete. Also adds 'H&E image tile', which is a claim about the image."
+   },
+   {
+    "id": "held_out_0077",
+    "problem": "Adds 'H&E image tile' jargon; includes spindle cells and collagen without plain explanation; tile described unexplained; not plain for lay audience."
+   },
+   {
+    "id": "held_out_0057",
+    "problem": "Adds 'H&E image' claim not in facts and uses jargon (H&E, spindle cells, collagen) without explanation; poor for lay audience."
+   },
+   {
+    "id": "held_out_0097",
+    "problem": "Uses jargon like 'H&E image tile' and 'review head' without explanation; too technical for a lay reader."
+   },
+   {
+    "id": "held_out_0090",
+    "problem": "Says 'H&E image tile', which is a claim about the image that is not in the facts. Also does not say the review head was unsure, only that it had a score of 0.45."
+   },
+   {
+    "id": "held_out_0096",
+    "problem": "Adds 'H&E image tile', a claim about the image that is not in the facts."
+   },
+   {
+    "id": "held_out_0060",
+    "problem": "Adds 'H&E image' wording, which is harmless but slightly beyond the stated facts"
+   },
+   {
+    "id": "held_out_0067",
+    "problem": "Omits that the review head is unsure (score 0.60); gives only the differing confidences as flag reason. Also says 'H&E image tile' which is jargon for this audience."
+   },
+   {
+    "id": "held_out_0070",
+    "problem": "Says 'the H&E image tile' (claim about the image) and 'confirmed the class', which implies a confirmation step not in the facts. Also does not say the review head is unsure; it only gives the score."
+   },
+   {
+    "id": "held_out_0092",
+    "problem": "Says 'H&E image tile', which is a claim about the image that is not in the facts. Also adds a sentence saying the heads' confidence levels differed, which repeats the flag reason."
+   }
+  ],
+  "finetuned_seed1": [
+   {
+    "id": "held_out_0004",
+    "problem": "'On H&E' is a small addition; 'picked... while' phrasing implies contrast though both agree."
+   },
+   {
+    "id": "held_out_0024",
+    "problem": "Closing line about one tile is a mild addition but is consistent with the facts and does not add any claim."
+   },
+   {
+    "id": "held_out_0040",
+    "problem": "Final sentence is a harmless but slightly redundant scope reminder."
+   },
+   {
+    "id": "held_out_0041",
+    "problem": "Repeats \"confidence\" awkwardly (\"Head B says STR with 100%\"). Omits spindle cells and collagen."
+   },
+   {
+    "id": "held_out_0010",
+    "problem": "Adds 'This is the model's reading of one tile', which is not in the facts, though it is harmless. Also says 'On H&E', which the facts do not state."
+   },
+   {
+    "id": "held_out_0007",
+    "problem": "Says the model 'looked at this small square of tissue', which wrongly implies the tile contains tissue and contradicts background. It also adds 'a tissue image' and 'an empty part', which go beyond the facts."
+   },
+   {
+    "id": "held_out_0026",
+    "problem": "Adds 'On H&E' and a closing one-tile scope sentence; neither invents a claim."
+   },
+   {
+    "id": "held_out_0002",
+    "problem": "Trailing 'describes one tile' line is a mild disclaimer; 'On H&E' adds slight context not in the facts."
+   },
+   {
+    "id": "held_out_0012",
+    "problem": "Adds 'so no second look is requested', an inference not in the facts; also states the tile is 'not flagged' as the reason, which goes beyond the given facts."
+   },
+   {
+    "id": "held_out_0025",
+    "problem": "Says 'looked at this small square of tissue', which adds a claim about what the image shows beyond the facts; also omits thin walls."
+   },
+   {
+    "id": "held_out_0033",
+    "problem": "Omits 'few cells in it' from the class description; otherwise complete and clear."
+   },
+   {
+    "id": "held_out_0029",
+    "problem": "Clear and plain; 'so no second look is requested' is a reasonable paraphrase of not flagged for review; omits dark nuclei detail."
+   },
+   {
+    "id": "held_out_0046",
+    "problem": "Adds 'so no second look is requested', a small inference beyond the facts. Says 'Head A and Head B agree on the class' where the facts just say the heads agree."
+   },
+   {
+    "id": "held_out_0145",
+    "problem": "Adds 'looked at this small square of tissue' and 'each answers on its own', which go slightly beyond the facts. Otherwise correct."
+   },
+   {
+    "id": "held_out_0135",
+    "problem": "Omits 'thin walls' but otherwise complete; order slightly scattered."
+   },
+   {
+    "id": "held_out_0126",
+    "problem": "Says 'On H&E' which is a small addition about image context, and slightly redundant wording about disagreement."
+   },
+   {
+    "id": "held_out_0136",
+    "problem": "Choppy, with a separate sentence for each fact. Repeats the disagreement and the flag reason. Adds 'On H&E', which is not in the facts."
+   },
+   {
+    "id": "held_out_0128",
+    "problem": "Omits the combined confidence of 47%, which the facts require. Also repeats that the heads disagree redundantly."
+   },
+   {
+    "id": "held_out_0137",
+    "problem": "Omits spindle cells and collagen. Otherwise clear and plain."
+   },
+   {
+    "id": "held_out_0112",
+    "problem": "Closing sentence 'This describes one tile as the model read it' is filler, though harmless."
+   },
+   {
+    "id": "held_out_0105",
+    "problem": "Describing the tile as 'a small square of a tissue image' is a slight extra, but it is harmless and helps a lay reader."
+   },
+   {
+    "id": "held_out_0104",
+    "problem": "Redundant: restates that heads chose different classes twice"
+   },
+   {
+    "id": "held_out_0133",
+    "problem": "Adds 'In a tissue image, mucus means...' which is a claim about what the image shows or a gloss not framed as the class definition; also 'the model has two heads, and each answers on its own' is acceptable but the final sentence is phrased as a general statement about tissue images."
+   },
+   {
+    "id": "held_out_0193",
+    "problem": "Says 'picture' rather than frame; fine. Mild 'pointed away from the tissue' paraphrase of 'off target'."
+   },
+   {
+    "id": "held_out_0184",
+    "problem": "Says 'stained tissue' and 'the model needs 10%', slight rewording; 'to read it' adds a little wordiness"
+   },
+   {
+    "id": "held_out_0150",
+    "problem": "Omits that there is nothing to classify; 'pass the tissue test' is wording not in the facts; stated 10% vs needed 10% reads as contradictory."
+   },
+   {
+    "id": "held_out_0151",
+    "problem": "\"It may be blank\" has an unclear referent; \"it needs 10%\" is slightly ambiguous."
+   },
+   {
+    "id": "held_out_0179",
+    "problem": "'Stained tissue' adds a qualifier not in the facts; 'That means no class was given' uses the term 'class' without explanation."
+   },
+   {
+    "id": "held_out_0172",
+    "problem": "Omits the explicit 'nothing to classify' conclusion, though it is implied by 'too little tissue to read it'"
+   },
+   {
+    "id": "held_out_0186",
+    "problem": "'It may be blank...' has an ambiguous referent, but all facts and the 10% threshold are stated."
+   },
+   {
+    "id": "held_out_0188",
+    "problem": "Slightly choppy ('So the model named no class'), but it covers every fact including the 10% threshold."
+   },
+   {
+    "id": "held_out_0164",
+    "problem": "Says 'Just 0% of pixels pass the tissue test', which adds a small detail about a test; 'Just 0%' is slightly awkward."
+   },
+   {
+    "id": "held_out_0182",
+    "problem": "Adds 'Stained tissue', which the facts do not say. It also says the model 'needs 10%' where the facts say 10% of pixels is the minimum."
+   },
+   {
+    "id": "held_out_0088",
+    "problem": "Adds 'On H&E', an unstated claim about the image/staining not in the facts"
+   },
+   {
+    "id": "held_out_0056",
+    "problem": "Final sentence is mild filler but not inaccurate."
+   },
+   {
+    "id": "held_out_0086",
+    "problem": "Mentions H&E, which is not in the facts. Otherwise it is complete and clear."
+   },
+   {
+    "id": "held_out_0083",
+    "problem": "Leaves out the spindle cells and collagen detail from the STR description. Also describes STR as 'in a tissue image', which is a small addition. Otherwise clear and plain, and it includes the 0.54 score."
+   },
+   {
+    "id": "held_out_0077",
+    "problem": "Omits spindle cells and collagen, though plain wording and heads explanation help."
+   },
+   {
+    "id": "held_out_0057",
+    "problem": "Does not say 'the heads agree' as clearly tied to the same class, but states agreement; omits spindle cells and collagen, which is acceptable for plain words."
+   },
+   {
+    "id": "held_out_0097",
+    "problem": "Says 'In a tissue image', a slight claim about what images show, and mucus definition is less complete (omits few cells)."
+   },
+   {
+    "id": "held_out_0096",
+    "problem": "Adds 'thin' to the description of spindle cells, which is not in the facts."
+   },
+   {
+    "id": "held_out_0067",
+    "problem": "Last sentence defines 'mucus' vaguely and drops 'few cells'; flag reason is given but the order is slightly clunky."
+   },
+   {
+    "id": "held_out_0070",
+    "problem": "Final sentence is redundant but harmless."
+   }
+  ],
+  "composer_seed1": [
+   {
+    "id": "held_out_0040",
+    "problem": "Final sentence is a harmless but slightly redundant scope reminder."
+   },
+   {
+    "id": "held_out_0041",
+    "problem": "Does not mention spindle cells and collagen, but that detail is not essential for a lay reader."
+   },
+   {
+    "id": "held_out_0010",
+    "problem": "Says 'On H&E', which is not in the facts. Also does not say the confidences are 'combined' in the same way, though it is close."
+   },
+   {
+    "id": "held_out_0007",
+    "problem": "Calls the tile 'a small square of a tissue image', which is a claim about what the image shows and is not in the facts. The flagged statement is placed after the background definition, so the order is awkward."
+   },
+   {
+    "id": "held_out_0026",
+    "problem": "Choppy repetitive phrasing ('Head A gives... Head B gives...'); adds a scope sentence ('covers this one tile only') that is a restatement, not a new fact."
+   },
+   {
+    "id": "held_out_0002",
+    "problem": "Accurate but repetitive wording ('picked... while... picked'); closing sentence is a redundant disclaimer-like line."
+   },
+   {
+    "id": "held_out_0012",
+    "problem": "Adds redundant, odd sentences ('This is the model's reading of one tile. This describes one tile as the model read it.'); repetitive and reads like disclaimers, which are not wanted."
+   },
+   {
+    "id": "held_out_0025",
+    "problem": "Omits 'thin walls' detail; otherwise correct and plain."
+   },
+   {
+    "id": "held_out_0029",
+    "problem": "Explains heads in plain words; slightly clunky 'with 100% confidence and Head B with 100%'; omits 'dark nuclei' detail, which is minor."
+   },
+   {
+    "id": "held_out_0046",
+    "problem": "Adds 'The reading covers this one tile only', which is not among the facts, though it is harmless scoping."
+   },
+   {
+    "id": "held_out_0145",
+    "problem": "Adds 'each give their own answer', which is a mild elaboration. Plain wording, clear order, and ends with a plain-words definition."
+   },
+   {
+    "id": "held_out_0135",
+    "problem": "Says 'In a tissue image', which is slightly generic; otherwise complete and clear."
+   },
+   {
+    "id": "held_out_0136",
+    "problem": "Minor: 'On H&E' is not in the facts."
+   },
+   {
+    "id": "held_out_0128",
+    "problem": "Says 'the review score of 0.84 shows the review head is unsure', a slight rewording but consistent with the facts."
+   },
+   {
+    "id": "held_out_0137",
+    "problem": "Omits spindle cells and collagen, but the plain-words explanation of the heads and the flag is clear."
+   },
+   {
+    "id": "held_out_0120",
+    "problem": "Redundant sentence restating that the heads chose different classes, so they disagree."
+   },
+   {
+    "id": "held_out_0112",
+    "problem": "Slightly redundant: the disagreement is stated twice in consecutive sentences."
+   },
+   {
+    "id": "held_out_0134",
+    "problem": "States the disagreement twice. 'On H&E' adds a framing the facts don't give."
+   },
+   {
+    "id": "held_out_0132",
+    "problem": "Somewhat repetitive about the heads disagreeing."
+   },
+   {
+    "id": "held_out_0103",
+    "problem": "Says the heads disagree twice, and the repeated sentence at the end is awkward. 'Review head' is not explained."
+   },
+   {
+    "id": "held_out_0105",
+    "problem": "Says the heads disagree twice, which is repetitive. It does explain what the heads are."
+   },
+   {
+    "id": "held_out_0106",
+    "problem": "It states the disagreement twice, which is redundant. 'It is flagged' has no clear referent, and 'this one tile' is awkward."
+   },
+   {
+    "id": "held_out_0199",
+    "problem": "'It may be blank' has an unclear 'it'; says 'picture' and 'stained tissue', which is slightly beyond the facts but harmless."
+   },
+   {
+    "id": "held_out_0184",
+    "problem": "'So no class was given' is a slightly choppy sentence"
+   },
+   {
+    "id": "held_out_0150",
+    "problem": "Says 'the model needs 10%' without 'below', making the shortfall illogical (10% vs 10%); 'It may be blank' has unclear referent; reorders the facts awkwardly."
+   },
+   {
+    "id": "held_out_0179",
+    "problem": "'Stained tissue' is a slight addition to the facts."
+   },
+   {
+    "id": "held_out_0172",
+    "problem": "Opens with 'no reading' and 'it may be' has an ambiguous referent; 'named no class' is awkward; omits explicit 'nothing to classify' framing as a conclusion"
+   },
+   {
+    "id": "held_out_0197",
+    "problem": "Says 'it needs 10%' without clearly saying that is the minimum required; slightly less clear than A."
+   },
+   {
+    "id": "held_out_0177",
+    "problem": "'It' is slightly ambiguous; otherwise fine"
+   },
+   {
+    "id": "held_out_0188",
+    "problem": "It leaves out that there is nothing to classify, but it still conveys the result."
+   },
+   {
+    "id": "held_out_0157",
+    "problem": "Clear, but 'could not read' slightly implies a failure rather than a deliberate decision to give no class"
+   },
+   {
+    "id": "held_out_0088",
+    "problem": "Redundant: agreement stated twice, slightly repetitive phrasing"
+   },
+   {
+    "id": "held_out_0056",
+    "problem": "Says 'The flag asks a person to take a second look', which is not in the facts. It also calls the heads' picks 'picked', which is fine, but the added claim about what the flag asks for goes beyond the facts."
+   },
+   {
+    "id": "held_out_0086",
+    "problem": "Mentions H&E, which is not in the facts. 'Around cancer' is placed awkwardly at the end of the definition."
+   },
+   {
+    "id": "held_out_0083",
+    "problem": "Leaves out the spindle cells and collagen detail. Also says the model 'looked at this small square of tissue', which describes the image and is not in the facts. Reads very plainly otherwise, and includes the 0.54 score."
+   },
+   {
+    "id": "held_out_0084",
+    "problem": "The STR definition is worded awkwardly, with 'around cancer' placed at the end."
+   },
+   {
+    "id": "held_out_0077",
+    "problem": "Omits spindle cells and collagen; 'heads' explained briefly but fine."
+   },
+   {
+    "id": "held_out_0090",
+    "problem": "Adds an unrequested closing sentence ('This describes one tile as the model read it'), which is a disclaimer-like statement and is not among the facts."
+   },
+   {
+    "id": "held_out_0096",
+    "problem": "Slightly redundant: states agreement twice."
+   },
+   {
+    "id": "held_out_0067",
+    "problem": "Uses 'pale slimy material' which is plain-language, includes few cells detail; 'class' is mild jargon."
+   },
+   {
+    "id": "held_out_0092",
+    "problem": "Says 'this one tile', which is acceptable. 'Review score of 0.45 shows the review head is unsure' is slightly interpretive but consistent with the facts."
+   }
+  ]
+ }
+}

@@ -1,0 +1,25 @@
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: 200/398 MB, 6.4 MB/s, hot 49.3 C
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: 398/398 MB, 7.1 MB/s, hot 49.7 C
+Qwen2.5-0.5B-Instruct-Q4_K_M.gguf: verified sha256 6eb923e7d26e9cea…
+== ql_q25_q4km_t4 (hot 49.7 C)
+  ql_q25_q4km_t4 | load 3.1s | [279+0c tok 14.1 pp/s, ttft 19.9s, 84 tok 8.05 t/s, 60w, 30s] | [76+210c tok 13.5 pp/s, ttft 5.7s, 78 tok 8.03 t/s, 55w, 15s] | [77+210c tok 13.5 pp/s, ttft 5.7s, 96 tok 4.77 t/s, 65w, 26s] | rss 495.2 anon 110.1MB avail>=2979MB | peak 71.4C window 76s
+  removed Qwen2.5-0.5B-Instruct-Q4_K_M.gguf from the board to make room
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 200/352 MB, 7.2 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 352/352 MB, 6.6 MB/s, hot 50.6 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: verified sha256 3a0c9918ce05eabf…
+== ql_q25_q4_0_speedonly_t4 (hot 47.5 C)
+  ql_q25_q4_0_speedonly_t4 | load 3.0s | [279+0c tok 17.9 pp/s, ttft 15.6s, 65 tok 9.29 t/s, 56w, 22s] | [76+210c tok 17.2 pp/s, ttft 4.4s, 200 tok 9.30 t/s, 127w, 26s] | [77+210c tok 17.2 pp/s, ttft 4.5s, 200 tok 9.28 t/s, 128w, 26s] | rss 448.8 anon 107.3MB avail>=2986MB | peak 72.0C window 79s
+  removed Qwen2.5-0.5B-Q4_0-speedonly.gguf from the board to make room
+Qwen3-0.6B-Q4_0-embQ8.gguf: 200/419 MB, 7.2 MB/s, hot 50.3 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: 400/419 MB, 6.0 MB/s, hot 50.0 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: 419/419 MB, 6.3 MB/s, hot 50.3 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: verified sha256 74d6723293d9969b…
+== ql_q3_q40e8_t4 (hot 47.1 C)
+  ql_q3_q40e8_t4 | load 3.2s | [283+0c tok 13.6 pp/s, ttft 20.8s, 113 tok 5.37 t/s, 80w, 42s] | [80+210c tok 12.3 pp/s, ttft 6.5s, 131 tok 5.35 t/s, 85w, 31s] | [81+210c tok 12.3 pp/s, ttft 6.6s, 181 tok 5.35 t/s, 112w, 40s] | rss 611.1 anon 205.6MB avail>=2884MB | peak 71.1C window 118s
+  removed Qwen3-0.6B-Q4_0-embQ8.gguf from the board to make room
+Qwen3-0.6B-Q4_K_M.gguf: 200/397 MB, 7.0 MB/s, hot 51.6 C
+Qwen3-0.6B-Q4_K_M.gguf: 397/397 MB, 6.8 MB/s, hot 51.2 C
+Qwen3-0.6B-Q4_K_M.gguf: verified sha256 ac2d97712095a558…
+== ql_q3_q4km_real_t4 (hot 47.8 C)
+  ql_q3_q4km_real_t4 | load 3.3s | [283+0c tok 12.2 pp/s, ttft 23.2s, 75 tok 4.42 t/s, 47w, 40s] | [80+210c tok 11.1 pp/s, ttft 7.2s, 96 tok 4.43 t/s, 58w, 29s] | [81+210c tok 11.1 pp/s, ttft 7.3s, 80 tok 4.42 t/s, 55w, 25s] | rss 590.2 anon 206.2MB avail>=2884MB | peak 69.2C window 99s
+plan finished

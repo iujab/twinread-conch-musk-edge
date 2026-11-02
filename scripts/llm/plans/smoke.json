@@ -1,0 +1,4 @@
+{"defaults": {"requests": "0", "idle_s": 8, "post_idle_s": 5, "max_tokens": 170, "max_seconds": 150},
+ "runs": [
+  {"name": "smoke_q3_q4km_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_K_M.gguf", "threads": 4, "no_think": true}}
+ ]}

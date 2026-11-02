@@ -1,0 +1,13 @@
+{
+ "device/explain_prompt.py": "1e6eef20da557e9d9028b30df9e47b779e075e9cd429010b108595f42beedf86",
+ "device/explain_check.py": "10dbb733579f303c558c812d88be4e00eb9bfae3692ea040fbf24ddea979f5e1",
+ "scripts/llm/finetune/composer.py": "4fff151adea19c7e8d2c97dd2806230aed793a320e93fc9e71a3141e661fb05f",
+ "results/llm/finetune/split.json": "37ed8ff65a798941a6679928d294c67412f24ce7a3517422ef490e31e5528ad3",
+ "results/llm/finetune/preregistration.md": "969406b57839607dcb9f7c74a248d1a425651d7816bf111e79c43ceb5e4f6c78",
+ "scripts/llm/finetune/evaluate.py": "e47bd10308558e2bc957fd23c1d7b10c9260ae15310ab86d135ba572759cdc10",
+ "base_gguf_sha256": "74d6723293d9969b53051fd50fd985e2c0227178a89715265a11d1d59dea6c51",
+ "registered_at": "2026-11-02T09:15:13",
+ "finetuned_gguf_sha256": "84a1d904388270f0b688e1a76632df3d045c4865218346905dfa8ec8ca118bd3",
+ "finetuned_registered_at": "2026-11-02T09:41:20",
+ "preregistration_with_addendum_sha256": "a532a266adb1568a80b55937868c7555d16e9f63e7f65818236744243c07044d"
+}

@@ -1,0 +1,33 @@
+  removed Qwen2.5-0.5B-Instruct-Q4_K_M.gguf from the board to make room
+Qwen3-0.6B-Q4_0.gguf: 200/382 MB, 3.7 MB/s, hot 49.0 C
+Qwen3-0.6B-Q4_0.gguf: 382/382 MB, 4.1 MB/s, hot 48.4 C
+Qwen3-0.6B-Q4_0.gguf: verified sha256 33bcc57074ec7b6e…
+== q3_q4_0_real_t4 (hot 48.7 C)
+  q3_q4_0_real_t4 | load 3.2s | [283+0c tok 13.6 pp/s, ttft 20.8s, 105 tok 4.72 t/s, 68w, 43s] | [80+210c tok 12.3 pp/s, ttft 6.5s, 106 tok 4.73 t/s, 69w, 29s] | rss 577.4 anon 206.6MB avail>=2877MB | peak 67.6C window 78s
+  removed Qwen3-0.6B-Q4_0.gguf from the board to make room
+Qwen3-0.6B-Q4_0-embQ8.gguf: 200/419 MB, 4.2 MB/s, hot 48.7 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: 400/419 MB, 3.7 MB/s, hot 49.0 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: 419/419 MB, 3.6 MB/s, hot 48.7 C
+Qwen3-0.6B-Q4_0-embQ8.gguf: verified sha256 74d6723293d9969b…
+== q3_q4_0_embq8_t4 (hot 49.0 C)
+  q3_q4_0_embq8_t4 | load 3.3s | [283+0c tok 13.6 pp/s, ttft 20.8s, 113 tok 5.37 t/s, 80w, 42s] | [80+210c tok 12.2 pp/s, ttft 6.6s, 120 tok 5.36 t/s, 76w, 29s] | rss 612.8 anon 206.6MB avail>=2874MB | peak 68.9C window 77s
+  removed Qwen3-0.6B-Q4_0-embQ8.gguf from the board to make room
+Qwen3-0.6B-Q4_0-embQ4.gguf: 200/341 MB, 4.1 MB/s, hot 51.6 C
+Qwen3-0.6B-Q4_0-embQ4.gguf: 341/341 MB, 1.0 MB/s, hot 50.0 C
+Qwen3-0.6B-Q4_0-embQ4.gguf: verified sha256 4653b6fd0599ae55…
+== q3_q4_0_embq4_t4 (hot 47.5 C)
+  q3_q4_0_embq4_t4 | load 3.2s | [283+0c tok 13.6 pp/s, ttft 20.8s, 120 tok 5.15 t/s, 85w, 44s] | [80+210c tok 12.2 pp/s, ttft 6.6s, 120 tok 5.20 t/s, 71w, 29s] | rss 539.0 anon 207.0MB avail>=2818MB | peak 67.3C window 80s
+  removed Qwen3-0.6B-Q4_0-embQ4.gguf from the board to make room
+Qwen3-0.6B-Q4_K_M-embQ8.gguf: 200/434 MB, 2.2 MB/s, hot 50.9 C
+Qwen3-0.6B-Q4_K_M-embQ8.gguf: 400/434 MB, 1.5 MB/s, hot 47.8 C
+Qwen3-0.6B-Q4_K_M-embQ8.gguf: 434/434 MB, 3.9 MB/s, hot 48.1 C
+Qwen3-0.6B-Q4_K_M-embQ8.gguf: verified sha256 01251770f53d44b8…
+== q3_q4km_embq8_t4 (hot 48.1 C)
+  q3_q4km_embq8_t4 | load 3.4s | [283+0c tok 12.3 pp/s, ttft 23.1s, 92 tok 5.06 t/s, 60w, 41s] | [80+210c tok 11.1 pp/s, ttft 7.2s, 79 tok 5.07 t/s, 52w, 23s] | rss 627.1 anon 206.5MB avail>=2807MB | peak 68.5C window 70s
+  removed Qwen3-0.6B-Q4_K_M-embQ8.gguf from the board to make room
+Qwen3-0.6B-Q4_K_M-embQ4.gguf: 200/357 MB, 1.4 MB/s, hot 48.1 C
+Qwen3-0.6B-Q4_K_M-embQ4.gguf: 357/357 MB, 4.0 MB/s, hot 50.6 C
+Qwen3-0.6B-Q4_K_M-embQ4.gguf: verified sha256 81a70ee6bd6f281e…
+== q3_q4km_embq4_t4 (hot 47.8 C)
+  q3_q4km_embq4_t4 | load 3.3s | [283+0c tok 12.2 pp/s, ttft 23.2s, 85 tok 4.97 t/s, 60w, 40s] | [80+210c tok 11.2 pp/s, ttft 7.2s, 86 tok 4.98 t/s, 66w, 24s] | rss 551.5 anon 205.8MB avail>=2930MB | peak 67.3C window 71s
+plan finished

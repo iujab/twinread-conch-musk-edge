@@ -1,0 +1,20 @@
+{
+ "realbase": {
+  "name": "realbase",
+  "path": "data/llm/finetune/realbase-Q4_0-embQ8.gguf",
+  "bytes": 419245920,
+  "sha256": "978bb5e0179a4b1c9e92f70383429ffafeed5e87d1abf666022d27049100c22a"
+ },
+ "smoke": {
+  "name": "smoke",
+  "path": "data/llm/finetune/smoke-Q4_0-embQ8.gguf",
+  "bytes": 419245920,
+  "sha256": "2ff8307df56c71b71d5176d5127efd2414aeba32e9b79c8c289958a63a83103c"
+ },
+ "twinread-explain-qwen3-v1": {
+  "name": "twinread-explain-qwen3-v1",
+  "path": "data/llm/finetune/twinread-explain-qwen3-v1-Q4_0-embQ8.gguf",
+  "bytes": 419245920,
+  "sha256": "84a1d904388270f0b688e1a76632df3d045c4865218346905dfa8ec8ca118bd3"
+ }
+}

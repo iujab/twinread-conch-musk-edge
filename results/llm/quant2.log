@@ -1,0 +1,37 @@
+  removed Qwen3-0.6B-Q4_K_M-embQ4.gguf from the board to make room
+  removed Qwen3-0.6B-Q4_K_M.gguf from the board to make room
+Qwen3-0.6B-Q8_0-speedonly.gguf: 200/639 MB, 2.9 MB/s, hot 50.3 C
+Qwen3-0.6B-Q8_0-speedonly.gguf: 400/639 MB, 2.4 MB/s, hot 48.4 C
+Qwen3-0.6B-Q8_0-speedonly.gguf: 600/639 MB, 6.5 MB/s, hot 49.3 C
+Qwen3-0.6B-Q8_0-speedonly.gguf: 639/639 MB, 6.8 MB/s, hot 49.3 C
+Qwen3-0.6B-Q8_0-speedonly.gguf: verified sha256 cabf7e7ec54658e5…
+== q3_q8_0_speedonly_t4 (hot 49.0 C)
+  q3_q8_0_speedonly_t4 | load 3.3s | [283+0c tok 13.4 pp/s, ttft 21.2s, 105 tok 5.20 t/s, 68w, 41s] | [80+210c tok 12.0 pp/s, ttft 6.7s, 116 tok 5.19 t/s, 73w, 29s] | rss 820.9 anon 205.4MB avail>=2855MB | peak 70.1C window 76s
+  removed Qwen3-0.6B-Q8_0-speedonly.gguf from the board to make room
+Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf: 200/474 MB, 7.2 MB/s, hot 50.3 C
+Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf: 400/474 MB, 7.0 MB/s, hot 52.8 C
+Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf: 474/474 MB, 6.6 MB/s, hot 50.9 C
+Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf: verified sha256 f46a5cb92334abde…
+== q3_q5_0_embq8_speedonly_t4 (hot 46.8 C)
+  q3_q5_0_embq8_speedonly_t4 | load 3.3s | [283+0c tok 10.8 pp/s, ttft 26.3s, 120 tok 4.76 t/s, 77w, 51s] | [80+210c tok 9.9 pp/s, ttft 8.1s, 103 tok 4.76 t/s, 65w, 30s] | rss 664.7 anon 206.7MB avail>=2909MB | peak 69.8C window 87s
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 200/352 MB, 7.3 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 352/352 MB, 6.5 MB/s, hot 50.6 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: verified sha256 3a0c9918ce05eabf…
+== q25_q4_0_speedonly_t4 (hot 46.8 C)
+  q25_q4_0_speedonly_t4 | load 3.1s | [279+0c tok 17.9 pp/s, ttft 15.6s, 65 tok 9.32 t/s, 56w, 22s] | [76+210c tok 17.2 pp/s, ttft 4.4s, 120 tok 9.23 t/s, 81w, 17s] | rss 450.6 anon 109.1MB avail>=3003MB | peak 68.9C window 46s
+  removed Qwen2.5-0.5B-Q4_0-speedonly.gguf from the board to make room
+  removed Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf from the board to make room
+Qwen2.5-0.5B-Q8_0-speedonly.gguf: 200/531 MB, 7.2 MB/s, hot 49.0 C
+Qwen2.5-0.5B-Q8_0-speedonly.gguf: 400/531 MB, 7.1 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Q8_0-speedonly.gguf: 531/531 MB, 6.8 MB/s, hot 50.3 C
+Qwen2.5-0.5B-Q8_0-speedonly.gguf: verified sha256 98e995bd8d1d08d0…
+== q25_q8_0_speedonly_t4 (hot 46.8 C)
+  q25_q8_0_speedonly_t4 | load 3.1s | [279+0c tok 17.6 pp/s, ttft 15.9s, 107 tok 8.73 t/s, 76w, 28s] | [76+210c tok 16.8 pp/s, ttft 4.5s, 120 tok 8.76 t/s, 88w, 18s] | rss 620.1 anon 108.0MB avail>=3008MB | peak 70.4C window 52s
+  removed Qwen2.5-0.5B-Q8_0-speedonly.gguf from the board to make room
+Qwen3.5-0.8B-Q4_0.gguf: 200/507 MB, 7.2 MB/s, hot 50.3 C
+Qwen3.5-0.8B-Q4_0.gguf: 400/507 MB, 6.8 MB/s, hot 50.0 C
+Qwen3.5-0.8B-Q4_0.gguf: 507/507 MB, 5.5 MB/s, hot 49.3 C
+Qwen3.5-0.8B-Q4_0.gguf: verified sha256 444406ddd926550c…
+== q35_q4_0_real_t4 (hot 49.3 C)
+  q35_q4_0_real_t4 | load 5.5s | [281+0c tok 11.1 pp/s, ttft 25.3s, 65 tok 4.57 t/s, 48w, 39s] | [92+196c tok 10.8 pp/s, ttft 8.5s, 80 tok 4.57 t/s, 56w, 26s] | rss 722.5 anon 237.9MB avail>=2883MB | peak 68.9C window 74s
+plan finished

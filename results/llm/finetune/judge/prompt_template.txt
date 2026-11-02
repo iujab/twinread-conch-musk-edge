@@ -1,0 +1,18 @@
+You are checking short explanations written for a tissue-tile classifier called TwinRead. It reads one small H&E image tile and has two heads, Head A and Head B, plus a combined call. Each explanation should state the model's reading of this ONE tile, in one paragraph, for the audience named. It must add nothing beyond the facts: no stage, grade, prognosis, treatment, patient details, claims about the whole slide, or claims about what the image shows. Disclaimers are not wanted.
+
+Audience: {audience}
+
+The facts each explanation had to convey:
+{facts}
+
+Candidate explanations:
+{candidates}
+
+Rate each candidate.
+- accurate: true only if every statement agrees with the facts and nothing was invented or left out that the facts require (class, confidences, whether the heads agree, whether it is flagged and why).
+- readability: 1 to 5, how clearly and naturally it reads for this audience (5 is excellent).
+- usefulness: 1 to 5, how well it helps this audience understand this result (5 is excellent).
+Then name the single best candidate.
+
+Reply with JSON only, no other text, in this shape:
+{{"A": {{"accurate": true, "readability": 3, "usefulness": 3, "problem": "short note or empty"}}, "B": {{...}}, "C": {{...}}, "best": "A"}}

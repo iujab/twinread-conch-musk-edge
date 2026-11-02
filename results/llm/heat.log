@@ -1,0 +1,7 @@
+== heat_q3_q40e8_t3_repeat (hot 47.8 C)
+  heat_q3_q40e8_t3_repeat | load 3.3s | [290+0c tok 10.4 pp/s, ttft 28.0s, 120 tok 4.04 t/s, 81w, 57s] | [81+210c tok 9.5 pp/s, ttft 8.6s, 120 tok 4.03 t/s, 59w, 38s] | [80+210c tok 9.4 pp/s, ttft 8.5s, 120 tok 4.03 t/s, 81w, 38s] | rss 613.4 anon 207.9MB avail>=2884MB | peak 66.0C window 176s | ABORTED {'reason': 'max_seconds', 'hot_c': 66.0, 't': 175.5, 'phase': 'r3_heads_disagree:gen'}
+== heat_q3_q40e8_t4_repeat (hot 48.7 C)
+  heat_q3_q40e8_t4_repeat | load 3.1s | [290+0c tok 13.7 pp/s, ttft 21.2s, 120 tok 5.37 t/s, 76w, 43s] | [81+210c tok 12.3 pp/s, ttft 6.6s, 120 tok 5.37 t/s, 59w, 29s] | [80+210c tok 12.3 pp/s, ttft 6.5s, 120 tok 5.36 t/s, 76w, 29s] | rss 612.3 anon 206.8MB avail>=2880MB | peak 72.3C window 123s | ABORTED {'reason': 'thermal', 'hot_c': 72.3, 't': 123.3, 'phase': 'r3_heads_disagree:gen'}
+== heat_q3_q40e8_t2_repeat (hot 48.1 C)
+  heat_q3_q40e8_t2_repeat | load 3.5s | [290+0c tok 7.1 pp/s, ttft 40.8s, 120 tok 2.74 t/s, 81w, 84s] | [81+210c tok 6.5 pp/s, ttft 12.5s, 120 tok 2.77 t/s, 71w, 55s] | rss 614.4 anon 208.9MB avail>=2881MB | peak 58.5C window 175s | ABORTED {'reason': 'max_seconds', 'hot_c': 56.3, 't': 175.2, 'phase': 'r2_flagged_review_head:gen'}
+plan finished

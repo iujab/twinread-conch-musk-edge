@@ -1,0 +1,83 @@
+{
+ "system": "You explain one result from TwinRead, a research prototype that classifies a colorectal H&E tissue tile. It is not a diagnostic device. Two model heads, reader A and reader B, each give a class and a confidence from 0 to 1. The fused value is the combined call. Classes: ADI adipose tissue; BACK background; DEB debris; LYM lymphocytes; MUC mucus; MUS smooth muscle; NORM normal colon mucosa; STR cancer-associated stroma; TUM colorectal adenocarcinoma epithelium. A tile is flagged for review when the heads disagree or when the review score is high. Write one short paragraph of about 100 words for a doctor. Say what the tile was called, how confident each head was, whether they agree, and whether a pathologist should look at it and why. Use only the numbers given. Do not give a diagnosis or treatment.",
+ "source": "EdgeModel on bundles/cm, NCT-CRC CRC-VAL-HE-7K tiles",
+ "examples": [
+  {
+   "name": "agree_confident",
+   "index": 10,
+   "truth_label_not_shown_to_llm": "8",
+   "result": {
+    "tile": "crc_test_10",
+    "fused": {
+     "class": "TUM",
+     "confidence": 1.0
+    },
+    "reader_A": {
+     "class": "TUM",
+     "confidence": 1.0
+    },
+    "reader_B": {
+     "class": "TUM",
+     "confidence": 1.0
+    },
+    "flagged_for_review": false,
+    "review_score": 0.015,
+    "reasons": []
+   },
+   "user": "Result: {\"tile\":\"crc_test_10\",\"fused\":{\"class\":\"TUM\",\"confidence\":1.0},\"reader_A\":{\"class\":\"TUM\",\"confidence\":1.0},\"reader_B\":{\"class\":\"TUM\",\"confidence\":1.0},\"flagged_for_review\":false,\"review_score\":0.015,\"reasons\":[]}"
+  },
+  {
+   "name": "flagged_review_head",
+   "index": 186,
+   "truth_label_not_shown_to_llm": "5",
+   "result": {
+    "tile": "crc_test_186",
+    "fused": {
+     "class": "MUS",
+     "confidence": 0.951
+    },
+    "reader_A": {
+     "class": "MUS",
+     "confidence": 1.0
+    },
+    "reader_B": {
+     "class": "MUS",
+     "confidence": 0.986
+    },
+    "flagged_for_review": true,
+    "review_score": 0.447,
+    "reasons": [
+     "review_head"
+    ]
+   },
+   "user": "Result: {\"tile\":\"crc_test_186\",\"fused\":{\"class\":\"MUS\",\"confidence\":0.951},\"reader_A\":{\"class\":\"MUS\",\"confidence\":1.0},\"reader_B\":{\"class\":\"MUS\",\"confidence\":0.986},\"flagged_for_review\":true,\"review_score\":0.447,\"reasons\":[\"review_head\"]}"
+  },
+  {
+   "name": "heads_disagree",
+   "index": 162,
+   "truth_label_not_shown_to_llm": "7",
+   "result": {
+    "tile": "crc_test_162",
+    "fused": {
+     "class": "STR",
+     "confidence": 0.865
+    },
+    "reader_A": {
+     "class": "MUS",
+     "confidence": 0.508
+    },
+    "reader_B": {
+     "class": "STR",
+     "confidence": 0.882
+    },
+    "flagged_for_review": true,
+    "review_score": 0.43,
+    "reasons": [
+     "disagree",
+     "js"
+    ]
+   },
+   "user": "Result: {\"tile\":\"crc_test_162\",\"fused\":{\"class\":\"STR\",\"confidence\":0.865},\"reader_A\":{\"class\":\"MUS\",\"confidence\":0.508},\"reader_B\":{\"class\":\"STR\",\"confidence\":0.882},\"flagged_for_review\":true,\"review_score\":0.43,\"reasons\":[\"disagree\",\"js\"]}"
+  }
+ ]
+}

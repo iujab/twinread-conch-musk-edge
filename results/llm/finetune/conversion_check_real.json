@@ -1,0 +1,84 @@
+{
+ "realbase": {
+  "tensors_t2_vs_ours": {
+   "tensors": [
+    310,
+    310
+   ],
+   "same_names": true,
+   "same_type": 310,
+   "same_shape": 310,
+   "byte_identical": 113,
+   "not_identical_examples": [
+    "token_embd.weight",
+    "blk.0.attn_k.weight",
+    "blk.0.attn_output.weight",
+    "blk.0.attn_q.weight",
+    "blk.0.attn_v.weight",
+    "blk.0.ffn_down.weight"
+   ],
+   "no_output_tensor": [
+    true,
+    true
+   ],
+   "chat_template_identical": false
+  },
+  "greedy_text_identical_t2_vs_ours": 0,
+  "n_prompts": 24,
+  "example_t2": "The model read the H&E image tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 100%. Head A confirmed the class as TUM with 100% confidence, and Head B also confirmed it as TUM with ",
+  "example_ours": "The model read the H&E image as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 100%. Head A selected TUM with 100% confidence, and Head B also chose TUM with 100%. The heads",
+  "pytorch_vs_gguf_next_token_agreement_along_gguf_greedy": {
+   "agree": 1252,
+   "total": 1384,
+   "rate": 0.9046,
+   "whole_sequences_identical": 0
+  },
+  "pytorch_vs_t2_file_next_token_agreement_along_its_greedy": {
+   "agree": 1252,
+   "total": 1378,
+   "rate": 0.9086,
+   "whole_sequences_identical": 1
+  }
+ },
+ "finetuned": {
+  "tensors_t2_vs_ours": {
+   "tensors": [
+    310,
+    310
+   ],
+   "same_names": true,
+   "same_type": 310,
+   "same_shape": 310,
+   "byte_identical": 113,
+   "not_identical_examples": [
+    "token_embd.weight",
+    "blk.0.attn_k.weight",
+    "blk.0.attn_output.weight",
+    "blk.0.attn_q.weight",
+    "blk.0.attn_v.weight",
+    "blk.0.ffn_down.weight"
+   ],
+   "no_output_tensor": [
+    true,
+    true
+   ],
+   "chat_template_identical": false
+  },
+  "greedy_text_identical_t2_vs_ours": 0,
+  "n_prompts": 12,
+  "example_t2": "The model read the H&E image tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 100%. Head A confirmed the class as TUM with 100% confidence, and Head B also confirmed it as TUM with 100%. The heads agreed, and the tile was not flagged for review. TUM covers",
+  "example_ours": "The model read this tile as TUM (colorectal adenocarcinoma epithelium) with a combined confidence of 100%. Head A says TUM with 100% confidence; Head B says TUM with 100%. The two heads agree on this tile. The tile is not flagged for review. On H&E, TUM means irregular glands",
+  "pytorch_vs_gguf_next_token_agreement_along_gguf_greedy": {
+   "agree": 855,
+   "total": 889,
+   "rate": 0.9618,
+   "whole_sequences_identical": 2
+  },
+  "pytorch_vs_t2_file_next_token_agreement_along_its_greedy": {
+   "agree": 660,
+   "total": 847,
+   "rate": 0.7792,
+   "whole_sequences_identical": 0
+  }
+ }
+}

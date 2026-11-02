@@ -1,0 +1,9 @@
+./llama-server: error while loading shared libraries: libllama-common.so.0: cannot open shared object file: No such file or directory
+	libllama-server-impl.so => /home/arduino/twinread-conch-musk-edge/device/llm/bin/official-b11960/./libllama-server-impl.so (0x0000ffff94350000)
+	libllama-common.so.0 => not found
+	libmtmd.so.0 => not found
+	libllama.so.0 => not found
+	libggml.so.0 => not found
+	libggml-base.so.0 => not found
+version: 0.8.0-dev (build 1, commit 8642541b255b)
+built with GNU 15.2.0 for Linux aarch64

@@ -1,0 +1,348 @@
+{
+ "start_c": 42.1,
+ "requests": [
+  {
+   "id": "held_out_0000",
+   "text": "The model read this tile as STR (cancer-associated stroma) with a combined confidence of 100%. Head A picked STR at 100%, while Head B picked STR at 100%. The two heads agree on this tile. The tile is not flagged for review. The STR class is fibrous tissue around cancer, with spindle cells and collagen. This describes one tile as the model read it.",
+   "ttft_s": 9.17,
+   "total_s": 30.77,
+   "finish_reason": "stop",
+   "words": 64,
+   "gen_tps": 4.03,
+   "gen_n": 88,
+   "prompt_n": 95,
+   "cache_n": 203,
+   "prompt_tps": 10.37,
+   "situation": "agree",
+   "audience": "doctor",
+   "user_turn": "Audience: a doctor. Use histology terms.\nFacts:\nThe model read this tile as cancer-associated stroma (STR) with a combined confidence of 100%.\nHead A chose STR at 100%. Head B chose STR at 100%.\nThe heads agree, and the tile is not flagged for review.\nSTR covers fibrous tissue around cancer, with spindle cells and collagen.",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "same_text_as_host_same_seed": true
+  },
+  {
+   "id": "held_out_0101",
+   "text": "The model read this tile as lymphocytes (LYM). Its combined confidence in that call is 86%. Two parts of the model, its heads, answer separately. Head A chose normal colon mucosa (NORM) at 98% and Head B chose LYM at 72%. The two heads disagree on this tile. The tile is flagged for review because the heads chose different classes. In a tissue image, lymphocytes means groups of small round immune cells.",
+   "ttft_s": 10.1,
+   "total_s": 34.2,
+   "finish_reason": "stop",
+   "words": 72,
+   "gen_tps": 4.07,
+   "gen_n": 99,
+   "prompt_n": 104,
+   "cache_n": 206,
+   "prompt_tps": 10.31,
+   "situation": "disagree",
+   "audience": "user",
+   "user_turn": "Audience: someone with no medical training. Use plain everyday words.\nFacts:\nThe model read this tile as lymphocytes (LYM) with a combined confidence of 86%.\nHead A chose normal colon mucosa (NORM) at 98%. Head B chose LYM at 72%.\nThe heads disagree, and the tile is flagged for review because the heads chose different classes.\nLYM covers dense groups of small round immune cells with dark nuclei.",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "same_text_as_host_same_seed": false
+  },
+  {
+   "id": "held_out_0050",
+   "text": "The model's combined call on this tile is TUM (colorectal adenocarcinoma epithelium), with 99% confidence. Head A picked TUM at 100%, while Head B picked TUM at 100%. Head A and Head B agree on the class. The tile is flagged for review because the review head is unsure, with a score of 0.48. On H&E, the TUM class means irregular glands whose lining cells are crowded and abnormal.",
+   "ttft_s": 10.73,
+   "total_s": 37.25,
+   "finish_reason": "stop",
+   "words": 69,
+   "gen_tps": 4.0,
+   "gen_n": 107,
+   "prompt_n": 112,
+   "cache_n": 206,
+   "prompt_tps": 10.45,
+   "situation": "review",
+   "audience": "doctor",
+   "user_turn": "Audience: a doctor. Use histology terms.\nFacts:\nThe model read this tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 99%.\nHead A chose TUM at 100%. Head B chose TUM at 100%.\nThe heads agree, and the tile is flagged for review because the review head is unsure (score 0.48).\nTUM covers irregular glands lined by crowded, abnormal epithelial cells.",
+   "passed": true,
+   "failed_checks": [],
+   "invented_claim": false,
+   "same_text_as_host_same_seed": true
+  }
+ ],
+ "aborted": null,
+ "temps": [
+  [
+   0.0,
+   42.7
+  ],
+  [
+   2.0,
+   42.1
+  ],
+  [
+   4.0,
+   50.0
+  ],
+  [
+   6.0,
+   51.6
+  ],
+  [
+   8.0,
+   52.5
+  ],
+  [
+   10.0,
+   52.5
+  ],
+  [
+   12.0,
+   53.1
+  ],
+  [
+   14.0,
+   53.1
+  ],
+  [
+   16.0,
+   53.4
+  ],
+  [
+   18.0,
+   53.4
+  ],
+  [
+   20.0,
+   53.8
+  ],
+  [
+   22.0,
+   53.8
+  ],
+  [
+   24.0,
+   54.1
+  ],
+  [
+   26.0,
+   54.7
+  ],
+  [
+   28.1,
+   54.4
+  ],
+  [
+   30.1,
+   54.1
+  ],
+  [
+   32.1,
+   53.4
+  ],
+  [
+   34.1,
+   52.5
+  ],
+  [
+   36.1,
+   52.8
+  ],
+  [
+   38.1,
+   55.0
+  ],
+  [
+   40.1,
+   53.8
+  ],
+  [
+   42.1,
+   55.6
+  ],
+  [
+   44.1,
+   54.4
+  ],
+  [
+   46.1,
+   54.4
+  ],
+  [
+   48.1,
+   56.6
+  ],
+  [
+   50.1,
+   54.7
+  ],
+  [
+   52.1,
+   55.0
+  ],
+  [
+   54.1,
+   55.3
+  ],
+  [
+   56.1,
+   56.6
+  ],
+  [
+   58.1,
+   57.5
+  ],
+  [
+   60.1,
+   56.9
+  ],
+  [
+   62.1,
+   57.2
+  ],
+  [
+   64.1,
+   54.7
+  ],
+  [
+   66.1,
+   56.6
+  ],
+  [
+   68.1,
+   56.0
+  ],
+  [
+   70.1,
+   56.3
+  ],
+  [
+   72.1,
+   55.3
+  ],
+  [
+   74.1,
+   56.0
+  ],
+  [
+   76.2,
+   55.6
+  ],
+  [
+   78.2,
+   55.6
+  ],
+  [
+   80.2,
+   55.6
+  ],
+  [
+   82.2,
+   56.6
+  ],
+  [
+   84.2,
+   56.3
+  ],
+  [
+   86.2,
+   56.6
+  ],
+  [
+   88.2,
+   59.1
+  ],
+  [
+   90.2,
+   59.7
+  ],
+  [
+   92.2,
+   59.7
+  ],
+  [
+   94.2,
+   60.4
+  ],
+  [
+   96.2,
+   59.7
+  ],
+  [
+   98.2,
+   57.2
+  ],
+  [
+   100.2,
+   56.0
+  ],
+  [
+   102.2,
+   57.2
+  ],
+  [
+   104.2,
+   57.2
+  ],
+  [
+   106.2,
+   56.6
+  ],
+  [
+   108.2,
+   56.9
+  ],
+  [
+   110.2,
+   57.2
+  ],
+  [
+   112.2,
+   57.2
+  ],
+  [
+   114.2,
+   57.8
+  ],
+  [
+   116.2,
+   57.5
+  ],
+  [
+   118.2,
+   58.2
+  ],
+  [
+   120.3,
+   58.2
+  ],
+  [
+   122.3,
+   58.5
+  ]
+ ],
+ "load_s": 3.36,
+ "prewarm_s": 18.47,
+ "prewarm_prompt_n": 212,
+ "window_s": 124.3,
+ "peak_c": 60.4,
+ "end_c": 52.2,
+ "model": "twinread-explain-qwen3-v1-Q4_0-embQ8.gguf",
+ "board_python_import": "3.13.5 942c155874cc10e9dbde9e4d11965c613bdb4a45c316251ecdde47d9177fff8c 1",
+ "system_sha256_expected": "942c155874cc10e9dbde9e4d11965c613bdb4a45c316251ecdde47d9177fff8c",
+ "state_before": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "lock_held_s": 125.2,
+ "boot_same": true,
+ "ssh_rc": 0,
+ "state_after": {
+  "status": "standby",
+  "model_loaded": false,
+  "camera_open": false
+ },
+ "llm_processes_after": "llm/bench processes on board: none",
+ "hot_after_c": 50.9,
+ "service_active": "active",
+ "t2_reference": {
+  "run": "final2_t3_alone in results/llm/report_tables.md",
+  "gen_tps": 3.99,
+  "peak_c": 62.3,
+  "tandem_vision_2hz_gen_tps": 3.48
+ },
+ "not_tested": "Vision model at 2 Hz was not running in this window, so the 3.48 t/s tandem figure is T2's, on T2's prompt."
+}

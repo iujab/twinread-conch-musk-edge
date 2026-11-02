@@ -1,0 +1,393 @@
+{
+ "note": "Exploratory rescoring of stored answers; the pre-registered result is unchanged. The runtime checker's word list comes from the fine-tune's training text, so the base arms fail it largely by construction: this file shows the false-rejection rate for the shipped model and is NOT a comparison between arms. registered_rescored_on_fixed_facts differs from the stored count where the 9.96% tissue fix changed the facts after registration.",
+ "arms": {
+  "base_seed1": {
+   "n": 200,
+   "registered_passed_as_stored": 177,
+   "registered_rescored_on_fixed_facts": 175,
+   "runtime_passed": 38,
+   "passed_registered_rejected_now": 137,
+   "newly_failed_checks": {
+    "vocabulary_ok": 129,
+    "status_correct": 35
+   }
+  },
+  "base_seed1001": {
+   "n": 200,
+   "registered_passed_as_stored": 183,
+   "registered_rescored_on_fixed_facts": 181,
+   "runtime_passed": 36,
+   "passed_registered_rejected_now": 145,
+   "newly_failed_checks": {
+    "vocabulary_ok": 138,
+    "status_correct": 39
+   }
+  },
+  "base_seed2001": {
+   "n": 200,
+   "registered_passed_as_stored": 183,
+   "registered_rescored_on_fixed_facts": 181,
+   "runtime_passed": 35,
+   "passed_registered_rejected_now": 146,
+   "newly_failed_checks": {
+    "vocabulary_ok": 140,
+    "status_correct": 33
+   }
+  },
+  "composer_seed1": {
+   "n": 200,
+   "registered_passed_as_stored": 200,
+   "registered_rescored_on_fixed_facts": 198,
+   "runtime_passed": 198,
+   "passed_registered_rejected_now": 0,
+   "newly_failed_checks": {}
+  },
+  "finetuned_seed1": {
+   "n": 200,
+   "registered_passed_as_stored": 195,
+   "registered_rescored_on_fixed_facts": 193,
+   "runtime_passed": 197,
+   "passed_registered_rejected_now": 0,
+   "newly_failed_checks": {}
+  },
+  "finetuned_seed1001": {
+   "n": 200,
+   "registered_passed_as_stored": 192,
+   "registered_rescored_on_fixed_facts": 190,
+   "runtime_passed": 194,
+   "passed_registered_rejected_now": 0,
+   "newly_failed_checks": {}
+  },
+  "finetuned_seed2001": {
+   "n": 200,
+   "registered_passed_as_stored": 199,
+   "registered_rescored_on_fixed_facts": 197,
+   "runtime_passed": 197,
+   "passed_registered_rejected_now": 0,
+   "newly_failed_checks": {}
+  },
+  "realbase_seed1": {
+   "n": 200,
+   "registered_passed_as_stored": 151,
+   "registered_rescored_on_fixed_facts": 149,
+   "runtime_passed": 22,
+   "passed_registered_rejected_now": 127,
+   "newly_failed_checks": {
+    "vocabulary_ok": 124,
+    "status_correct": 19
+   }
+  }
+ },
+ "examples_newly_rejected": {
+  "base_seed1": [
+   {
+    "source": "crc_test_625",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 99.0,
+    "text": "The model read the tile as debris (DEB) with a combined confidence of 99%. Head A chose DEB at 100%, and Head B also chose DEB at 100%. The heads agreed, and the tile was not flagged for review. DEB covers fragments of dead cells and broken-down tissue."
+   },
+   {
+    "source": "crc_test_1592",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read this H&E image tile as mucus (MUC) with a combined confidence of 100%. Head A confirmed MUC at 100%, and Head B also confirmed MUC at 100%. The heads agreed, and the tile was not flagged for review. MUC covers pale mucus outside cells, with few cells in it."
+   },
+   {
+    "source": "crc_test_3012",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as lymphocytes (LYM) with a combined confidence of 100%. Head A confirmed the class as LYM with 100% confidence, and Head B also confirmed LYM with 100%. The heads agreed on the class, and the tile was not flagged for review. LYM covers dense groups of small round immune cells with dark nuclei."
+   },
+   {
+    "source": "crc_test_133",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 99.0,
+    "text": "The model read this tile as a smooth muscle (MUS) with a combined confidence of 99%. Head A chose MUS at 100%, and Head B also chose MUS at 100%. Both heads agreed, and the tile is not flagged for review. MUS covers bundles of long spindle-shaped cells with pink cytoplasm."
+   },
+   {
+    "source": "crc_test_2713",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as adipose tissue (ADI) with a combined confidence of 100%. Head A confirmed ADI at 100%, and Head B also confirmed ADI at 100%. The heads agreed, and the tile was not flagged for review. ADI covers fat cells, seen as large, clear round spaces with thin walls."
+   },
+   {
+    "source": "crc_test_4555",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as colorectal adenocarcinoma epithelium (TUM) with a combined confidence of 100%. Head A chose TUM at 100%, and Head B also chose TUM at 100%. Both heads agreed, and the tile was not flagged for review. TUM covers irregular glands lined by crowded, abnormal epithelial cells."
+   }
+  ],
+  "base_seed1001": [
+   {
+    "source": "crc_test_239",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as cancer-associated stroma (STR) with a combined confidence of 100%. Head A confirmed the class as STR at 100%, and Head B also confirmed it at 100%. The tile is not flagged for review, and STR covers fibrous tissue around cancer, with spindle cells and collagen."
+   },
+   {
+    "source": "crc_test_6520",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "identified"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read a tile of colorectal tissue and identified it as smooth muscle (MUS) with a 100% confidence. Head A and Head B both chose MUS with 100% confidence. The tile is not flagged for review, and the MUS covers bundles of long spindle-shaped cells with pink cytoplasm."
+   },
+   {
+    "source": "crc_test_1592",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as mucus (MUC) with a combined confidence of 100%. Head A confirmed it as MUC at 100%, and Head B also confirmed it as MUC at 100%. The tile is not flagged for review, and MUC covers pale mucus outside cells with few cells in it."
+   },
+   {
+    "source": "crc_test_3012",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as lymphocytes (LYM) with a combined confidence of 100%. Head A confirmed LYM at 100%, and Head B also confirmed LYM at 100%. The heads agreed, and the tile was not flagged for review. LYM covers dense groups of small round immune cells with dark nuclei."
+   },
+   {
+    "source": "crc_test_3426",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "result"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the tile as background (BACK) with a combined confidence of 100%. Head A and Head B both chose BACK with 100% confidence. The combined result is that the tile is a slide area with little or no tissue. The heads agree, and the tile is not flagged for review. BACK covers the slide area with little or no tissue."
+   },
+   {
+    "source": "crc_test_133",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 99.0,
+    "text": "The model read the H&E image tile as a smooth muscle (MUS) with a combined confidence of 99%. Head A chose MUS at 100%, and Head B also chose MUS at 100%. Both heads agreed, and the tile was not flagged for review. MUS covers bundles of long spindle-shaped cells with pink cytoplasm."
+   }
+  ],
+  "base_seed2001": [
+   {
+    "source": "crc_test_239",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as cancer-associated stroma (STR) with a combined confidence of 100%. Head A confirmed the class as STR at 100%, and Head B also confirmed it at 100%. Both heads agreed, and the tile was not flagged for review. STR covers fibrous tissue around cancer, with spindle cells and collagen."
+   },
+   {
+    "source": "crc_test_625",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "selected"
+    ],
+    "missing": null,
+    "combined": 99.0,
+    "text": "The model read the tile as debris (DEB) with a combined confidence of 99%. Head A selected DEB with a confidence of 100%, and Head B also selected DEB with a confidence of 100%. The heads agreed, and the tile was not flagged for review. DEB covers fragments of dead cells and broken-down tissue."
+   },
+   {
+    "source": "crc_test_1592",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read this H&E image tile as mucus (MUC) with a combined confidence of 100%. Head A confirmed MUC at 100% and Head B also confirmed MUC at 100%. The heads agree, and the tile is not flagged for review. MUC covers pale mucus outside cells, with few cells in it."
+   },
+   {
+    "source": "crc_test_3012",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as lymphocytes (LYM) with a combined confidence of 100%. Head A confirmed LYM at 100%, and Head B also confirmed LYM at 100%. The heads agreed, and the tile was not flagged for review. LYM covers dense groups of small round immune cells with dark nuclei."
+   },
+   {
+    "source": "crc_test_2588",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the tile as background (BACK) with a combined confidence of 100%. Head A and Head B both chose BACK with 100% confidence. The heads agreed, and the tile is not flagged for review. BACK covers a small area of the slide with little or no tissue."
+   },
+   {
+    "source": "crc_test_2713",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "confirmed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image tile as adipose tissue (ADI) with a combined confidence of 100%. Head A confirmed ADI at 100%, Head B also confirmed ADI at 100%. The heads agreed, and the tile was not flagged for review. ADI covers fat cells, seen as large clear round spaces with thin walls."
+   }
+  ],
+  "realbase_seed1": [
+   {
+    "source": "crc_test_239",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "selected"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the histology tile as a cancer-associated stroma (STR) with a combined confidence of 100%. Head A selected STR at 100% confidence, and Head B also chose STR at 100% confidence. The heads agreed on the class, and the tile was not flagged for review. STR covers fibrous tissue around cancer, with spindle cells and collagen."
+   },
+   {
+    "source": "crc_test_2502",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "appearing"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image as adipose tissue (ADI) with a 100% confidence. Head A chose ADI, and Head B also chose ADI with 100% confidence. The heads agreed on the class, and the tile was not flagged for review. ADI covers fat cells, appearing as large, clear, round spaces with thin walls."
+   },
+   {
+    "source": "crc_test_6520",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the H&E image as a smooth muscle (MUS) with a 100% confidence. Head A chose MUS, and Head B also chose MUS. The heads agreed, and the tile was not flagged for review. MUS covers bundles of long spindle-shaped cells with pink cytoplasm."
+   },
+   {
+    "source": "crc_test_4347",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "shown",
+     "t",
+     "wasn"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read the image as adipose tissue (ADI) with a 100% confidence. Head A chose ADI, and Head B also chose ADI. They agreed, and the tile wasn't flagged for review. ADI covers fat cells, shown as large, clear, round spaces with thin walls."
+   },
+   {
+    "source": "crc_test_3012",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed",
+     "selected"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read this H&E image tile as lymphocytes (LYM) with a combined confidence of 100%. Head A selected LYM with 100% confidence, and Head B also chose LYM with 100% confidence. The heads agreed, and the tile was not flagged for review. LYM covers dense groups of small round immune cells with dark nuclei."
+   },
+   {
+    "source": "crc_test_2588",
+    "failed": [
+     "vocabulary_ok"
+    ],
+    "outside": [
+     "agreed"
+    ],
+    "missing": null,
+    "combined": 100.0,
+    "text": "The model read this H&E image tile as background (BACK) with a combined confidence of 100%. Head A chose BACK at 100%, and Head B also chose BACK at 100%. The heads agreed, and the tile was not flagged for review. BACK covers a slide area with little or no tissue."
+   }
+  ]
+ }
+}

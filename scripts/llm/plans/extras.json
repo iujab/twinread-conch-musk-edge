@@ -1,0 +1,112 @@
+{
+ "defaults": {
+  "requests": "0,1",
+  "idle_s": 3,
+  "max_tokens": 120,
+  "max_seconds": 170,
+  "threads": 3,
+  "no_think": true,
+  "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"
+ },
+ "runs": [
+  {
+   "name": "bin_official_b11960_t3",
+   "args": {
+    "bin": "device/llm/bin/official-b11960/llama-server"
+   }
+  },
+  {
+   "name": "tl_q3_t4_n10_passive",
+   "args": {
+    "threads": 4,
+    "nice": 10,
+    "env": "OMP_WAIT_POLICY=passive",
+    "vision": "loop",
+    "vision_baseline_s": 15,
+    "idle_s": 8
+   }
+  },
+  {
+   "name": "x_q3_t4_passive_alone",
+   "args": {
+    "threads": 4,
+    "env": "OMP_WAIT_POLICY=passive"
+   }
+  },
+  {
+   "name": "x_q3_t3_passive_alone",
+   "args": {
+    "threads": 3,
+    "env": "OMP_WAIT_POLICY=passive"
+   }
+  },
+  {
+   "name": "x_q3_t3_nommap",
+   "args": {
+    "server_args": "--no-mmap"
+   }
+  },
+  {
+   "name": "x_q3_t3_c640_ub128",
+   "args": {
+    "ctx": 640,
+    "server_args": "-b 128 -ub 128"
+   }
+  },
+  {
+   "name": "x_q3_t3_prewarm_reasoning_off",
+   "args": {
+    "no_think": false,
+    "prewarm": true,
+    "server_args": "--reasoning off",
+    "requests": "1"
+   }
+  },
+  {
+   "name": "tl_q3_t4_n19",
+   "args": {
+    "threads": 4,
+    "nice": 19,
+    "vision": "loop",
+    "vision_baseline_s": 15,
+    "idle_s": 8
+   }
+  },
+  {
+   "name": "heat_tandem_t4_n10_repeat",
+   "args": {
+    "threads": 4,
+    "nice": 10,
+    "vision": "loop",
+    "vision_baseline_s": 10,
+    "idle_s": 2,
+    "requests": "1,2",
+    "repeat_until_s": 150,
+    "max_seconds": 175
+   }
+  },
+  {
+   "name": "heat_tandem_t3_n10_repeat",
+   "args": {
+    "threads": 3,
+    "nice": 10,
+    "vision": "loop",
+    "vision_baseline_s": 10,
+    "idle_s": 2,
+    "requests": "1,2",
+    "repeat_until_s": 150,
+    "max_seconds": 175
+   }
+  },
+  {
+   "name": "heat_vision_only_baseline",
+   "args": {
+    "threads": 1,
+    "vision": "loop",
+    "vision_baseline_s": 120,
+    "idle_s": 1,
+    "requests": ""
+   }
+  }
+ ]
+}

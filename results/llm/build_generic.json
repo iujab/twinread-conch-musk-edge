@@ -1,0 +1,14 @@
+{
+ "tag": "v0.8.0",
+ "commit": "8642541b255bfb5dc39cd351a178be09013a55d6",
+ "variant": "generic",
+ "march": "armv8-a+crc+crypto",
+ "mtune": "default",
+ "openmp": "ON",
+ "lto": "ON",
+ "static": true,
+ "bytes": 15022840,
+ "sha256": "047fc8be0de84d73167bbe6e8e641c0fbb38dee039eca0ab59be8198f1262919",
+ "compiler": "aarch64-linux-gnu-g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+ "file": "ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=f1a019b86470a05b42d2dbb30ef21f1d187fe058, for GNU/Linux 3.7.0, stripped"
+}

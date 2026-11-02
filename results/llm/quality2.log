@@ -1,0 +1,11 @@
+== ql2_q25_q4km_t3_rp11 (hot 47.1 C)
+  ql2_q25_q4km_t3_rp11 | load 3.2s | [279+0c tok 10.7 pp/s, ttft 26.0s, 137 tok 5.95 t/s, 105w, 49s] | [76+210c tok 10.3 pp/s, ttft 7.4s, 176 tok 5.95 t/s, 131w, 37s] | [77+210c tok 10.2 pp/s, ttft 7.5s, 140 tok 5.98 t/s, 96w, 31s] | rss 492.9 anon 107.9MB avail>=2981MB | peak 66.3C window 122s
+  removed Qwen2.5-0.5B-Instruct-Q4_K_M.gguf from the board to make room
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 200/352 MB, 6.3 MB/s, hot 50.0 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: 352/352 MB, 6.9 MB/s, hot 50.3 C
+Qwen2.5-0.5B-Q4_0-speedonly.gguf: verified sha256 3a0c9918ce05eabf…
+== ql2_q25_q4_0_speedonly_t3_rp11 (hot 46.8 C)
+  ql2_q25_q4_0_speedonly_t3_rp11 | load 3.1s | [279+0c tok 13.7 pp/s, ttft 20.4s, 103 tok 6.98 t/s, 72w, 35s] | [76+210c tok 12.9 pp/s, ttft 5.9s, 72 tok 6.98 t/s, 48w, 16s] | [77+210c tok 12.9 pp/s, ttft 6.0s, 122 tok 6.94 t/s, 91w, 23s] | rss 449.0 anon 107.5MB avail>=2992MB | peak 63.8C window 80s
+== ql2_q3_q40e8_t3_rp11 (hot 47.1 C)
+  ql2_q3_q40e8_t3_rp11 | load 3.3s | [283+0c tok 10.4 pp/s, ttft 27.3s, 92 tok 3.97 t/s, 64w, 50s] | [80+210c tok 9.4 pp/s, ttft 8.6s, 127 tok 3.99 t/s, 87w, 40s] | [81+210c tok 9.5 pp/s, ttft 8.6s, 142 tok 3.91 t/s, 90w, 45s] | rss 612.2 anon 206.7MB avail>=2900MB | peak 65.1C window 140s
+plan finished

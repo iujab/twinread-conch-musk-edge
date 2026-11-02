@@ -18,3 +18,9 @@ device/.venv/
 *.pyc
 *.egg-info/
 node_modules/
+*.gguf
+*.safetensors
+device/llm/bin/
+results/llm/finetune/heldout/
+results/llm/finetune/edge/
+results/llm/finetune/judge/judge_answers.jsonl

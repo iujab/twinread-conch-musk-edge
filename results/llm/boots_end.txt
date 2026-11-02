@@ -1,0 +1,13 @@
+recorded on PC 2026-11-02T14:20:24Z
+ 14:20:25 up  3:33,  2 users,  load average: 0.16, 1.06, 1.75
+IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY
+ -2 9d8fca0e3a3b45db8ec94583e752902e Mon 2026-11-02 09:38:26 UTC Mon 2026-11-02 09:42:00 UTC
+ -1 a14267bafa1f4a4f92912d2a96272a71 Mon 2026-11-02 09:41:26 UTC Mon 2026-11-02 10:46:20 UTC
+  0 143d9ac9aac743ae9300fccf05517630 Mon 2026-11-02 10:46:21 UTC Mon 2026-11-02 14:20:24 UTC
+--- how boot -2 ended (last sudo/logind reboot lines, then final line)
+Nov 02 09:42:00.583762 uno-q python[702]: {"event": "tile", "n": 120, "mode": "camera", "status": "review", "label": "BACK", "prob": 0.7009, "reasons": ["disagr
+--- how boot -1 ended (last sudo/logind reboot lines, then final line)
+Nov 02 09:44:15.268087 uno-q sudo[2004]:  arduino : PWD=/home/arduino ; USER=root ; COMMAND=/usr/bin/bash -c 'echo --- crash evidence; ls -la /sys/fs/pstore/ 2>
+Nov 02 10:46:16.374675 uno-q sudo[31274]:  arduino : PWD=/home/arduino ; USER=root ; COMMAND=/usr/bin/systemctl reboot
+Nov 02 10:46:16.432833 uno-q systemd-logind[458]: The system will reboot now!
+Nov 02 10:46:20.899688 uno-q systemd-journald[261]: Journal stopped

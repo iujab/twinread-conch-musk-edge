@@ -1,0 +1,3 @@
+== x_q3_t3_nommap (hot 47.8 C)
+  x_q3_t3_nommap | load 3.5s | [283+0c tok 10.3 pp/s, ttft 27.4s, 102 tok 4.07 t/s, 67w, 52s] | [80+210c tok 9.3 pp/s, ttft 8.6s, 120 tok 4.05 t/s, 81w, 38s] | rss 611.2 anon 599.9MB avail>=2500MB | peak 63.8C window 97s
+plan finished

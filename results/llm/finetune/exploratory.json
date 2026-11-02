@@ -1,0 +1,382 @@
+{
+ "label": "Exploratory: added after the registered result was known.",
+ "per_situation_registered_checker": {
+  "agree": {
+   "n_items": 50,
+   "base_pass_by_seed": [
+    0.88,
+    0.8,
+    0.84
+   ],
+   "finetuned_pass_by_seed": [
+    0.98,
+    0.94,
+    0.98
+   ],
+   "mean_difference_all_seeds": 0.1267,
+   "signflip_p_all_seeds": 0.0022,
+   "distinct_prompts": 27,
+   "prompts_also_in_training": 47
+  },
+  "review": {
+   "n_items": 50,
+   "base_pass_by_seed": [
+    0.98,
+    1.0,
+    0.96
+   ],
+   "finetuned_pass_by_seed": [
+    0.94,
+    0.96,
+    1.0
+   ],
+   "mean_difference_all_seeds": -0.0133,
+   "signflip_p_all_seeds": 0.68097,
+   "distinct_prompts": 49,
+   "prompts_also_in_training": 8
+  },
+  "disagree": {
+   "n_items": 50,
+   "base_pass_by_seed": [
+    0.94,
+    0.98,
+    1.0
+   ],
+   "finetuned_pass_by_seed": [
+    0.98,
+    0.94,
+    1.0
+   ],
+   "mean_difference_all_seeds": 0.0,
+   "signflip_p_all_seeds": 1.0,
+   "distinct_prompts": 50,
+   "prompts_also_in_training": 0
+  },
+  "no_tissue": {
+   "n_items": 50,
+   "base_pass_by_seed": [
+    0.74,
+    0.88,
+    0.86
+   ],
+   "finetuned_pass_by_seed": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "mean_difference_all_seeds": 0.1733,
+   "signflip_p_all_seeds": 5e-05,
+   "distinct_prompts": 12,
+   "prompts_also_in_training": 50
+  }
+ },
+ "without_no_tissue_seed1": {
+  "n": 150,
+  "base_passed": 140,
+  "finetuned_passed": 145,
+  "base_only": 5,
+  "finetuned_only": 10,
+  "p_exact": 0.301758
+ },
+ "without_no_tissue_all_seeds": {
+  "mean_difference": 0.0378,
+  "signflip_p": 0.0296
+ },
+ "prompts_also_in_training_seed1": {
+  "n": 105,
+  "base_passed": 86,
+  "finetuned_passed": 103,
+  "base_only": 2,
+  "finetuned_only": 19,
+  "p_exact": 0.000221
+ },
+ "corrected_checker": {
+  "base_seed1": {
+   "registered_passed": 177,
+   "corrected_passed": 180,
+   "n": 200,
+   "corrected_pass_rate": 0.9,
+   "corrected_ci95": [
+    0.8506,
+    0.9343
+   ],
+   "registered_invented": 5,
+   "corrected_invented": 5,
+   "corrected_by_situation": {
+    "agree": 0.88,
+    "review": 0.98,
+    "disagree": 0.94,
+    "no_tissue": 0.8
+   },
+   "corrected_natural_mix": 0.8912,
+   "passed_changed_items": [
+    "held_out_0163",
+    "held_out_0191",
+    "held_out_0195"
+   ]
+  },
+  "base_seed1001": {
+   "registered_passed": 183,
+   "corrected_passed": 184,
+   "n": 200,
+   "corrected_pass_rate": 0.92,
+   "corrected_ci95": [
+    0.874,
+    0.9502
+   ],
+   "registered_invented": 5,
+   "corrected_invented": 5,
+   "corrected_by_situation": {
+    "agree": 0.8,
+    "review": 1.0,
+    "disagree": 0.98,
+    "no_tissue": 0.9
+   },
+   "corrected_natural_mix": 0.8238,
+   "passed_changed_items": [
+    "held_out_0187"
+   ]
+  },
+  "base_seed2001": {
+   "registered_passed": 183,
+   "corrected_passed": 185,
+   "n": 200,
+   "corrected_pass_rate": 0.925,
+   "corrected_ci95": [
+    0.88,
+    0.954
+   ],
+   "registered_invented": 7,
+   "corrected_invented": 7,
+   "corrected_by_situation": {
+    "agree": 0.84,
+    "review": 0.96,
+    "disagree": 1.0,
+    "no_tissue": 0.9
+   },
+   "corrected_natural_mix": 0.8552,
+   "passed_changed_items": [
+    "held_out_0189",
+    "held_out_0195"
+   ]
+  },
+  "finetuned_seed1": {
+   "registered_passed": 195,
+   "corrected_passed": 199,
+   "n": 200,
+   "corrected_pass_rate": 0.995,
+   "corrected_ci95": [
+    0.9722,
+    0.9991
+   ],
+   "registered_invented": 4,
+   "corrected_invented": 0,
+   "corrected_by_situation": {
+    "agree": 1.0,
+    "review": 1.0,
+    "disagree": 0.98,
+    "no_tissue": 1.0
+   },
+   "corrected_natural_mix": 0.9996,
+   "passed_changed_items": [
+    "held_out_0000",
+    "held_out_0052",
+    "held_out_0066",
+    "held_out_0098"
+   ]
+  },
+  "finetuned_seed1001": {
+   "registered_passed": 192,
+   "corrected_passed": 196,
+   "n": 200,
+   "corrected_pass_rate": 0.98,
+   "corrected_ci95": [
+    0.9497,
+    0.9922
+   ],
+   "registered_invented": 6,
+   "corrected_invented": 2,
+   "corrected_by_situation": {
+    "agree": 0.96,
+    "review": 1.0,
+    "disagree": 0.96,
+    "no_tissue": 1.0
+   },
+   "corrected_natural_mix": 0.9642,
+   "passed_changed_items": [
+    "held_out_0016",
+    "held_out_0052",
+    "held_out_0064",
+    "held_out_0118"
+   ]
+  },
+  "finetuned_seed2001": {
+   "registered_passed": 199,
+   "corrected_passed": 199,
+   "n": 200,
+   "corrected_pass_rate": 0.995,
+   "corrected_ci95": [
+    0.9722,
+    0.9991
+   ],
+   "registered_invented": 1,
+   "corrected_invented": 1,
+   "corrected_by_situation": {
+    "agree": 0.98,
+    "review": 1.0,
+    "disagree": 1.0,
+    "no_tissue": 1.0
+   },
+   "corrected_natural_mix": 0.9824,
+   "passed_changed_items": []
+  },
+  "composer_seed1": {
+   "registered_passed": 200,
+   "corrected_passed": 200,
+   "n": 200,
+   "corrected_pass_rate": 1.0,
+   "corrected_ci95": [
+    0.9812,
+    1.0
+   ],
+   "registered_invented": 0,
+   "corrected_invented": 0,
+   "corrected_by_situation": {
+    "agree": 1.0,
+    "review": 1.0,
+    "disagree": 1.0,
+    "no_tissue": 1.0
+   },
+   "corrected_natural_mix": 1.0,
+   "passed_changed_items": []
+  },
+  "realbase_seed1": {
+   "registered_passed": 151,
+   "corrected_passed": 160,
+   "n": 200,
+   "corrected_pass_rate": 0.8,
+   "corrected_ci95": [
+    0.7391,
+    0.8495
+   ],
+   "registered_invented": 5,
+   "corrected_invented": 5,
+   "corrected_by_situation": {
+    "agree": 0.92,
+    "review": 0.94,
+    "disagree": 1.0,
+    "no_tissue": 0.34
+   },
+   "corrected_natural_mix": 0.9227,
+   "passed_changed_items": [
+    "held_out_0151",
+    "held_out_0163",
+    "held_out_0165",
+    "held_out_0171",
+    "held_out_0181",
+    "held_out_0183",
+    "held_out_0191",
+    "held_out_0195",
+    "held_out_0199"
+   ]
+  }
+ },
+ "error_kinds_all_runs_corrected_checker": {
+  "base": {
+   "answers": 600,
+   "wrong_number": 0,
+   "number_left_out": 20,
+   "number_or_class_on_wrong_head": 1,
+   "says_what_image_shows": 17,
+   "flag_status_wrong_or_missing": 25,
+   "class_wrong": 3,
+   "wrong_number_examples": []
+  },
+  "finetuned": {
+   "answers": 600,
+   "wrong_number": 3,
+   "number_left_out": 3,
+   "number_or_class_on_wrong_head": 3,
+   "says_what_image_shows": 0,
+   "flag_status_wrong_or_missing": 0,
+   "class_wrong": 0,
+   "wrong_number_examples": [
+    {
+     "text": "The model read this tile as MUC (mucus) at 100% combined confidence. Head A gives MUC 100% confidence, and Head B gives MUC 70%. The heads agree. This tile is not flagged, so no second look is requested. On H&E, MUC means pale mucus outside cells, with few cells in it. This is the model's reading of one tile."
+    },
+    {
+     "text": "The model looked at this small square of tissue and read it as lymphocytes (LYM), with a combined confidence of 100%. The model has two heads, and each answers on its own. Head A gives LYM 100% confidence, and Head B gives LYM 95%. The two heads agree, and the tile is not flagged for review. In a tissue image, lymphocytes means groups of small round immune cells."
+    },
+    {
+     "text": "The model read this tile as smooth muscle (MUS) at 100% combined confidence. Head A gives MUS 100% confidence, and Head B gives MUS 70%. The two heads agree on this tile. The tile is not flagged for review. On H&E, MUS means bundles of long spindle-shaped cells with pink cytoplasm. This describes one tile as the model read it."
+    }
+   ]
+  },
+  "composer": {
+   "answers": 200,
+   "wrong_number": 0,
+   "number_left_out": 0,
+   "number_or_class_on_wrong_head": 0,
+   "says_what_image_shows": 0,
+   "flag_status_wrong_or_missing": 0,
+   "class_wrong": 0,
+   "wrong_number_examples": []
+  }
+ },
+ "corrected_checker_tests": {
+  "seed1": {
+   "n": 200,
+   "base_passed": 180,
+   "finetuned_passed": 199,
+   "base_only": 1,
+   "finetuned_only": 20,
+   "p_exact": 2.1e-05
+  },
+  "seed1001": {
+   "n": 200,
+   "base_passed": 184,
+   "finetuned_passed": 196,
+   "base_only": 4,
+   "finetuned_only": 16,
+   "p_exact": 0.011818
+  },
+  "seed2001": {
+   "n": 200,
+   "base_passed": 185,
+   "finetuned_passed": 199,
+   "base_only": 1,
+   "finetuned_only": 15,
+   "p_exact": 0.000519
+  }
+ },
+ "second_flag_reason_dropped": {
+  "base_seed1": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 36
+  },
+  "base_seed1001": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 39
+  },
+  "base_seed2001": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 33
+  },
+  "finetuned_seed1": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 0
+  },
+  "finetuned_seed1001": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 0
+  },
+  "finetuned_seed2001": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 0
+  },
+  "composer_seed1": {
+   "answers_with_two_flag_reasons": 47,
+   "review_head_reason_dropped": 0
+  }
+ }
+}

@@ -1,0 +1,40 @@
+{
+ "defaults": {
+  "requests": "0,1",
+  "idle_s": 8,
+  "max_tokens": 120,
+  "max_seconds": 170,
+  "vision": "loop",
+  "vision_baseline_s": 15,
+  "model": "data/llm/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf"
+ },
+ "runs": [
+  {
+   "name": "tv_q25_t3_idle",
+   "args": {
+    "threads": 3,
+    "vision": "idle"
+   }
+  },
+  {
+   "name": "tl_q25_t3_n10",
+   "args": {
+    "threads": 3,
+    "nice": 10
+   }
+  },
+  {
+   "name": "tl_q25_t3_n0",
+   "args": {
+    "threads": 3
+   }
+  },
+  {
+   "name": "tl_q25_t2_n10",
+   "args": {
+    "threads": 2,
+    "nice": 10
+   }
+  }
+ ]
+}

@@ -1,0 +1,3 @@
+== bin_gcc14_t3 (hot 47.1 C)
+  bin_gcc14_t3 | load 3.2s | [283+0c tok 11.3 pp/s, ttft 25.1s, 98 tok 4.17 t/s, 66w, 48s] | [80+210c tok 10.1 pp/s, ttft 7.9s, 120 tok 4.14 t/s, 79w, 37s] | rss 612.8 anon 206.8MB avail>=2897MB | peak 62.6C window 91s
+plan finished

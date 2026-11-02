@@ -1,0 +1,9 @@
+== final_t3_n10_passive_vision2hz (hot 44.6 C)
+  final_t3_n10_passive_vision2hz | load 3.4s | [82+201c tok 8.1 pp/s, ttft 10.1s, 92 tok 3.33 t/s, 64w, 37s] | [80+210c tok 8.1 pp/s, ttft 9.9s, 127 tok 3.30 t/s, 87w, 48s] | rss 615.7 anon 210.2MB avail>=2828MB | peak 63.8C window 176s | ABORTED {'reason': 'max_seconds', 'hot_c': 63.5, 't': 175.6, 'phase': 'r2_heads_disagree:gen'}
+== final_t3_n10_passive_alone (hot 47.8 C)
+  final_t3_n10_passive_alone | load 3.3s | [82+201c tok 9.4 pp/s, ttft 8.7s, 92 tok 3.85 t/s, 64w, 32s] | [80+210c tok 9.3 pp/s, ttft 8.6s, 127 tok 3.82 t/s, 87w, 42s] | [81+210c tok 9.4 pp/s, ttft 8.6s, 142 tok 3.81 t/s, 90w, 46s] | rss 612.1 anon 206.6MB avail>=2881MB | peak 63.5C window 148s
+tiny-Q4_0-embq8_0.gguf: 16/16 MB, 6.2 MB/s, hot 49.0 C
+tiny-Q4_0-embq8_0.gguf: verified sha256 cbd0e4a6f70cc23b…
+== final_tiny_converted_model_loads (hot 49.3 C)
+  final_tiny_converted_model_loads | load 2.6s | [283+0c tok 6372.0 pp/s, ttft 0.1s, 8 tok 82.40 t/s, 3w, 0s] | rss 88.5 anon 67.4MB avail>=3024MB | peak 48.7C window 4s
+plan finished

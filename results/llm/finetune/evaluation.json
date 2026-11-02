@@ -1,0 +1,624 @@
+{
+ "files": {
+  "base_seed1": 200,
+  "base_seed1001": 200,
+  "base_seed2001": 200,
+  "composer_seed1": 200,
+  "finetuned_seed1": 200,
+  "finetuned_seed1001": 200,
+  "finetuned_seed2001": 200,
+  "realbase_seed1": 200
+ },
+ "checker_and_prompt_unchanged_since_registration": true,
+ "arms": {
+  "base_seed1": {
+   "n": 200,
+   "passed": 177,
+   "pass_rate": 0.885,
+   "pass_ci95": [
+    0.8334,
+    0.9221
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "words_median": 55,
+   "words_min_max": [
+    33,
+    73
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.88,
+     "invented_rate": 0.1
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 0.98,
+     "invented_rate": 0.0
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 0.94,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 0.74,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.9
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 0.87
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 1,
+    "status_correct": 10,
+    "heads_correct": 2,
+    "numbers_match": 10,
+    "no_forbidden": 5,
+    "no_wrong_class": 0,
+    "length_ok": 2,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "image_claim": 5
+   },
+   "natural_mix_pass_rate": 0.8911,
+   "natural_mix_invented_rate": 0.0879
+  },
+  "base_seed1001": {
+   "n": 200,
+   "passed": 183,
+   "pass_rate": 0.915,
+   "pass_ci95": [
+    0.8681,
+    0.9463
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "words_median": 55,
+   "words_min_max": [
+    31,
+    71
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.8,
+     "invented_rate": 0.1
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 0.98,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 0.88,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.95
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 0.88
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 1,
+    "status_correct": 11,
+    "heads_correct": 0,
+    "numbers_match": 5,
+    "no_forbidden": 5,
+    "no_wrong_class": 0,
+    "length_ok": 7,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "image_claim": 5
+   },
+   "natural_mix_pass_rate": 0.8238,
+   "natural_mix_invented_rate": 0.0879
+  },
+  "base_seed2001": {
+   "n": 200,
+   "passed": 183,
+   "pass_rate": 0.915,
+   "pass_ci95": [
+    0.8681,
+    0.9463
+   ],
+   "invented_claims": 7,
+   "invented_rate": 0.035,
+   "words_median": 55,
+   "words_min_max": [
+    27,
+    74
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.84,
+     "invented_rate": 0.14
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 0.96,
+     "invented_rate": 0.0
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 0.86,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.93
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 0.9
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 11,
+    "heads_correct": 0,
+    "numbers_match": 5,
+    "no_forbidden": 7,
+    "no_wrong_class": 1,
+    "length_ok": 5,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "image_claim": 7
+   },
+   "natural_mix_pass_rate": 0.8551,
+   "natural_mix_invented_rate": 0.123
+  },
+  "composer_seed1": {
+   "n": 200,
+   "passed": 200,
+   "pass_rate": 1.0,
+   "pass_ci95": [
+    0.9812,
+    1.0
+   ],
+   "invented_claims": 0,
+   "invented_rate": 0.0,
+   "words_median": 66,
+   "words_min_max": [
+    34,
+    80
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 1.0
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 1.0
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 0,
+    "heads_correct": 0,
+    "numbers_match": 0,
+    "no_forbidden": 0,
+    "no_wrong_class": 0,
+    "length_ok": 0,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {},
+   "natural_mix_pass_rate": 1.0,
+   "natural_mix_invented_rate": 0.0
+  },
+  "finetuned_seed1": {
+   "n": 200,
+   "passed": 195,
+   "pass_rate": 0.975,
+   "pass_ci95": [
+    0.9428,
+    0.9893
+   ],
+   "invented_claims": 4,
+   "invented_rate": 0.02,
+   "words_median": 66,
+   "words_min_max": [
+    32,
+    85
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.98,
+     "invented_rate": 0.02
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 0.94,
+     "invented_rate": 0.06
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 0.98,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.95
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 1.0
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 0,
+    "heads_correct": 0,
+    "numbers_match": 1,
+    "no_forbidden": 4,
+    "no_wrong_class": 0,
+    "length_ok": 0,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "diagnosis": 4
+   },
+   "natural_mix_pass_rate": 0.9759,
+   "natural_mix_invented_rate": 0.0237
+  },
+  "finetuned_seed1001": {
+   "n": 200,
+   "passed": 192,
+   "pass_rate": 0.96,
+   "pass_ci95": [
+    0.9231,
+    0.9796
+   ],
+   "invented_claims": 6,
+   "invented_rate": 0.03,
+   "words_median": 66,
+   "words_min_max": [
+    34,
+    89
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.94,
+     "invented_rate": 0.06
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 0.96,
+     "invented_rate": 0.04
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 0.94,
+     "invented_rate": 0.02
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.93
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 0.99
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 0,
+    "heads_correct": 2,
+    "numbers_match": 4,
+    "no_forbidden": 4,
+    "no_wrong_class": 0,
+    "length_ok": 0,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "diagnosis": 4
+   },
+   "natural_mix_pass_rate": 0.9421,
+   "natural_mix_invented_rate": 0.0572
+  },
+  "finetuned_seed2001": {
+   "n": 200,
+   "passed": 199,
+   "pass_rate": 0.995,
+   "pass_ci95": [
+    0.9722,
+    0.9991
+   ],
+   "invented_claims": 1,
+   "invented_rate": 0.005,
+   "words_median": 67,
+   "words_min_max": [
+    36,
+    86
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.98,
+     "invented_rate": 0.02
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.99
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 1.0
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 0,
+    "heads_correct": 1,
+    "numbers_match": 1,
+    "no_forbidden": 0,
+    "no_wrong_class": 0,
+    "length_ok": 0,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {},
+   "natural_mix_pass_rate": 0.9824,
+   "natural_mix_invented_rate": 0.0176
+  },
+  "realbase_seed1": {
+   "n": 200,
+   "passed": 151,
+   "pass_rate": 0.755,
+   "pass_ci95": [
+    0.691,
+    0.8094
+   ],
+   "invented_claims": 5,
+   "invented_rate": 0.025,
+   "words_median": 57,
+   "words_min_max": [
+    29,
+    74
+   ],
+   "by_situation": {
+    "agree": {
+     "n": 50,
+     "pass_rate": 0.92,
+     "invented_rate": 0.08
+    },
+    "review": {
+     "n": 50,
+     "pass_rate": 0.94,
+     "invented_rate": 0.02
+    },
+    "disagree": {
+     "n": 50,
+     "pass_rate": 1.0,
+     "invented_rate": 0.0
+    },
+    "no_tissue": {
+     "n": 50,
+     "pass_rate": 0.16,
+     "invented_rate": 0.0
+    }
+   },
+   "by_audience": {
+    "doctor": {
+     "n": 100,
+     "pass_rate": 0.77
+    },
+    "user": {
+     "n": 100,
+     "pass_rate": 0.74
+    }
+   },
+   "failures_by_check": {
+    "class_correct": 0,
+    "status_correct": 30,
+    "heads_correct": 0,
+    "numbers_match": 32,
+    "no_forbidden": 3,
+    "no_wrong_class": 1,
+    "length_ok": 0,
+    "complete": 0,
+    "format_ok": 0,
+    "framed_as_model": 0
+   },
+   "forbidden_by_category": {
+    "image_claim": 3
+   },
+   "natural_mix_pass_rate": 0.9225,
+   "natural_mix_invented_rate": 0.0723
+  }
+ },
+ "primary": {
+  "metric": "share of held-out answers passing every check",
+  "base": 0.885,
+  "finetuned": 0.975,
+  "mcnemar_base_vs_finetuned": {
+   "n": 200,
+   "first_only": 5,
+   "second_only": 23,
+   "both": 172,
+   "neither": 0,
+   "p_exact_two_sided": 0.000912
+  },
+  "finetuned_higher": true,
+  "significant_at_0.05": true,
+  "invented_not_raised": true,
+  "ship_finetuned_by_rule": true
+ },
+ "secondary": {
+  "seed1": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 5,
+    "second_only": 23,
+    "both": 172,
+    "neither": 0,
+    "p_exact_two_sided": 0.000912
+   },
+   "base": 0.885,
+   "finetuned": 0.975
+  },
+  "seed1001": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 8,
+    "second_only": 17,
+    "both": 175,
+    "neither": 0,
+    "p_exact_two_sided": 0.107752
+   },
+   "base": 0.915,
+   "finetuned": 0.96
+  },
+  "seed2001": {
+   "mcnemar": {
+    "n": 200,
+    "first_only": 1,
+    "second_only": 17,
+    "both": 182,
+    "neither": 0,
+    "p_exact_two_sided": 0.000145
+   },
+   "base": 0.915,
+   "finetuned": 0.995
+  },
+  "all_seeds_signflip_p": 5e-05,
+  "all_seeds_mean_difference": 0.0717,
+  "realbase_vs_t2file_same_prompts": {
+   "n": 200,
+   "first_only": 11,
+   "second_only": 37,
+   "both": 140,
+   "neither": 12,
+   "p_exact_two_sided": 0.000222
+  },
+  "realbase_vs_finetuned": {
+   "n": 200,
+   "first_only": 5,
+   "second_only": 49,
+   "both": 146,
+   "neither": 0,
+   "p_exact_two_sided": 0.0
+  },
+  "novel_prompts": {
+   "n": 95,
+   "of": 200,
+   "base_pass": 91,
+   "finetuned_pass": 92,
+   "mcnemar": {
+    "n": 95,
+    "first_only": 3,
+    "second_only": 4,
+    "both": 88,
+    "neither": 0,
+    "p_exact_two_sided": 1.0
+   }
+  },
+  "distinct_prompts_by_situation": {
+   "agree": 27,
+   "review": 49,
+   "disagree": 50,
+   "no_tissue": 12
+  }
+ }
+}

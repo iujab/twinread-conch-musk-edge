@@ -1,0 +1,8 @@
+{"defaults": {"requests": "0,1", "idle_s": 3, "max_tokens": 120, "max_seconds": 170, "threads": 4},
+ "runs": [
+  {"name": "q3_q8_0_speedonly_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q8_0-speedonly.gguf", "no_think": true}},
+  {"name": "q3_q5_0_embq8_speedonly_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q5_0-embQ8-speedonly.gguf", "no_think": true}},
+  {"name": "q25_q4_0_speedonly_t4", "args": {"model": "data/llm/Qwen2.5-0.5B-Q4_0-speedonly.gguf"}},
+  {"name": "q25_q8_0_speedonly_t4", "args": {"model": "data/llm/Qwen2.5-0.5B-Q8_0-speedonly.gguf"}},
+  {"name": "q35_q4_0_real_t4", "args": {"model": "data/llm/Qwen3.5-0.8B-Q4_0.gguf", "no_think": true, "server_args": "--ctx-checkpoints 8"}}
+ ]}

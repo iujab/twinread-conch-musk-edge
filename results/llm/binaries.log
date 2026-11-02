@@ -1,0 +1,7 @@
+== bin_official_b11960_t3 (hot 46.8 C)
+  bin_official_b11960_t3 | load 0.0s | rss 0.0 anon 0.0MB avail>=3108MB | peak 45.9C window 0s | ERROR RuntimeError: server exited during load, rc=127
+== bin_noomp_t3 (hot 44.6 C)
+  bin_noomp_t3 | load 3.3s | [283+0c tok 10.3 pp/s, ttft 27.4s, 102 tok 4.05 t/s, 67w, 52s] | [80+210c tok 9.3 pp/s, ttft 8.6s, 120 tok 4.01 t/s, 81w, 38s] | rss 613.8 anon 208.0MB avail>=2891MB | peak 61.9C window 97s
+== bin_noomp_poll0_t3 (hot 46.2 C)
+  bin_noomp_poll0_t3 | load 3.3s | [283+0c tok 10.3 pp/s, ttft 27.5s, 102 tok 4.05 t/s, 67w, 52s] | [80+210c tok 9.3 pp/s, ttft 8.6s, 120 tok 4.05 t/s, 81w, 38s] | rss 611.6 anon 205.8MB avail>=2896MB | peak 62.9C window 97s
+plan finished

@@ -1,0 +1,39 @@
+recorded on PC 2026-11-02T14:20:20Z
+--- fwupd-refresh start lines this boot
+Nov 02 12:49:26.982784 uno-q systemd[1]: Starting fwupd-refresh.service - Refresh fwupd metadata and update motd...
+Nov 02 12:49:27.235574 uno-q systemd[1]: Finished fwupd-refresh.service - Refresh fwupd metadata and update motd.
+Nov 02 13:06:35.732477 uno-q systemd[1]: Starting fwupd-refresh.service - Refresh fwupd metadata and update motd...
+Nov 02 13:06:35.989873 uno-q systemd[1]: Finished fwupd-refresh.service - Refresh fwupd metadata and update motd.
+Nov 02 14:06:12.485244 uno-q systemd[1]: Starting fwupd-refresh.service - Refresh fwupd metadata and update motd...
+Nov 02 14:06:12.824090 uno-q systemd[1]: Finished fwupd-refresh.service - Refresh fwupd metadata and update motd.
+--- the 11:11:50 event that slowed the third request of run ql_q25_q4km_t4
+Nov 02 11:11:50.494602 uno-q systemd[1]: Starting fwupd-refresh.service - Refresh fwupd metadata and update motd...
+Nov 02 11:11:50.795036 uno-q dbus-daemon[445]: [system] Activating via systemd: service name='org.freedesktop.fwupd' unit='fwupd.service' requested by
+Nov 02 11:11:50.924365 uno-q systemd[1]: Starting fwupd.service - Firmware update daemon...
+Nov 02 11:11:57.443260 uno-q fwupd[7952]: 11:11:57.442 FuEngine             failed to add device /sys/devices/platform/soc@0/4744000.mmc/mmc_host/mmc0
+Nov 02 11:12:00.024148 uno-q fwupd[7952]: 11:12:00.021 FuEngine             failed to add device /sys/devices/platform/soc@0/4ef8800.usb/4e00000.usb/x
+Nov 02 11:12:00.086493 uno-q fwupd[7952]: 11:12:00.086 FuEngine             failed to add device /sys/devices/platform/soc@0/4ef8800.usb/4e00000.usb/x
+Nov 02 11:12:00.156829 uno-q fwupd[7952]: 11:12:00.156 FuEngine             failed to add device /sys/devices/platform/soc@0/4ef8800.usb/4e00000.usb/x
+Nov 02 11:12:00.228041 uno-q fwupd[7952]: 11:12:00.225 FuEngine             failed to add device /sys/devices/platform/soc@0/4ef8800.usb/4e00000.usb/x
+--- timers
+NEXT                          LEFT LAST                              PASSED UNIT                         ACTIVATES
+Mon 2026-11-02 15:10:47 UTC  50min Mon 2026-11-02 14:06:12 UTC    14min ago fwupd-refresh.timer          fwupd-refresh.service
+Mon 2026-11-02 21:10:36 UTC     6h Mon 2026-11-02 10:18:29 UTC            - apt-daily.timer              apt-daily.service
+Tue 2026-11-03 00:00:00 UTC     9h Mon 2026-11-02 08:51:48 UTC            - dpkg-db-backup.timer         dpkg-db-backup.service
+Tue 2026-11-03 00:01:16 UTC     9h Mon 2026-11-02 09:00:18 UTC            - man-db.timer                 man-db.service
+Tue 2026-11-03 00:41:45 UTC    10h Mon 2026-11-02 09:03:05 UTC            - logrotate.timer              logrotate.service
+Tue 2026-11-03 06:55:34 UTC    16h Mon 2026-11-02 09:03:14 UTC            - apt-daily-upgrade.timer      apt-daily-upgrade.service
+Sun 2026-11-08 03:10:56 UTC 5 days Mon 2026-11-02 08:51:47 UTC            - e2scrub_all.timer            e2scrub_all.service
+Mon 2026-11-09 01:08:14 UTC 6 days Mon 2026-11-02 09:26:42 UTC            - fstrim.timer                 fstrim.service
+--- arduino-router-serial restart counter (last line) and this boot count
+Nov 02 14:20:19 uno-q systemd[1]: arduino-router-serial.service: Scheduled restart job, restart counter is at 3950.
+3951
+Nov 02 14:20:20.007311 uno-q socat[38197]: 2026/11/02 14:20:20 socat[38197] E open("/dev/ttyGS0", 02, 0666): No such file or directory
+Nov 02 14:20:20.011558 uno-q systemd[1]: arduino-router-serial.service: Main process exited, code=exited, status=1/FAILURE
+Nov 02 14:20:20.012246 uno-q systemd[1]: arduino-router-serial.service: Failed with result 'exit-code'.
+--- thermal trip points, cpuss0 zone
+cpuss0-thermal
+trip_point_0_temp 90000 passive
+trip_point_1_temp 95000 passive
+trip_point_2_temp 110000 critical
+ 14:20:22 up  3:33,  2 users,  load average: 0.18, 1.07, 1.75

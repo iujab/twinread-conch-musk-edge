@@ -1,0 +1,4 @@
+{"defaults": {"requests": "0,1", "idle_s": 3, "max_tokens": 120, "max_seconds": 170, "threads": 3, "no_think": true, "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"},
+ "runs": [
+  {"name": "x_q3_t3_nommap", "args": {"server_args": "--load-mode none"}}
+ ]}

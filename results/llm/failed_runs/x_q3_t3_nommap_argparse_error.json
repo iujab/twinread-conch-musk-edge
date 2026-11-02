@@ -1,0 +1,20 @@
+{
+ "name": "x_q3_t3_nommap",
+ "error": "no result file on the board",
+ "ssh_rc": 2,
+ "stderr": "THREADS]\n                         [--vision-hz VISION_HZ]\n                         [--vision-baseline-s VISION_BASELINE_S]\n                         [--vision-python VISION_PYTHON] [--env ENV]\n                         [--server-args SERVER_ARGS]\n                         [--temp-start-max TEMP_START_MAX]\n                         [--temp-abort TEMP_ABORT] [--max-seconds MAX_SECONDS]\n                         [--out-dir OUT_DIR]\nbench_on_board.py: error: argument --server-args: expected one argument\n",
+ "driver": {
+  "cooldown_before": [
+   {
+    "t": 0,
+    "hot_c": 47.5
+   }
+  ],
+  "boot_id_before": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "boot_id_after": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "lock_held_s": 0.8,
+  "ssh_rc": 2,
+  "stdout": "",
+  "stderr": "                 [--server-args SERVER_ARGS]\n                         [--temp-start-max TEMP_START_MAX]\n                         [--temp-abort TEMP_ABORT] [--max-seconds MAX_SECONDS]\n                         [--out-dir OUT_DIR]\nbench_on_board.py: error: argument --server-args: expected one argument\n"
+ }
+}

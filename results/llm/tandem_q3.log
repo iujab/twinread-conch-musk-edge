@@ -1,0 +1,21 @@
+== tv_q3_t3_idle (hot 47.1 C)
+  tv_q3_t3_idle | load 3.3s | [283+0c tok 10.4 pp/s, ttft 27.4s, 102 tok 4.05 t/s, 67w, 52s] | [80+210c tok 9.3 pp/s, ttft 8.6s, 120 tok 4.04 t/s, 81w, 38s] | rss 612.0 anon 206.5MB avail>=2837MB | peak 62.9C window 103s
+== tv_q3_t4_idle (hot 47.5 C)
+  tv_q3_t4_idle | load 3.2s | [283+0c tok 13.6 pp/s, ttft 20.8s, 113 tok 5.42 t/s, 80w, 41s] | [80+210c tok 12.2 pp/s, ttft 6.6s, 120 tok 5.37 t/s, 76w, 29s] | rss 611.6 anon 206.1MB avail>=2838MB | peak 68.9C window 83s
+== tl_q3_t3_n0 (hot 49.0 C)
+  tl_q3_t3_n0 | load 3.4s | [283+0c tok 9.4 pp/s, ttft 30.2s, 102 tok 2.91 t/s, 67w, 65s] | [80+210c tok 8.3 pp/s, ttft 9.7s, 120 tok 2.89 t/s, 81w, 51s] | rss 611.8 anon 206.3MB avail>=2830MB | peak 65.4C window 144s
+== tl_q3_t3_n10 (hot 48.1 C)
+  tl_q3_t3_n10 | load 3.5s | [283+0c tok 8.9 pp/s, ttft 31.7s, 102 tok 2.97 t/s, 67w, 66s] | [80+210c tok 7.9 pp/s, ttft 10.1s, 120 tok 2.91 t/s, 81w, 51s] | rss 614.1 anon 208.6MB avail>=2836MB | peak 65.1C window 145s
+== tl_q3_t4_n10 (hot 47.8 C)
+  tl_q3_t4_n10 | load 3.3s | [283+0c tok 11.1 pp/s, ttft 25.6s, 113 tok 3.81 t/s, 80w, 55s] | [80+210c tok 9.7 pp/s, ttft 8.2s, 120 tok 3.83 t/s, 76w, 39s] | rss 610.8 anon 205.3MB avail>=2836MB | peak 69.2C window 122s
+== tl_q3_t2_n0 (hot 48.4 C)
+  tl_q3_t2_n0 | load 3.3s | [283+0c tok 7.1 pp/s, ttft 40.1s, 101 tok 2.70 t/s, 66w, 77s] | [80+210c tok 6.5 pp/s, ttft 12.4s, 120 tok 2.74 t/s, 81w, 56s] | rss 613.9 anon 208.5MB avail>=2833MB | peak 62.6C window 160s
+== tl_q3_t2_n10 (hot 47.1 C)
+  tl_q3_t2_n10 | load 3.6s | [283+0c tok 7.1 pp/s, ttft 40.1s, 101 tok 2.57 t/s, 66w, 79s] | [80+210c tok 6.4 pp/s, ttft 12.4s, 120 tok 2.62 t/s, 81w, 58s] | rss 613.6 anon 208.2MB avail>=2831MB | peak 63.8C window 165s
+== tl_q3_t4_n0 (hot 48.1 C)
+  tl_q3_t4_n0 | load 3.5s | [283+0c tok 10.9 pp/s, ttft 26.0s, 113 tok 3.12 t/s, 80w, 62s] | [80+210c tok 9.4 pp/s, ttft 8.5s, 120 tok 3.10 t/s, 76w, 47s] | rss 611.8 anon 206.3MB avail>=2837MB | peak 67.9C window 136s
+== tl_q3_t3_n10_passive (hot 48.4 C)
+  tl_q3_t3_n10_passive | load 3.3s | [283+0c tok 9.0 pp/s, ttft 31.5s, 102 tok 3.39 t/s, 67w, 61s] | [80+210c tok 8.2 pp/s, ttft 9.8s, 120 tok 3.34 t/s, 81w, 45s] | rss 610.8 anon 205.3MB avail>=2837MB | peak 64.8C window 134s
+== tl_q3_t3_n10_noomp_poll0 (hot 47.8 C)
+  tl_q3_t3_n10_noomp_poll0 | load 3.5s | [283+0c tok 8.8 pp/s, ttft 32.2s, 102 tok 2.95 t/s, 67w, 66s] | [80+210c tok 7.5 pp/s, ttft 10.7s, 120 tok 2.93 t/s, 81w, 51s] | rss 614.1 anon 208.3MB avail>=2828MB | peak 64.8C window 145s
+plan finished

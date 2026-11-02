@@ -1,0 +1,9 @@
+== bin_generic_t3 (hot 45.6 C)
+  bin_generic_t3 | load 3.3s | [283+0c tok 10.4 pp/s, ttft 27.3s, 102 tok 4.07 t/s, 67w, 52s] | [80+210c tok 9.4 pp/s, ttft 8.6s, 120 tok 4.03 t/s, 81w, 38s] | rss 611.7 anon 205.5MB avail>=2890MB | peak 63.5C window 97s
+== bin_nolto_t3 (hot 46.8 C)
+  bin_nolto_t3 | load 3.3s | [283+0c tok 10.4 pp/s, ttft 27.4s, 102 tok 4.06 t/s, 67w, 52s] | [80+210c tok 9.4 pp/s, ttft 8.6s, 120 tok 4.00 t/s, 81w, 38s] | rss 612.6 anon 206.4MB avail>=2892MB | peak 62.9C window 97s
+== bin_official_b11960_t3_again (hot 47.1 C)
+  bin_official_b11960_t3_again | load 2.8s | [283+0c tok 11.3 pp/s, ttft 25.1s, 98 tok 4.16 t/s, 66w, 48s] | [80+210c tok 10.1 pp/s, ttft 7.9s, 120 tok 4.14 t/s, 79w, 37s] | rss 604.3 anon 192.8MB avail>=2898MB | peak 62.6C window 91s
+== bin_omp_t3_again (hot 47.8 C)
+  bin_omp_t3_again | load 3.3s | [283+0c tok 10.4 pp/s, ttft 27.4s, 102 tok 4.01 t/s, 67w, 53s] | [80+210c tok 9.4 pp/s, ttft 8.6s, 120 tok 4.00 t/s, 81w, 38s] | rss 611.9 anon 206.4MB avail>=2889MB | peak 63.2C window 97s
+plan finished

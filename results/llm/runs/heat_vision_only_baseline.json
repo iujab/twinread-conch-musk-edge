@@ -1,0 +1,1129 @@
+{
+ "name": "heat_vision_only_baseline",
+ "args": {
+  "name": "heat_vision_only_baseline",
+  "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf",
+  "bin": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server-omp",
+  "threads": 1,
+  "ctx": 1024,
+  "nice": 0,
+  "no_think": true,
+  "examples_file": "/home/arduino/twinread-conch-musk-edge/results/llm/example_results.json",
+  "requests": "",
+  "repeat_until_s": 0.0,
+  "max_tokens": 120,
+  "temperature": 0.3,
+  "top_p": 0.9,
+  "repeat_penalty": 1.0,
+  "seed": 42,
+  "idle_s": 1.0,
+  "post_idle_s": 0.0,
+  "prewarm": false,
+  "cold": false,
+  "vision": "loop",
+  "vision_threads": 3,
+  "vision_hz": 2.0,
+  "vision_baseline_s": 120.0,
+  "vision_python": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python",
+  "env": "",
+  "server_args": "",
+  "temp_start_max": 60.0,
+  "temp_abort": 72.0,
+  "max_seconds": 170.0,
+  "out_dir": "/home/arduino/twinread-conch-musk-edge/data/llm/run_logs"
+ },
+ "aborted": null,
+ "requests": [],
+ "start_hot_c": 49.7,
+ "baseline": {
+  "seconds": 5.0,
+  "system_busy_pct_of_4_cores": 0.9,
+  "mem_available_mb": 3100,
+  "mem_total_mb": 3667,
+  "swap_used_mb": 0,
+  "loadavg": [
+   "1.87",
+   "2.57",
+   "2.29"
+  ],
+  "hottest_c": 48.1,
+  "top_cpu": [
+   {
+    "pid": 1,
+    "comm": "systemd",
+    "cpu_pct": 0.8,
+    "rss_mb": 14.7,
+    "cmd": "/sbin/init ",
+    "is_app": false
+   },
+   {
+    "pid": 28759,
+    "comm": "python3",
+    "cpu_pct": 0.4,
+    "rss_mb": 19.4,
+    "cmd": "python3 -I scripts/llm/bench_on_board.py --name heat_vision_only_baseline --requests  --id",
+    "is_app": false
+   },
+   {
+    "pid": 445,
+    "comm": "dbus-daemon",
+    "cpu_pct": 0.2,
+    "rss_mb": 5.5,
+    "cmd": "/usr/bin/dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation",
+    "is_app": false
+   },
+   {
+    "pid": 22243,
+    "comm": "kworker/u16:1-flush-179:0",
+    "cpu_pct": 0.2,
+    "rss_mb": 0.0,
+    "cmd": "",
+    "is_app": false
+   },
+   {
+    "pid": 2,
+    "comm": "kthreadd",
+    "cpu_pct": 0.0,
+    "rss_mb": 0.0,
+    "cmd": "",
+    "is_app": false
+   }
+  ],
+  "top_rss": [
+   {
+    "pid": 713,
+    "comm": "Xorg",
+    "cpu_pct": 0.0,
+    "rss_mb": 90.1,
+    "cmd": "/usr/lib/xorg/Xorg :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtsw",
+    "is_app": false
+   },
+   {
+    "pid": 636,
+    "comm": "dockerd",
+    "cpu_pct": 0.0,
+    "rss_mb": 74.3,
+    "cmd": "/usr/sbin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock ",
+    "is_app": false
+   },
+   {
+    "pid": 866,
+    "comm": "arduino-app-cli",
+    "cpu_pct": 0.0,
+    "rss_mb": 60.1,
+    "cmd": "/usr/bin/arduino-app-cli daemon --port 8800 --log-level error ",
+    "is_app": false
+   },
+   {
+    "pid": 548,
+    "comm": "tailscaled",
+    "cpu_pct": 0.0,
+    "rss_mb": 58.8,
+    "cmd": "/usr/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/t",
+    "is_app": false
+   },
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   },
+   {
+    "pid": 7952,
+    "comm": "fwupd",
+    "cpu_pct": 0.0,
+    "rss_mb": 53.8,
+    "cmd": "/usr/libexec/fwupd/fwupd ",
+    "is_app": false
+   }
+  ],
+  "twinread_app": [
+   {
+    "pid": 4087,
+    "comm": "python",
+    "cpu_pct": 0.0,
+    "rss_mb": 57.9,
+    "cmd": "/home/arduino/twinread-conch-musk-edge/device/.venv/bin/python /home/arduino/twinread-conc",
+    "is_app": true
+   }
+  ],
+  "boot_id": "143d9ac9-aac7-43ae-9300-fccf05517630"
+ },
+ "vision_ready": {
+  "event": "ready",
+  "t": 9170.694756646,
+  "load_s": 0.5681857510007831,
+  "frame_shape": [
+   224,
+   224,
+   3
+  ],
+  "threads": 3,
+  "mode": "loop"
+ },
+ "t_vision_alone_end": 9290.746806592,
+ "cmd": "/home/arduino/twinread-conch-musk-edge/device/llm/bin/llama-server-omp -m data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf -c 1024 -t 1 -tb 1 -np 1 --host 127.0.0.1 --port 1790 --no-webui --cache-ram 0 --ctx-checkpoints 0 --seed 42",
+ "load_s": 4.147372252000423,
+ "t_loaded": 9294.894712649,
+ "rss_after_load": {
+  "VmHWM": 613040,
+  "VmRSS": 613040,
+  "RssAnon": 197948,
+  "RssFile": 415092,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 10
+ },
+ "idle_cpu": {
+  "seconds": 1.0,
+  "server_cpu_pct_of_one_core": 0.0,
+  "system_busy_pct_of_4_cores": 15.8,
+  "hot_c": 47.1
+ },
+ "t_idle_end": 9295.907028849,
+ "rss_peak": {
+  "VmHWM": 613040,
+  "VmRSS": 613040,
+  "RssAnon": 197948,
+  "RssFile": 415092,
+  "RssShmem": 0,
+  "VmSwap": 0,
+  "Threads": 10
+ },
+ "window_s": 126.37545622899961,
+ "peak_hot_c": 52.2,
+ "end_hot_c": 46.8,
+ "min_avail_mb": 2860,
+ "max_swap_used_mb": 0,
+ "peak_server_rss_mb": 598.7,
+ "peak_server_anon_mb": 193.3,
+ "peak_vision_rss_mb": 86.5,
+ "min_mhz_seen_under_load": null,
+ "samples": [
+  {
+   "t": 0.0,
+   "phase": "vision_load",
+   "hot_c": 48.7,
+   "busy_pct": 50.0,
+   "avail_mb": 3100
+  },
+  {
+   "t": 1.0,
+   "phase": "vision_load",
+   "hot_c": 50.6,
+   "busy_pct": 41.4,
+   "avail_mb": 3068
+  },
+  {
+   "t": 2.0,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 21.0,
+   "avail_mb": 3050
+  },
+  {
+   "t": 3.0,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 16.1,
+   "avail_mb": 3050
+  },
+  {
+   "t": 4.0,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 18.6,
+   "avail_mb": 3050
+  },
+  {
+   "t": 5.1,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 16.3,
+   "avail_mb": 3050
+  },
+  {
+   "t": 6.1,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 16.8,
+   "avail_mb": 3050
+  },
+  {
+   "t": 7.1,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 19.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 8.1,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 16.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 9.1,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 16.7,
+   "avail_mb": 3048
+  },
+  {
+   "t": 10.1,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 21.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 11.1,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 17.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 12.1,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 17.8,
+   "avail_mb": 3048
+  },
+  {
+   "t": 13.1,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 14.2,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 18.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 15.2,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 16.2,
+   "phase": "vision_alone",
+   "hot_c": 49.7,
+   "busy_pct": 17.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 17.2,
+   "phase": "vision_alone",
+   "hot_c": 50.9,
+   "busy_pct": 19.9,
+   "avail_mb": 3048
+  },
+  {
+   "t": 18.2,
+   "phase": "vision_alone",
+   "hot_c": 51.6,
+   "busy_pct": 17.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 19.2,
+   "phase": "vision_alone",
+   "hot_c": 51.6,
+   "busy_pct": 17.0,
+   "avail_mb": 3048
+  },
+  {
+   "t": 20.2,
+   "phase": "vision_alone",
+   "hot_c": 52.2,
+   "busy_pct": 18.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 21.2,
+   "phase": "vision_alone",
+   "hot_c": 52.2,
+   "busy_pct": 16.7,
+   "avail_mb": 3048
+  },
+  {
+   "t": 22.2,
+   "phase": "vision_alone",
+   "hot_c": 51.9,
+   "busy_pct": 18.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 23.2,
+   "phase": "vision_alone",
+   "hot_c": 51.2,
+   "busy_pct": 19.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 24.2,
+   "phase": "vision_alone",
+   "hot_c": 50.9,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 25.2,
+   "phase": "vision_alone",
+   "hot_c": 50.9,
+   "busy_pct": 16.6,
+   "avail_mb": 3048
+  },
+  {
+   "t": 26.2,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 27.2,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 19.8,
+   "avail_mb": 3049
+  },
+  {
+   "t": 28.2,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 16.5,
+   "avail_mb": 3049
+  },
+  {
+   "t": 29.2,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 16.4,
+   "avail_mb": 3049
+  },
+  {
+   "t": 30.3,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 19.7,
+   "avail_mb": 3050
+  },
+  {
+   "t": 31.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 16.7,
+   "avail_mb": 3050
+  },
+  {
+   "t": 32.3,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 17.2,
+   "avail_mb": 3050
+  },
+  {
+   "t": 33.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 18.9,
+   "avail_mb": 3049
+  },
+  {
+   "t": 34.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 16.4,
+   "avail_mb": 3049
+  },
+  {
+   "t": 35.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 16.6,
+   "avail_mb": 3049
+  },
+  {
+   "t": 36.3,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 18.8,
+   "avail_mb": 3049
+  },
+  {
+   "t": 37.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 17.6,
+   "avail_mb": 3049
+  },
+  {
+   "t": 38.3,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 16.2,
+   "avail_mb": 3049
+  },
+  {
+   "t": 39.3,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 16.6,
+   "avail_mb": 3049
+  },
+  {
+   "t": 40.3,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 17.7,
+   "avail_mb": 3049
+  },
+  {
+   "t": 41.3,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.0,
+   "avail_mb": 3049
+  },
+  {
+   "t": 42.3,
+   "phase": "vision_alone",
+   "hot_c": 49.3,
+   "busy_pct": 16.0,
+   "avail_mb": 3049
+  },
+  {
+   "t": 43.3,
+   "phase": "vision_alone",
+   "hot_c": 49.3,
+   "busy_pct": 17.5,
+   "avail_mb": 3049
+  },
+  {
+   "t": 44.3,
+   "phase": "vision_alone",
+   "hot_c": 49.3,
+   "busy_pct": 18.8,
+   "avail_mb": 3049
+  },
+  {
+   "t": 45.3,
+   "phase": "vision_alone",
+   "hot_c": 48.4,
+   "busy_pct": 16.3,
+   "avail_mb": 3049
+  },
+  {
+   "t": 46.3,
+   "phase": "vision_alone",
+   "hot_c": 48.7,
+   "busy_pct": 21.1,
+   "avail_mb": 3049
+  },
+  {
+   "t": 47.3,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 17.1,
+   "avail_mb": 3049
+  },
+  {
+   "t": 48.3,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 16.4,
+   "avail_mb": 3049
+  },
+  {
+   "t": 49.4,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 18.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 50.4,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 51.4,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 17.0,
+   "avail_mb": 3048
+  },
+  {
+   "t": 52.4,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 19.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 53.4,
+   "phase": "vision_alone",
+   "hot_c": 47.1,
+   "busy_pct": 16.1,
+   "avail_mb": 3048
+  },
+  {
+   "t": 54.4,
+   "phase": "vision_alone",
+   "hot_c": 47.1,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 55.4,
+   "phase": "vision_alone",
+   "hot_c": 46.8,
+   "busy_pct": 16.7,
+   "avail_mb": 3048
+  },
+  {
+   "t": 56.4,
+   "phase": "vision_alone",
+   "hot_c": 46.8,
+   "busy_pct": 19.0,
+   "avail_mb": 3048
+  },
+  {
+   "t": 57.4,
+   "phase": "vision_alone",
+   "hot_c": 46.8,
+   "busy_pct": 17.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 58.4,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.5,
+   "avail_mb": 3048
+  },
+  {
+   "t": 59.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 18.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 60.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 61.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 18.3,
+   "avail_mb": 3047
+  },
+  {
+   "t": 62.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 19.0,
+   "avail_mb": 3047
+  },
+  {
+   "t": 63.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.7,
+   "avail_mb": 3047
+  },
+  {
+   "t": 64.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.1,
+   "avail_mb": 3047
+  },
+  {
+   "t": 65.5,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 19.0,
+   "avail_mb": 3047
+  },
+  {
+   "t": 66.5,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 16.6,
+   "avail_mb": 3047
+  },
+  {
+   "t": 67.5,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 16.8,
+   "avail_mb": 3047
+  },
+  {
+   "t": 68.6,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.7,
+   "avail_mb": 3047
+  },
+  {
+   "t": 69.6,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 18.8,
+   "avail_mb": 3047
+  },
+  {
+   "t": 70.6,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 16.3,
+   "avail_mb": 3047
+  },
+  {
+   "t": 71.6,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 17.6,
+   "avail_mb": 3048
+  },
+  {
+   "t": 72.6,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 18.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 73.6,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 15.9,
+   "avail_mb": 3048
+  },
+  {
+   "t": 74.6,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.3,
+   "avail_mb": 3048
+  },
+  {
+   "t": 75.6,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 18.9,
+   "avail_mb": 3048
+  },
+  {
+   "t": 76.7,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.9,
+   "avail_mb": 3047
+  },
+  {
+   "t": 77.7,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 15.5,
+   "avail_mb": 3047
+  },
+  {
+   "t": 78.7,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 18.8,
+   "avail_mb": 3047
+  },
+  {
+   "t": 79.7,
+   "phase": "vision_alone",
+   "hot_c": 49.0,
+   "busy_pct": 16.9,
+   "avail_mb": 3047
+  },
+  {
+   "t": 80.7,
+   "phase": "vision_alone",
+   "hot_c": 50.3,
+   "busy_pct": 17.1,
+   "avail_mb": 3047
+  },
+  {
+   "t": 81.7,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 19.6,
+   "avail_mb": 3044
+  },
+  {
+   "t": 82.7,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 16.2,
+   "avail_mb": 3045
+  },
+  {
+   "t": 83.7,
+   "phase": "vision_alone",
+   "hot_c": 50.6,
+   "busy_pct": 16.0,
+   "avail_mb": 3045
+  },
+  {
+   "t": 84.7,
+   "phase": "vision_alone",
+   "hot_c": 50.9,
+   "busy_pct": 16.7,
+   "avail_mb": 3045
+  },
+  {
+   "t": 85.7,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 18.8,
+   "avail_mb": 3045
+  },
+  {
+   "t": 86.7,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.8,
+   "avail_mb": 3045
+  },
+  {
+   "t": 87.7,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.0,
+   "avail_mb": 3045
+  },
+  {
+   "t": 88.7,
+   "phase": "vision_alone",
+   "hot_c": 49.7,
+   "busy_pct": 18.5,
+   "avail_mb": 3045
+  },
+  {
+   "t": 89.7,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.2,
+   "avail_mb": 3045
+  },
+  {
+   "t": 90.7,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.2,
+   "avail_mb": 3045
+  },
+  {
+   "t": 91.8,
+   "phase": "vision_alone",
+   "hot_c": 49.7,
+   "busy_pct": 18.8,
+   "avail_mb": 3044
+  },
+  {
+   "t": 92.8,
+   "phase": "vision_alone",
+   "hot_c": 49.7,
+   "busy_pct": 16.0,
+   "avail_mb": 3044
+  },
+  {
+   "t": 93.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.2,
+   "avail_mb": 3044
+  },
+  {
+   "t": 94.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 18.5,
+   "avail_mb": 3044
+  },
+  {
+   "t": 95.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 17.9,
+   "avail_mb": 3044
+  },
+  {
+   "t": 96.8,
+   "phase": "vision_alone",
+   "hot_c": 49.7,
+   "busy_pct": 16.8,
+   "avail_mb": 3044
+  },
+  {
+   "t": 97.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 98.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 18.4,
+   "avail_mb": 3044
+  },
+  {
+   "t": 99.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.7,
+   "avail_mb": 3044
+  },
+  {
+   "t": 100.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 16.2,
+   "avail_mb": 3044
+  },
+  {
+   "t": 101.8,
+   "phase": "vision_alone",
+   "hot_c": 50.0,
+   "busy_pct": 19.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 102.8,
+   "phase": "vision_alone",
+   "hot_c": 48.7,
+   "busy_pct": 16.0,
+   "avail_mb": 3044
+  },
+  {
+   "t": 103.8,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 16.0,
+   "avail_mb": 3044
+  },
+  {
+   "t": 104.8,
+   "phase": "vision_alone",
+   "hot_c": 48.1,
+   "busy_pct": 18.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 105.8,
+   "phase": "vision_alone",
+   "hot_c": 47.8,
+   "busy_pct": 16.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 106.8,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 16.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 107.8,
+   "phase": "vision_alone",
+   "hot_c": 47.5,
+   "busy_pct": 18.8,
+   "avail_mb": 3044
+  },
+  {
+   "t": 108.8,
+   "phase": "vision_alone",
+   "hot_c": 47.1,
+   "busy_pct": 15.7,
+   "avail_mb": 3044
+  },
+  {
+   "t": 109.8,
+   "phase": "vision_alone",
+   "hot_c": 47.1,
+   "busy_pct": 16.6,
+   "avail_mb": 3044
+  },
+  {
+   "t": 110.8,
+   "phase": "vision_alone",
+   "hot_c": 47.1,
+   "busy_pct": 16.9,
+   "avail_mb": 3044
+  },
+  {
+   "t": 111.9,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 17.2,
+   "avail_mb": 3044
+  },
+  {
+   "t": 112.9,
+   "phase": "vision_alone",
+   "hot_c": 46.8,
+   "busy_pct": 15.8,
+   "avail_mb": 3044
+  },
+  {
+   "t": 113.9,
+   "phase": "vision_alone",
+   "hot_c": 46.5,
+   "busy_pct": 16.2,
+   "avail_mb": 3044
+  },
+  {
+   "t": 114.9,
+   "phase": "vision_alone",
+   "hot_c": 46.2,
+   "busy_pct": 18.6,
+   "avail_mb": 3044
+  },
+  {
+   "t": 115.9,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 15.8,
+   "avail_mb": 3044
+  },
+  {
+   "t": 116.9,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 16.7,
+   "avail_mb": 3044
+  },
+  {
+   "t": 117.9,
+   "phase": "vision_alone",
+   "hot_c": 45.9,
+   "busy_pct": 17.7,
+   "avail_mb": 3044
+  },
+  {
+   "t": 118.9,
+   "phase": "vision_alone",
+   "hot_c": 45.6,
+   "busy_pct": 16.1,
+   "avail_mb": 3044
+  },
+  {
+   "t": 119.9,
+   "phase": "vision_alone",
+   "hot_c": 45.6,
+   "busy_pct": 16.3,
+   "avail_mb": 3044
+  },
+  {
+   "t": 120.9,
+   "phase": "vision_alone",
+   "hot_c": 45.6,
+   "busy_pct": 18.1,
+   "avail_mb": 3044
+  },
+  {
+   "t": 122.0,
+   "phase": "llm_load",
+   "hot_c": 48.7,
+   "busy_pct": 36.4,
+   "avail_mb": 2997
+  },
+  {
+   "t": 123.0,
+   "phase": "llm_load",
+   "hot_c": 49.0,
+   "busy_pct": 42.3,
+   "avail_mb": 3000
+  },
+  {
+   "t": 124.0,
+   "phase": "llm_load",
+   "hot_c": 50.3,
+   "busy_pct": 44.5,
+   "avail_mb": 2860
+  },
+  {
+   "t": 125.0,
+   "phase": "llm_load",
+   "hot_c": 50.9,
+   "busy_pct": 42.3,
+   "avail_mb": 2860
+  },
+  {
+   "t": 126.0,
+   "phase": "idle",
+   "hot_c": 46.8,
+   "busy_pct": 26.1,
+   "avail_mb": 2860
+  }
+ ],
+ "vision_read_latency": {
+  "alone_no_llm": {
+   "n": 241,
+   "p50_ms": 48.7,
+   "p95_ms": 49.5,
+   "max_ms": 53.7,
+   "mean_ms": 48.5,
+   "late_over_100ms": 0,
+   "over_500ms": 0
+  },
+  "llm_loaded_idle": {
+   "n": 2,
+   "p50_ms": 48.2,
+   "p95_ms": 48.2,
+   "max_ms": 48.2,
+   "mean_ms": 48.2,
+   "late_over_100ms": 0,
+   "over_500ms": 0
+  },
+  "llm_busy": {
+   "n": 0
+  }
+ },
+ "server_log_extract": [],
+ "repack_seen": false,
+ "left_running": [],
+ "boot_id_end": "143d9ac9-aac7-43ae-9300-fccf05517630",
+ "driver": {
+  "cooldown_before": [
+   {
+    "t": 0,
+    "hot_c": 48.7
+   }
+  ],
+  "boot_id_before": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "boot_id_after": "143d9ac9-aac7-43ae-9300-fccf05517630",
+  "lock_held_s": 133.0,
+  "ssh_rc": 0,
+  "stdout": "{\"name\": \"heat_vision_only_baseline\", \"aborted\": null, \"error\": null, \"peak_hot_c\": 52.2, \"window_s\": 126.4, \"load_s\": 4.147372252000423, \"out\": \"/home/arduino/twinread-conch-musk-edge/data/llm/run_logs/heat_vision_only_baseline.json\"}\n",
+  "stderr": ""
+ }
+}

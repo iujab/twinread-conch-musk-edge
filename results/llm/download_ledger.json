@@ -1,0 +1,40 @@
+{
+ "rows": [
+  {
+   "item": "bartowski/Qwen2.5-0.5B-Instruct-GGUF/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf",
+   "bytes": 397808192
+  },
+  {
+   "item": "unsloth/Qwen3-0.6B-GGUF/Qwen3-0.6B-Q4_K_M.gguf",
+   "bytes": 396705472
+  },
+  {
+   "item": "unsloth/Qwen3-0.6B-GGUF/Qwen3-0.6B-Q4_0.gguf",
+   "bytes": 382156480
+  },
+  {
+   "item": "unsloth/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-Q4_0.gguf",
+   "bytes": 507154688
+  },
+  {
+   "item": "tokenizer and config files of Qwen/Qwen3-0.6B and Qwen/Qwen2.5-0.5B-Instruct",
+   "bytes": 27370560
+  },
+  {
+   "item": "official llama.cpp b11960 arm64 tarball",
+   "bytes": 18411465
+  },
+  {
+   "item": "6 x 12 MB range reads of GGUF headers, not stored",
+   "bytes": 72000000
+  },
+  {
+   "item": "Qwen/Qwen3-0.6B full weights and tokenizer files (data/llm/finetune/base), for the T3 fine-tune; size on disk",
+   "bytes": 1519193708
+  }
+ ],
+ "total_bytes": 3320800565,
+ "total_gb": 3.321,
+ "limit_gb": 2.0,
+ "over_limit_note": "Over the 2 GB soft budget: the coordinator accepted this overrun for the fine-tune weights, which were 1.52 GB, not the 1.2 GB estimated. peft (a small Python package) and the pinned llama.cpp x86 build add no model data. Nothing further was downloaded."
+}

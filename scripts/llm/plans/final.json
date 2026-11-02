@@ -1,0 +1,6 @@
+{"defaults": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf", "repeat_penalty": 1.1, "temperature": 0.3, "max_tokens": 170, "idle_s": 5, "max_seconds": 175},
+ "runs": [
+  {"name": "final_t3_n10_passive_vision2hz", "args": {"threads": 3, "nice": 10, "env": "OMP_WAIT_POLICY=passive", "vision": "loop", "vision_baseline_s": 10, "prewarm": true, "server_args": "--reasoning off", "requests": "0,1,2"}},
+  {"name": "final_t3_n10_passive_alone", "args": {"threads": 3, "nice": 10, "env": "OMP_WAIT_POLICY=passive", "prewarm": true, "server_args": "--reasoning off", "requests": "0,1,2"}},
+  {"name": "final_tiny_converted_model_loads", "args": {"model": "data/llm/tiny-Q4_0-embq8_0.gguf", "threads": 2, "no_think": true, "requests": "0", "max_tokens": 8, "idle_s": 1}}
+ ]}

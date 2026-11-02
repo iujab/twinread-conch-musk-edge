@@ -1,0 +1,8 @@
+{"defaults": {"requests": "0,1", "idle_s": 3, "max_tokens": 120, "max_seconds": 170, "no_think": true, "threads": 4},
+ "runs": [
+  {"name": "q3_q4_0_real_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_0.gguf"}},
+  {"name": "q3_q4_0_embq8_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"}},
+  {"name": "q3_q4_0_embq4_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ4.gguf"}},
+  {"name": "q3_q4km_embq8_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_K_M-embQ8.gguf"}},
+  {"name": "q3_q4km_embq4_t4", "args": {"model": "data/llm/Qwen3-0.6B-Q4_K_M-embQ4.gguf"}}
+ ]}

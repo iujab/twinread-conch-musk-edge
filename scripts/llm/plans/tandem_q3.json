@@ -1,0 +1,84 @@
+{
+ "defaults": {
+  "requests": "0,1",
+  "idle_s": 8,
+  "max_tokens": 120,
+  "max_seconds": 170,
+  "no_think": true,
+  "vision": "loop",
+  "vision_baseline_s": 15,
+  "model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf"
+ },
+ "runs": [
+  {
+   "name": "tv_q3_t3_idle",
+   "args": {
+    "threads": 3,
+    "vision": "idle"
+   }
+  },
+  {
+   "name": "tv_q3_t4_idle",
+   "args": {
+    "threads": 4,
+    "vision": "idle"
+   }
+  },
+  {
+   "name": "tl_q3_t3_n0",
+   "args": {
+    "threads": 3
+   }
+  },
+  {
+   "name": "tl_q3_t3_n10",
+   "args": {
+    "threads": 3,
+    "nice": 10
+   }
+  },
+  {
+   "name": "tl_q3_t4_n10",
+   "args": {
+    "threads": 4,
+    "nice": 10
+   }
+  },
+  {
+   "name": "tl_q3_t2_n0",
+   "args": {
+    "threads": 2
+   }
+  },
+  {
+   "name": "tl_q3_t2_n10",
+   "args": {
+    "threads": 2,
+    "nice": 10
+   }
+  },
+  {
+   "name": "tl_q3_t4_n0",
+   "args": {
+    "threads": 4
+   }
+  },
+  {
+   "name": "tl_q3_t3_n10_passive",
+   "args": {
+    "threads": 3,
+    "nice": 10,
+    "env": "OMP_WAIT_POLICY=passive"
+   }
+  },
+  {
+   "name": "tl_q3_t3_n10_noomp_poll0",
+   "args": {
+    "threads": 3,
+    "nice": 10,
+    "bin": "device/llm/bin/llama-server-noomp",
+    "server_args": "--poll 0"
+   }
+  }
+ ]
+}

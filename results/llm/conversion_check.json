@@ -1,0 +1,99 @@
+{
+ "llama_cpp_commit": "8642541b255bfb5dc39cd351a178be09013a55d6",
+ "ftype": "Q4_K_M",
+ "embed": "",
+ "weights": "tiny random, same architecture class, real tokenizer",
+ "checks": {
+  "qwen3": {
+   "repo": "Qwen/Qwen3-0.6B",
+   "ok": true,
+   "tie_word_embeddings_base": true,
+   "safetensors_has_lm_head": false,
+   "gguf_has_separate_output": false,
+   "token_embd_type": "Q8_0",
+   "architecture": "qwen3",
+   "chat_template_identical_to_base_repo": true,
+   "eos_token_id": 151645,
+   "pad_token_id": 151643,
+   "bos_token_id": 151643,
+   "base_generation_config": {
+    "bos_token_id": 151643,
+    "do_sample": true,
+    "eos_token_id": [
+     151645,
+     151643
+    ],
+    "pad_token_id": 151643,
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95,
+    "transformers_version": "4.51.0"
+   },
+   "base_tokenizer_eos": "<|im_end|>",
+   "base_tokenizer_pad": "<|endoftext|>",
+   "base_config": {
+    "architectures": [
+     "Qwen3ForCausalLM"
+    ],
+    "hidden_size": 1024,
+    "num_hidden_layers": 28,
+    "num_attention_heads": 16,
+    "num_key_value_heads": 8,
+    "intermediate_size": 3072,
+    "vocab_size": 151936,
+    "torch_dtype": "bfloat16",
+    "dtype": null,
+    "max_position_embeddings": 40960,
+    "tie_word_embeddings": true
+   },
+   "tiny_output": "data/llm/conversion_check/qwen3/tiny-Q4_K_M.gguf",
+   "quantize_cmd": "<repo>/build/llama.cpp-v0.8.0/build-host/bin/llama-quantize IN-f16.gguf OUT.gguf Q4_K_M"
+  },
+  "qwen25": {
+   "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+   "ok": true,
+   "tie_word_embeddings_base": true,
+   "safetensors_has_lm_head": false,
+   "gguf_has_separate_output": false,
+   "token_embd_type": "Q8_0",
+   "architecture": "qwen2",
+   "chat_template_identical_to_base_repo": true,
+   "eos_token_id": 151645,
+   "pad_token_id": 151643,
+   "bos_token_id": 151643,
+   "base_generation_config": {
+    "bos_token_id": 151643,
+    "pad_token_id": 151643,
+    "do_sample": true,
+    "eos_token_id": [
+     151645,
+     151643
+    ],
+    "repetition_penalty": 1.1,
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "transformers_version": "4.37.0"
+   },
+   "base_tokenizer_eos": "<|im_end|>",
+   "base_tokenizer_pad": "<|endoftext|>",
+   "base_config": {
+    "architectures": [
+     "Qwen2ForCausalLM"
+    ],
+    "hidden_size": 896,
+    "num_hidden_layers": 24,
+    "num_attention_heads": 14,
+    "num_key_value_heads": 2,
+    "intermediate_size": 4864,
+    "vocab_size": 151936,
+    "torch_dtype": "bfloat16",
+    "dtype": null,
+    "max_position_embeddings": 32768,
+    "tie_word_embeddings": true
+   },
+   "tiny_output": "data/llm/conversion_check/qwen25/tiny-Q4_K_M.gguf",
+   "quantize_cmd": "<repo>/build/llama.cpp-v0.8.0/build-host/bin/llama-quantize IN-f16.gguf OUT.gguf Q4_K_M"
+  }
+ }
+}

@@ -1,0 +1,4 @@
+{"defaults": {"model": "data/llm/Qwen3-0.6B-Q4_0-embQ8.gguf", "bin": "device/llm/bin/llama-server", "repeat_penalty": 1.1, "temperature": 0.3, "max_tokens": 170, "idle_s": 20, "post_idle_s": 20, "max_seconds": 170, "threads": 3, "nice": 10, "env": "OMP_WAIT_POLICY=passive", "server_args": "--reasoning off"},
+ "runs": [
+  {"name": "readme_config_one_explanation_vision2hz", "args": {"vision": "loop", "vision_baseline_s": 10, "prewarm": true, "requests": "1"}}
+ ]}

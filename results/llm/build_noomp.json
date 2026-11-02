@@ -1,0 +1,14 @@
+{
+ "tag": "v0.8.0",
+ "commit": "8642541b255bfb5dc39cd351a178be09013a55d6",
+ "variant": "noomp",
+ "march": "armv8-a+crc+crypto",
+ "mtune": "cortex-a53",
+ "openmp": "OFF",
+ "lto": true,
+ "static": true,
+ "bytes": 14628608,
+ "sha256": "3254e0b474f530f3eab358a2570eb2cab17cf405cb9628927dda277f4f799181",
+ "compiler": "aarch64-linux-gnu-g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+ "file": "ELF 64-bit LSB executable, ARM aarch64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=6433f950f182076d3c32faf0a1c1cba393369eec, for GNU/Linux 3.7.0, stripped"
+}
