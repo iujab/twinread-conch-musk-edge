@@ -1,0 +1,64 @@
+{
+ "n": 53,
+ "flagged": 47,
+ "pairs": {
+  "MUS->STR": 13,
+  "DEB->MUS": 1,
+  "ADI->MUS": 1,
+  "STR->MUS": 23,
+  "TUM->NORM": 11,
+  "TUM->DEB": 2,
+  "STR->DEB": 1,
+  "MUC->TUM": 1
+ },
+ "missed": [
+  {
+   "tile": 825,
+   "truth": "STR",
+   "call": "MUS",
+   "conch": 0.9983216524124146,
+   "musk": 0.9995768666267395,
+   "flagged": false
+  },
+  {
+   "tile": 2938,
+   "truth": "STR",
+   "call": "MUS",
+   "conch": 0.992929220199585,
+   "musk": 0.9992542266845703,
+   "flagged": false
+  },
+  {
+   "tile": 2886,
+   "truth": "STR",
+   "call": "MUS",
+   "conch": 0.9918161034584045,
+   "musk": 0.9974460005760193,
+   "flagged": false
+  },
+  {
+   "tile": 5535,
+   "truth": "TUM",
+   "call": "NORM",
+   "conch": 0.9997060894966125,
+   "musk": 0.9985644221305847,
+   "flagged": false
+  },
+  {
+   "tile": 4750,
+   "truth": "TUM",
+   "call": "NORM",
+   "conch": 0.999914288520813,
+   "musk": 0.9950017929077148,
+   "flagged": false
+  },
+  {
+   "tile": 909,
+   "truth": "TUM",
+   "call": "NORM",
+   "conch": 0.9999994039535522,
+   "musk": 0.9892462491989136,
+   "flagged": false
+  }
+ ]
+}

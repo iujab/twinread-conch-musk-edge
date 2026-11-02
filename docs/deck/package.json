@@ -1,0 +1,7 @@
+{
+  "name": "twinread-deck",
+  "private": true,
+  "description": "Builds docs/twinread_deck.pptx from results/**/*.json",
+  "scripts": { "build": "node build_deck.js" },
+  "dependencies": { "jszip": "^3.10.1", "pptxgenjs": "^4.0.1" }
+}

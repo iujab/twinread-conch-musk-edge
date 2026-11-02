@@ -5,8 +5,8 @@ Yubo Wu, Noah Zhang, William Liu, Franklin Liu, Andy Chen · University of Illin
 
 **Research prototype, not a diagnostic device.** Every number here comes from `results/**/*.json`
 (`python -m twinread.headline` collects them into `results/headline.json`). Model numbers are from a local subset on
-one RTX 5060. Device numbers are measured on the Arduino UNO Q. Slides: `docs/twinread_deck.pdf` (12 slides,
-built from `docs/deck/twinread_deck.html` by `docs/deck/build_deck.sh`).
+one RTX 5060. Device numbers are measured on the Arduino UNO Q. Slides: `docs/twinread_deck.pptx` (12-slide talk with
+speaker notes, then references and backups; PDF copy `docs/twinread_deck.pdf`), built by `docs/deck/build_deck.js`.
 
 ## Abstract
 
@@ -51,8 +51,8 @@ launch and a global-memory round trip per stage, one launch keeps the intermedia
 - **K2, training augmentation** (`csrc/k2_camera_aug.cu`). Nine dependent stages (perspective warp, HED stain
   jitter, display gamma and colour profile, moiré, glare, separable Gaussian defocus, white balance, Philox sensor
   noise) run in one launch per 32×16 tile with a shared-memory halo, then a second launch does the 8×8 DCT JPEG
-  quantisation. Every stage is within one grey level of a float64 numpy reference. 46,315 images/s, and student
-  training runs ×10.6 faster than with torch augmentation.
+  quantisation. Every stage is within one grey level of a float64 numpy reference. 46,315 images/s. Inside student
+  training, augmentation runs ×10.6 faster than with torch, which makes the whole training step ×2.49 faster.
 - Verified with compute-sanitizer; built for sm_120 (RTX 5060) and compile-checked for sm_80 and sm_90 (Delta A100,
   DeltaAI GH200). Triton and plain-torch fallbacks share the same plan.
 
@@ -74,7 +74,7 @@ Camelyon17-WILDS hospital 2 (1,500 tiles, unseen hospital). Every test number wa
 | Pre-registered threshold on test | CRC: flags 25.1% of tiles for a 10% target and catches 97.5% of errors. Camelyon17: flags 5.3%, catches 58.5% | `review.json` |
 | Confident shared errors (both wrong, same call, both ≥ 0.80) | 53 CRC tiles (0.74%), 36 of them MUS↔STR; 12 Camelyon17 tiles | `review.json`, `triage_curves.json` |
 | K1 kernel | Bit-exact to the official transforms. 90,131 tiles/s with the input on the GPU (46,157 incl. the host copy); ×202 vs PIL inside the embedding run, ×1.11 end to end (forward-bound) | `results/kernels/k1_*.json` |
-| K2 kernel | 46,315 images/s, ≤ 1 level per op vs a numpy reference; student training ×10.6 faster than torch augmentation | `results/kernels/k2_*.json`, `results/student/*/throughput.json` |
+| K2 kernel | 46,315 images/s, ≤ 1 level per op vs a numpy reference; in student training, augmentation ×10.6 faster than torch and the whole step ×2.49 (1,559 to 3,880 images/s) | `results/kernels/k2_*.json`, `results/student/*/throughput.json` |
 | CM student, CRC (x86) | fp32 0.9415 (ties CONCH); int8 0.9219 with onnxruntime's default x86 kernels, 0.9301 with them off | `results/student/cm_crc/`, `results/uno_q/onboard/int8_kernel_check.json` |
 | Size | 5.65 M parameters (1.4% of the two vision towers); 6.0 MB int8 ONNX | `results/student/model_sizes.json` |
 | On the Arduino UNO Q | int8 student 18.7 ms per tile (4 threads); 0.9305 balanced accuracy on all 7,180 CRC test tiles; 25.4 tiles/s for the full app loop | `results/uno_q/onboard/` |
